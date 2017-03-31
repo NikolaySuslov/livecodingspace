@@ -1,0 +1,17 @@
+.exp-card-wide.mdl-card {
+  width: 512px;
+}
+.exp-card-wide > .mdl-card__title {
+  color: #FFF;
+  height: 176px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('images/default.jpg') center / cover;
+}
+.exp-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+
+.numClients {
+
+    font-weight: bold;
+
+}

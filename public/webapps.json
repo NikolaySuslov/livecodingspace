@@ -1,0 +1,23 @@
+{
+    "aframe":{
+        "title":"Simple VWF & A-Frame app",
+        "imgUrl": "./aframe/webimg.jpg",
+        "text": "Example application showing Virtual World Framework & A-Frame integration"
+    },
+
+    "aframe2":{
+        "title":"Textures and Models in VWF & A-Frame",
+        "imgUrl": "./aframe2/webimg.jpg",
+        "text": "Example app with loaded textures and models"
+    },
+      "ohmlang-calc":{
+        "title":"Calculator in Ohm and VWF",
+        "imgUrl": "./ohmlang-calc/webimg.jpg",
+        "text": "Example calc app with simple Ohm grammar"
+    },
+     "ohmlang-lsys":{
+        "title":"L-System parser example in Ohm and VWF",
+        "imgUrl": "./ohmlang-lsys/webimg.jpg",
+        "text": "Example app with L-System grammar"
+    }
+}

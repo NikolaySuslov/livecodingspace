@@ -1,0 +1,210 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+    assets: "assets.json"
+    iteration: 3
+    angle: 60
+    stepLength: 0.5
+    rule: 'F++F++F'
+    axiomF: 'F-F++F-F'
+    axiomG: ''
+methods:
+  initialize:
+    body: |
+      console.log("initialize");
+      //vwf_view.kernel.callMethod(this.id, "testDrawLsys");
+  testDrawLsys: |
+    let lsys = this.parseLSys();
+    var match = this.turtleLang.grammar.match(lsys, 'Draw<"1","1">');
+    if (match.succeeded()){
+          var res = this.turtleLang.semantics(match).draw(this.stepLength, this.angle);
+    }
+  testTurtle: |
+    this.turtle.goForward(1);
+    this.turtle.goForward(1);
+    this.turtle.turn(45);
+    this.turtle.goForward(1);
+    this.turtle.goForward(1);
+    this.turtle.turn(45);
+    this.turtle.goForward(1);
+  makeMe:
+      parameters:
+            - childName
+            - position
+      body: |
+              var pos = position;
+              if (typeof position === 'string' ){
+                pos = JSON.parse(position);}
+              let nodeId = this.turtleDraw.id;
+              var childComponent = {
+                "id": childName,
+                "uri": childName,
+                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                "properties": {
+                    "height": "0.2",
+                    "width": "0.2",
+                    "depth": "0.2",
+                    "color": "green",
+                    "position": [pos[0], pos[1], pos[2]]
+                },
+                "methods": {
+                },
+                "scripts": []
+                };
+                vwf_view.kernel.createChild(nodeId, childName, childComponent);
+  parseLSys: |
+    var str = this.rule;
+    var axioms = {"F": this.axiomF, "G": this.axiomG};
+    for (var i = 1; i < this.iteration; i++)
+    {
+        var match = this.lsysLang.grammar.match(str, 'Gen<"y">');
+          if (match.succeeded()){
+          var res = this.lsysLang.semantics(match).gen(axioms);
+          str = res.join("");
+          }
+    }
+    console.log(str);
+    return str;
+children:
+  lsysLang:
+        extends: http://vwf.example.com/ohm/node.vwf
+        properties:
+          grammar:
+          semantics:
+          ohmLang: |
+            LSys { Gen<x> 
+                    = ReadRule+ 
+                    ReadRule 
+                    = letters | symbols
+                    letters  = "F" | "G" 
+                    symbols  = "-" | "+" }
+        methods:
+            initLang:
+              body: |
+                console.log("add operations to semantics")
+                this.addOperationLang();
+            addOperationLang:
+              body: |
+                this.semantics.addOperation('gen(x)', {
+                    Gen: function(e)
+                    {
+                        return e.gen(this.args.x);
+                    },
+                    ReadRule: function(e)
+                    {
+                        return e.gen(this.args.x);
+                    },
+                    letters: function(_)
+                    {
+                        for (var propName in this.args.x)
+                        {
+                            if (propName == this.sourceString)
+                                return this.args.x[propName]
+                        }
+                        return this.sourceString
+                    },
+                    symbols: function(_)
+                    {
+                        return this.sourceString;
+                    }
+                  });
+  turtleLang:
+        extends: http://vwf.example.com/ohm/node.vwf
+        properties:
+          grammar:
+          semantics:
+          ohmLang: |
+            Turtle {
+              Draw<x, y> 
+                  = (drawLetter | turn)+ 
+              drawLetter 
+                  = letter
+              turn 
+                  = "+" | "-" }
+        methods:
+            initLang:
+              body: |
+                console.log("add operations to semantics")
+                this.addOperationLang();
+            addOperationLang:
+              body: |
+                var turtleID = this.parent.turtle.id;
+                var self = this;
+                this.semantics.addOperation('draw(x,y)', {
+                    Draw: function(e)
+                      {
+                          e.draw(this.args.x, this.args.y);
+                      },
+                      drawLetter: function(e)
+                      {
+                          //vwf_view.kernel.callMethod(turtleID, 'goForward', [this.args.x]);
+                          self.parent.turtle.goForward(this.args.x);
+                      },
+                      turn: function(e)
+                      {
+                          if (this.sourceString == "+")
+                              //vwf_view.kernel.callMethod(turtleID, 'turn', [this.args.y]);
+                              self.parent.turtle.turn(this.args.y);
+                          if (this.sourceString == "-")
+                             // vwf_view.kernel.callMethod(turtleID, 'turn', [-1 * this.args.y]);
+                             self.parent.turtle.turn(-1*this.args.y);
+                        }
+                  });  
+  groundPlane:
+    extends: http://vwf.example.com/aframe/aplane.vwf
+    properties:
+      height: 50
+      width: 50
+      repeat: "10 10"
+      rotation: [-90, 0, 0]
+      wireframe: false
+      src: "#bg2"
+  turtleDraw:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    properties:
+      position: [1, 1.25, -4]
+  turtle:
+    extends: http://vwf.example.com/aframe/asphere.vwf
+    properties:
+      position: [1, 1.25, -4]
+      color: "#e0e014"
+      radius: 1
+      wireframe: true
+      angleInRadians: 0
+    methods:
+      turn:
+         parameters:
+            - angle
+         body: |
+          var angle0 = this.angleInRadians;
+          var targetAngle = angle * Math.PI / 180.0;
+          this.angleInRadians = angle0 + targetAngle;
+      goForward:
+        parameters:
+          - step
+        body: |
+          var x0 = this.position[0];
+          var y0 = this.position[1];
+          var xx = Math.sin(this.angleInRadians);
+          var yy = Math.cos(this.angleInRadians);
+          this.position = [x0 + step * xx, y0 + step * yy, this.position[2]];
+          this.parent.makeMe('draw-' + this.random(), this.position);
+  sky:
+    extends: http://vwf.example.com/aframe/asky.vwf
+    properties:
+      color: "#ECECEC"
+  camentity:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    properties:
+      position: [0, 0, 0]
+    children:
+      camera:
+        extends: http://vwf.example.com/aframe/acamera.vwf
+        properties:
+          look-controls-enabled: true
+          forAvatar: true
+        children:
+          cursor:
+            extends: http://vwf.example.com/aframe/acursor.vwf

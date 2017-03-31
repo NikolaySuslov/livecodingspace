@@ -1,0 +1,262 @@
+# Copyright 2012 United States Government, as represented by the Secretary of Defense, Under
+# Secretary of Defense (Personnel & Readiness).
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License. You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License
+# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing permissions and limitations under
+# the License.
+
+## The component representation of a scene
+## 
+## @name scene.vwf
+## @namespace
+
+--- 
+extends: http://vwf.example.com/node2.vwf
+properties:
+
+  ## Cast Shadows
+  ## 
+  ## @name scene.vwf#enableShadows
+  ## @property
+
+  enableShadows: 
+  ## Active camera
+  ## 
+  ## @name scene.vwf#activeCamera
+  ## @property
+
+  activeCamera: 
+    set: |
+      if ( this.activeCameraComp ) {
+        if ( this.getChild ) {
+          var cam = this.getChild( value );
+          if ( cam ) {
+             this.activeCameraComp = cam;
+             this.lastActiveCamera = this.activeCamera;
+             this.activeCamera = value;
+          }
+        }        
+      } else {
+        if ( this.activeCamera != value ) {
+          this.lastActiveCamera = this.activeCamera;
+          this.activeCamera = value;
+          if ( this.getChild ) {
+            var temp = this.getChild( value );
+            if ( temp ) this.activeCameraComp = temp;
+          }
+        }
+      } //@ sourceURL=scene.set.activeCamera.vwf
+    value: ""
+
+  ## Ambient color
+  ## 
+  ## @name scene.vwf#ambientColor
+  ## @property
+
+  ambientColor: 
+  
+  ## Back ground color
+  ## 
+  ## @name scene.vwf#backgroundColor
+  ## @property
+
+  backgroundColor: [ 200, 200, 200 ]
+  
+  ## Boolean determines whether the use wants a shared camera (true) or independent views (false).
+  ## Defaults to true
+  ## 
+  ## @name navscene.vwf#usersShareView
+  ## @property
+
+  usersShareView: true
+
+  ## Object to be instantiated to represent a user.
+  ## If usersShareView is true, only one is created
+  ## Else, one is created per user
+  ## Defaults to a camera w/ the navigable behavior attached
+  ## 
+  ## @name navscene.vwf#userObject
+  ## @property
+
+  userObject:
+    extends: http://vwf.example.com/camera.vwf
+    implements: [ "http://vwf.example.com/navigable.vwf" ]
+    properties:
+      name: camera
+      navmode: fly
+
+  ## Boolean determines whether the users own avatars should be visible to themselves
+  ## Defaults to false
+  ## 
+  ## @name navscene.vwf#makeOwnAvatarVisible
+  ## @property
+
+  makeOwnAvatarVisible: false
+
+  ## Determine which face will be culled when working with the shadow map
+  ## Possible options are "none", "back", "front" and "both",
+  ## which map to 0, 1, 2 and 3
+  ## Defaults to "front"
+  ##
+  ## @name navscene.vwf#shadowMapCullFace
+  ## @property
+
+  shadowMapCullFace:
+    set: |
+      switch(value) {
+        case "none":
+        case 0: 
+          this.shadowMapCullFace = "none";
+          break;
+        case "back":
+        case 1:
+          this.shadowMapCullFace = "back";
+          break;
+        case "front":
+        case 2:
+          this.shadowMapCullFace = "front";
+          break;
+        case "both":
+        case 3:
+          this.shadowMapCullFace = "both";
+          break;
+      }
+    value: "front"
+
+  ## Determines the type of shadow map to use
+  ## Possible options are "basic", "PCF" and "PCFSoft",
+  ## which map to 0, 1, and 2
+  ## Defaults to "PCFSoft"
+  ##
+  ## @name navscene.vwf#shadowMapType
+  ## @property
+
+  shadowMapType: 
+    set: |
+      switch(value) {
+        case "basic":
+        case 0: 
+          this.shadowMapType = "basic";
+          break;
+        case "PCF":
+        case 1:
+          this.shadowMapType = "PCF";
+          break;
+        case "PCFSoft":
+        case 2:
+          this.shadowMapType = "PCFSoft";
+          break;
+      }
+    value: "PCFSoft"
+
+methods:
+  initializeActiveCamera:
+  getActiveCameraComp:
+  getChild:
+  getActiveCamera:
+  lastActiveCameraID:
+  findByID:
+  isChildOf:
+  raycast:
+    parameters:
+      - origin
+      - direction
+      - near
+      - far
+      - recursive
+      - objectIDs
+scripts:
+- |
+    this.activeCameraComp = undefined;
+
+    this.initialize = function() {
+      if ( this.usersShareView && this.userObject ) {
+        var scene = this;
+        this.children.create( this.userObject.properties.name, this.userObject, function( child ) {
+          scene.initializeActiveCamera( child );
+        } );
+      }
+    }
+
+    this.initializeActiveCamera = function( userObjectWithCamera ) {
+      var cameras = userObjectWithCamera.find( "descendant-or-self::element(*,'http://vwf.example.com/camera.vwf')" );
+      if ( cameras.length ) {
+        this.lastActiveCamera = this.activeCamera;
+        this.activeCamera = cameras[ 0 ].id;
+      }
+    }
+
+    this.getActiveCameraComp = function() {
+      return this.activeCameraComp;
+    }
+
+    this.getChild = function( childName, startingNode ) {
+      if(!startingNode) {
+        startingNode = this;
+      }
+      var len = startingNode.children.length
+      for ( var i = 0; i < len; i++ ) {
+        if ( startingNode.children[i].id == childName ) {
+          return startingNode.children[i];
+        } else if ( startingNode.children[i].name && startingNode.children[i].name == childName ) {
+          return startingNode.children[i];        
+        } else {
+          var childNode = this.getChild( childName, startingNode.children[i]);
+          if(childNode) {
+            return childNode;
+          }
+        }
+      }
+      //console.info( "WARNING: SCENE.getChild   CHILD NOT FOUND: " + childName );
+      return undefined;
+    }
+
+    this.findByID = function( node, id ) {
+      var idNode = undefined;
+      //console.info( "findByID( "+node.id+", "+id+" )" );
+      if ( node ) {
+        if ( node.id == id ) return node;
+        for ( var i = 0; i < node.children.length && idNode === undefined; i++ ) {
+          idNode = this.findByID( node.children[i], id );
+        }
+      }
+      return idNode;
+    }  
+    this.isChildOf = function( node, parent ) {
+      var nodeToCheck = node.parent;
+      var isParent = false;
+      while ( !isParent && nodeToCheck !== undefined ) {
+        isParent = ( nodeToCheck === parent );
+        nodeToCheck = nodeToCheck.parent;
+      }
+      return isParent;
+    }   
+    this.getActiveCameraComp = function() {
+      return this.activeCameraComp;
+    }
+    this.lastActiveCameraID = function() {
+      return this.lastActiveCamera;
+    }
+
+    this.getActiveCamera = function() {
+      if ( !this.activeCameraComp ) {
+        if ( this.getChild ) {
+          this.activeCameraComp = this.getChild( this.activeCamera );
+        }
+      }
+      return this.activeCameraComp;
+    }
+
+    this.lastActiveCameraID = function() {
+      return this.lastActiveCamera;
+    }
+
+    this.load = function( obj, objName ){
+      this.children.create( objName, obj );
+    } //@ sourceURL=scene.vwf

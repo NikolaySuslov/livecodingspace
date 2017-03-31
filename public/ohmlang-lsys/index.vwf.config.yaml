@@ -1,0 +1,8 @@
+---
+info:
+  title: "Ohm L-System example app"
+model:
+  vwf/model/aframe:
+view:
+  vwf/view/aframe:
+  vwf/view/editor-live:

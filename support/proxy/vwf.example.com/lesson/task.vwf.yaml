@@ -1,0 +1,162 @@
+# Copyright 2012 United States Government, as represented by the Secretary of Defense, Under
+# Secretary of Defense (Personnel & Readiness).
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License. You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License
+# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing permissions and limitations under
+# the License.
+
+## @name lesson.task.vwf
+## @namespace
+
+--- 
+extends: http://vwf.example.com/node.vwf
+implements:
+  - http://vwf.example.com/sceneGetter.vwf
+properties:
+
+  ## Text to display to the user to explain the task
+  ## 
+  ## @name lesson.task.vwf#text
+  ## @property
+
+  text:
+
+  ## Search string used to find a node3 that represents the transform that the camera will move to at the 
+  ## beginning of this task
+  ## 
+  ## @name lesson.task.vwf#cameraPoseRef
+  ## @property
+
+  cameraPoseRef:
+
+  ## xpath reference to the top node of the scene that the lesson listens to for task completion events
+  ## 
+  ## @name lesson.task.vwf#scenePath
+  ## @property
+
+  scenePath:
+
+  ## the scene node that the lesson listens to for task completion events
+  ## 
+  ## @name lesson.task.vwf#scene
+  ## @property
+
+  scene:
+
+  ## Array of this task's subtasks
+  ## 
+  ## @name lesson.task.vwf#subtasks
+  ## @property
+
+  subtasks:
+    get: |
+      if ( !this.hasOwnProperty( "subtaskCache" ) ) {
+        this.subtaskCache = this.find( "./element(*,'http://vwf.example.com/lesson/task.vwf')" );
+      }
+      return this.subtaskCache;
+      //@ sourceURL=task.subtasks.get
+
+  ## Whether this task is inactive, entered, or completed
+  ## inactive -> entered -> completed -> inactive
+  ## 
+  ## @name lesson.task.vwf#active
+  ## @property
+
+  status: "inactive"
+
+  ## Index of the currently active subtask
+  ## 
+  ## @name lesson.task.vwf#taskIndex
+  ## @property
+
+  taskIndex:
+
+methods:
+
+  ## Method to begin the task
+  ## 
+  ## @name lesson.task.vwf#enter
+  ## @function
+
+  enter:
+
+  ## Method to step to the next task
+  ## 
+  ## @name lesson.task.vwf#next
+  ## @function
+
+  next:
+
+  ## Method to exit the task
+  ## 
+  ## @name lesson.task.vwf#exit
+  ## @function
+
+  exit:
+
+  # ## Method to step to the previous task
+  # ## 
+  # ## @name lesson.task.vwf#previous
+  # ## @function
+
+  # previous:
+
+  # ## Method that contains the success criteria to be checked when a listened-for event occurs
+  # ## 
+  # ## @name lesson.task.vwf#checkForSuccess
+  # ## @function  
+
+  checkForSuccess:
+
+  # ## Method that contains the failure criteria to be checked when a listened-for event occurs
+  # ## 
+  # ## @name lesson.task.vwf#checkForFailure
+  # ## @function  
+
+  checkForFailure:
+
+events:
+
+  ## Event fired on the task to let itself and others know that it is beginning
+  ## 
+  ## @name lesson.task.vwf#entering
+  ## @event
+
+  entering:
+
+  ## Event fired by the task to signify that its completion criteria has been met
+  ## 
+  ## @name lesson.task.vwf#completed
+  ## @event
+
+  completed:
+
+  ## Event fired by the task to signify that the user failed at the task
+  ## 
+  ## @name lesson.task.vwf#failed
+  ## @event
+
+  failed:
+
+  ## Event fired on the task to let it and others know that it is ending
+  ## 
+  ## @name lesson.task.vwf#exiting
+  ## @event
+
+  exiting:
+
+  ## Event fired on the task to let it and others know that the camera transform is complete
+  ## 
+  ## @name lesson.task.vwf#cameraTransformComplete
+  ## @event
+
+  cameraTransformComplete:
+
+scripts:
+ - source: http://vwf.example.com/lesson/task.js

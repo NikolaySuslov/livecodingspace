@@ -1,0 +1,12 @@
+# http://kineticjs.com/docs/Kinetic.Container.html
+
+--- 
+extends: http://vwf.example.com/kinetic/node.vwf
+properties: 
+  clipFunc:
+  supportMouseEvents: false
+  supportTouchEvents: false
+method:
+  deleteChildNode:
+scripts:
+- source: "http://vwf.example.com/kinetic/container.js"

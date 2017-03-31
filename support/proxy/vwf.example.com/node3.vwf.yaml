@@ -1,0 +1,465 @@
+# Copyright 2012 United States Government, as represented by the Secretary of Defense, Under
+# Secretary of Defense (Personnel & Readiness).
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License. You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License
+# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing permissions and limitations under
+# the License.
+
+## The component representation of a 3D node
+## 
+## @name node3.vwf
+## @namespace
+
+---
+extends: http://vwf.example.com/node.vwf
+implements:
+- http://vwf.example.com/animation.vwf
+- http://vwf.example.com/node3/animation.vwf
+
+properties:
+
+  ## Node casts shadows
+  ## 
+  ## @name node3.vwf#castShadows
+  ## @property
+
+  castShadows:
+  
+  ## Node receives shadows
+  ## 
+  ## @name node3.vwf#receiveShadows
+  ## @property
+
+  receiveShadows:
+  
+  ## World transform of 3D node
+  ## 
+  ## @name node3.vwf#worldTransform
+  ## @property
+
+  worldTransform:
+    set: |
+      var parentInverse = goog.vec.Mat4.create();
+      if ( this.parent && goog.vec.Mat4.invert( this.transformFromValue( this.parent.worldTransform ), parentInverse ) ) {
+        var transform = goog.vec.Mat4.multMat( parentInverse, this.transformFromValue( value ), goog.vec.Mat4.create() );
+        this.transform = transform;
+      } else {
+        this.transform = value;
+      }
+    get: |
+      if( this.parent && this.parent.worldTransform && this.transform )
+      {
+        return goog.vec.Mat4.multMat( this.parent.worldTransform, this.transform, goog.vec.Mat4.create() );
+      }
+      else return this.transform; //@ sourceURL=node3.worldTransform.get.vwf
+
+  ## Transform of 3D node
+  ## 
+  ## @name node3.vwf#transform
+  ## @property
+
+  transform:
+    set: |
+      var transform = this.transformFromValue( value ); // parse incoming value
+      if ( ! goog.vec.Mat4.equals( this.transform || goog.vec.Mat4.createIdentity(), transform ) ) {
+        this.transform = transform;
+        this.transformChanged( transform );
+      }  //@ sourceURL=node3.transform.set.vwf
+    get: |
+      return this.transform || goog.vec.Mat4.createIdentity(); //@ sourceURL=node3.transform.get.vwf
+
+  ## Translation of 3D node
+  ## node.translation <= [ x, y, z ]
+  ## 
+  ## @name node3.vwf#translation
+  ## @property
+
+  translation:
+    # node.translation <= [ x, y, z ]
+    set: |
+      var translation = this.translationFromValue( value ); // parse incoming value
+      var transform = this.transform || goog.vec.Mat4.createIdentity();
+      goog.vec.Mat4.setColumnValues( transform, 3, translation[0], translation[1], translation[2], 1 );
+      this.transform = transform; //@ sourceURL=node3.translation.set.vwf
+    # node.translation => [ x, y, z ]
+    get: |
+      var translation = goog.vec.Vec3.create();
+      goog.vec.Mat4.getColumn( this.transform || goog.vec.Mat4.createIdentity(), 3, translation );
+      return translation;
+
+  ## Rotation of 3D node
+  ## node.rotation <= [ x, y, z, angle ]
+  ## 
+  ## @name node3.vwf#rotation
+  ## @property
+
+  rotation:
+    # node.rotation <= [ x, y, z, angle ]
+    set: |
+      var rotation = this.rotationFromValue( value ); // parse incoming value
+      this.quaternion =
+        goog.vec.Quaternion.fromAngleAxis(
+          rotation[3] * Math.PI / 180,
+          goog.vec.Vec3.createFromValues( rotation[0], rotation[1], rotation[2] ),
+          goog.vec.Quaternion.create()
+        );
+    # node.rotation => [ x, y, z, angle ]
+    get: |
+      var rotation = goog.vec.Vec4.create();
+      rotation[3] = goog.vec.Quaternion.toAngleAxis(
+        this.quaternion || goog.vec.Quaternion.createFromValues( 0, 0, 0, 1 ),
+        rotation
+      ) * 180 / Math.PI;
+      return rotation;
+
+  ## Rotation matrix of 3D node
+  ## 
+  ## @name node3.vwf#rotatioMatrix
+  ## @property
+
+  rotationMatrix:
+    get: |
+      return this.unscaledTransform(
+        this.transform || goog.vec.Mat4.createIdentity(),
+        goog.vec.Vec3.create(),
+        goog.vec.Mat4.create()
+      );
+
+  ## Quaternion of 3D node
+  ## node.quaternion <= [ x, y, z, w ]
+  ## 
+  ## @name node3.vwf#quaternion
+  ## @property
+
+  quaternion:
+    # node.quaternion <= [ x, y, z, w ]
+    set: |
+      var transform = this.transform || goog.vec.Mat4.createIdentity();
+      var translation = goog.vec.Vec4.create(); goog.vec.Mat4.getColumn( transform, 3, translation );
+      var scale = this.transformScale( transform, goog.vec.Vec3.create() );
+      var quaternion = this.quaternionFromValue( value ); // parse incoming value
+      goog.vec.Quaternion.toRotationMatrix4(
+        quaternion,
+        transform
+      );
+      this.scaledTransform( transform, scale, transform );
+      goog.vec.Mat4.setColumn( transform, 3, translation );
+      this.transform = transform; //@ sourceURL=node3.quaternion.set
+    # node.quaternion => [ x, y, z, w ]
+    get: |
+      return goog.vec.Quaternion.fromRotationMatrix4(
+        this.unscaledTransform(
+          this.transform || goog.vec.Mat4.createIdentity(),
+          goog.vec.Vec3.create(),
+          goog.vec.Mat4.create()
+        ),
+        goog.vec.Quaternion.create()
+      );
+
+  ## Scale of 3D node
+  ## node.scale <= [ x, y, z ], node.scale <= s
+  ## 
+  ## @name node3.vwf#scale
+  ## @property
+
+  scale:
+    # node.scale <= [ x, y, z ], node.scale <= s
+    set: |
+      var scale = this.scaleFromValue( value ); // parse incoming value
+      var transform = this.transform || goog.vec.Mat4.createIdentity();
+      this.scaledTransform(
+        this.unscaledTransform(
+          transform,
+          goog.vec.Vec3.create(),
+          transform
+        ),
+        scale,
+        transform
+      );
+      this.transform = transform;
+    # node.scale => [ x, y, z ]
+    get: |
+      return this.transformScale(
+        this.transform || goog.vec.Mat4.createIdentity(),
+        goog.vec.Vec3.create()
+      );
+
+  ## Enabled
+  ## 
+  ## @name node3.vwf#enabled
+  ## @property
+
+  enabled: true
+
+  ## Bounding box of 3D node
+  ## 
+  ## @name node3.vwf#boundingbox
+  ## @property
+
+  boundingbox: 
+    set: |
+      this.logger.info("WARNING: node3 boundingbox cannot be set" )
+
+
+  ## World bounding box of 3D node
+  ##
+  ## @name node3.vwf#worldBoundingBox
+  ## @property
+
+  worldBoundingBox:
+    set: |
+      this.logger.info("WARNING: node3 worldBoundingBox cannot be set" )
+    get: |
+      var worldTransform = this.worldTransform;
+      if ( worldTransform ) {
+        var worldBoundingBox;
+        for(var i=0;i<this.children.length;i++) {
+          var childBoundingBox = this.children[i].worldBoundingBox;
+          if(childBoundingBox) {
+            if(!worldBoundingBox) {
+              worldBoundingBox = childBoundingBox;
+            }
+            else {
+              worldBoundingBox.max.x = Math.max(worldBoundingBox.max.x, childBoundingBox.max.x);
+              worldBoundingBox.max.y = Math.max(worldBoundingBox.max.y, childBoundingBox.max.y);
+              worldBoundingBox.max.z = Math.max(worldBoundingBox.max.z, childBoundingBox.max.z);
+              worldBoundingBox.min.x = Math.min(worldBoundingBox.min.x, childBoundingBox.min.x);
+              worldBoundingBox.min.y = Math.min(worldBoundingBox.min.y, childBoundingBox.min.y);
+              worldBoundingBox.min.z = Math.min(worldBoundingBox.min.z, childBoundingBox.min.z);
+            }
+          }
+        }
+        if( !worldBoundingBox ) {
+          worldBoundingBox = this.boundingbox;
+          if ( worldBoundingBox ) {
+            var coord0=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.min.x,worldBoundingBox.min.y,worldBoundingBox.min.z,1], goog.vec.Vec4.create() );
+            var coord1=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.max.x,worldBoundingBox.min.y,worldBoundingBox.min.z,1], goog.vec.Vec4.create() );
+            var coord2=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.min.x,worldBoundingBox.max.y,worldBoundingBox.min.z,1], goog.vec.Vec4.create() );
+            var coord3=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.max.x,worldBoundingBox.max.y,worldBoundingBox.min.z,1], goog.vec.Vec4.create() );
+            var coord4=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.min.x,worldBoundingBox.min.y,worldBoundingBox.max.z,1], goog.vec.Vec4.create() );
+            var coord5=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.max.x,worldBoundingBox.min.y,worldBoundingBox.max.z,1], goog.vec.Vec4.create() );
+            var coord6=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.min.x,worldBoundingBox.max.y,worldBoundingBox.max.z,1], goog.vec.Vec4.create() );
+            var coord7=goog.vec.Mat4.multVec4(worldTransform,[worldBoundingBox.max.x,worldBoundingBox.max.y,worldBoundingBox.max.z,1], goog.vec.Vec4.create() );
+            worldBoundingBox.min.x=Math.min(coord0[0],coord1[0],coord2[0],coord3[0],coord4[0],coord5[0],coord6[0],coord7[0]);
+            worldBoundingBox.max.x=Math.max(coord0[0],coord1[0],coord2[0],coord3[0],coord4[0],coord5[0],coord6[0],coord7[0]);
+            worldBoundingBox.min.y=Math.min(coord0[1],coord1[1],coord2[1],coord3[1],coord4[1],coord5[1],coord6[1],coord7[1]);
+            worldBoundingBox.max.y=Math.max(coord0[1],coord1[1],coord2[1],coord3[1],coord4[1],coord5[1],coord6[1],coord7[1]);
+            worldBoundingBox.min.z=Math.min(coord0[2],coord1[2],coord2[2],coord3[2],coord4[2],coord5[2],coord6[2],coord7[2]);
+            worldBoundingBox.max.z=Math.max(coord0[2],coord1[2],coord2[2],coord3[2],coord4[2],coord5[2],coord6[2],coord7[2]);
+          }
+        }
+        return worldBoundingBox;
+      }
+      else {
+        return this.boundingbox;
+      } 
+
+  ## Offset from center of 3D node
+  ## 
+  ## @name node3.vwf#centerOffset
+  ## @property
+
+  centerOffset: 
+    set: |
+      this.logger.info( "WARNING: node3 centerOffset cannot be set" )
+
+  ## Vertices of 3D node
+  ## 
+  ## @name node3.vwf#vertices
+  ## @property
+
+  vertices: 
+    set: |
+      this.logger.info( "WARNING: node3 vertices cannot be set" )
+
+  ## Vertex indices of 3D node
+  ## 
+  ## @name node3.vwf#vertexIndices
+  ## @property
+
+  vertexIndices: 
+    set: |
+      this.logger.info( "WARNING: node3 vertexIndices cannot be set" )
+
+  ## Speed value
+  ## 
+  ## @name node3.vwf#speed
+  ## @property
+
+  speed: 1
+
+  ## Playing value
+  ## 
+  ## @name node3.vwf#playing
+  ## @property
+
+  playing: false
+
+  ## Looping value
+  ## 
+  ## @name node3.vwf#looping
+  ## @property
+
+  looping: false
+
+  ## Look at value
+  ## 
+  ## @name lookAt
+  ## @property
+
+  lookAt: ""
+
+  ## Visible value
+  ## 
+  ## @name node3.vwf#visible
+  ## @property
+
+  visible: 
+    set: |
+      this.visible = value;
+      this.children.forEach( function( child ) {
+        child.visible = value;
+      } );
+    value: true
+
+events:
+
+  keyDown:
+  keyPress:
+  keyUp:
+  pointerClick:
+  pointerDown:
+  pointerMove:
+  pointerUp:
+  pointerOver:
+  pointerOut:
+  pointerWheel:
+  transformChanged:
+  touchHold:
+  touchTap:
+  touchDoubleTap:
+  touchDrag:
+  touchDragStart:
+  touchDragEnd:
+  touchDragUp:
+  touchDragDown:
+  touchDragLeft:
+  touchDragRight:
+  touchSwipe:
+  touchSwipeUp:
+  touchSwipeDown:
+  touchSwipeLeft:
+  touchSwipeRight:
+  touchTransform:
+  touchTransformStart:
+  touchTransformEnd:
+  touchRotate:
+  touchPinch:
+  touchPinchIn:
+  touchPinchOut:
+  touchStart:
+  touchRelease:
+
+scripts:
+
+- |
+  // Parse a parameter as a transform specification.
+  this.transformFromValue = function( value ) {
+    return value && value.length >= 16 ?
+      value :
+      goog.vec.Mat4.createIdentity();
+  };
+  // Parse a parameter as a translation specification.
+  this.translationFromValue = function( value ) {
+    return value && value.length >= 3 ?
+      value :
+      goog.vec.Vec3.create();
+  };
+  // Parse a parameter as a rotation specification.
+  this.rotationFromValue = function( value ) {
+    return value && value.length >= 4 ?
+      value :
+      goog.vec.Vec4.createFromValues( 1, 0, 0, 0 );
+  };
+  // Parse a parameter as a quaternion specification.
+  this.quaternionFromValue = function( value ) {
+    return value && value.length >= 4 ?
+      value :
+      goog.vec.Quaternion.createFromValues( 0, 0, 0, 1 );
+  };
+  // Parse a parameter as a scale specification.
+  this.scaleFromValue = function( value ) {
+    return Object.prototype.toString.call( value ).search( /\[object .*Array\]/ ) == 0 ?
+      value.length >= 3 ?
+        value :
+        goog.vec.Vec3.createFromValues( 1, 1, 1 ) :
+      Object.prototype.toString.call( value ) == "[object Number]" ?
+        goog.vec.Vec3.createFromValues( value, value, value ) :
+        goog.vec.Vec3.createFromValues( 1, 1, 1 );
+  };
+  // Get the scale vector for a transform and rescale to unity scale.
+  this.unscaledTransform = function( transform, scale, resultTransform ) {
+    var column = goog.vec.Vec4.create();
+    goog.vec.Mat4.getColumn( transform, 0, column );
+    goog.vec.Mat4.setColumn( resultTransform, 0, goog.vec.Vec4.scale( column, 1 / ( scale[0] = goog.vec.Vec4.magnitude( column ) ), column ) );
+    goog.vec.Mat4.getColumn( transform, 1, column );
+    goog.vec.Mat4.setColumn( resultTransform, 1, goog.vec.Vec4.scale( column, 1 / ( scale[1] = goog.vec.Vec4.magnitude( column ) ), column ) );
+    goog.vec.Mat4.getColumn( transform, 2, column );
+    goog.vec.Mat4.setColumn( resultTransform, 2, goog.vec.Vec4.scale( column, 1 / ( scale[2] = goog.vec.Vec4.magnitude( column ) ), column ) );
+    return resultTransform;
+  };
+  // Set the scale vector for a transform with unity scale.
+  this.scaledTransform = function( transform, scale, resultTransform ) {
+    var column = goog.vec.Vec4.create();
+    goog.vec.Mat4.getColumn( transform, 0, column );
+    goog.vec.Mat4.setColumn( resultTransform, 0, goog.vec.Vec4.scale( column, scale[0], column ) );
+    goog.vec.Mat4.getColumn( transform, 1, column );
+    goog.vec.Mat4.setColumn( resultTransform, 1, goog.vec.Vec4.scale( column, scale[1], column ) );
+    goog.vec.Mat4.getColumn( transform, 2, column );
+    goog.vec.Mat4.setColumn( resultTransform, 2, goog.vec.Vec4.scale( column, scale[2], column ) );
+    return resultTransform;
+  };
+  // Get the scale vector for a transform.
+  this.transformScale = function( transform, scale ) {
+    var column = goog.vec.Vec4.create();
+    goog.vec.Mat4.getColumn( transform, 0, column );
+    scale[0] = goog.vec.Vec4.magnitude( column );
+    goog.vec.Mat4.getColumn( transform, 1, column );
+    scale[1] = goog.vec.Vec4.magnitude( column );
+    goog.vec.Mat4.getColumn( transform, 2, column );
+    scale[2] = goog.vec.Vec4.magnitude( column );
+    return scale;
+  };
+  this.state = function( test ) {
+    vwf.logger.info( test, "x", Array.prototype.slice.apply( this.transform || goog.vec.Mat4.createIdentity() ) );
+    vwf.logger.info( test, "t", Array.prototype.slice.apply( this.translation || goog.vec.Vec3.create() ) );
+    vwf.logger.info( test, "o", Array.prototype.slice.apply( this.rotation || goog.vec.Vec4.createFromValues( 1, 0, 0, 0 ) ) );
+    vwf.logger.info( test, "s", Array.prototype.slice.apply( this.scale || goog.vec.Vec3.createFromValues( 1, 1, 1 ) ) );
+    vwf.logger.info( test, "q", Array.prototype.slice.apply( this.quaternion || goog.vec.Quaternion.createFromValues( 0, 0, 0, 1 ) ) );
+  };
+  this.test1 = function() {
+    this.transform = [];
+    this.translation = [ 50, 0, 0 ];
+    this.scale = 2;
+    this.state( "test1" );
+  };
+  this.test2 = function() {
+    this.scale = 2;
+    this.state( "test2 scale 2" );
+    this.scale = 1;
+    this.state( "test2 scale 1" );
+    this.rotation = [ 0, 0, 1, 30 ];
+    this.state( "test2 rotation 30" );
+    this.scale = 3;
+    this.state( "test2 scale 3" );
+    this.rotation = [ 0, 0, 1, -30 ];
+    this.state( "test2 rotation -30" );
+    this.scale = 1;
+    this.state( "test2 scale 1" );
+  }; //@ sourceURL=node3.vwf

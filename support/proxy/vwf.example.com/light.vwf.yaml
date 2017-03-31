@@ -1,0 +1,156 @@
+# Copyright 2012 United States Government, as represented by the Secretary of Defense, Under
+# Secretary of Defense (Personnel & Readiness).
+# 
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License. You may obtain a copy of the License at
+# 
+#   http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software distributed under the License
+# is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+# or implied. See the License for the specific language governing permissions and limitations under
+# the License.
+
+## The component representation of a light in 3D space
+## 
+## @name light.vwf
+## @namespace
+
+--- 
+extends: http://vwf.example.com/node3.vwf
+properties: 
+
+  ## Does this light cast shadows
+  ## 
+  ## @name light.vwf#lightType
+  ## @property
+
+  castShadows: false
+  
+  ## The type of light (point, directional, spot, hemisphere)
+  ## 
+  ## @name light.vwf#lightType
+  ## @property
+
+  lightType:
+    set: |
+      switch( value ) {
+        case "point":
+        case "directional":
+        case "spot":
+        case "hemisphere":
+          this.lightType = value;
+          break;
+      }
+    value: "point"
+
+  ## makes the light affect the scene
+  ## 
+  ## @name light.vwf#enable
+  ## @property
+
+  enable: true
+
+  ## Sets the position of the light
+  ## 
+  ## @name light.vwf#color
+  ## @property
+
+  position: [ 0, 1, 0 ]
+
+  ## Sets the color of the light
+  ## 
+  ## @name light.vwf#color
+  ## @property
+
+  color: [ 255, 255, 255 ]
+
+  ## Sets the ground color of the light
+  ## 
+  ## @name light.vwf#groundColor
+  ## @property
+
+  groundColor: [ 255, 255, 255 ]
+
+  ## Distance value
+  ## 
+  ## @name light.vwf#distance
+  ## @property
+
+  distance: 1000
+
+  ## Intensity value
+  ## 
+  ## @name light.vwf#intensity
+  ## @property
+
+  intensity: 1
+
+  ## Shadow camera bottom value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraBottom
+  ## @property
+  shadowCameraBottom: -100
+
+  ## Shadow camera left value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraLeft
+  ## @property
+  shadowCameraLeft: -100
+
+  ## Shadow camera right value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraRight
+  ## @property
+  shadowCameraRight: 100
+
+  ## Shadow camera top value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraTop
+  ## @property
+  shadowCameraTop: 100
+
+  ## Shadow camera near value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraNear
+  ## @property
+  shadowCameraNear: 0.1
+
+  ## Shadow camera far value
+  ## Used to define the frustum of the camera used to create shadows
+  ##
+  ## @name light.vwf#shadowCameraFar
+  ## @property
+  shadowCameraFar: 1000
+
+  ## Shadow darkness value
+  ## How dark the shadow is on a scale of 0 (no shadow) to 1 (pure black)
+  ##
+  ## @name light.vwf#shadowCameraFar
+  ## @property
+  shadowDarkness: 0.5
+
+  ## The height of the shadow map
+  ##
+  ## @name light.vwf#shadowMapHeight
+  ## @property
+  shadowMapHeight: 512
+
+  ## The width of the shadow map
+  ##
+  ## @name light.vwf#shadowMapWidth
+  ## @property
+  shadowMapWidth: 512
+
+  ## The shadow bias of the shadow
+  ##
+  ## @name light.vwf#shadowBias
+  ## @property
+  shadowBias: 0
+
+  target: [ 0, 0, 0 ]
