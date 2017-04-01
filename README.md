@@ -1,6 +1,11 @@
 # LiveCoding.space repository
 
-Based on:  Virtual World Framework | A-Frame | Ohm language | OSC.js | and more...
+> Collaborative Live Coding Space with support of user-defined languages and WebVR ready 3D graphics
+
+Based on:  [Virtual World Framework](https://github.com/virtual-world-framework/vwf) | [A-Frame](https://aframe.io) | [Ohm language](https://github.com/harc/ohm) | OSC.js | and more...  
+Online at: **https://livecoding.space**
+
+
 
 **To run**
 
