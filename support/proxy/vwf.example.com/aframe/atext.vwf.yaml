@@ -5,3 +5,4 @@ type: "a-text"
 properties:
   value:
   color:
+  side:

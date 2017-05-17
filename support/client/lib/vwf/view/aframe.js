@@ -107,20 +107,38 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
     });
 
     function createAvatar(nodeID) {
-        var nodeName = 'avatar-' + self.kernel.moniker();
+        let avatarID = self.kernel.moniker();
+        var nodeName = 'avatar-' + avatarID;
+
+        var nodeColor = getRandomColor();
 
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
             "extends": "http://vwf.example.com/aframe/abox.vwf",
             "properties": {
-                "color": getRandomColor(),
+                "color": nodeColor,
                 "position": [0, 0, 0]
             },
             "methods": {
             },
-            "scripts": []
+            "scripts": [],
+            "children": {
+                "avatarNameNode": {
+                    "extends": "http://vwf.example.com/aframe/atext.vwf",
+                    "properties": {
+                        "color": nodeColor,
+                        "value": avatarID,
+                        "side": "double",
+                        "position": [0, 1, 0]
+                    },
+                    "methods": {
+                    },
+                    "scripts": []
+                }
+            }
         };
+
         vwf_view.kernel.createChild(nodeID, nodeName, newNode);
 
     }

@@ -155,6 +155,26 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         //deletingNode: function( nodeID ) {
         //},
 
+        // -- deletingNode -------------------------------------------------------------------------
+
+        deletingNode: function( nodeID ) {
+
+            if ( this.state.nodes[ nodeID ] !== undefined ) {
+                
+                var node = this.state.nodes[ nodeID ];
+                if ( node.aframeObj !== undefined ) {
+                    // removes and destroys object
+                    node.aframeObj.parentNode.removeChild(node.aframeObj);
+                    node.aframeObj = undefined;    
+                }                
+
+                delete this.state.nodes[ nodeID ];
+            }
+            
+        },
+       
+       
+       
         // -- settingProperty ----------------------------------------------------------------------
 
         settingProperty: function (nodeID, propertyName, propertyValue) {
@@ -247,8 +267,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                         aframeObject.setAttribute('value', propertyValue);
                                         break;
 
-                                    case "color":
+                            case "color":
                                         aframeObject.setAttribute('color', propertyValue);
+                                        break;
+                            case "side":
+                                        aframeObject.setAttribute('side', propertyValue);
                                         break;
 
 
@@ -578,6 +601,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                                 case "color":
                                     value = aframeObject.getAttribute('color');
+                                    break;
+                                case "side":
+                                    value = aframeObject.getAttribute('side');
                                     break;
                                 }
                 }
