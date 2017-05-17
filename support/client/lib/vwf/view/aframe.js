@@ -115,15 +115,25 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/abox.vwf",
+            "extends": "http://vwf.example.com/aframe/aentity.vwf",
             "properties": {
-                "color": nodeColor,
-                "position": [0, 0, 0]
+                "position": [0, 0, 0],
+                "interpolation": "50ms"
             },
             "methods": {
             },
             "scripts": [],
             "children": {
+                "avatarBodyNode": {
+                    "extends": "http://vwf.example.com/aframe/abox.vwf",
+                    "properties": {
+                    "color": nodeColor,
+                    "position": [0, 0, 0.5]
+            },
+            "methods": {
+            },
+            "scripts": [],
+                },
                 "avatarNameNode": {
                     "extends": "http://vwf.example.com/aframe/atext.vwf",
                     "properties": {

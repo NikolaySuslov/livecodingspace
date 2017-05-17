@@ -323,6 +323,9 @@
                     "vwf/model/blockly/msg/js/en": {
                         deps: [ "vwf/model/blockly/blockly_compressed" ]
                     },
+                     "vwf/model/aframe/addon/aframe-interpolation": {
+                        deps: [ "vwf/model/aframe/aframe-v0.5.0" ]
+                    },
                 }
             };
 
@@ -370,7 +373,8 @@
                 { library: "vwf/model/ohm", active: true },
 
                   { library: "vwf/model/aframe", 
-                    linkedLibraries: [ "vwf/model/aframe/aframe-v0.5.0" ], 
+                    linkedLibraries: [ "vwf/model/aframe/aframe-v0.5.0",
+                    "vwf/model/aframe/addon/aframe-interpolation" ], 
                     active: false 
                 },
 
@@ -419,6 +423,7 @@
 
                  { library: "vwf/view/aframe", active: false },
                 { library: "vwf/model/aframe/aframe-v0.5.0", active: false },
+                { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
 
                 { library: "vwf/view/kineticjs", active: false },
                 { library: "vwf/view/mil-sym", active: false },

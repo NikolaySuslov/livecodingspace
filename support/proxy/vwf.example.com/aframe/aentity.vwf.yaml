@@ -13,3 +13,4 @@ properties:
   src:
   repeat:
   fog:
+  interpolation:

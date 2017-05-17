@@ -204,6 +204,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     
                     switch ( propertyName ) { 
 
+                            case "interpolation":
+                                aframeObject.setAttribute('interpolation', { duration: propertyValue});
+                                    break;
+
                          case "position":
                                     aframeObject.setAttribute('position', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
                                     break;
@@ -477,6 +481,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 if ( value === undefined && isAEntityDefinition( node.prototypes ) ) {
                     
                     switch ( propertyName ) { 
+
+                         case "interpolation":
+                               value = aframeObject.getAttribute('interpolation');
+                                    break;
+
                         case "position":
                                 var pos = aframeObject.getAttribute('position');
                                 if ( pos !== undefined ){ 

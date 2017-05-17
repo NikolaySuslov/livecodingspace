@@ -62,12 +62,13 @@ children:
           position: [2, -1.25, 0]
           color: "#2167a5"
           depth: 1
+          interpolation: "50ms"
         methods:
           run:
             body: |
               var time = vwf.now;
               this.position = [this.position[0], this.position[1], Math.sin(time)]
-              this.future( 0.05 ).run();  // schedule the next step
+              this.future( 0.01 ).run();  // schedule the next step
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
