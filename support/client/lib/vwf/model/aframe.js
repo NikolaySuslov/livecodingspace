@@ -483,7 +483,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     switch ( propertyName ) { 
 
                          case "interpolation":
-                               value = aframeObject.getAttribute('interpolation');
+                               value = aframeObject.getAttribute('interpolation').duration;
                                     break;
 
                         case "position":
