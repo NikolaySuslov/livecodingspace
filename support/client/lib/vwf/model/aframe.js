@@ -482,9 +482,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     
                     switch ( propertyName ) { 
 
-                         case "interpolation":
-                               value = aframeObject.getAttribute('interpolation').duration;
-                                    break;
+                        case "interpolation":
+                            var interpolation = aframeObject.getAttribute('interpolation');
+                            if (interpolation !== null && interpolation !== undefined) {
+                                value = interpolation.duration;
+                            }
+                            break;
 
                         case "position":
                                 var pos = aframeObject.getAttribute('position');
