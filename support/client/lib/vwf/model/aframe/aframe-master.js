@@ -74306,9 +74306,12 @@ Component.prototype = {
 
       // Update component.
       this.update(oldData);
+
+	  //remove the limit for now
+
       // Limit event to fire once every 200ms.
       //this.throttledEmitComponentChanged(oldData);
-	  
+
 	  el.emit('componentchanged', {
 		  id: this.id,
 		  name: this.name,

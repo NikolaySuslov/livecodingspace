@@ -1,0 +1,39 @@
+# avatar
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/aentity.vwf
+properties:
+methods:
+    createAvatarBody:
+        body: |
+            let myColor = this.getRandomColor();
+            var newNode = 
+            {
+                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                "properties": {
+                    "color": myColor,
+                    "position": [0, 0, 0.5]
+                },
+              "children": {
+                "avatarNameNode": {
+                    "extends": "http://vwf.example.com/aframe/atext.vwf",
+                    "properties": {
+                        "color": myColor,
+                        "value": this.id,
+                        "side": "double",
+                        "rotation": [0, 180, 0],
+                        "position": [0, 1, 0.5]
+                    }
+                  }
+                } 
+              };
+              this.position = [0, 0, 0];
+              this.interpolation = "50ms";
+              this.children.create( "avatarBody", newNode );
+    getRandomColor:
+        body: |
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+              color += letters[Math.floor(this.random() * 16)]; }
+          return color;

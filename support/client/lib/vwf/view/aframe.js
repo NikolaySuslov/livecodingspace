@@ -107,59 +107,19 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
     });
 
     function createAvatar(nodeID) {
+
         let avatarID = self.kernel.moniker();
         var nodeName = 'avatar-' + avatarID;
-
-        var nodeColor = getRandomColor();
 
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/aentity.vwf",
-            "properties": {
-                "position": [0, 0, 0],
-                "interpolation": "50ms"
-            },
-            "methods": {
-            },
-            "scripts": [],
-            "children": {
-                "avatarBodyNode": {
-                    "extends": "http://vwf.example.com/aframe/abox.vwf",
-                    "properties": {
-                    "color": nodeColor,
-                    "position": [0, 0, 0.5]
-            },
-            "methods": {
-            },
-            "scripts": [],
-                },
-                "avatarNameNode": {
-                    "extends": "http://vwf.example.com/aframe/atext.vwf",
-                    "properties": {
-                        "color": nodeColor,
-                        "value": avatarID,
-                        "side": "double",
-                        "position": [0, 1, 0]
-                    },
-                    "methods": {
-                    },
-                    "scripts": []
-                }
-            }
-        };
+            "extends": "http://vwf.example.com/aframe/avatar.vwf",
+        }
 
         vwf_view.kernel.createChild(nodeID, nodeName, newNode);
-
-    }
-
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
+        vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
+        
     }
 
 });
