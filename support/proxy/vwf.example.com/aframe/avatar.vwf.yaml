@@ -12,7 +12,7 @@ methods:
                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                 "properties": {
                     "color": myColor,
-                    "position": [0, 0, 0.5]
+                    "position": [0, 0, 0]
                 },
               "children": {
                 "avatarNameNode": {
@@ -25,6 +25,7 @@ methods:
                         "position": [0, 1, 0.5]
                     }
                   }
+               
                 } 
               };
               this.position = [0, 0, 0];

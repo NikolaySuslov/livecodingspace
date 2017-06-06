@@ -1,0 +1,7 @@
+# https://aframe.io/docs/master/components/wasd-controls.html#properties_enabled
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  acceleration:
+  enabled:

@@ -54,9 +54,17 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             }
 
             if (this.state.scenes[childID]) {
-                document.body.append(this.state.scenes[childID]);
+                let scene = this.state.scenes[childID];
+                document.body.append(scene);
                 createAvatar(childID);
+                createAvatarControl(scene);
             }
+
+            //  let avatarCameraID = 'camera-avatar-' + self.kernel.moniker();
+            // if (childID == avatarCameraID && ) {
+            //     let avatarCameraEl = document.querySelector('#'+ avatarCameraID);
+            //      avatarCameraEl.setAttribute('camera', 'active', true);
+            // }
 
 
         },
@@ -80,6 +88,19 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
             var aframeObject = node.aframeObj;
             switch (propertyName) {
+
+                case "activeForAvatar":
+                    console.log("sat to active!");
+                     //let avatarCameraID = 'camera-avatar-' + self.kernel.moniker();
+                    //node.aframeObj.setAttribute('camera', 'active', propertyValue);
+                     let avatarCameraEl = document.querySelector('#camera-avatar-'+ self.kernel.moniker());
+                        avatarCameraEl.setAttribute('camera', 'active', false);
+                        avatarCameraEl.setAttribute('camera', 'userHeight', 0.0);
+                        document.querySelector('#avatarControl').setAttribute('camera', 'active', true);
+
+
+                    break;
+
                 case "clickable":
                     if (propertyValue) {
                         aframeObject.addEventListener('click', function (evt) {
@@ -92,6 +113,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
         firedEvent: function (nodeID, eventName, eventParameters) {
             //var avatarID = vwf_view.kernel.find("", avatarName)
+
             var avatarName = 'avatar-' + self.kernel.moniker();
             if (eventName == "setAvatarPosition") {
                 vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
@@ -99,12 +121,53 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             if (eventName == "setAvatarRotation") {
                 vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
             }
+
+             if (eventName == "setPosition") {
+                vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
+            }
+
         },
 
         // ticked: function (vwfTime) {
         // }
 
     });
+
+    function createAvatarControl(aScene) {
+
+        let avatarName = 'avatar-' + self.kernel.moniker();
+
+        let controlEl = document.createElement('a-camera');
+        controlEl.setAttribute('id', 'avatarControl');
+        controlEl.setAttribute('wasd-controls', {});
+        controlEl.setAttribute('look-controls', {});
+        aScene.appendChild(controlEl);
+        console.log(document.querySelector('#avatarControl').components);
+
+        controlEl.addEventListener('componentchanged', function (evt) {
+
+        if (evt.detail.name === 'position') {
+            var eventParameters = evt.detail.newData;
+             vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
+            //self.kernel.fireEvent(node.parentID, "setPosition", evt.detail.newData);
+
+        }
+
+         if (evt.detail.name === 'rotation') {
+            var eventParameters = evt.detail.newData;
+               vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
+            //self.kernel.fireEvent(node.parentID, "setPosition", evt.detail.newData);
+
+        }
+
+    });
+
+        vwf_view.kernel.setProperty('camera-'+avatarName, "activeForAvatar", true);
+
+        //let avatarCameraEl = document.querySelector('#camera-'+ avatarName);
+       // avatarCameraEl.setAttribute('active', true);
+
+    }
 
     function createAvatar(nodeID) {
 
@@ -115,6 +178,23 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             "id": nodeName,
             "uri": nodeName,
             "extends": "http://vwf.example.com/aframe/avatar.vwf",
+            "children": {
+                  "cursor": {
+                            "extends": "http://vwf.example.com/aframe/acursor.vwf"
+                        },
+                "camera": {
+                    "id": 'camera-' + nodeName,
+                    "extends": "http://vwf.example.com/aframe/acamera.vwf",
+                    "properties": {
+                        "forAvatar": true,
+                        "look-controls-enabled": false,
+                        "wasd-controls": false
+                    },
+                    "children": {
+                      
+                    }
+                }
+            }
         }
 
         vwf_view.kernel.createChild(nodeID, nodeName, newNode);

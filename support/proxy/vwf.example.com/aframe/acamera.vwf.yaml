@@ -3,5 +3,5 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-camera"
 properties:
-  look-controls-enabled:
   forAvatar:
+  activeForAvatar:

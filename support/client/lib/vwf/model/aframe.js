@@ -71,6 +71,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         }
                     }
                     return found;
+                },
+                 isAEntityComponent: function (prototypes) {
+                    var found = false;
+                    if (prototypes) {
+                        for (var i = 0; i < prototypes.length && !found; i++) {
+                            found = (prototypes[i] === "http://vwf.example.com/aframe/aentityComponent.vwf");
+                        }
+                    }
+                    return found;
+                },
+                 isAFrameEntityComponent: function (prototypes) {
+                    var found = false;
+                    if (prototypes) {
+                        for (var i = 0; i < prototypes.length && !found; i++) {
+                            found = (prototypes[i] === "http://vwf.example.com/aframe/aentityComponent.vwf");
+                        }
+                    }
+                    return found;
                 }
             };
 
@@ -110,7 +128,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             //var kernel = this.kernel.kernel.kernel;
             var node;
 
-            if (this.state.isAFrameComponent(protos)) {
+            if (this.state.isAFrameComponent(protos) || this.state.isAEntityComponent(protos)) {
 
                 // Create the local copy of the node properties
                 if (this.state.nodes[childID] === undefined) {
@@ -121,11 +139,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 node = this.state.nodes[childID];
                 node.prototypes = protos;
 
+                 if ( childType == "component" ){
+                       if ( nodeID !== undefined ) {
+                        setAFrameObjectComponents(node);
+                    } 
+                } else {
+
                 node.aframeObj = createAFrameObject(node);
                 addNodeToHierarchy(node);
                 //notifyDriverOfPrototypeAndBehaviorProps();
+                }
             }
-
 
 
 
@@ -198,6 +222,40 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     
                 }
 
+                var componentName = "wasd-controls";
+                 if ( value === undefined && aframeObject.attributes.hasOwnProperty(componentName)) {
+                    value = propertyValue;
+                    
+                    switch ( propertyName ) { 
+
+                         case "enabled":
+                            aframeObject.setAttribute(componentName, 'enabled', propertyValue);
+
+                            if (propertyValue){
+                            //  aframeObject.addEventListener('componentchanged', function (evt) {
+
+                                                // if (evt.detail.name === 'position') {
+                                                //     self.kernel.fireEvent(node.parentID, "setPosition", evt.detail.newData);
+
+                                                // }
+                                                // if (evt.detail.name === 'rotation') {
+                                                //     self.kernel.fireEvent(node.ID, "setRotation", evt.detail.newData);
+                                                
+                                                // }
+                                        //    });
+                            }
+
+                                break;
+
+                        default:
+                            value = undefined;
+                            break; 
+
+
+                    }
+
+                 }
+
                  if ( value === undefined && isAEntityDefinition( node.prototypes ) ) {
 
                     value = propertyValue;
@@ -254,6 +312,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 case "repeat":
                                     aframeObject.setAttribute('repeat', propertyValue);
                                     break;
+
+
+                                  case "look-controls-enabled":
+                                        aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
+                                        break;
+                                 case "wasd-controls":
+                                        aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
+                                        break;
 
                         default:
                             value = undefined;
@@ -424,23 +490,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                          value = propertyValue;
                           switch (propertyName) {
 
-                                    case "look-controls-enabled":
-                                        aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
-                                        break;
+                                    case "activeForAvatar":
+                                       console.log("set active camera to view");
+                                       break;
 
                                     case "forAvatar":
                                         if (propertyValue) {
-                                            aframeObject.addEventListener('componentchanged', function (evt) {
+                                            // aframeObject.addEventListener('componentchanged', function (evt) {
 
-                                                if (evt.detail.name === 'position') {
-                                                    self.kernel.fireEvent(node.ID, "setAvatarPosition", evt.detail.newData);
+                                            //     if (evt.detail.name === 'position') {
+                                            //         self.kernel.fireEvent(node.ID, "setAvatarPosition", evt.detail.newData);
 
-                                                }
-                                                if (evt.detail.name === 'rotation') {
-                                                    self.kernel.fireEvent(node.ID, "setAvatarRotation", evt.detail.newData);
-                                                    //console.log('Entity has moved from', evt.detail.oldData, 'to', evt.detail.newData, '!');
-                                                }
-                                            });
+                                            //     }
+                                            //     if (evt.detail.name === 'rotation') {
+                                            //         self.kernel.fireEvent(node.ID, "setAvatarRotation", evt.detail.newData);
+                                                
+                                            //     }
+                                            // });
                                         }
                                         break;
                     
@@ -477,6 +543,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                          switch ( propertyName ) {
                          }
                 }
+
+
+                if ( value === undefined && aframeObject.attributes.hasOwnProperty("wasd-controls")) {
+                    value = propertyValue;
+                    
+                    switch ( propertyName ) { 
+
+                         case "enabled":
+                                        aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
+                                        break;
+
+                    }
+
+                 }
+
+
 
                 if ( value === undefined && isAEntityDefinition( node.prototypes ) ) {
                     
@@ -536,6 +618,19 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 break;
                             case "repeat":
                                 value = aframeObject.getAttribute('repeat');
+
+                             case "look-controls-enabled":
+                                 var look = aframeObject.getAttribute('look-controls-enabled');
+                            if (look !== null && look !== undefined) {
+                                    value = aframeObject.getAttribute('look-controls').enabled;
+                            }
+                                    break;
+                            case "wasd-controls":
+                              var wasd = aframeObject.getAttribute('wasd-controls');
+                            if (wasd !== null && wasd !== undefined) {
+                                    value = aframeObject.getAttribute('wasd-controls').enabled;
+                            }
+                                    break;
 
                     }
                 }
@@ -623,9 +718,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                  if ( value === undefined && aframeObject.nodeName == "A-CAMERA" ) {
         
                            switch (propertyName) {
-                                case "look-controls-enabled":
-                                    value = aframeObject.getAttribute('look-controls').enabled;
-                                    break;
+                               
                                 }
                 }
 
@@ -647,6 +740,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             return value;
         }
     });
+
+function setAFrameObjectComponents(node, config) {
+    let protos = node.prototypes;
+    let parentNode = self.state.nodes[node.parentID];
+
+    if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/wasd-controls.vwf")) {
+        parentNode.aframeObj.setAttribute('wasd-controls', {});
+    }
+
+    node.aframeObj = parentNode.aframeObj;
+}
 
 function createAFrameObject(node, config) {
     var protos = node.prototypes;
@@ -678,7 +782,7 @@ function createAFrameObject(node, config) {
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
         aframeObj = document.createElement('a-entity');
     }
-
+    aframeObj.setAttribute('id', node.ID);
     return aframeObj;
 }
 
