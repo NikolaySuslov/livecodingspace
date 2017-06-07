@@ -26,11 +26,28 @@ methods:
                         "position": [0, 1, 0.5]
                     }
                   }
-               
                 } 
-              };
+              }
+
+              let cursor = {
+                     "id": 'cursor-' + this.id,
+                     "extends": "http://vwf.example.com/aframe/acursor.vwf"
+              }
+
+              let camera = {
+                   "id": 'camera-' + this.id,
+                    "extends": "http://vwf.example.com/aframe/acamera.vwf",
+                    "properties": {
+                        "forAvatar": true,
+                        "look-controls-enabled": false,
+                        "wasd-controls": false
+                    }
+              }
+
               this.interpolation = "50ms";
               this.children.create( "avatarBody", newNode );
+              this.children.create( "avatarCursor", cursor );
+              this.children.create( "avatarCamera", camera );
     getRandomColor:
         body: |
           var letters = '0123456789ABCDEF';

@@ -104,7 +104,11 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                 case "clickable":
                     if (propertyValue) {
                         aframeObject.addEventListener('click', function (evt) {
+
+                            let cursorID = 'cursor-avatar-'+self.kernel.moniker();
+                           if (evt.detail.cursorEl.id == cursorID) {
                             vwf_view.kernel.fireEvent(nodeId, "clickEvent")
+                           }
                         })
                     }
                     break;
@@ -178,21 +182,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/avatar.vwf",
-            "children": {
-                  "cursor": {
-                            "extends": "http://vwf.example.com/aframe/acursor.vwf",
-                        },
-                "camera": {
-                    "id": 'camera-' + nodeName,
-                    "extends": "http://vwf.example.com/aframe/acamera.vwf",
-                    "properties": {
-                        "forAvatar": true,
-                        "look-controls-enabled": false,
-                        "wasd-controls": false
-                    }
-                }
-            }
+            "extends": "http://vwf.example.com/aframe/avatar.vwf"
         }
 
         vwf_view.kernel.createChild(nodeID, nodeName, newNode);
