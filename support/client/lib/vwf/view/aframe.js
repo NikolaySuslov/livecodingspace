@@ -94,8 +94,8 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                      //let avatarCameraID = 'camera-avatar-' + self.kernel.moniker();
                     //node.aframeObj.setAttribute('camera', 'active', propertyValue);
                      let avatarCameraEl = document.querySelector('#camera-avatar-'+ self.kernel.moniker());
-                        avatarCameraEl.setAttribute('camera', 'active', false);
-                        avatarCameraEl.setAttribute('camera', 'userHeight', 0.0);
+                        //avatarCameraEl.setAttribute('camera', 'active', false);
+                        //avatarCameraEl.setAttribute('camera', 'userHeight', 0.0);
                         document.querySelector('#avatarControl').setAttribute('camera', 'active', true);
 
 
@@ -174,13 +174,14 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         let avatarID = self.kernel.moniker();
         var nodeName = 'avatar-' + avatarID;
 
+
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
             "extends": "http://vwf.example.com/aframe/avatar.vwf",
             "children": {
                   "cursor": {
-                            "extends": "http://vwf.example.com/aframe/acursor.vwf"
+                            "extends": "http://vwf.example.com/aframe/acursor.vwf",
                         },
                 "camera": {
                     "id": 'camera-' + nodeName,
@@ -189,9 +190,6 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                         "forAvatar": true,
                         "look-controls-enabled": false,
                         "wasd-controls": false
-                    },
-                    "children": {
-                      
                     }
                 }
             }

@@ -2,6 +2,7 @@
 # Copyright 2017 Krestianstvo.org project
 ---
 extends: http://vwf.example.com/aframe/aentity.vwf
+type: "avatar"
 properties:
 methods:
     createAvatarBody:
@@ -12,7 +13,7 @@ methods:
                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                 "properties": {
                     "color": myColor,
-                    "position": [0, 0, 0]
+                    "position": [0,0,0.5]
                 },
               "children": {
                 "avatarNameNode": {
@@ -28,7 +29,6 @@ methods:
                
                 } 
               };
-              this.position = [0, 0, 0];
               this.interpolation = "50ms";
               this.children.create( "avatarBody", newNode );
     getRandomColor:

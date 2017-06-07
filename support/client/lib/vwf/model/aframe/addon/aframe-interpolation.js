@@ -97,7 +97,7 @@ function RotationInterpolator (timestep, entity) {
       next.setFromEuler(new THREE.Euler(
         radians(event.detail.newData.x),
         radians(event.detail.newData.y),
-        radians(event.detail.newData.z)
+        radians(event.detail.newData.z),'YXZ'
       ));
     }
   });
