@@ -3025,7 +3025,7 @@ function getAlignType(align) {
     return ALIGN_RIGHT
   return ALIGN_LEFT
 }
-},{"as-number":2,"indexof-property":16,"word-wrapper":50,"xtend":53}],23:[function(_dereq_,module,exports){
+},{"as-number":2,"indexof-property":16,"word-wrapper":74,"xtend":77}],23:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -3126,7 +3126,7 @@ function getBinaryOpts(opt) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":51,"xtend":53}],24:[function(_dereq_,module,exports){
+},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":75,"xtend":77}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -3579,7 +3579,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":29,"xml-parse-from-string":52}],29:[function(_dereq_,module,exports){
+},{"./parse-attribs":29,"xml-parse-from-string":76}],29:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -58058,406 +58058,115 @@ TWEEN.Interpolation = {
 } )( this );
 
 },{}],49:[function(_dereq_,module,exports){
-(function (global){
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebVRPolyfill = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-'use strict';
-
-var has = Object.prototype.hasOwnProperty
-  , prefix = '~';
-
-/**
- * Constructor to create a storage for our `EE` objects.
- * An `Events` instance is a plain object whose properties are event names.
- *
- * @constructor
- * @api private
- */
-function Events() {}
-
-//
-// We try to not inherit from `Object.prototype`. In some engines creating an
-// instance in this way is faster than calling `Object.create(null)` directly.
-// If `Object.create(null)` is not supported we prefix the event names with a
-// character to make sure that the built-in object properties are not
-// overridden or used as an attack vector.
-//
-if (Object.create) {
-  Events.prototype = Object.create(null);
-
-  //
-  // This hack is needed because the `__proto__` property is still inherited in
-  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
-  //
-  if (!new Events().__proto__) prefix = false;
+module.exports={
+  "_args": [
+    [
+      {
+        "raw": "webvr-polyfill@^0.9.34",
+        "scope": null,
+        "escapedName": "webvr-polyfill",
+        "name": "webvr-polyfill",
+        "rawSpec": "^0.9.34",
+        "spec": ">=0.9.34 <0.10.0",
+        "type": "range"
+      },
+      "/home/ubuntu/a-frobot/aframe"
+    ]
+  ],
+  "_from": "webvr-polyfill@>=0.9.34 <0.10.0",
+  "_id": "webvr-polyfill@0.9.34",
+  "_inCache": true,
+  "_location": "/webvr-polyfill",
+  "_nodeVersion": "6.10.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/webvr-polyfill-0.9.34.tgz_1496357487388_0.023648461559787393"
+  },
+  "_npmUser": {
+    "name": "jsantell",
+    "email": "jsantell@gmail.com"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "webvr-polyfill@^0.9.34",
+    "scope": null,
+    "escapedName": "webvr-polyfill",
+    "name": "webvr-polyfill",
+    "rawSpec": "^0.9.34",
+    "spec": ">=0.9.34 <0.10.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.34.tgz",
+  "_shasum": "6114acf67bfedc6ccb2ac84de6ab8220436261fb",
+  "_shrinkwrap": null,
+  "_spec": "webvr-polyfill@^0.9.34",
+  "_where": "/home/ubuntu/a-frobot/aframe",
+  "authors": [
+    "Boris Smus <boris@smus.com>",
+    "Brandon Jones <tojiro@gmail.com>",
+    "Jordan Santell <jordan@jsantell.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/googlevr/webvr-polyfill/issues"
+  },
+  "dependencies": {},
+  "description": "Use WebVR today, on mobile or desktop, without requiring a special browser build.",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
+    "semver": "^5.3.0",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "6114acf67bfedc6ccb2ac84de6ab8220436261fb",
+    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.34.tgz"
+  },
+  "gitHead": "64bd6a3bb0b00d39753d5f2624b8eb7829b9053f",
+  "homepage": "https://github.com/googlevr/webvr-polyfill",
+  "keywords": [
+    "vr",
+    "webvr"
+  ],
+  "license": "Apache-2.0",
+  "main": "src/node-entry",
+  "maintainers": [
+    {
+      "name": "jsantell",
+      "email": "jsantell@gmail.com"
+    },
+    {
+      "name": "toji",
+      "email": "tojiro@gmail.com"
+    },
+    {
+      "name": "smus",
+      "email": "boris@smus.com"
+    }
+  ],
+  "name": "webvr-polyfill",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/googlevr/webvr-polyfill.git"
+  },
+  "scripts": {
+    "build": "webpack",
+    "start": "npm run watch",
+    "test": "mocha",
+    "watch": "webpack-dev-server"
+  },
+  "version": "0.9.34"
 }
 
-/**
- * Representation of a single event listener.
- *
- * @param {Function} fn The listener function.
- * @param {Mixed} context The context to invoke the listener with.
- * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
- * @constructor
- * @api private
- */
-function EE(fn, context, once) {
-  this.fn = fn;
-  this.context = context;
-  this.once = once || false;
-}
-
-/**
- * Minimal `EventEmitter` interface that is molded against the Node.js
- * `EventEmitter` interface.
- *
- * @constructor
- * @api public
- */
-function EventEmitter() {
-  this._events = new Events();
-  this._eventsCount = 0;
-}
-
-/**
- * Return an array listing the events for which the emitter has registered
- * listeners.
- *
- * @returns {Array}
- * @api public
- */
-EventEmitter.prototype.eventNames = function eventNames() {
-  var names = []
-    , events
-    , name;
-
-  if (this._eventsCount === 0) return names;
-
-  for (name in (events = this._events)) {
-    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
-  }
-
-  if (Object.getOwnPropertySymbols) {
-    return names.concat(Object.getOwnPropertySymbols(events));
-  }
-
-  return names;
-};
-
-/**
- * Return the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Boolean} exists Only check if there are listeners.
- * @returns {Array|Boolean}
- * @api public
- */
-EventEmitter.prototype.listeners = function listeners(event, exists) {
-  var evt = prefix ? prefix + event : event
-    , available = this._events[evt];
-
-  if (exists) return !!available;
-  if (!available) return [];
-  if (available.fn) return [available.fn];
-
-  for (var i = 0, l = available.length, ee = new Array(l); i < l; i++) {
-    ee[i] = available[i].fn;
-  }
-
-  return ee;
-};
-
-/**
- * Calls each of the listeners registered for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @returns {Boolean} `true` if the event had listeners, else `false`.
- * @api public
- */
-EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return false;
-
-  var listeners = this._events[evt]
-    , len = arguments.length
-    , args
-    , i;
-
-  if (listeners.fn) {
-    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
-
-    switch (len) {
-      case 1: return listeners.fn.call(listeners.context), true;
-      case 2: return listeners.fn.call(listeners.context, a1), true;
-      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
-    }
-
-    for (i = 1, args = new Array(len -1); i < len; i++) {
-      args[i - 1] = arguments[i];
-    }
-
-    listeners.fn.apply(listeners.context, args);
-  } else {
-    var length = listeners.length
-      , j;
-
-    for (i = 0; i < length; i++) {
-      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
-
-      switch (len) {
-        case 1: listeners[i].fn.call(listeners[i].context); break;
-        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
-        default:
-          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-            args[j - 1] = arguments[j];
-          }
-
-          listeners[i].fn.apply(listeners[i].context, args);
-      }
-    }
-  }
-
-  return true;
-};
-
-/**
- * Add a listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.on = function on(event, fn, context) {
-  var listener = new EE(fn, context || this)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Add a one-time listener for a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn The listener function.
- * @param {Mixed} [context=this] The context to invoke the listener with.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.once = function once(event, fn, context) {
-  var listener = new EE(fn, context || this, true)
-    , evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
-  else if (!this._events[evt].fn) this._events[evt].push(listener);
-  else this._events[evt] = [this._events[evt], listener];
-
-  return this;
-};
-
-/**
- * Remove the listeners of a given event.
- *
- * @param {String|Symbol} event The event name.
- * @param {Function} fn Only remove the listeners that match this function.
- * @param {Mixed} context Only remove the listeners that have this context.
- * @param {Boolean} once Only remove one-time listeners.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
-  var evt = prefix ? prefix + event : event;
-
-  if (!this._events[evt]) return this;
-  if (!fn) {
-    if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-    return this;
-  }
-
-  var listeners = this._events[evt];
-
-  if (listeners.fn) {
-    if (
-         listeners.fn === fn
-      && (!once || listeners.once)
-      && (!context || listeners.context === context)
-    ) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
-      if (
-           listeners[i].fn !== fn
-        || (once && !listeners[i].once)
-        || (context && listeners[i].context !== context)
-      ) {
-        events.push(listeners[i]);
-      }
-    }
-
-    //
-    // Reset the array, or remove it completely if we have no more listeners.
-    //
-    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
-    else if (--this._eventsCount === 0) this._events = new Events();
-    else delete this._events[evt];
-  }
-
-  return this;
-};
-
-/**
- * Remove all listeners, or those of the specified event.
- *
- * @param {String|Symbol} [event] The event name.
- * @returns {EventEmitter} `this`.
- * @api public
- */
-EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
-  var evt;
-
-  if (event) {
-    evt = prefix ? prefix + event : event;
-    if (this._events[evt]) {
-      if (--this._eventsCount === 0) this._events = new Events();
-      else delete this._events[evt];
-    }
-  } else {
-    this._events = new Events();
-    this._eventsCount = 0;
-  }
-
-  return this;
-};
-
-//
-// Alias methods names because people roll like that.
-//
-EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-EventEmitter.prototype.addListener = EventEmitter.prototype.on;
-
-//
-// This function doesn't apply anymore.
-//
-EventEmitter.prototype.setMaxListeners = function setMaxListeners() {
-  return this;
-};
-
-//
-// Expose the prefix.
-//
-EventEmitter.prefixed = prefix;
-
-//
-// Allow `EventEmitter` to be imported as module namespace.
-//
-EventEmitter.EventEmitter = EventEmitter;
-
-//
-// Expose the module.
-//
-if ('undefined' !== typeof module) {
-  module.exports = EventEmitter;
-}
-
-},{}],2:[function(_dereq_,module,exports){
-'use strict';
-/* eslint-disable no-unused-vars */
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Object.assign cannot be called with null or undefined');
-	}
-
-	return Object(val);
-}
-
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
-	var from;
-	var to = toObject(target);
-	var symbols;
-
-	for (var s = 1; s < arguments.length; s++) {
-		from = Object(arguments[s]);
-
-		for (var key in from) {
-			if (hasOwnProperty.call(from, key)) {
-				to[key] = from[key];
-			}
-		}
-
-		if (Object.getOwnPropertySymbols) {
-			symbols = Object.getOwnPropertySymbols(from);
-			for (var i = 0; i < symbols.length; i++) {
-				if (propIsEnumerable.call(from, symbols[i])) {
-					to[symbols[i]] = from[symbols[i]];
-				}
-			}
-		}
-	}
-
-	return to;
-};
-
-},{}],3:[function(_dereq_,module,exports){
+},{}],50:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58677,12 +58386,8 @@ VRDisplay.prototype.requestPresent = function(layers) {
       }
 
       for (var i = 0; i < 4; i++) {
-        if (layer.leftBounds[i] !== leftBounds[i]) {
-          layer.leftBounds[i] = leftBounds[i];
-        }
-        if (layer.rightBounds[i] !== rightBounds[i]) {
-          layer.rightBounds[i] = rightBounds[i];
-        }
+        layer.leftBounds[i] = leftBounds[i];
+        layer.rightBounds[i] = rightBounds[i];
       }
 
       resolve();
@@ -58701,7 +58406,7 @@ VRDisplay.prototype.requestPresent = function(layers) {
     if (self.layer_ && self.layer_.source) {
       var fullscreenElement = self.wrapForFullscreen(self.layer_.source);
 
-      function onFullscreenChange() {
+      var onFullscreenChange = function() {
         var actualFullscreenElement = Util.getFullscreenElement();
 
         self.isPresenting = (fullscreenElement === actualFullscreenElement);
@@ -58725,7 +58430,7 @@ VRDisplay.prototype.requestPresent = function(layers) {
         }
         self.fireVRDisplayPresentChange_();
       }
-      function onFullscreenError() {
+      var onFullscreenError = function() {
         if (!self.waitingForPresent_) {
           return;
         }
@@ -58777,7 +58482,7 @@ VRDisplay.prototype.exitPresent = function() {
         self.fireVRDisplayPresentChange_();
       }
 
-      if(Util.isWebViewAndroid()) {
+      if (Util.isWebViewAndroid()) {
         self.removeFullscreenWrapper();
         self.removeFullscreenListeners_();
         self.endPresent_();
@@ -58799,7 +58504,18 @@ VRDisplay.prototype.getLayers = function() {
 };
 
 VRDisplay.prototype.fireVRDisplayPresentChange_ = function() {
+  // Important: unfortunately we cannot have full spec compliance here.
+  // CustomEvent custom fields all go under e.detail (so the VRDisplay ends up
+  // being e.detail.display, instead of e.display as per WebVR spec).
   var event = new CustomEvent('vrdisplaypresentchange', {detail: {display: this}});
+  window.dispatchEvent(event);
+};
+
+VRDisplay.prototype.fireVRDisplayConnect_ = function() {
+  // Important: unfortunately we cannot have full spec compliance here.
+  // CustomEvent custom fields all go under e.detail (so the VRDisplay ends up
+  // being e.detail.display, instead of e.display as per WebVR spec).
+  var event = new CustomEvent('vrdisplayconnect', {detail: {display: this}});
   window.dispatchEvent(event);
 };
 
@@ -58913,7 +58629,7 @@ module.exports.VRDevice = VRDevice;
 module.exports.HMDVRDevice = HMDVRDevice;
 module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
 
-},{"./util.js":23,"./wakelock.js":25}],4:[function(_dereq_,module,exports){
+},{"./util.js":70,"./wakelock.js":72}],51:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58969,7 +58685,7 @@ function CardboardDistorter(gl) {
   this.meshWidth = 20;
   this.meshHeight = 20;
 
-  this.bufferScale = WebVRConfig.BUFFER_SCALE;
+  this.bufferScale = window.WebVRConfig.BUFFER_SCALE;
 
   this.bufferWidth = gl.drawingBufferWidth;
   this.bufferHeight = gl.drawingBufferHeight;
@@ -59033,7 +58749,7 @@ function CardboardDistorter(gl) {
 
   this.onResize();
 
-  if (!WebVRConfig.CARDBOARD_UI_DISABLED) {
+  if (!window.WebVRConfig.CARDBOARD_UI_DISABLED) {
     this.cardboardUI = new CardboardUI(gl);
   }
 };
@@ -59323,7 +59039,7 @@ CardboardDistorter.prototype.submitFrame = function() {
 
   var glState = [];
 
-  if (!WebVRConfig.DIRTY_SUBMIT_FRAME_BINDINGS) {
+  if (!window.WebVRConfig.DIRTY_SUBMIT_FRAME_BINDINGS) {
     glState.push(
       gl.CURRENT_PROGRAM,
       gl.ARRAY_BUFFER_BINDING,
@@ -59385,7 +59101,7 @@ CardboardDistorter.prototype.submitFrame = function() {
       gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
-    if (!WebVRConfig.DIRTY_SUBMIT_FRAME_BINDINGS) {
+    if (!window.WebVRConfig.DIRTY_SUBMIT_FRAME_BINDINGS) {
       self.realBindFramebuffer.call(gl, gl.FRAMEBUFFER, self.lastBoundFramebuffer);
     }
 
@@ -59563,7 +59279,7 @@ CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrNam
 
 module.exports = CardboardDistorter;
 
-},{"./cardboard-ui.js":5,"./deps/wglu-preserve-state.js":7,"./util.js":23}],5:[function(_dereq_,module,exports){
+},{"./cardboard-ui.js":52,"./deps/wglu-preserve-state.js":54,"./util.js":70}],52:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59716,13 +59432,12 @@ CardboardUI.prototype.onResize = function() {
 
     var midline = gl.drawingBufferWidth / 2;
 
-    // Assumes your canvas width and height is scaled proportionately.
-    // TODO(smus): The following causes buttons to become huge on iOS, but seems
-    // like the right thing to do. For now, added a hack. But really, investigate why.
-    var dps = (gl.drawingBufferWidth / (screen.width * window.devicePixelRatio));
-    if (!Util.isIOS()) {
-      dps *= window.devicePixelRatio;
-    }
+    // The gl buffer size will likely be smaller than the physical pixel count.
+    // So we need to scale the dps down based on the actual buffer size vs physical pixel count.
+    // This will properly size the ui elements no matter what the gl buffer resolution is
+    var physicalPixels = Math.max(screen.width, screen.height) * window.devicePixelRatio;
+    var scalingRatio = gl.drawingBufferWidth / physicalPixels;
+    var dps = scalingRatio *  window.devicePixelRatio;
 
     var lineWidth = kCenterLineThicknessDp * dps / 2;
     var buttonSize = kButtonWidthDp * kTouchSlopFactor * dps;
@@ -59851,7 +59566,7 @@ CardboardUI.prototype.renderNoState = function() {
 
 module.exports = CardboardUI;
 
-},{"./deps/wglu-preserve-state.js":7,"./util.js":23}],6:[function(_dereq_,module,exports){
+},{"./deps/wglu-preserve-state.js":54,"./util.js":70}],53:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59892,7 +59607,7 @@ function CardboardVRDisplay() {
   this.capabilities.canPresent = true;
 
   // "Private" members.
-  this.bufferScale_ = WebVRConfig.BUFFER_SCALE;
+  this.bufferScale_ = window.WebVRConfig.BUFFER_SCALE;
   this.poseSensor_ = new FusionPoseSensor();
   this.distorter_ = null;
   this.cardboardUI_ = null;
@@ -59901,12 +59616,12 @@ function CardboardVRDisplay() {
   this.deviceInfo_ = new DeviceInfo(this.dpdb_.getDeviceParams());
 
   this.viewerSelector_ = new ViewerSelector();
-  this.viewerSelector_.on('change', this.onViewerChanged_.bind(this));
+  this.viewerSelector_.onChange(this.onViewerChanged_.bind(this));
 
   // Set the correct initial viewer.
   this.deviceInfo_.setViewer(this.viewerSelector_.getCurrentViewer());
 
-  if (!WebVRConfig.ROTATE_INSTRUCTIONS_DISABLED) {
+  if (!window.WebVRConfig.ROTATE_INSTRUCTIONS_DISABLED) {
     this.rotateInstructions_ = new RotateInstructions();
   }
 
@@ -59985,7 +59700,7 @@ CardboardVRDisplay.prototype.beginPresent_ = function() {
 
   // Provides a way to opt out of distortion
   if (this.layer_.predistorted) {
-    if (!WebVRConfig.CARDBOARD_UI_DISABLED) {
+    if (!window.WebVRConfig.CARDBOARD_UI_DISABLED) {
       gl.canvas.width = Util.getScreenWidth() * this.bufferScale_;
       gl.canvas.height = Util.getScreenHeight() * this.bufferScale_;
       this.cardboardUI_ = new CardboardUI(gl);
@@ -60055,6 +59770,7 @@ CardboardVRDisplay.prototype.endPresent_ = function() {
 
 CardboardVRDisplay.prototype.submitFrame = function(pose) {
   if (this.distorter_) {
+    this.updateBounds_();
     this.distorter_.submitFrame();
   } else if (this.cardboardUI_ && this.layer_) {
     // Hack for predistorted: true.
@@ -60090,6 +59806,8 @@ CardboardVRDisplay.prototype.onResize_ = function(e) {
     // hide the URL bar unless content is bigger than the screen.
     // This will not be visible as long as the container element (e.g. body)
     // is set to 'overflow: hidden'.
+    // Additionally, 'box-sizing: content-box' ensures renderWidth = width + padding.
+    // This is required when 'box-sizing: border-box' is used elsewhere in the page.
     var cssProperties = [
       'position: absolute',
       'top: 0',
@@ -60099,6 +59817,7 @@ CardboardVRDisplay.prototype.onResize_ = function(e) {
       'border: 0',
       'margin: 0',
       'padding: 0 10px 10px 0',
+      'box-sizing: content-box',
     ];
     gl.canvas.setAttribute('style', cssProperties.join('; ') + ';');
 
@@ -60131,65 +59850,12 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
 
 module.exports = CardboardVRDisplay;
 
-},{"./base.js":3,"./cardboard-distorter.js":4,"./cardboard-ui.js":5,"./device-info.js":8,"./dpdb/dpdb.js":13,"./rotate-instructions.js":17,"./sensor-fusion/fusion-pose-sensor.js":19,"./util.js":23,"./viewer-selector.js":24}],7:[function(_dereq_,module,exports){
-/*
-Copyright (c) 2016, Brandon Jones.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
-/*
-Caches specified GL state, runs a callback, and restores the cached state when
-done.
-
-Example usage:
-
-var savedState = [
-  gl.ARRAY_BUFFER_BINDING,
-
-  // TEXTURE_BINDING_2D or _CUBE_MAP must always be followed by the texure unit.
-  gl.TEXTURE_BINDING_2D, gl.TEXTURE0,
-
-  gl.CLEAR_COLOR,
-];
-// After this call the array buffer, texture unit 0, active texture, and clear
-// color will be restored. The viewport will remain changed, however, because
-// gl.VIEWPORT was not included in the savedState list.
-WGLUPreserveGLState(gl, savedState, function(gl) {
-  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, ....);
-
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, ...);
-
-  gl.clearColor(1, 0, 0, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-});
-
-Note that this is not intended to be fast. Managing state in your own code to
-avoid redundant state setting and querying will always be faster. This function
-is most useful for cases where you may not have full control over the WebGL
-calls being made, such as tooling or effect injectors.
-*/
+},{"./base.js":50,"./cardboard-distorter.js":51,"./cardboard-ui.js":52,"./device-info.js":55,"./dpdb/dpdb.js":59,"./rotate-instructions.js":64,"./sensor-fusion/fusion-pose-sensor.js":66,"./util.js":70,"./viewer-selector.js":71}],54:[function(_dereq_,module,exports){
+/**
+ * Copyright (c) 2016, Brandon Jones.
+ * https://github.com/toji/webgl-utils/blob/master/src/wglu-preserve-state.js
+ * LICENSE: https://github.com/toji/webgl-utils/blob/master/LICENSE.md
+ */
 
 function WGLUPreserveGLState(gl, bindings, callback) {
   if (!bindings) {
@@ -60296,7 +59962,8 @@ function WGLUPreserveGLState(gl, bindings, callback) {
 }
 
 module.exports = WGLUPreserveGLState;
-},{}],8:[function(_dereq_,module,exports){
+
+},{}],55:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60663,7 +60330,7 @@ function CardboardViewer(params) {
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
 
-},{"./distortion/distortion.js":10,"./math-util.js":15,"./util.js":23}],9:[function(_dereq_,module,exports){
+},{"./distortion/distortion.js":57,"./math-util.js":61,"./util.js":70}],56:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60755,7 +60422,7 @@ module.exports.VRDisplayHMDDevice = VRDisplayHMDDevice;
 module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
 
 
-},{"./base.js":3}],10:[function(_dereq_,module,exports){
+},{"./base.js":50}],57:[function(_dereq_,module,exports){
 /**
  * TODO(smus): Implement coefficient inversion.
  */
@@ -60803,1122 +60470,9 @@ Distortion.prototype.distort = function(radius) {
   return (ret + 1) * radius;
 };
 
-// Functions below roughly ported from
-// https://github.com/googlesamples/cardboard-unity/blob/master/Cardboard/Scripts/CardboardProfile.cs#L412
-
-// Solves a small linear equation via destructive gaussian
-// elimination and back substitution.  This isn't generic numeric
-// code, it's just a quick hack to work with the generally
-// well-behaved symmetric matrices for least-squares fitting.
-// Not intended for reuse.
-//
-// @param a Input positive definite symmetrical matrix. Destroyed
-//     during calculation.
-// @param y Input right-hand-side values. Destroyed during calculation.
-// @return Resulting x value vector.
-//
-Distortion.prototype.solveLinear_ = function(a, y) {
-  var n = a.length;
-
-  // Gaussian elimination (no row exchange) to triangular matrix.
-  // The input matrix is a A^T A product which should be a positive
-  // definite symmetrical matrix, and if I remember my linear
-  // algebra right this implies that the pivots will be nonzero and
-  // calculations sufficiently accurate without needing row
-  // exchange.
-  for (var j = 0; j < n - 1; ++j) {
-    for (var k = j + 1; k < n; ++k) {
-      var p = a[j][k] / a[j][j];
-      for (var i = j + 1; i < n; ++i) {
-        a[i][k] -= p * a[i][j];
-      }
-      y[k] -= p * y[j];
-    }
-  }
-  // From this point on, only the matrix elements a[j][i] with i>=j are
-  // valid. The elimination doesn't fill in eliminated 0 values.
-
-  var x = new Array(n);
-
-  // Back substitution.
-  for (var j = n - 1; j >= 0; --j) {
-    var v = y[j];
-    for (var i = j + 1; i < n; ++i) {
-      v -= a[i][j] * x[i];
-    }
-    x[j] = v / a[j][j];
-  }
-
-  return x;
-};
-
-// Solves a least-squares matrix equation.  Given the equation A * x = y, calculate the
-// least-square fit x = inverse(A * transpose(A)) * transpose(A) * y.  The way this works
-// is that, while A is typically not a square matrix (and hence not invertible), A * transpose(A)
-// is always square.  That is:
-//   A * x = y
-//   transpose(A) * (A * x) = transpose(A) * y   <- multiply both sides by transpose(A)
-//   (transpose(A) * A) * x = transpose(A) * y   <- associativity
-//   x = inverse(transpose(A) * A) * transpose(A) * y  <- solve for x
-// Matrix A's row count (first index) must match y's value count.  A's column count (second index)
-// determines the length of the result vector x.
-Distortion.prototype.solveLeastSquares_ = function(matA, vecY) {
-  var i, j, k, sum;
-  var numSamples = matA.length;
-  var numCoefficients = matA[0].length;
-  if (numSamples != vecY.Length) {
-    throw new Error("Matrix / vector dimension mismatch");
-  }
-
-  // Calculate transpose(A) * A
-  var matATA = new Array(numCoefficients);
-  for (k = 0; k < numCoefficients; ++k) {
-    matATA[k] = new Array(numCoefficients);
-    for (j = 0; j < numCoefficients; ++j) {
-      sum = 0;
-      for (i = 0; i < numSamples; ++i) {
-        sum += matA[j][i] * matA[k][i];
-      }
-      matATA[k][j] = sum;
-    }
-  }
-
-  // Calculate transpose(A) * y
-  var vecATY = new Array(numCoefficients);
-  for (j = 0; j < numCoefficients; ++j) {
-    sum = 0;
-    for (i = 0; i < numSamples; ++i) {
-      sum += matA[j][i] * vecY[i];
-    }
-    vecATY[j] = sum;
-  }
-
-  // Now solve (A * transpose(A)) * x = transpose(A) * y.
-  return this.solveLinear_(matATA, vecATY);
-};
-
-/// Calculates an approximate inverse to the given radial distortion parameters.
-Distortion.prototype.approximateInverse = function(maxRadius, numSamples) {
-  maxRadius = maxRadius || 1;
-  numSamples = numSamples || 100;
-  var numCoefficients = 6;
-  var i, j;
-
-  // R + K1*R^3 + K2*R^5 = r, with R = rp = distort(r)
-  // Repeating for numSamples:
-  //   [ R0^3, R0^5 ] * [ K1 ] = [ r0 - R0 ]
-  //   [ R1^3, R1^5 ]   [ K2 ]   [ r1 - R1 ]
-  //   [ R2^3, R2^5 ]            [ r2 - R2 ]
-  //   [ etc... ]                [ etc... ]
-  // That is:
-  //   matA * [K1, K2] = y
-  // Solve:
-  //   [K1, K2] = inverse(transpose(matA) * matA) * transpose(matA) * y
-  var matA = new Array(numCoefficients);
-  for (j = 0; j < numCoefficients; ++j) {
-    matA[j] = new Array(numSamples);
-  }
-  var vecY = new Array(numSamples);
-
-  for (i = 0; i < numSamples; ++i) {
-    var r = maxRadius * (i + 1) / numSamples;
-    var rp = this.distort(r);
-    var v = rp;
-    for (j = 0; j < numCoefficients; ++j) {
-      v *= rp * rp;
-      matA[j][i] = v;
-    }
-    vecY[i] = r - rp;
-  }
-
-  var inverseCoefficients = this.solveLeastSquares_(matA, vecY);
-
-  return new Distortion(inverseCoefficients);
-};
-
 module.exports = Distortion;
 
-},{}],11:[function(_dereq_,module,exports){
-/*
- * Copyright 2015 Google Inc. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * DPDB cache.
- */
-var DPDB_CACHE = {
-  "format": 1,
-  "last_updated": "2016-01-20T00:18:35Z",
-  "devices": [
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "asus/*/Nexus 7/*" },
-      { "ua": "Nexus 7" }
-    ],
-    "dpi": [ 320.8, 323.0 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "asus/*/ASUS_Z00AD/*" },
-      { "ua": "ASUS_Z00AD" }
-    ],
-    "dpi": [ 403.0, 404.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Google//Pixel XL/" },
-      { "ua": "Pixel XL" }
-    ],
-    "dpi": [537.9, 533],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "HTC/*/HTC6435LVW/*" },
-      { "ua": "HTC6435LVW" }
-    ],
-    "dpi": [ 449.7, 443.3 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "HTC/*/HTC One XL/*" },
-      { "ua": "HTC One XL" }
-    ],
-    "dpi": [ 315.3, 314.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "htc/*/Nexus 9/*" },
-      { "ua": "Nexus 9" }
-    ],
-    "dpi": 289.0,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "HTC/*/HTC One M9/*" },
-      { "ua": "HTC One M9" }
-    ],
-    "dpi": [ 442.5, 443.3 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "HTC/*/HTC One_M8/*" },
-      { "ua": "HTC One_M8" }
-    ],
-    "dpi": [ 449.7, 447.4 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "HTC/*/HTC One/*" },
-      { "ua": "HTC One" }
-    ],
-    "dpi": 472.8,
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Huawei/*/Nexus 6P/*" },
-      { "ua": "Nexus 6P" }
-    ],
-    "dpi": [ 515.1, 518.0 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/Nexus 5X/*" },
-      { "ua": "Nexus 5X" }
-    ],
-    "dpi": [ 422.0, 419.9 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LGMS345/*" },
-      { "ua": "LGMS345" }
-    ],
-    "dpi": [ 221.7, 219.1 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LG-D800/*" },
-      { "ua": "LG-D800" }
-    ],
-    "dpi": [ 422.0, 424.1 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LG-D850/*" },
-      { "ua": "LG-D850" }
-    ],
-    "dpi": [ 537.9, 541.9 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/VS985 4G/*" },
-      { "ua": "VS985 4G" }
-    ],
-    "dpi": [ 537.9, 535.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/Nexus 5/*" },
-      { "ua": "Nexus 5 " }
-    ],
-    "dpi": [ 442.4, 444.8 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/Nexus 4/*" },
-      { "ua": "Nexus 4" }
-    ],
-    "dpi": [ 319.8, 318.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LG-P769/*" },
-      { "ua": "LG-P769" }
-    ],
-    "dpi": [ 240.6, 247.5 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LGMS323/*" },
-      { "ua": "LGMS323" }
-    ],
-    "dpi": [ 206.6, 204.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "LGE/*/LGLS996/*" },
-      { "ua": "LGLS996" }
-    ],
-    "dpi": [ 403.4, 401.5 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Micromax/*/4560MMX/*" },
-      { "ua": "4560MMX" }
-    ],
-    "dpi": [ 240.0, 219.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Micromax/*/A250/*" },
-      { "ua": "Micromax A250" }
-    ],
-    "dpi": [ 480.0, 446.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Micromax/*/Micromax AQ4501/*" },
-      { "ua": "Micromax AQ4501" }
-    ],
-    "dpi": 240.0,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/DROID RAZR/*" },
-      { "ua": "DROID RAZR" }
-    ],
-    "dpi": [ 368.1, 256.7 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT830C/*" },
-      { "ua": "XT830C" }
-    ],
-    "dpi": [ 254.0, 255.9 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1021/*" },
-      { "ua": "XT1021" }
-    ],
-    "dpi": [ 254.0, 256.7 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1023/*" },
-      { "ua": "XT1023" }
-    ],
-    "dpi": [ 254.0, 256.7 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1028/*" },
-      { "ua": "XT1028" }
-    ],
-    "dpi": [ 326.6, 327.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1034/*" },
-      { "ua": "XT1034" }
-    ],
-    "dpi": [ 326.6, 328.4 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1053/*" },
-      { "ua": "XT1053" }
-    ],
-    "dpi": [ 315.3, 316.1 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1562/*" },
-      { "ua": "XT1562" }
-    ],
-    "dpi": [ 403.4, 402.7 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/Nexus 6/*" },
-      { "ua": "Nexus 6 " }
-    ],
-    "dpi": [ 494.3, 489.7 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1063/*" },
-      { "ua": "XT1063" }
-    ],
-    "dpi": [ 295.0, 296.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1064/*" },
-      { "ua": "XT1064" }
-    ],
-    "dpi": [ 295.0, 295.6 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1092/*" },
-      { "ua": "XT1092" }
-    ],
-    "dpi": [ 422.0, 424.1 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/XT1095/*" },
-      { "ua": "XT1095" }
-    ],
-    "dpi": [ 422.0, 423.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "motorola/*/G4/*" },
-      { "ua": "Moto G (4)" }
-    ],
-    "dpi": 401.0,
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "OnePlus/*/A0001/*" },
-      { "ua": "A0001" }
-    ],
-    "dpi": [ 403.4, 401.0 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "OnePlus/*/ONE E1005/*" },
-      { "ua": "ONE E1005" }
-    ],
-    "dpi": [ 442.4, 441.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "OnePlus/*/ONE A2005/*" },
-      { "ua": "ONE A2005" }
-    ],
-    "dpi": [ 391.9, 405.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "OPPO/*/X909/*" },
-      { "ua": "X909" }
-    ],
-    "dpi": [ 442.4, 444.1 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9082/*" },
-      { "ua": "GT-I9082" }
-    ],
-    "dpi": [ 184.7, 185.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G360P/*" },
-      { "ua": "SM-G360P" }
-    ],
-    "dpi": [ 196.7, 205.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/Nexus S/*" },
-      { "ua": "Nexus S" }
-    ],
-    "dpi": [ 234.5, 229.8 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9300/*" },
-      { "ua": "GT-I9300" }
-    ],
-    "dpi": [ 304.8, 303.9 ],
-    "bw": 5,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-T230NU/*" },
-      { "ua": "SM-T230NU" }
-    ],
-    "dpi": 216.0,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SGH-T399/*" },
-      { "ua": "SGH-T399" }
-    ],
-    "dpi": [ 217.7, 231.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-N9005/*" },
-      { "ua": "SM-N9005" }
-    ],
-    "dpi": [ 386.4, 387.0 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SAMSUNG-SM-N900A/*" },
-      { "ua": "SAMSUNG-SM-N900A" }
-    ],
-    "dpi": [ 386.4, 387.7 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9500/*" },
-      { "ua": "GT-I9500" }
-    ],
-    "dpi": [ 442.5, 443.3 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9505/*" },
-      { "ua": "GT-I9505" }
-    ],
-    "dpi": 439.4,
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G900F/*" },
-      { "ua": "SM-G900F" }
-    ],
-    "dpi": [ 415.6, 431.6 ],
-    "bw": 5,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G900M/*" },
-      { "ua": "SM-G900M" }
-    ],
-    "dpi": [ 415.6, 431.6 ],
-    "bw": 5,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G800F/*" },
-      { "ua": "SM-G800F" }
-    ],
-    "dpi": 326.8,
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G906S/*" },
-      { "ua": "SM-G906S" }
-    ],
-    "dpi": [ 562.7, 572.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9300/*" },
-      { "ua": "GT-I9300" }
-    ],
-    "dpi": [ 306.7, 304.8 ],
-    "bw": 5,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-T535/*" },
-      { "ua": "SM-T535" }
-    ],
-    "dpi": [ 142.6, 136.4 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-N920C/*" },
-      { "ua": "SM-N920C" }
-    ],
-    "dpi": [ 515.1, 518.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9300I/*" },
-      { "ua": "GT-I9300I" }
-    ],
-    "dpi": [ 304.8, 305.8 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-I9195/*" },
-      { "ua": "GT-I9195" }
-    ],
-    "dpi": [ 249.4, 256.7 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SPH-L520/*" },
-      { "ua": "SPH-L520" }
-    ],
-    "dpi": [ 249.4, 255.9 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SAMSUNG-SGH-I717/*" },
-      { "ua": "SAMSUNG-SGH-I717" }
-    ],
-    "dpi": 285.8,
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SPH-D710/*" },
-      { "ua": "SPH-D710" }
-    ],
-    "dpi": [ 217.7, 204.2 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/GT-N7100/*" },
-      { "ua": "GT-N7100" }
-    ],
-    "dpi": 265.1,
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SCH-I605/*" },
-      { "ua": "SCH-I605" }
-    ],
-    "dpi": 265.1,
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/Galaxy Nexus/*" },
-      { "ua": "Galaxy Nexus" }
-    ],
-    "dpi": [ 315.3, 314.2 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-N910H/*" },
-      { "ua": "SM-N910H" }
-    ],
-    "dpi": [ 515.1, 518.0 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-N910C/*" },
-      { "ua": "SM-N910C" }
-    ],
-    "dpi": [ 515.2, 520.2 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G130M/*" },
-      { "ua": "SM-G130M" }
-    ],
-    "dpi": [ 165.9, 164.8 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G928I/*" },
-      { "ua": "SM-G928I" }
-    ],
-    "dpi": [ 515.1, 518.4 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G920F/*" },
-      { "ua": "SM-G920F" }
-    ],
-    "dpi": 580.6,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G920P/*" },
-      { "ua": "SM-G920P" }
-    ],
-    "dpi": [ 522.5, 577.0 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G925F/*" },
-      { "ua": "SM-G925F" }
-    ],
-    "dpi": 580.6,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G925V/*" },
-      { "ua": "SM-G925V" }
-    ],
-    "dpi": [ 522.5, 576.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "samsung/*/SM-G935F/*" },
-      { "ua": "SM-G935F" }
-    ],
-    "dpi": 534,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Sony/*/C6903/*" },
-      { "ua": "C6903" }
-    ],
-    "dpi": [ 442.5, 443.3 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Sony/*/D6653/*" },
-      { "ua": "D6653" }
-    ],
-    "dpi": [ 428.6, 427.6 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Sony/*/E6653/*" },
-      { "ua": "E6653" }
-    ],
-    "dpi": [ 428.6, 425.7 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Sony/*/E6853/*" },
-      { "ua": "E6853" }
-    ],
-    "dpi": [ 403.4, 401.9 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "Sony/*/SGP321/*" },
-      { "ua": "SGP321" }
-    ],
-    "dpi": [ 224.7, 224.1 ],
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "TCT/*/ALCATEL ONE TOUCH Fierce/*" },
-      { "ua": "ALCATEL ONE TOUCH Fierce" }
-    ],
-    "dpi": [ 240.0, 247.5 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "THL/*/thl 5000/*" },
-      { "ua": "thl 5000" }
-    ],
-    "dpi": [ 480.0, 443.3 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "android",
-    "rules": [
-      { "mdmh": "ZTE/*/ZTE Blade L2/*" },
-      { "ua": "ZTE Blade L2" }
-    ],
-    "dpi": 240.0,
-    "bw": 3,
-    "ac": 500
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 640, 960 ] } ],
-    "dpi": [ 325.1, 328.4 ],
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 640, 1136 ] } ],
-    "dpi": [ 317.1, 320.2 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 750, 1334 ] } ],
-    "dpi": 326.4,
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 1242, 2208 ] } ],
-    "dpi": [ 453.6, 458.4 ],
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 1125, 2001 ] } ],
-    "dpi": [ 410.9, 415.4 ],
-    "bw": 4,
-    "ac": 1000
-  }
-]};
-
-module.exports = DPDB_CACHE;
-
-},{}],12:[function(_dereq_,module,exports){
+},{}],58:[function(_dereq_,module,exports){
 module.exports={
   "format":1,
   "last_updated":"2017-01-12T08:41:55Z",
@@ -61970,6 +60524,23 @@ module.exports={
       "dpi": [
         537.9,
         533
+      ],
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "Google//Pixel/"
+        },
+        {
+          "ua": "Pixel"
+        }
+      ],
+      "dpi": [
+        432.6,
+        436.7
       ],
       "bw": 3,
       "ac": 1000
@@ -63408,7 +61979,7 @@ module.exports={
   ]
 }
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],59:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63426,11 +61997,12 @@ module.exports={
 
 // Offline cache of the DPDB, to be used until we load the online one (and
 // as a fallback in case we can't load the online one).
-var DPDB_CACHE = _dereq_('./dpdb-cache.js');
+var DPDB_CACHE = _dereq_('./dpdb.json');
 var Util = _dereq_('../util.js');
 
 // Online DPDB URL.
-var ONLINE_DPDB_URL = _dereq_('./dpdb.json');
+var ONLINE_DPDB_URL =
+  'https://dpdb.webvr.rocks/dpdb.json';
 
 /**
  * Calculates device parameters based on the DPDB (Device Parameter Database).
@@ -63589,7 +62161,7 @@ function DeviceParams(params) {
 
 module.exports = Dpdb;
 
-},{"../util.js":23,"./dpdb-cache.js":11,"./dpdb.json":12}],14:[function(_dereq_,module,exports){
+},{"../util.js":70,"./dpdb.json":58}],60:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63660,7 +62232,16 @@ window.WebVRConfig = Util.extend({
   // When set to true, this will cause a polyfilled VRDisplay to always be
   // appended to the list returned by navigator.getVRDisplays(), even if that
   // list includes a native VRDisplay.
-  ALWAYS_APPEND_POLYFILL_DISPLAY: false
+  ALWAYS_APPEND_POLYFILL_DISPLAY: false,
+
+  // There are versions of Chrome (M58-M60?) where the native WebVR API exists,
+  // and instead of returning 0 VR displays when none are detected,
+  // `navigator.getVRDisplays()`'s promise never resolves. This results
+  // in the polyfill hanging and not being able to provide fallback
+  // displays, so set a timeout in milliseconds to stop waiting for a response
+  // and just use polyfilled displays.
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=727969
+  GET_VR_DISPLAYS_TIMEOUT: 1000,
 }, window.WebVRConfig);
 
 if (!window.WebVRConfig.DEFER_INITIALIZATION) {
@@ -63671,7 +62252,9 @@ if (!window.WebVRConfig.DEFER_INITIALIZATION) {
   }
 }
 
-},{"./util.js":23,"./webvr-polyfill.js":26}],15:[function(_dereq_,module,exports){
+window.WebVRPolyfill = WebVRPolyfill;
+
+},{"./util.js":70,"./webvr-polyfill.js":73}],61:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64030,7 +62613,7 @@ MathUtil.Quaternion.prototype = {
 
 module.exports = MathUtil;
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],62:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64209,7 +62792,22 @@ MouseKeyboardVRDisplay.prototype.resetPose = function() {
 
 module.exports = MouseKeyboardVRDisplay;
 
-},{"./base.js":3,"./math-util.js":15,"./util.js":23}],17:[function(_dereq_,module,exports){
+},{"./base.js":50,"./math-util.js":61,"./util.js":70}],63:[function(_dereq_,module,exports){
+(function (global){
+// This is the entry point if requiring/importing via node, or
+// a build tool that uses package.json entry (like browserify, webpack).
+// If running in node with a window mock available, globalize it's members
+// if needed. Otherwise, just continue to `./main`
+if (typeof global !== 'undefined' && global.window) {
+  global.document = global.window.document;
+  global.navigator = global.window.navigator;
+}
+
+_dereq_('./main');
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"./main":60}],64:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64355,7 +62953,7 @@ RotateInstructions.prototype.loadIcon_ = function() {
 
 module.exports = RotateInstructions;
 
-},{"./util.js":23}],18:[function(_dereq_,module,exports){
+},{"./util.js":70}],65:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64523,7 +63121,7 @@ ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
 
 module.exports = ComplementaryFilter;
 
-},{"../math-util.js":15,"../util.js":23,"./sensor-sample.js":21}],19:[function(_dereq_,module,exports){
+},{"../math-util.js":61,"../util.js":70,"./sensor-sample.js":68}],66:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64556,8 +63154,8 @@ function FusionPoseSensor() {
 
   this.start();
 
-  this.filter = new ComplementaryFilter(WebVRConfig.K_FILTER);
-  this.posePredictor = new PosePredictor(WebVRConfig.PREDICTION_TIME_S);
+  this.filter = new ComplementaryFilter(window.WebVRConfig.K_FILTER);
+  this.posePredictor = new PosePredictor(window.WebVRConfig.PREDICTION_TIME_S);
   this.touchPanner = new TouchPanner();
 
   this.filterToWorldQ = new MathUtil.Quaternion();
@@ -64607,14 +63205,14 @@ FusionPoseSensor.prototype.getOrientation = function() {
   var out = new MathUtil.Quaternion();
   out.copy(this.filterToWorldQ);
   out.multiply(this.resetQ);
-  if (!WebVRConfig.TOUCH_PANNER_DISABLED) {
+  if (!window.WebVRConfig.TOUCH_PANNER_DISABLED) {
     out.multiply(this.touchPanner.getOrientation());
   }
   out.multiply(this.predictedQ);
   out.multiply(this.worldToScreenQ);
 
   // Handle the yaw-only case.
-  if (WebVRConfig.YAW_ONLY) {
+  if (window.WebVRConfig.YAW_ONLY) {
     // Make a quaternion that only turns around the Y-axis.
     out.x = 0;
     out.z = 0;
@@ -64644,7 +63242,7 @@ FusionPoseSensor.prototype.resetPose = function() {
   // Take into account original pose.
   this.resetQ.multiply(this.originalPoseAdjustQ);
 
-  if (!WebVRConfig.TOUCH_PANNER_DISABLED) {
+  if (!window.WebVRConfig.TOUCH_PANNER_DISABLED) {
     this.touchPanner.resetSensor();
   }
 };
@@ -64754,7 +63352,7 @@ FusionPoseSensor.prototype.stop = function() {
 
 module.exports = FusionPoseSensor;
 
-},{"../math-util.js":15,"../touch-panner.js":22,"../util.js":23,"./complementary-filter.js":18,"./pose-predictor.js":20}],20:[function(_dereq_,module,exports){
+},{"../math-util.js":61,"../touch-panner.js":69,"../util.js":70,"./complementary-filter.js":65,"./pose-predictor.js":67}],67:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64837,7 +63435,7 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
 
 module.exports = PosePredictor;
 
-},{"../math-util":15,"../util":23}],21:[function(_dereq_,module,exports){
+},{"../math-util":61,"../util":70}],68:[function(_dereq_,module,exports){
 function SensorSample(sample, timestampS) {
   this.set(sample, timestampS);
 };
@@ -64853,7 +63451,7 @@ SensorSample.prototype.copy = function(sensorSample) {
 
 module.exports = SensorSample;
 
-},{}],22:[function(_dereq_,module,exports){
+},{}],69:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64901,7 +63499,9 @@ TouchPanner.prototype.resetSensor = function() {
 
 TouchPanner.prototype.onTouchStart_ = function(e) {
   // Only respond if there is exactly one touch.
-  if (e.touches.length != 1) {
+  // Note that the Daydream controller passes in a `touchstart` event with
+  // no `touches` property, so we must check for that case too.
+  if (!e.touches || e.touches.length != 1) {
     return;
   }
   this.rotateStart.set(e.touches[0].pageX, e.touches[0].pageY);
@@ -64931,7 +63531,7 @@ TouchPanner.prototype.onTouchEnd_ = function(e) {
 
 module.exports = TouchPanner;
 
-},{"./math-util.js":15,"./util.js":23}],23:[function(_dereq_,module,exports){
+},{"./math-util.js":61,"./util.js":70}],70:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64946,8 +63546,6 @@ module.exports = TouchPanner;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-var objectAssign = _dereq_('object-assign');
 
 var Util = window.Util || {};
 
@@ -64964,6 +63562,25 @@ Util.clamp = function(value, min, max) {
 
 Util.lerp = function(a, b, t) {
   return a + ((b - a) * t);
+};
+
+/**
+ * Light polyfill for `Promise.race`. Returns
+ * a promise that resolves when the first promise
+ * provided resolves.
+ *
+ * @param {Array<Promise>} promises
+ */
+Util.race = function(promises) {
+  if (Promise.race) {
+    return Promise.race(promises);
+  }
+
+  return new Promise(function (resolve, reject) {
+    for (var i = 0; i < promises.length; i++) {
+      promises[i].then(resolve, reject);
+    }
+  });
 };
 
 Util.isIOS = (function() {
@@ -65045,7 +63662,6 @@ Util.requestFullscreen = function(element) {
 };
 
 Util.exitFullscreen = function() {
-
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.webkitExitFullscreen) {
@@ -65128,13 +63744,27 @@ Util.orthoMatrix = function (out, left, right, bottom, top, near, far) {
   return out;
 };
 
+Util.copyArray = function (source, dest) {
+  for (var i = 0, n = source.length; i < n; i++) {
+    dest[i] = source[i];
+  }
+};
+
 Util.isMobile = function() {
   var check = false;
   (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))check = true})(navigator.userAgent||navigator.vendor||window.opera);
   return check;
 };
 
-Util.extend = objectAssign;
+Util.extend = function(dest, src) {
+  for (var key in src) {
+    if (src.hasOwnProperty(key)) {
+      dest[key] = src[key];
+    }
+  }
+
+  return dest;
+}
 
 Util.safariCssSizeWorkaround = function(canvas) {
   // TODO(smus): Remove this workaround when Safari for iOS is fixed.
@@ -65376,7 +64006,7 @@ Util.getDomainFromUrl = function(url) {
 
 module.exports = Util;
 
-},{"object-assign":2}],24:[function(_dereq_,module,exports){
+},{}],71:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65393,7 +64023,6 @@ module.exports = Util;
  */
 
 var DeviceInfo = _dereq_('./device-info.js');
-var EventEmitter3 = _dereq_('eventemitter3');
 var Util = _dereq_('./util.js');
 
 var DEFAULT_VIEWER = 'CardboardV1';
@@ -65406,17 +64035,22 @@ var CLASS_NAME = 'webvr-polyfill-viewer-selector';
  * saving the currently selected index in localStorage.
  */
 function ViewerSelector() {
-  // Try to load the selected key from local storage. If none exists, use the
-  // default key.
+  // Try to load the selected key from local storage.
   try {
-    this.selectedKey = localStorage.getItem(VIEWER_KEY) || DEFAULT_VIEWER;
+    this.selectedKey = localStorage.getItem(VIEWER_KEY);
   } catch (error) {
     console.error('Failed to load viewer profile: %s', error);
   }
+
+  //If none exists, or if localstorage is unavailable, use the default key.
+  if (!this.selectedKey) {
+    this.selectedKey = DEFAULT_VIEWER;
+  }
+
   this.dialog = this.createDialog_(DeviceInfo.Viewers);
   this.root = null;
+  this.onChangeCallbacks_ = [];
 }
-ViewerSelector.prototype = new EventEmitter3();
 
 ViewerSelector.prototype.show = function(root) {
   this.root = root;
@@ -65450,6 +64084,16 @@ ViewerSelector.prototype.getSelectedKey_ = function() {
   return null;
 };
 
+ViewerSelector.prototype.onChange = function(cb) {
+  this.onChangeCallbacks_.push(cb);
+};
+
+ViewerSelector.prototype.fireOnChange_ = function(viewer) {
+  for (var i = 0; i < this.onChangeCallbacks_.length; i++) {
+    this.onChangeCallbacks_[i](viewer);
+  }
+};
+
 ViewerSelector.prototype.onSave_ = function() {
   this.selectedKey = this.getSelectedKey_();
   if (!this.selectedKey || !DeviceInfo.Viewers[this.selectedKey]) {
@@ -65457,7 +64101,7 @@ ViewerSelector.prototype.onSave_ = function() {
     return;
   }
 
-  this.emit('change', DeviceInfo.Viewers[this.selectedKey]);
+  this.fireOnChange_(DeviceInfo.Viewers[this.selectedKey]);
 
   // Attempt to save the viewer profile, but fails in private mode.
   try {
@@ -65575,7 +64219,7 @@ ViewerSelector.prototype.createButton_ = function(label, onclick) {
 
 module.exports = ViewerSelector;
 
-},{"./device-info.js":8,"./util.js":23,"eventemitter3":1}],25:[function(_dereq_,module,exports){
+},{"./device-info.js":55,"./util.js":70}],72:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65600,22 +64244,26 @@ var Util = _dereq_('./util.js');
  */
 function AndroidWakeLock() {
   var video = document.createElement('video');
+  video.setAttribute('loop', '');
 
-  video.addEventListener('ended', function() {
-    video.play();
-  });
+  function addSourceToVideo(element, type, dataURI) {
+    var source = document.createElement('source');
+    source.src = dataURI;
+    source.type = 'video/' + type;
+    element.appendChild(source);
+  }
+
+  addSourceToVideo(video,'webm', Util.base64('video/webm', 'GkXfo0AgQoaBAUL3gQFC8oEEQvOBCEKCQAR3ZWJtQoeBAkKFgQIYU4BnQI0VSalmQCgq17FAAw9CQE2AQAZ3aGFtbXlXQUAGd2hhbW15RIlACECPQAAAAAAAFlSua0AxrkAu14EBY8WBAZyBACK1nEADdW5khkAFVl9WUDglhohAA1ZQOIOBAeBABrCBCLqBCB9DtnVAIueBAKNAHIEAAIAwAQCdASoIAAgAAUAmJaQAA3AA/vz0AAA='));
+  addSourceToVideo(video, 'mp4', Util.base64('video/mp4', 'AAAAHGZ0eXBpc29tAAACAGlzb21pc28ybXA0MQAAAAhmcmVlAAAAG21kYXQAAAGzABAHAAABthADAowdbb9/AAAC6W1vb3YAAABsbXZoZAAAAAB8JbCAfCWwgAAAA+gAAAAAAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIVdHJhawAAAFx0a2hkAAAAD3wlsIB8JbCAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAIAAAACAAAAAABsW1kaWEAAAAgbWRoZAAAAAB8JbCAfCWwgAAAA+gAAAAAVcQAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAAAVxtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAEcc3RibAAAALhzdHNkAAAAAAAAAAEAAACobXA0dgAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAIAAgASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAAFJlc2RzAAAAAANEAAEABDwgEQAAAAADDUAAAAAABS0AAAGwAQAAAbWJEwAAAQAAAAEgAMSNiB9FAEQBFGMAAAGyTGF2YzUyLjg3LjQGAQIAAAAYc3R0cwAAAAAAAAABAAAAAQAAAAAAAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAAFHN0c3oAAAAAAAAAEwAAAAEAAAAUc3RjbwAAAAAAAAABAAAALAAAAGB1ZHRhAAAAWG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAK2lsc3QAAAAjqXRvbwAAABtkYXRhAAAAAQAAAABMYXZmNTIuNzguMw=='));
 
   this.request = function() {
     if (video.paused) {
-      // Base64 version of videos_src/no-sleep-120s.mp4.
-      video.src = Util.base64('video/mp4', 'AAAAGGZ0eXBpc29tAAAAAG1wNDFhdmMxAAAIA21vb3YAAABsbXZoZAAAAADSa9v60mvb+gABX5AAlw/gAAEAAAEAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAdkdHJhawAAAFx0a2hkAAAAAdJr2/rSa9v6AAAAAQAAAAAAlw/gAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAQAAAAHAAAAAAAJGVkdHMAAAAcZWxzdAAAAAAAAAABAJcP4AAAAAAAAQAAAAAG3G1kaWEAAAAgbWRoZAAAAADSa9v60mvb+gAPQkAGjneAFccAAAAAAC1oZGxyAAAAAAAAAAB2aWRlAAAAAAAAAAAAAAAAVmlkZW9IYW5kbGVyAAAABodtaW5mAAAAFHZtaGQAAAABAAAAAAAAAAAAAAAkZGluZgAAABxkcmVmAAAAAAAAAAEAAAAMdXJsIAAAAAEAAAZHc3RibAAAAJdzdHNkAAAAAAAAAAEAAACHYXZjMQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAMABwASAAAAEgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABj//wAAADFhdmNDAWQAC//hABlnZAALrNlfllw4QAAAAwBAAAADAKPFCmWAAQAFaOvssiwAAAAYc3R0cwAAAAAAAAABAAAAbgAPQkAAAAAUc3RzcwAAAAAAAAABAAAAAQAAA4BjdHRzAAAAAAAAAG4AAAABAD0JAAAAAAEAehIAAAAAAQA9CQAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEATEtAAAAAAQAehIAAAAABAAAAAAAAAAEAD0JAAAAAAQBMS0AAAAABAB6EgAAAAAEAAAAAAAAAAQAPQkAAAAABAExLQAAAAAEAHoSAAAAAAQAAAAAAAAABAA9CQAAAAAEALcbAAAAAHHN0c2MAAAAAAAAAAQAAAAEAAABuAAAAAQAAAcxzdHN6AAAAAAAAAAAAAABuAAADCQAAABgAAAAOAAAADgAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABIAAAAOAAAADAAAAAwAAAASAAAADgAAAAwAAAAMAAAAEgAAAA4AAAAMAAAADAAAABMAAAAUc3RjbwAAAAAAAAABAAAIKwAAACt1ZHRhAAAAI6llbmMAFwAAdmxjIDIuMi4xIHN0cmVhbSBvdXRwdXQAAAAId2lkZQAACRRtZGF0AAACrgX//6vcRem95tlIt5Ys2CDZI+7veDI2NCAtIGNvcmUgMTQyIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNCAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDEzIG1lPWhleCBzdWJtZT03IHBzeT0xIHBzeV9yZD0xLjAwOjAuMDAgbWl4ZWRfcmVmPTEgbWVfcmFuZ2U9MTYgY2hyb21hX21lPTEgdHJlbGxpcz0xIDh4OGRjdD0xIGNxbT0wIGRlYWR6b25lPTIxLDExIGZhc3RfcHNraXA9MSBjaHJvbWFfcXBfb2Zmc2V0PS0yIHRocmVhZHM9MTIgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTEgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD00MCByYz1hYnIgbWJ0cmVlPTEgYml0cmF0ZT0xMDAgcmF0ZXRvbD0xLjAgcWNvbXA9MC42MCBxcG1pbj0xMCBxcG1heD01MSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAU2WIhAAQ/8ltlOe+cTZuGkKg+aRtuivcDZ0pBsfsEi9p/i1yU9DxS2lq4dXTinViF1URBKXgnzKBd/Uh1bkhHtMrwrRcOJslD01UB+fyaL6ef+DBAAAAFEGaJGxBD5B+v+a+4QqF3MgBXz9MAAAACkGeQniH/+94r6EAAAAKAZ5hdEN/8QytwAAAAAgBnmNqQ3/EgQAAAA5BmmhJqEFomUwIIf/+4QAAAApBnoZFESw//76BAAAACAGepXRDf8SBAAAACAGep2pDf8SAAAAADkGarEmoQWyZTAgh//7gAAAACkGeykUVLD//voEAAAAIAZ7pdEN/xIAAAAAIAZ7rakN/xIAAAAAOQZrwSahBbJlMCCH//uEAAAAKQZ8ORRUsP/++gQAAAAgBny10Q3/EgQAAAAgBny9qQ3/EgAAAAA5BmzRJqEFsmUwIIf/+4AAAAApBn1JFFSw//76BAAAACAGfcXRDf8SAAAAACAGfc2pDf8SAAAAADkGbeEmoQWyZTAgh//7hAAAACkGflkUVLD//voAAAAAIAZ+1dEN/xIEAAAAIAZ+3akN/xIEAAAAOQZu8SahBbJlMCCH//uAAAAAKQZ/aRRUsP/++gQAAAAgBn/l0Q3/EgAAAAAgBn/tqQ3/EgQAAAA5Bm+BJqEFsmUwIIf/+4QAAAApBnh5FFSw//76AAAAACAGePXRDf8SAAAAACAGeP2pDf8SBAAAADkGaJEmoQWyZTAgh//7gAAAACkGeQkUVLD//voEAAAAIAZ5hdEN/xIAAAAAIAZ5jakN/xIEAAAAOQZpoSahBbJlMCCH//uEAAAAKQZ6GRRUsP/++gQAAAAgBnqV0Q3/EgQAAAAgBnqdqQ3/EgAAAAA5BmqxJqEFsmUwIIf/+4AAAAApBnspFFSw//76BAAAACAGe6XRDf8SAAAAACAGe62pDf8SAAAAADkGa8EmoQWyZTAgh//7hAAAACkGfDkUVLD//voEAAAAIAZ8tdEN/xIEAAAAIAZ8vakN/xIAAAAAOQZs0SahBbJlMCCH//uAAAAAKQZ9SRRUsP/++gQAAAAgBn3F0Q3/EgAAAAAgBn3NqQ3/EgAAAAA5Bm3hJqEFsmUwIIf/+4QAAAApBn5ZFFSw//76AAAAACAGftXRDf8SBAAAACAGft2pDf8SBAAAADkGbvEmoQWyZTAgh//7gAAAACkGf2kUVLD//voEAAAAIAZ/5dEN/xIAAAAAIAZ/7akN/xIEAAAAOQZvgSahBbJlMCCH//uEAAAAKQZ4eRRUsP/++gAAAAAgBnj10Q3/EgAAAAAgBnj9qQ3/EgQAAAA5BmiRJqEFsmUwIIf/+4AAAAApBnkJFFSw//76BAAAACAGeYXRDf8SAAAAACAGeY2pDf8SBAAAADkGaaEmoQWyZTAgh//7hAAAACkGehkUVLD//voEAAAAIAZ6ldEN/xIEAAAAIAZ6nakN/xIAAAAAOQZqsSahBbJlMCCH//uAAAAAKQZ7KRRUsP/++gQAAAAgBnul0Q3/EgAAAAAgBnutqQ3/EgAAAAA5BmvBJqEFsmUwIIf/+4QAAAApBnw5FFSw//76BAAAACAGfLXRDf8SBAAAACAGfL2pDf8SAAAAADkGbNEmoQWyZTAgh//7gAAAACkGfUkUVLD//voEAAAAIAZ9xdEN/xIAAAAAIAZ9zakN/xIAAAAAOQZt4SahBbJlMCCH//uEAAAAKQZ+WRRUsP/++gAAAAAgBn7V0Q3/EgQAAAAgBn7dqQ3/EgQAAAA5Bm7xJqEFsmUwIIf/+4AAAAApBn9pFFSw//76BAAAACAGf+XRDf8SAAAAACAGf+2pDf8SBAAAADkGb4EmoQWyZTAgh//7hAAAACkGeHkUVLD//voAAAAAIAZ49dEN/xIAAAAAIAZ4/akN/xIEAAAAOQZokSahBbJlMCCH//uAAAAAKQZ5CRRUsP/++gQAAAAgBnmF0Q3/EgAAAAAgBnmNqQ3/EgQAAAA5BmmhJqEFsmUwIIf/+4QAAAApBnoZFFSw//76BAAAACAGepXRDf8SBAAAACAGep2pDf8SAAAAADkGarEmoQWyZTAgh//7gAAAACkGeykUVLD//voEAAAAIAZ7pdEN/xIAAAAAIAZ7rakN/xIAAAAAPQZruSahBbJlMFEw3//7B');
       video.play();
     }
   };
 
   this.release = function() {
     video.pause();
-    video.src = '';
   };
 }
 
@@ -65650,7 +64298,7 @@ function getWakeLock() {
 }
 
 module.exports = getWakeLock();
-},{"./util.js":23}],26:[function(_dereq_,module,exports){
+},{"./util.js":70}],73:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65677,6 +64325,7 @@ var HMDVRDevice = _dereq_('./base.js').HMDVRDevice;
 var PositionSensorVRDevice = _dereq_('./base.js').PositionSensorVRDevice;
 var VRDisplayHMDDevice = _dereq_('./display-wrappers.js').VRDisplayHMDDevice;
 var VRDisplayPositionSensorDevice = _dereq_('./display-wrappers.js').VRDisplayPositionSensorDevice;
+var version = _dereq_('../package.json').version;
 
 function WebVRPolyfill() {
   this.displays = [];
@@ -65690,7 +64339,7 @@ function WebVRPolyfill() {
 
   if (!this.nativeLegacyWebVRAvailable) {
     this.enablePolyfill();
-    if (WebVRConfig.ENABLE_DEPRECATED_API) {
+    if (window.WebVRConfig.ENABLE_DEPRECATED_API) {
       this.enableDeprecatedPolyfill();
     }
   }
@@ -65707,6 +64356,11 @@ WebVRPolyfill.prototype.isDeprecatedWebVRAvailable = function() {
   return ('getVRDevices' in navigator) || ('mozGetVRDevices' in navigator);
 };
 
+WebVRPolyfill.prototype.connectDisplay = function(vrDisplay) {
+  vrDisplay.fireVRDisplayConnect_();
+  this.displays.push(vrDisplay);
+};
+
 WebVRPolyfill.prototype.populateDevices = function() {
   if (this.devicesPopulated) {
     return;
@@ -65718,29 +64372,30 @@ WebVRPolyfill.prototype.populateDevices = function() {
   // Add a Cardboard VRDisplay on compatible mobile devices
   if (this.isCardboardCompatible()) {
     vrDisplay = new CardboardVRDisplay();
-    this.displays.push(vrDisplay);
+
+    this.connectDisplay(vrDisplay);
 
     // For backwards compatibility
-    if (WebVRConfig.ENABLE_DEPRECATED_API) {
+    if (window.WebVRConfig.ENABLE_DEPRECATED_API) {
       this.devices.push(new VRDisplayHMDDevice(vrDisplay));
       this.devices.push(new VRDisplayPositionSensorDevice(vrDisplay));
     }
   }
 
   // Add a Mouse and Keyboard driven VRDisplay for desktops/laptops
-  if (!this.isMobile() && !WebVRConfig.MOUSE_KEYBOARD_CONTROLS_DISABLED) {
+  if (!this.isMobile() && !window.WebVRConfig.MOUSE_KEYBOARD_CONTROLS_DISABLED) {
     vrDisplay = new MouseKeyboardVRDisplay();
-    this.displays.push(vrDisplay);
+    this.connectDisplay(vrDisplay);
 
     // For backwards compatibility
-    if (WebVRConfig.ENABLE_DEPRECATED_API) {
+    if (window.WebVRConfig.ENABLE_DEPRECATED_API) {
       this.devices.push(new VRDisplayHMDDevice(vrDisplay));
       this.devices.push(new VRDisplayPositionSensorDevice(vrDisplay));
     }
   }
 
   // Uncomment to add positional tracking via webcam.
-  //if (!this.isMobile() && WebVRConfig.ENABLE_DEPRECATED_API) {
+  //if (!this.isMobile() && window.WebVRConfig.ENABLE_DEPRECATED_API) {
   //  positionDevice = new WebcamPositionSensorVRDevice();
   //  this.devices.push(positionDevice);
   //}
@@ -65752,19 +64407,42 @@ WebVRPolyfill.prototype.enablePolyfill = function() {
   // Provide navigator.getVRDisplays.
   navigator.getVRDisplays = this.getVRDisplays.bind(this);
 
-  // Provide the VRDisplay object.
+  // Polyfill native VRDisplay.getFrameData
+  if (this.nativeWebVRAvailable && window.VRFrameData) {
+    var nativeFrameData = new window.VRFrameData();
+    var nativeGetFrameData = window.VRDisplay.prototype.getFrameData;
+    window.VRFrameData = VRFrameData;
+
+    window.VRDisplay.prototype.getFrameData = function(frameData) {
+      /*
+      Copy frame data from the native object into the polyfilled object.
+      */
+
+      nativeGetFrameData.call(this, nativeFrameData);
+      frameData.pose = nativeFrameData.pose;
+      Util.copyArray(nativeFrameData.leftProjectionMatrix, frameData.leftProjectionMatrix);
+      Util.copyArray(nativeFrameData.rightProjectionMatrix, frameData.rightProjectionMatrix);
+      Util.copyArray(nativeFrameData.leftViewMatrix, frameData.leftViewMatrix);
+      Util.copyArray(nativeFrameData.rightViewMatrix, frameData.rightViewMatrix);
+      //todo: copy
+    };
+  }
+
+  // Provide the `VRDisplay` object.
   window.VRDisplay = VRDisplay;
 
-  // Provide navigator.vrEnabled.
-  var self = this;
-  Object.defineProperty(navigator, 'vrEnabled', {
-    get: function () {
-      return self.isCardboardCompatible() &&
-          (self.isFullScreenAvailable() || Util.isIOS());
-    }
-  });
+  // Provide the `navigator.vrEnabled` property.
+  if (navigator && !navigator.vrEnabled) {
+    var self = this;
+    Object.defineProperty(navigator, 'vrEnabled', {
+      get: function () {
+        return self.isCardboardCompatible() &&
+            (self.isFullScreenAvailable() || Util.isIOS());
+      }
+    });
+  }
 
-  if (!'VRFrameData' in window) {
+  if (!('VRFrameData' in window)) {
     // Provide the VRFrameData object.
     window.VRFrameData = VRFrameData;
   }
@@ -65783,23 +64461,32 @@ WebVRPolyfill.prototype.getVRDisplays = function() {
   this.populateDevices();
   var polyfillDisplays = this.displays;
 
-  if (this.nativeWebVRAvailable) {
-    return this.nativeGetVRDisplaysFunc.call(navigator).then(function(nativeDisplays) {
-      if (WebVRConfig.ALWAYS_APPEND_POLYFILL_DISPLAY) {
-        return nativeDisplays.concat(polyfillDisplays);
-      } else {
-        return nativeDisplays.length > 0 ? nativeDisplays : polyfillDisplays;
-      }
-    });
-  } else {
-    return new Promise(function(resolve, reject) {
-      try {
-        resolve(polyfillDisplays);
-      } catch (e) {
-        reject(e);
-      }
-    });
+  if (!this.nativeWebVRAvailable) {
+    return Promise.resolve(polyfillDisplays);
   }
+
+  // Set up a race condition if this browser has a bug where
+  // `navigator.getVRDisplays()` never resolves.
+  var timeoutId;
+  var vrDisplaysNative = this.nativeGetVRDisplaysFunc.call(navigator);
+  var timeoutPromise = new Promise(function(resolve) {
+    timeoutId = setTimeout(function() {
+      console.warn('Native WebVR implementation detected, but `getVRDisplays()` failed to resolve. Falling back to polyfill.');
+      resolve([]);
+    }, window.WebVRConfig.GET_VR_DISPLAYS_TIMEOUT);
+  });
+
+  return Util.race([
+    vrDisplaysNative,
+    timeoutPromise
+  ]).then(function(nativeDisplays) {
+    clearTimeout(timeoutId);
+    if (window.WebVRConfig.ALWAYS_APPEND_POLYFILL_DISPLAY) {
+      return nativeDisplays.concat(polyfillDisplays);
+    } else {
+      return nativeDisplays.length > 0 ? nativeDisplays : polyfillDisplays;
+    }
+  });
 };
 
 WebVRPolyfill.prototype.getVRDevices = function() {
@@ -65854,7 +64541,7 @@ WebVRPolyfill.prototype.isMobile = function() {
 WebVRPolyfill.prototype.isCardboardCompatible = function() {
   // For now, support all iOS and Android devices.
   // Also enable the WebVRConfig.FORCE_VR flag for debugging.
-  return this.isMobile() || WebVRConfig.FORCE_ENABLE_VR;
+  return this.isMobile() || window.WebVRConfig.FORCE_ENABLE_VR;
 };
 
 WebVRPolyfill.prototype.isFullScreenAvailable = function() {
@@ -65886,13 +64573,11 @@ function InstallWebVRSpecShim() {
   }
 };
 
+WebVRPolyfill.version = version;
+
 module.exports.WebVRPolyfill = WebVRPolyfill;
 
-},{"./base.js":3,"./cardboard-vr-display.js":6,"./display-wrappers.js":9,"./mouse-keyboard-vr-display.js":16,"./util.js":23}]},{},[14])(14)
-});
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],50:[function(_dereq_,module,exports){
+},{"../package.json":49,"./base.js":50,"./cardboard-vr-display.js":53,"./display-wrappers.js":56,"./mouse-keyboard-vr-display.js":62,"./util.js":70}],74:[function(_dereq_,module,exports){
 var newline = /\n/
 var newlineChar = '\n'
 var whitespace = /\s/
@@ -66020,7 +64705,7 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
-},{}],51:[function(_dereq_,module,exports){
+},{}],75:[function(_dereq_,module,exports){
 "use strict";
 var window = _dereq_("global/window")
 var isFunction = _dereq_("is-function")
@@ -66263,7 +64948,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":14,"is-function":19,"parse-headers":30,"xtend":53}],52:[function(_dereq_,module,exports){
+},{"global/window":14,"is-function":19,"parse-headers":30,"xtend":77}],76:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof window.DOMParser !== 'undefined') {
@@ -66291,7 +64976,7 @@ module.exports = (function xmlparser() {
     return div
   }
 })()
-},{}],53:[function(_dereq_,module,exports){
+},{}],77:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -66312,7 +64997,7 @@ function extend() {
     return target
 }
 
-},{}],54:[function(_dereq_,module,exports){
+},{}],78:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.5.0",
@@ -66357,7 +65042,7 @@ module.exports={
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "dmarcos/webvr-polyfill#a02a8089b"
+    "webvr-polyfill": "^0.9.34"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -66368,7 +65053,7 @@ module.exports={
     "chai-shallow-deep-equal": "^1.4.0",
     "chalk": "^1.1.3",
     "codecov": "^1.0.1",
-    "cross-env": "^4.0.0",
+    "cross-env": "^5.0.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
@@ -66385,7 +65070,7 @@ module.exports={
     "karma-firefox-launcher": "^1.0.0",
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.1.0",
-    "karma-sinon-chai": "^1.2.4",
+    "karma-sinon-chai": "1.2.4",
     "lolex": "^1.5.1",
     "markserv": "0.0.20",
     "minifyify": "^7.3.3",
@@ -66396,7 +65081,7 @@ module.exports={
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
     "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0",
+    "sinon-chai": "2.8.0",
     "snazzy": "^5.0.0",
     "too-wordy": "ngokevin/too-wordy",
     "uglifyjs": "^2.4.10",
@@ -66440,7 +65125,7 @@ module.exports={
   }
 }
 
-},{}],55:[function(_dereq_,module,exports){
+},{}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66481,7 +65166,7 @@ module.exports.Component = registerComponent('blend-character-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149}],56:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -66659,7 +65344,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils/":172}],57:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils/":197}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66694,9 +65379,10 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149}],58:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
+
 var bind = utils.bind;
 
 var EVENTS = {
@@ -66709,9 +65395,9 @@ var EVENTS = {
 };
 
 var STATES = {
-  FUSING: 'cursor-fusing',
-  HOVERING: 'cursor-hovering',
-  HOVERED: 'cursor-hovered'
+  FUSING: 'fusing',
+  HOVERING: 'hovering',
+  HOVERED: 'hovered'
 };
 
 /**
@@ -66720,7 +65406,7 @@ var STATES = {
  * closest intersection. Cursor can be fine-tuned by setting raycaster properties.
  *
  * @member {object} fuseTimeout - Timeout to trigger fuse-click.
- * @member {Element} mouseDownEl - Entity that was last mousedowned during current click.
+ * @member {Element} cursorDownEl - Entity that was last mousedowned during current click.
  * @member {object} intersection - Attributes of the current intersection event, including
  *         3D- and 2D-space coordinates. See: http://threejs.org/docs/api/core/Raycaster.html
  * @member {Element} intersectedEl - Currently-intersected entity. Used to keep track to
@@ -66730,62 +65416,92 @@ module.exports.Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {
+    downEvents: {default: []},
     fuse: {default: utils.device.isMobile()},
-    fuseTimeout: {default: 1500, min: 0}
+    fuseTimeout: {default: 1500, min: 0},
+    upEvents: {default: []}
   },
 
   init: function () {
-    var el = this.el;
-    var canvas = el.sceneEl.canvas;
     this.fuseTimeout = undefined;
-    this.mouseDownEl = null;
+    this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
 
-    // Wait for canvas to load.
-    if (!canvas) {
-      el.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
-      return;
-    }
-
     // Bind methods.
-    this.onMouseDown = bind(this.onMouseDown, this);
-    this.onMouseUp = bind(this.onMouseUp, this);
+    this.onCursorDown = bind(this.onCursorDown, this);
+    this.onCursorUp = bind(this.onCursorUp, this);
     this.onIntersection = bind(this.onIntersection, this);
     this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
+  },
 
-    // Attach event listeners.
-    canvas.addEventListener('mousedown', this.onMouseDown);
-    canvas.addEventListener('mouseup', this.onMouseUp);
-    el.addEventListener('raycaster-intersection', this.onIntersection);
-    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  play: function () {
+    this.addEventListeners();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
   },
 
   remove: function () {
     var el = this.el;
-    var canvas = el.sceneEl.canvas;
-
     el.removeState(STATES.HOVERING);
     el.removeState(STATES.FUSING);
+    clearTimeout(this.fuseTimeout);
+    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
+    this.removeEventListeners();
+  },
+
+  addEventListeners: function () {
+    var canvas;
+    var data = this.data;
+    var el = this.el;
+    var self = this;
+
+    canvas = el.sceneEl.canvas;
+    if (canvas) {
+      canvas.addEventListener('mousedown', this.onCursorDown);
+      canvas.addEventListener('mouseup', this.onCursorUp);
+    }
+
+    data.downEvents.forEach(function (downEvent) {
+      el.addEventListener(downEvent, self.onCursorDown);
+    });
+    data.upEvents.forEach(function (upEvent) {
+      el.addEventListener(upEvent, self.onCursorUp);
+    });
+    el.addEventListener('raycaster-intersection', this.onIntersection);
+    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  },
+
+  removeEventListeners: function () {
+    var canvas;
+    var data = this.data;
+    var el = this.el;
+    var self = this;
+
+    canvas = el.sceneEl.canvas;
+    if (canvas) {
+      canvas.removeEventListener('mousedown', this.onCursorDown);
+      canvas.removeEventListener('mouseup', this.onCursorUp);
+    }
+
+    data.downEvents.forEach(function (downEvent) {
+      el.removeEventListener(downEvent, self.onCursorDown);
+    });
+    data.upEvents.forEach(function (upEvent) {
+      el.removeEventListener(upEvent, self.onCursorUp);
+    });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
-
-    clearTimeout(this.fuseTimeout);
-
-    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
-
-    if (canvas) {
-      canvas.removeEventListener('mousedown', this.onMouseDown);
-      canvas.removeEventListener('mouseup', this.onMouseUp);
-    }
   },
 
   /**
    * Trigger mousedown and keep track of the mousedowned entity.
    */
-  onMouseDown: function (evt) {
+  onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
-    this.mouseDownEl = this.intersectedEl;
+    this.cursorDownEl = this.intersectedEl;
   },
 
   /**
@@ -66795,11 +65511,20 @@ module.exports.Component = registerComponent('cursor', {
    * - Currently-intersected entity is the same as the one when mousedown was triggered,
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
-  onMouseUp: function (evt) {
+  onCursorUp: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEUP);
-    if (this.data.fuse || !this.intersectedEl ||
-        this.mouseDownEl !== this.intersectedEl) { return; }
-    this.twoWayEmit(EVENTS.CLICK);
+
+    // If intersected entity has changed since the cursorDown, still emit mouseUp on the
+    // previously cursorUp entity.
+    if (this.cursorDownEl && this.cursorDownEl !== this.intersectedEl) {
+      this.cursorDownEl.emit(EVENTS.MOUSEUP, {cursorEl: this.el, intersection: null});
+    }
+
+    if (!this.data.fuse && this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
+      this.twoWayEmit(EVENTS.CLICK);
+    }
+
+    this.cursorDownEl = null;
   },
 
   /**
@@ -66895,7 +65620,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":102,"../utils/":172}],59:[function(_dereq_,module,exports){
+},{"../core/component":127,"../utils/":197}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -66918,7 +65643,8 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
     // Use -999 as sentinel value to auto-determine based on hand.
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    armModel: {default: true}
   },
 
   // buttonId
@@ -66946,6 +65672,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
@@ -66961,6 +65688,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   addEventListeners: function () {
     var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
@@ -66971,6 +65699,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   removeEventListeners: function () {
     var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
@@ -67009,7 +65738,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: DAYDREAM_CONTROLLER_MODEL_OBJ_URL,
@@ -67045,6 +65774,13 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
 
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    if (!button) return;
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
+
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];
     var i;
@@ -67088,7 +65824,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":176}],60:[function(_dereq_,module,exports){
+},{"../core/component":127,"../utils/bind":191,"../utils/tracked-controls":201}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -67113,7 +65849,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0}, // use -999 as sentinel value to auto-determine based on hand
+    armModel: {default: true}
   },
 
   // buttonId
@@ -67140,6 +65877,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
@@ -67155,6 +65893,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   addEventListeners: function () {
     var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
@@ -67167,6 +65906,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   removeEventListeners: function () {
     var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
@@ -67202,7 +65942,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
@@ -67232,6 +65972,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
+  },
+
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    if (!button) return;
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onButtonEvent: function (id, evtName) {
@@ -67279,7 +66026,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":176}],61:[function(_dereq_,module,exports){
+},{"../core/component":127,"../utils/bind":191,"../utils/tracked-controls":201}],85:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -67403,7 +66150,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":102,"../core/geometry":103,"../lib/three":149,"../utils/debug":168}],62:[function(_dereq_,module,exports){
+},{"../core/component":127,"../core/geometry":128,"../lib/three":174,"../utils/debug":193}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -67443,7 +66190,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149}],63:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174}],87:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -67602,8 +66349,6 @@ module.exports.Component = registerComponent('hand-controls', {
     };
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
-    el.setAttribute('daydream-controls', controlConfiguration);
-    el.setAttribute('gearvr-controls', controlConfiguration);
 
     // Set model.
     el.setAttribute('blend-character-model', MODEL_URLS[hand]);
@@ -67786,7 +66531,7 @@ function isOculusTouchController (trackedControls) {
   return controllerId && controllerId.indexOf('Oculus Touch') === 0;
 }
 
-},{"../core/component":102}],64:[function(_dereq_,module,exports){
+},{"../core/component":127}],88:[function(_dereq_,module,exports){
 _dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
@@ -67796,7 +66541,9 @@ _dereq_('./gearvr-controls');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
 _dereq_('./hand-controls');
+_dereq_('./laser-controls');
 _dereq_('./light');
+_dereq_('./line');
 _dereq_('./look-controls');
 _dereq_('./material');
 _dereq_('./obj-model');
@@ -67813,7 +66560,6 @@ _dereq_('./visible');
 _dereq_('./vive-controls');
 _dereq_('./wasd-controls');
 
-_dereq_('./scene/auto-enter-vr');
 _dereq_('./scene/canvas');
 _dereq_('./scene/debug');
 _dereq_('./scene/embedded');
@@ -67825,7 +66571,64 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":55,"./camera":56,"./collada-model":57,"./cursor":58,"./daydream-controls":59,"./gearvr-controls":60,"./geometry":61,"./gltf-model":62,"./hand-controls":63,"./light":65,"./look-controls":66,"./material":67,"./obj-model":68,"./oculus-touch-controls":69,"./position":70,"./raycaster":71,"./rotation":72,"./scale":73,"./scene/auto-enter-vr":74,"./scene/canvas":75,"./scene/debug":76,"./scene/embedded":77,"./scene/fog":78,"./scene/inspector":79,"./scene/keyboard-shortcuts":80,"./scene/pool":81,"./scene/screenshot":82,"./scene/stats":83,"./scene/vr-mode-ui":84,"./shadow":85,"./sound":86,"./text":87,"./tracked-controls":88,"./visible":89,"./vive-controls":90,"./wasd-controls":91}],65:[function(_dereq_,module,exports){
+},{"./blend-character-model":79,"./camera":80,"./collada-model":81,"./cursor":82,"./daydream-controls":83,"./gearvr-controls":84,"./geometry":85,"./gltf-model":86,"./hand-controls":87,"./laser-controls":89,"./light":90,"./line":91,"./look-controls":92,"./material":93,"./obj-model":94,"./oculus-touch-controls":95,"./position":96,"./raycaster":97,"./rotation":98,"./scale":99,"./scene/canvas":100,"./scene/debug":101,"./scene/embedded":102,"./scene/fog":103,"./scene/inspector":104,"./scene/keyboard-shortcuts":105,"./scene/pool":106,"./scene/screenshot":107,"./scene/stats":108,"./scene/vr-mode-ui":109,"./shadow":110,"./sound":111,"./text":112,"./tracked-controls":113,"./visible":114,"./vive-controls":115,"./wasd-controls":116}],89:[function(_dereq_,module,exports){
+var registerComponent = _dereq_('../core/component').registerComponent;
+var utils = _dereq_('../utils/');
+
+registerComponent('laser-controls', {
+  schema: {
+    hand: {default: 'right'}
+  },
+
+  init: function () {
+    var config = this.config;
+    var data = this.data;
+    var el = this.el;
+
+    // Set all controller models.
+    el.setAttribute('daydream-controls', {hand: data.hand});
+    el.setAttribute('gearvr-controls', {hand: data.hand});
+    el.setAttribute('oculus-touch-controls', {hand: data.hand});
+    el.setAttribute('vive-controls', {hand: data.hand});
+
+    // Wait for controller to connect before
+    el.addEventListener('controllerconnected', function (evt) {
+      var controllerConfig = config[evt.detail.name];
+
+      if (!controllerConfig) { return; }
+
+      el.setAttribute('raycaster', utils.extend({
+        showLine: true
+      }, controllerConfig.raycaster || {}));
+
+      el.setAttribute('cursor', utils.extend({
+        fuse: false
+      }, controllerConfig.cursor));
+    });
+  },
+
+  config: {
+    'daydream-controls': {
+      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']}
+    },
+
+    'gearvr-controls': {
+      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']},
+      raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
+    },
+
+    'oculus-touch-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {origin: {x: 0.001, y: 0, z: 0.065}, direction: {x: 0, y: -0.8, z: -1}}
+    },
+
+    'vive-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    }
+  }
+});
+
+},{"../core/component":127,"../utils/":197}],90:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -68099,7 +66902,82 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils":172,"../utils/bind":166,"../utils/debug":168}],66:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils":197,"../utils/bind":191,"../utils/debug":193}],91:[function(_dereq_,module,exports){
+/* global THREE */
+var registerComponent = _dereq_('../core/component').registerComponent;
+
+module.exports.Component = registerComponent('line', {
+  schema: {
+    start: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+    end: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+    color: {type: 'color', default: '#74BEC1'},
+    opacity: {type: 'number', default: 1},
+    visible: {default: true}
+  },
+
+  multiple: true,
+
+  init: function () {
+    var data = this.data;
+    var geometry;
+    var material;
+    material = this.material = new THREE.LineBasicMaterial({
+      color: data.color,
+      opacity: data.opacity,
+      transparent: data.opacity < 1,
+      visible: data.visible
+    });
+    geometry = this.geometry = new THREE.BufferGeometry();
+    geometry.addAttribute('position', new THREE.BufferAttribute(new Float32Array(2 * 3), 3));
+
+    this.line = new THREE.Line(geometry, material);
+    this.el.setObject3D(this.attrName, this.line);
+  },
+
+  update: function (oldData) {
+    var data = this.data;
+    var geometry = this.geometry;
+    var geoNeedsUpdate = false;
+    var material = this.material;
+    var positionArray = geometry.attributes.position.array;
+
+    // Update geometry.
+    if (!isEqualVec3(data.start, oldData.start)) {
+      positionArray[0] = data.start.x;
+      positionArray[1] = data.start.y;
+      positionArray[2] = data.start.z;
+      geoNeedsUpdate = true;
+    }
+
+    if (!isEqualVec3(data.end, oldData.end)) {
+      positionArray[3] = data.end.x;
+      positionArray[4] = data.end.y;
+      positionArray[5] = data.end.z;
+      geoNeedsUpdate = true;
+    }
+
+    if (geoNeedsUpdate) {
+      geometry.attributes.position.needsUpdate = true;
+      geometry.computeBoundingSphere();
+    }
+
+    material.color.setStyle(data.color);
+    material.opacity = data.opacity;
+    material.transparent = data.opacity < 1;
+    material.visible = data.visible;
+  },
+
+  remove: function () {
+    this.el.removeObject3D('line', this.line);
+  }
+});
+
+function isEqualVec3 (a, b) {
+  if (!a || !b) { return false; }
+  return a.x !== b.x || a.y !== b.y || a.z !== b.z;
+}
+
+},{"../core/component":127}],92:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').device.isMobile();
@@ -68427,7 +67305,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":102,"../lib/three":149,"../utils/":172,"../utils/bind":166}],67:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils/":197,"../utils/bind":191}],93:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -68612,7 +67490,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":102,"../core/shader":111,"../lib/three":149,"../utils/":172}],68:[function(_dereq_,module,exports){
+},{"../core/component":127,"../core/shader":136,"../lib/three":174,"../utils/":197}],94:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -68688,7 +67566,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils/debug":168}],69:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils/debug":193}],95:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
@@ -68924,7 +67802,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":176}],70:[function(_dereq_,module,exports){
+},{"../core/component":127,"../utils/bind":191,"../utils/tracked-controls":201}],96:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -68937,12 +67815,14 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":102}],71:[function(_dereq_,module,exports){
+},{"../core/component":127}],97:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
-var bind = _dereq_('../utils/').bind;
+var utils = _dereq_('../utils/');
 
-var scaleDummy = new THREE.Vector3();
+var bind = utils.bind;
+
+var dummyVec = new THREE.Vector3();
 
 /**
  * Raycaster component.
@@ -68958,22 +67838,55 @@ var scaleDummy = new THREE.Vector3();
  */
 module.exports.Component = registerComponent('raycaster', {
   schema: {
-    far: {default: Infinity}, // Infinity.
+    direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
+    far: {default: 1000},
     interval: {default: 100},
     near: {default: 0},
     objects: {default: ''},
-    recursive: {default: true}
+    origin: {type: 'vec3'},
+    recursive: {default: true},
+    showLine: {default: false}
   },
 
   init: function () {
-    this.direction = new THREE.Vector3();
+    // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
+    // adjust line length.
+    this.lineData = {};
+    this.lineEndVec3 = new THREE.Vector3();
+    this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
     this.objects = null;
     this.prevCheckTime = undefined;
+    this.prevIntersectedEls = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.refreshObjects = bind(this.refreshObjects, this);
     this.refreshOnceChildLoaded = bind(this.refreshOnceChildLoaded, this);
+  },
+
+  /**
+   * Create or update raycaster object.
+   */
+  update: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var raycaster = this.raycaster;
+
+    // Set raycaster properties.
+    raycaster.far = data.far;
+    raycaster.near = data.near;
+
+    // Draw line.
+    if (data.showLine && data.far !== oldData.far ||
+        data.origin !== oldData.origin || data.direction !== oldData.direction) {
+      this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
+      this.drawLine();
+    }
+    if (!data.showLine && oldData.showLine) {
+      el.removeAttribute('line');
+    }
+
+    this.refreshObjects();
   },
 
   play: function () {
@@ -68988,18 +67901,10 @@ module.exports.Component = registerComponent('raycaster', {
     this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
   },
 
-  /**
-   * Create or update raycaster object.
-   */
-  update: function () {
-    var data = this.data;
-    var raycaster = this.raycaster;
-
-    // Set raycaster properties.
-    raycaster.far = data.far;
-    raycaster.near = data.near;
-
-    this.refreshObjects();
+  remove: function () {
+    if (this.data.showLine) {
+      this.el.removeAttribute('line');
+    }
   },
 
   /**
@@ -69027,14 +67932,14 @@ module.exports.Component = registerComponent('raycaster', {
     var data = this.data;
     var i;
     var objects;
-    // Target entitie .
-    var objectEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
+    // Target entities.
+    var targetEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
 
     // Push meshes onto list of objects to intersect.
-    if (objectEls) {
+    if (targetEls) {
       objects = [];
-      for (i = 0; i < objectEls.length; i++) {
-        objects.push(objectEls[i].object3D);
+      for (i = 0; i < targetEls.length; i++) {
+        objects.push(targetEls[i].object3D);
       }
     } else {
       // If objects not defined, intersect with everything.
@@ -69043,12 +67948,11 @@ module.exports.Component = registerComponent('raycaster', {
 
     this.objects = [];
     for (i = 0; i < objects.length; i++) {
-      // A-Frame wraps everything (e.g. in a Group) so we want children.
+      // A-Frame wraps everything in THREE.Group. Grab the children.
       children = objects[i].children;
 
-      // Add the object3D's children so non-recursive raycasting will work correctly.
-      // If there aren't any children, then until a refresh after geometry loads,
-      // raycast won't see this object... but that should happen automatically.
+      // Add the object3D children for non-recursive raycasting.
+      // If no children, refresh after entity loaded.
       if (children) { this.objects.push.apply(this.objects, children); }
     }
   },
@@ -69059,19 +67963,20 @@ module.exports.Component = registerComponent('raycaster', {
   tick: function (time) {
     var el = this.el;
     var data = this.data;
-    var intersectedEls;
+    var i;
+    var intersectedEls = this.intersectedEls;
     var intersections;
+    var lineLength;
     var prevCheckTime = this.prevCheckTime;
-    var prevIntersectedEls;
+    var prevIntersectedEls = this.prevIntersectedEls;
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-
     // Update check time.
     this.prevCheckTime = time;
 
     // Store old previously intersected entities.
-    prevIntersectedEls = this.intersectedEls.slice();
+    copyArray(this.prevIntersectedEls, this.intersectedEls);
 
     // Raycast.
     this.updateOriginDirection();
@@ -69079,13 +67984,16 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Only keep intersections against objects that have a reference to an entity.
     intersections = intersections.filter(function hasEl (intersection) {
+      // Don't intersect with own line.
+      if (data.showLine && intersection.object === el.getObject3D('line')) { return false; }
       return !!intersection.object.el;
     });
 
     // Update intersectedEls.
-    intersectedEls = this.intersectedEls = intersections.map(function getEl (intersection) {
-      return intersection.object.el;
-    });
+    intersectedEls.length = intersections.length;
+    for (i = 0; i < intersections.length; i++) {
+      intersectedEls[i] = intersections[i].object.el;
+    }
 
     // Emit intersected on intersected entity per intersected entity.
     intersections.forEach(function emitEvents (intersection) {
@@ -69096,7 +68004,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit all intersections at once on raycasting entity.
     if (intersections.length) {
       el.emit('raycaster-intersection', {
-        els: intersectedEls.slice(),
+        els: intersectedEls,
         intersections: intersections
       });
     }
@@ -69107,34 +68015,100 @@ module.exports.Component = registerComponent('raycaster', {
       el.emit('raycaster-intersection-cleared', {el: intersectedEl});
       intersectedEl.emit('raycaster-intersected-cleared', {el: el});
     });
+
+    // Update line length.
+    if (data.showLine) {
+      if (intersections.length) {
+        if (intersections[0].object.el === el && intersections[1]) {
+          lineLength = intersections[1].distance;
+        } else {
+          lineLength = intersections[0].distance;
+        }
+      }
+      this.drawLine(lineLength);
+    }
   },
 
   /**
-   * Set origin and direction of raycaster using entity position and rotation.
+   * Update origin and direction of raycaster using entity transforms and supplied origin or
+   * direction offsets.
    */
   updateOriginDirection: (function () {
-    var directionHelper = new THREE.Quaternion();
+    var direction = new THREE.Vector3();
+    var quaternion = new THREE.Quaternion();
     var originVec3 = new THREE.Vector3();
 
     // Closure to make quaternion/vector3 objects private.
     return function updateOriginDirection () {
       var el = this.el;
-      var object3D = el.object3D;
+      var data = this.data;
 
-      // Update matrix world.
-      object3D.updateMatrixWorld();
       // Grab the position and rotation.
-      object3D.matrixWorld.decompose(originVec3, directionHelper, scaleDummy);
-      // Apply rotation to a 0, 0, -1 vector.
-      this.direction.set(0, 0, -1);
-      this.direction.applyQuaternion(directionHelper);
+      el.object3D.updateMatrixWorld();
+      el.object3D.matrixWorld.decompose(originVec3, quaternion, dummyVec);
 
-      this.raycaster.set(originVec3, this.direction);
+      // If non-zero origin, translate the origin into world space.
+      if (data.origin.x !== 0 || data.origin.y !== 0 || data.origin.z !== 0) {
+        originVec3 = el.object3D.localToWorld(originVec3.copy(data.origin));
+      }
+
+      // three.js raycaster direction is relative to 0, 0, 0 NOT the origin / offset we
+      // provide. Apply the offset to the direction, then rotation from the object,
+      // and normalize.
+      direction.copy(data.direction).add(data.origin).applyQuaternion(quaternion).normalize();
+
+      // Apply offset and direction, in world coordinates.
+      this.raycaster.set(originVec3, direction);
+    };
+  })(),
+
+  /**
+   * Create or update line to give raycaster visual representation.
+   * Customize the line through through line component.
+   * We draw the line in the raycaster component to customize the line to the
+   * raycaster's origin, direction, and far.
+   *
+   * Unlike the raycaster, we create the line as a child of the object. The line will
+   * be affected by the transforms of the objects, so we don't have to calculate transforms
+   * like we do with the raycaster.
+   *
+   * @param {number} length - Length of line. Pass in to shorten the line to the intersection
+   *   point. If not provided, length will default to the max length, `raycaster.far`.
+   */
+  drawLine: (function (length) {
+    var lineEndVec3 = new THREE.Vector3();
+    var lineData = {};
+
+    return function (length) {
+      var data = this.data;
+      var el = this.el;
+
+      // Treat Infinity as 1000m for the line.
+      if (length === undefined) {
+        length = data.far === Infinity ? 1000 : data.far;
+      }
+
+      // Update the length of the line if given. `unitLineEndVec3` is the direction
+      // given by data.direction, then we apply a scalar to give it a length.
+      lineData.start = data.origin;
+      lineData.end = lineEndVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+      el.setAttribute('line', lineData);
     };
   })()
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils/":172}],72:[function(_dereq_,module,exports){
+/**
+ * Copy contents of one array to another without allocating new array.
+ */
+function copyArray (a, b) {
+  var i;
+  a.length = b.length;
+  for (i = 0; i < b.length; i++) {
+    a[i] = b[i];
+  }
+}
+
+},{"../core/component":127,"../lib/three":174,"../utils/":197}],98:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -69152,7 +68126,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149}],73:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174}],99:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -69174,65 +68148,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":102}],74:[function(_dereq_,module,exports){
-var registerComponent = _dereq_('../../core/component').registerComponent;
-var utils = _dereq_('../../utils');
-
-/**
- * Automatically enter VR, either upon vrdisplayactivate (e.g. putting on Rift headset)
- * or immediately (if possible) if display name contains data string.
- * The default data string is 'GearVR' for Carmel browser which only does VR.
- */
-module.exports.Component = registerComponent('auto-enter-vr', {
-  schema: {
-    display: {type: 'string', default: 'GearVR'},
-    enabled: {type: 'boolean', default: true}
-  },
-
-  init: function () {
-    var scene = this.el;
-    var self = this;
-
-    // define methods to allow mock testing
-    this.enterVR = scene.enterVR.bind(scene);
-    this.exitVR = scene.exitVR.bind(scene);
-    this.shouldAutoEnterVR = this.shouldAutoEnterVR.bind(this);
-
-    // don't do anything if false
-    if (utils.getUrlParameter('auto-enter-vr') === 'false') { return; }
-
-    // enter VR on vrdisplayactivate (e.g. putting on Rift headset)
-    window.addEventListener('vrdisplayactivate', function () { self.enterVR(); }, false);
-
-    // exit VR on vrdisplaydeactivate (e.g. taking off Rift headset)
-    window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); }, false);
-
-    // check if we should try to enter VR... turns out we need to wait for next tick
-    setTimeout(function () { if (self.shouldAutoEnterVR()) { self.enterVR(); } }, 0);
-  },
-
-  update: function () {
-    return this.shouldAutoEnterVR() ? this.enterVR() : this.exitVR();
-  },
-
-  shouldAutoEnterVR: function () {
-    var scene = this.el;
-    var data = this.data;
-    // if false, we should not auto-enter VR
-    if (!data.enabled) { return false; }
-    // if we have a data string to match against display name, try and get it;
-    // if we can't get display name, or it doesn't match, we should not auto-enter VR
-    if (data.display && data.display !== 'all') {
-      var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
-      if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) { return false; }
-    }
-    // we should auto-enter VR
-    return true;
-  }
-});
-
-
-},{"../../core/component":102,"../../utils":172}],75:[function(_dereq_,module,exports){
+},{"../core/component":127}],100:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69277,14 +68193,14 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":102,"../../utils/bind":166}],76:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../utils/bind":191}],101:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":102}],77:[function(_dereq_,module,exports){
+},{"../../core/component":127}],102:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -69309,7 +68225,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":102}],78:[function(_dereq_,module,exports){
+},{"../../core/component":127}],103:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -69382,7 +68298,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":102,"../../lib/three":149,"../../utils/debug":168}],79:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../lib/three":174,"../../utils/debug":193}],104:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -69487,7 +68403,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":54,"../../constants":93,"../../core/component":102,"../../utils/bind":166,"_process":33}],80:[function(_dereq_,module,exports){
+},{"../../../package":78,"../../constants":118,"../../core/component":127,"../../utils/bind":191,"_process":33}],105:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -69522,7 +68438,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":102,"../../utils/":172}],81:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../utils/":197}],106:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69627,7 +68543,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":102,"../../utils/debug":168}],82:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../utils/debug":193}],107:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -69884,7 +68800,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":149}],83:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../lib/three":174}],108:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -69964,7 +68880,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":180,"../../../vendor/rStats.extras":179,"../../core/component":102,"../../lib/rStatsAframe":148,"../../utils":172}],84:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":205,"../../../vendor/rStats.extras":204,"../../core/component":127,"../../lib/rStatsAframe":173,"../../utils":197}],109:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -70009,7 +68925,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     });
 
     // Modal that tells the user to change orientation if in portrait.
-    window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
+    window.addEventListener('orientationchange',
+                            bind(this.toggleOrientationModalIfNeeded, this));
   },
 
   update: function () {
@@ -70071,6 +68988,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
  *
  * Structure: <div><button></div>
  *
+ * @param {function} enterVRHandler
  * @returns {Element} Wrapper <div>.
  */
 function createEnterVRButton (enterVRHandler) {
@@ -70087,7 +69005,9 @@ function createEnterVRButton (enterVRHandler) {
 
   // Insert elements.
   wrapper.appendChild(vrButton);
-  vrButton.addEventListener('click', enterVRHandler);
+  vrButton.addEventListener('click', function (evt) {
+    enterVRHandler();
+  });
   return wrapper;
 }
 
@@ -70113,7 +69033,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":93,"../../core/component":102,"../../utils/":172}],85:[function(_dereq_,module,exports){
+},{"../../constants/":118,"../../core/component":127,"../../utils/":197}],110:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -70167,7 +69087,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils/bind":166}],86:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils/bind":191}],111:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -70384,7 +69304,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":102,"../lib/three":149,"../utils/bind":166,"../utils/debug":168}],87:[function(_dereq_,module,exports){
+},{"../core/component":127,"../lib/three":174,"../utils/bind":191,"../utils/debug":193}],112:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 var path = _dereq_('path');
@@ -70850,7 +69770,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":102,"../core/shader":111,"../lib/three":149,"../utils/":172,"load-bmfont":23,"path":31,"three-bmfont-text":37}],88:[function(_dereq_,module,exports){
+},{"../core/component":127,"../core/shader":136,"../lib/three":174,"../utils/":197,"load-bmfont":23,"path":31,"three-bmfont-text":37}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
@@ -70875,6 +69795,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
     // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    armModel: {default: true},
     headElement: {type: 'selector'}
   },
 
@@ -71006,8 +69927,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     if (pose.position) {
       dolly.position.fromArray(pose.position);
     } else {
-      // The controller is not 6DOF, so apply arm model.
-      this.applyArmModel(controllerPosition);
+      if (this.data.armModel) {
+        // The controller is not 6DOF, so apply arm model.
+        this.applyArmModel(controllerPosition);
+      }
       dolly.position.copy(controllerPosition);
     }
     dolly.updateMatrix();
@@ -71170,7 +70093,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":93,"../core/component":102,"../lib/three":149}],89:[function(_dereq_,module,exports){
+},{"../constants":118,"../core/component":127,"../lib/three":174}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -71184,11 +70107,13 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":102}],90:[function(_dereq_,module,exports){
+},{"../core/component":127}],115:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
-var bind = _dereq_('../utils/bind');
-var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
-var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
+var utils = _dereq_('../utils/');
+
+var bind = utils.bind;
+var checkControllerPresentAndSetup = utils.trackedControls.checkControllerPresentAndSetup;
+var emitIfAxesChanged = utils.trackedControls.emitIfAxesChanged;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -71196,10 +70121,10 @@ var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_c
 var GAMEPAD_ID_PREFIX = 'OpenVR ';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Vive controls.
+ * Interface with Vive controllers and map Gamepad events to controller buttons:
+ * trackpad, trigger, grip, menu, system
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
@@ -71207,78 +70132,45 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0}
   },
 
-  // buttonId
-  // 0 - trackpad
-  // 1 - trigger ( intensity value from 0.5 to 1 )
-  // 2 - grip
-  // 3 - menu ( dispatch but better for menu options )
-  // 4 - system ( never dispatched on this layer )
+  /**
+   * Button IDs:
+   * 0 - trackpad
+   * 1 - trigger (intensity value from 0.5 to 1)
+   * 2 - grip
+   * 3 - menu (dispatch but better for menu options)
+   * 4 - system (never dispatched on this layer)
+   */
   mapping: {
     axes: {'trackpad': [0, 1]},
     buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
 
-  // Use these labels for detail on axis events such as thumbstickmoved.
-  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
+  /**
+   * Labels for detail on axis events such as `thumbstickmoved`.
+   * For example, on `thumbstickmoved` detail, the first axis returned is labeled x, and the
+   * second is labeled y.
+   */
   axisLabels: ['x', 'y', 'z', 'w'],
-
-  bindMethods: function () {
-    this.onModelLoaded = bind(this.onModelLoaded, this);
-    this.onControllersUpdate = bind(this.onControllersUpdate, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onAxisMoved = bind(this.onAxisMoved, this);
-  },
 
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.controllerPresent = false;
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
+    this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.controllerPresent = false;
-    this.lastControllerCheck = 0;
     this.previousButtonValues = {};
+
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
-    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
-  },
-
-  addEventListeners: function () {
-    var el = this.el;
-    el.addEventListener('buttonchanged', this.onButtonChanged);
-    el.addEventListener('buttondown', this.onButtonDown);
-    el.addEventListener('buttonup', this.onButtonUp);
-    el.addEventListener('touchstart', this.onButtonTouchStart);
-    el.addEventListener('touchend', this.onButtonTouchEnd);
-    el.addEventListener('model-loaded', this.onModelLoaded);
-    el.addEventListener('axismove', this.onAxisMoved);
-  },
-
-  removeEventListeners: function () {
-    var el = this.el;
-    el.removeEventListener('buttonchanged', this.onButtonChanged);
-    el.removeEventListener('buttondown', this.onButtonDown);
-    el.removeEventListener('buttonup', this.onButtonUp);
-    el.removeEventListener('touchstart', this.onButtonTouchStart);
-    el.removeEventListener('touchend', this.onButtonTouchEnd);
-    el.removeEventListener('model-loaded', this.onModelLoaded);
-    el.removeEventListener('axismove', this.onAxisMoved);
-  },
-
-  checkIfControllerPresent: function () {
-    var data = this.data;
-    // Once OpenVR / SteamVR return correct hand data in the supporting browsers, we can use hand property.
-    // var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
-    // Until then, use hardcoded index.
-    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, { index: controllerIndex });
   },
 
   play: function () {
@@ -71295,13 +70187,57 @@ module.exports.Component = registerComponent('vive-controls', {
     window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+  },
+
+  addEventListeners: function () {
+    var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
+    el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
+  },
+
+  removeEventListeners: function () {
+    var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
+    el.removeEventListener('buttondown', this.onButtonDown);
+    el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
+  },
+
+  /**
+   * Once OpenVR returns correct hand data in supporting browsers, we can use hand property.
+   * var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
+                                                        { hand: data.hand });
+   * Until then, use hardcoded index.
+   */
+  checkIfControllerPresent: function () {
+    var data = this.data;
+    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+  },
+
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    // handId: 0 - right, 1 - left, 2 - anything else...
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    // if we have an OpenVR Gamepad, use the fixed mapping
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
+
+    // If we have an OpenVR Gamepad, use the fixed mapping.
+    el.setAttribute('tracked-controls', {
+      idPrefix: GAMEPAD_ID_PREFIX,
+      // Hand IDs: 0 = right, 1 = left, 2 = anything else.
+      controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
+      rotationOffset: data.rotationOffset
+    });
+
+    // Load model.
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
@@ -71317,17 +70253,23 @@ module.exports.Component = registerComponent('vive-controls', {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
-  onControllersUpdate: function () { this.checkIfControllerPresent(); },
+  onControllersUpdate: function () {
+    this.checkIfControllerPresent();
+  },
 
+  /**
+   * Rotate the trigger button based on how hard the trigger is pressed.
+   */
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var analogValue;
+
     if (!button) { return; }
 
     if (button === 'trigger') {
       analogValue = evt.detail.state.value;
-      // Update button mesh, if any.
+      // Update trigger rotation depending on button value.
       if (buttonMeshes && buttonMeshes.trigger) {
         buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
       }
@@ -71338,9 +70280,13 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
     var buttonMeshes;
+    var controllerObject3D = evt.detail.model;
+    var self = this;
+
     if (!this.data.model) { return; }
+
+    // Store button meshes object to be able to change their colors.
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.grip = {
       left: controllerObject3D.getObjectByName('leftgrip'),
@@ -71350,15 +70296,27 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
-    // Offset pivot point
+
+    // Set default colors.
+    Object.keys(buttonMeshes).forEach(function (buttonName) {
+      self.setButtonColor(buttonName, self.data.buttonColor);
+    });
+
+    // Offset pivot point.
     controllerObject3D.position.set(0, -0.015, 0.04);
   },
 
-  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
+  onAxisMoved: function (evt) {
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
 
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];
+    var color;
     var i;
+    var isTouch = evtName.indexOf('touch') !== -1;
+
+    // Emit events.
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
         this.el.emit(buttonName[i] + evtName);
@@ -71366,25 +70324,29 @@ module.exports.Component = registerComponent('vive-controls', {
     } else {
       this.el.emit(buttonName + evtName);
     }
-    this.updateModel(buttonName, evtName);
-  },
 
-  updateModel: function (buttonName, evtName) {
-    var i;
     if (!this.data.model) { return; }
+
+    // Don't change color for trackpad touch.
+    if (isTouch) { return; }
+
+    // Update colors.
+    color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
+        this.setButtonColor(buttonName[i], color);
       }
     } else {
-      this.updateButtonModel(buttonName, evtName);
+      this.setButtonColor(buttonName, color);
     }
   },
 
-  updateButtonModel: function (buttonName, state) {
-    var color = state === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
+  setButtonColor: function (buttonName, color) {
     var buttonMeshes = this.buttonMeshes;
+
     if (!buttonMeshes) { return; }
+
+    // Need to do both left and right sides for grip.
     if (buttonName === 'grip') {
       buttonMeshes.grip.left.material.color.set(color);
       buttonMeshes.grip.right.material.color.set(color);
@@ -71394,7 +70356,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":176}],91:[function(_dereq_,module,exports){
+},{"../core/component":127,"../utils/":197}],116:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71600,7 +70562,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":93,"../core/component":102,"../lib/three":149,"../utils/":172}],92:[function(_dereq_,module,exports){
+},{"../constants":118,"../core/component":127,"../lib/three":174,"../utils/":197}],117:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -71704,7 +70666,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":48}],93:[function(_dereq_,module,exports){
+},{"tween.js":48}],118:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -71713,7 +70675,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":92,"./keyboardevent":94}],94:[function(_dereq_,module,exports){
+},{"./animation":117,"./keyboardevent":119}],119:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -71728,7 +70690,7 @@ module.exports = {
   }
 };
 
-},{}],95:[function(_dereq_,module,exports){
+},{}],120:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -72272,7 +71234,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":92,"../lib/three":149,"../utils/":172,"./a-node":100,"./a-register-element":101,"./schema":110,"tween.js":48}],96:[function(_dereq_,module,exports){
+},{"../constants/animation":117,"../lib/three":174,"../utils/":197,"./a-node":125,"./a-register-element":126,"./schema":135,"tween.js":48}],121:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -72530,8 +71492,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":149,"../utils/bind":166,"../utils/debug":168,"./a-node":100,"./a-register-element":101}],97:[function(_dereq_,module,exports){
-/* global HTMLElement */
+},{"../lib/three":174,"../utils/bind":191,"../utils/debug":193,"./a-node":125,"./a-register-element":126}],122:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -72542,7 +71503,7 @@ var warn = debug('core:cubemap:warn');
  * Does not listen to updates.
  */
 module.exports = registerElement('a-cubemap', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     /**
      * Calculates this.srcs.
      */
@@ -72581,8 +71542,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":168,"./a-register-element":101}],98:[function(_dereq_,module,exports){
-/* global HTMLElement */
+},{"../utils/debug":193,"./a-register-element":126}],123:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -72968,7 +71928,7 @@ var proto = Object.create(ANode.prototype, {
       // the component with the empty string.
       if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, attrName, '');
+        window.HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
       debug('Component initialized: %s', attrName);
@@ -73000,7 +71960,7 @@ var proto = Object.create(ANode.prototype, {
         // Call getAttribute to initialize the data from the DOM.
         self.initComponent(
           componentName,
-          HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
+          window.HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
           true
         );
       });
@@ -73019,6 +71979,18 @@ var proto = Object.create(ANode.prototype, {
       if (isDefault || isMixedIn) { return; }
 
       component = this.components[name];
+      if (!component) { return; }
+
+      // Wait for component to initialize.
+      if (!component.initialized) {
+        this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
+          if (evt.detail.name !== name) { return; }
+          this.removeComponent(name);
+          this.removeEventListener('componentinitialized', tryRemoveLater);
+        });
+        return;
+      }
+
       component.pause();
       component.remove();
       delete this.components[name];
@@ -73026,7 +71998,8 @@ var proto = Object.create(ANode.prototype, {
         id: component.id,
         name: name
       });
-    }
+    },
+    writable: window.debug
   },
 
   /**
@@ -73094,14 +72067,15 @@ var proto = Object.create(ANode.prototype, {
    * When initializing, we set the component on `this.components`.
    *
    * @param {string} attr - Component name.
-   * @param {object} attrValue - The value of the DOM attribute.
-   * @param {bollean} clobber - if the new attrValue will ccompletely replace the previous properties
+   * @param {object} attrValue - Value of the DOM attribute.
+   * @param {boolean} clobber - If new attrValue completely replaces previous properties.
    */
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
       var isDefault = attr in this.defaultComponents;
       if (component) {
+        // Remove component.
         if (attrValue === null && !isDefault) {
           this.removeComponent(attr);
           return;
@@ -73110,27 +72084,9 @@ var proto = Object.create(ANode.prototype, {
         component.updateProperties(attrValue, clobber);
         return;
       }
+
       // Component not yet initialized. Initialize component.
       this.initComponent(attr, attrValue, false);
-    }
-  },
-
-  /**
-   * Updates one property of the component
-   *
-   * @param {string} name - Component name
-   * @param {string} property - Component property name
-   * @param {any} propertyValue - New property value
-   */
-  updateComponentProperty: {
-    value: function (name, property, propertyValue) {
-      var component = this.components[name];
-      // Cached attribute value
-      var attrValue = component && component.attrValue;
-      // Copy cached value
-      var componentObj = attrValue ? utils.extend({}, attrValue) : {};
-      componentObj[property] = propertyValue;
-      this.updateComponent(name, componentObj);
     }
   },
 
@@ -73164,7 +72120,7 @@ var proto = Object.create(ANode.prototype, {
         this.mixinUpdate('');
       }
 
-      HTMLElement.prototype.removeAttribute.call(this, attr);
+      window.HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
 
@@ -73261,47 +72217,59 @@ var proto = Object.create(ANode.prototype, {
    * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
    * @param {string} attrName - Component or attribute name.
-   * @param {string|object} arg1 - Can be a property name or object of properties.
-   * @param {string|bool} arg2 - Can be a value, or boolean indicating whether to update or
-   *   replace.
+   * @param {*} arg1 - Can be a value, property name, CSS-style property string, or
+   *   object of properties.
+   * @param {*|bool} arg2 - If arg1 is a property name, this should be a value. Otherwise,
+   *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute: {
     value: function (attrName, arg1, arg2) {
-      var arg1Type = typeof arg1;
+      var newAttrValue;
       var clobber;
       var componentName;
+      var delimiterIndex;
       var isDebugMode;
 
-      var pos = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-      componentName = pos > 0 ? attrName.substring(0, pos) : attrName;
+      delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+      componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
-      // Determine which type of setAttribute to call based on the types of the arguments.
-      if (COMPONENTS[componentName]) {
-        if (arg1Type === 'string' && typeof arg2 !== 'undefined') {
-          singlePropertyUpdate(this, attrName, arg1, arg2);
-        } else {
-          clobber = arg1Type !== 'object' || (arg1Type === 'object' && arg2 === true);
-          this.updateComponent(attrName, arg1, clobber);
-        }
-
-        // In debug mode, write component data up to the DOM.
-        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-        if (isDebugMode) { this.components[attrName].flushToDOM(); }
-        return;
-      } else {
+      // Not a component.
+      if (!COMPONENTS[componentName]) {
         normalSetAttribute(this, attrName, arg1);
+        return;
       }
 
-      /**
-       * Just update one of the component properties.
-       * >> setAttribute('foo', 'bar', 'baz')
-       */
-      function singlePropertyUpdate (el, componentName, propName, propertyValue) {
-        el.updateComponentProperty(componentName, propName, propertyValue);
+      // Initialize component first if not yet initialized.
+      if (!this.components[attrName] && this.hasAttribute(attrName)) {
+        this.updateComponent(attrName,
+                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
       }
 
+      // Determine new attributes from the arguments
+      if (typeof arg2 !== 'undefined' &&
+          typeof arg1 === 'string' &&
+          arg1.length > 0 &&
+          typeof utils.styleParser.parse(arg1) === 'string') {
+        // Update a single property of a multi-property component
+        newAttrValue = {};
+        newAttrValue[arg1] = arg2;
+        clobber = false;
+      } else {
+        // Update with a value, object, or CSS-style property string, with the possiblity
+        // of clobbering previous values.
+        newAttrValue = arg1;
+        clobber = (arg2 === true);
+      }
+
+      // Update component
+      this.updateComponent(attrName, newAttrValue, clobber);
+
+      // In debug mode, write component data up to the DOM.
+      isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      if (isDebugMode) { this.components[attrName].flushToDOM(); }
+
       /**
-       * Just update one of the component properties.
+       * Update a non-component attribute.
        * >> setAttribute('id', 'myEntity')
        */
       function normalSetAttribute (el, attrName, value) {
@@ -73354,7 +72322,7 @@ var proto = Object.create(ANode.prototype, {
       // If component, return component data.
       var component = this.components[attr];
       if (component) { return component.data; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },
@@ -73388,7 +72356,7 @@ var proto = Object.create(ANode.prototype, {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
       if (component) { return component.attrValue; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },
@@ -73493,8 +72461,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":149,"../utils/":172,"./a-node":100,"./a-register-element":101,"./component":102}],99:[function(_dereq_,module,exports){
-/* global HTMLElement */
+},{"../lib/three":174,"../utils/":197,"./a-node":125,"./a-register-element":126,"./component":127}],124:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -73535,7 +72502,7 @@ module.exports = registerElement('a-mixin', {
     setAttribute: {
       value: function (attr, value) {
         this.cacheAttribute(attr, value);
-        HTMLElement.prototype.setAttribute.call(this, attr, value);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, value);
       }
     },
 
@@ -73548,7 +72515,7 @@ module.exports = registerElement('a-mixin', {
         var component = components[componentName];
         if (!component) { return; }
         if (value === undefined) {
-          value = HTMLElement.prototype.getAttribute.call(this, attr);
+          value = window.HTMLElement.prototype.getAttribute.call(this, attr);
         }
         this.componentCache[attr] = component.parseAttrValueForCache(value);
       }
@@ -73561,7 +72528,7 @@ module.exports = registerElement('a-mixin', {
     getAttribute: {
       value: function (attr) {
         return this.componentCache[attr] ||
-               HTMLElement.prototype.getAttribute.call(this, attr);
+               window.HTMLElement.prototype.getAttribute.call(this, attr);
       }
     },
 
@@ -73601,8 +72568,8 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
-/* global HTMLElement, MutationObserver */
+},{"./a-node":125,"./a-register-element":126,"./component":127}],125:[function(_dereq_,module,exports){
+/* global MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
 
@@ -73616,7 +72583,7 @@ var warn = utils.debug('core:a-node:warn');
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 module.exports = registerElement('a-node', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {
         this.hasLoaded = false;
@@ -73764,7 +72731,7 @@ module.exports = registerElement('a-node', {
     setAttribute: {
       value: function (attr, newValue) {
         if (attr === 'mixin') { this.updateMixins(newValue); }
-        HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
       }
     },
 
@@ -73862,7 +72829,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":172,"./a-register-element":101}],101:[function(_dereq_,module,exports){
+},{"../utils/":197,"./a-register-element":126}],126:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -74039,8 +73006,8 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":98,"./a-node":100,"document-register-element":10}],102:[function(_dereq_,module,exports){
-/* global HTMLElement, Node */
+},{"./a-entity":123,"./a-node":125,"document-register-element":10}],127:[function(_dereq_,module,exports){
+/* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
 var systems = _dereq_('./system');
@@ -74073,22 +73040,23 @@ var upperCaseRegExp = new RegExp('[A-Z]+');
  *         mapped attribute of the component plus applying defaults and mixins.
  */
 var Component = module.exports.Component = function (el, attrValue, id) {
-  //var self = this;
+  var self = this;
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.initialized = false;
   this.el.components[this.attrName] = this;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
+  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
+    el.emit('componentchanged', {
+      id: self.id,
+      name: self.name,
+      newData: self.data,
+      oldData: oldData
+    }, false);
+  }, 0);
   this.updateProperties(attrValue);
-//   this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
-//     el.emit('componentchanged', {
-//       id: self.id,
-//       name: self.name,
-//       newData: self.data,
-//       oldData: oldData
-//     }, false);
-//   }, 200);
 };
 
 Component.prototype = {
@@ -74198,12 +73166,25 @@ Component.prototype = {
   /**
    * Update the cache of the pre-parsed attribute value.
    *
-   * @param {string} value - HTML attribute value.
+   * @param {string} value - New data.
+   * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
-  updateCachedAttrValue: function (value) {
-    var isSinglePropSchema = isSingleProp(this.schema);
+  updateCachedAttrValue: function (value, clobber) {
     var attrValue = this.parseAttrValueForCache(value);
+    var isSinglePropSchema = isSingleProp(this.schema);
+    var property;
+
     if (value === undefined) { return; }
+
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (!isSinglePropSchema && !clobber && this.attrValue) {
+      for (property in this.attrValue) {
+        if (!(property in attrValue)) {
+          attrValue[property] = this.attrValue[property];
+        }
+      }
+    }
+
     this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
@@ -74243,7 +73224,7 @@ Component.prototype = {
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+    window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                             this.stringify(attrValue));
   },
 
@@ -74281,7 +73262,7 @@ Component.prototype = {
     this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
 
     // Cache current attrValue for future updates.
-    this.updateCachedAttrValue(attrValue);
+    this.updateCachedAttrValue(attrValue, clobber);
 
     if (!this.initialized) {
       // Component is being already initialized.
@@ -74306,19 +73287,9 @@ Component.prototype = {
 
       // Update component.
       this.update(oldData);
-
-	  //remove the limit for now
-
       // Limit event to fire once every 200ms.
-      //this.throttledEmitComponentChanged(oldData);
-
-	  el.emit('componentchanged', {
-		  id: this.id,
-		  name: this.name,
-		  newData: this.getData(),
-		  oldData: oldData
-	  }, false);
-	}
+      this.throttledEmitComponentChanged(oldData);
+    }
   },
 
   /**
@@ -74568,7 +73539,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":172,"./scene/scenes":108,"./schema":110,"./system":112}],103:[function(_dereq_,module,exports){
+},{"../utils/":197,"./scene/scenes":133,"./schema":135,"./system":137}],128:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -74642,7 +73613,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":149,"./schema":110}],104:[function(_dereq_,module,exports){
+},{"../lib/three":174,"./schema":135}],129:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -74858,7 +73829,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":167,"debug":7}],105:[function(_dereq_,module,exports){
+},{"../utils/coordinates":192,"debug":7}],130:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -74904,8 +73875,7 @@ module.exports.AScene = registerElement('a-scene', {
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
-        'vr-mode-ui': '',
-        'auto-enter-vr': ''
+        'vr-mode-ui': ''
       }
     },
 
@@ -74927,8 +73897,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
-        this.renderTarget = null;
         this.originalHTML = this.innerHTML;
+        this.renderTarget = null;
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -74959,27 +73929,46 @@ module.exports.AScene = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var resize = bind(this.resize, this);
+        var resize;
+        var self = this;
+
         initMetaTags(this);
         initWakelock(this);
         this.initSystems();
 
+        resize = bind(this.resize, this);
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
         this.play();
 
         // Add to scene index.
         scenes.push(this);
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+
+        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
+        window.addEventListener('vrdisplayactivate', function () { self.enterVR(); });
+
+        // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
+        window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); });
       },
       writable: window.debug
     },
 
+    /**
+     * Initialize all systems.
+     */
     initSystems: {
       value: function () {
         Object.keys(systems).forEach(bind(this.initSystem, this));
       }
     },
 
+    /**
+     * Initialize a system.
+     */
     initSystem: {
       value: function (name) {
         if (this.systems[name]) { return; }
@@ -74988,26 +73977,32 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Shuts down scene on detach.
+     * Shut down scene on detach.
      */
     detachedCallback: {
       value: function () {
+        var sceneIndex;
+
         if (this.effect && this.effect.cancelAnimationFrame) {
           this.effect.cancelAnimationFrame(this.animationFrameID);
         } else {
           window.cancelAnimationFrame(this.animationFrameID);
         }
-        var sceneIndex;
         this.animationFrameID = null;
+
         // Remove from scene index.
         sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
+
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       }
     },
 
     /**
-     * @param {object} behavior - Generally a component. Must implement a .update() method to
-     *        be called on every tick.
+     * Add ticks and tocks.
+     *
+     * @param {object} behavior - Generally a component. Must implement a .update() method
+     *   to be called on every tick.
      */
     addBehavior: {
       value: function (behavior) {
@@ -75037,24 +74032,29 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   manually calling requestPresent via WebVR API directly).
      * @returns {Promise}
      */
     enterVR: {
-      value: function (event) {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Enter VR via WebVR API.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
+
+        // Either entered VR already via WebVR API or VR not supported.
         enterVRSuccess();
         return Promise.resolve();
 
         function enterVRSuccess () {
           self.addState('vr-mode');
-          self.emit('enter-vr', event);
+          self.emit('enter-vr', {target: self});
 
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -75085,10 +74085,12 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `exitPresent` if WebVR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   Oculus Browser GearVR back button).
      * @returns {Promise}
      */
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't exit VR if not in VR.
@@ -75096,10 +74098,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         exitFullscreen();
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Handle exiting VR if not yet already and in a headset or polyfill.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
+
+        // Handle exiting VR in all other cases (2D fullscreen, external exit VR event).
         exitVRSuccess();
+
         return Promise.resolve();
 
         function exitVRSuccess () {
@@ -75122,6 +74128,22 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 
@@ -75440,7 +74462,7 @@ function shouldAntiAlias (sceneEl) {
 }
 module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
-},{"../../lib/three":149,"../../utils/":172,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":112,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109,"tween.js":48}],106:[function(_dereq_,module,exports){
+},{"../../lib/three":174,"../../utils/":197,"../a-entity":123,"../a-node":125,"../a-register-element":126,"../system":137,"./metaTags":131,"./postMessage":132,"./scenes":133,"./wakelock":134,"tween.js":48}],131:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -75521,7 +74543,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":93,"../../utils":172}],107:[function(_dereq_,module,exports){
+},{"../../constants/":118,"../../utils":197}],132:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -75554,13 +74576,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":172,"../../utils/bind":166}],108:[function(_dereq_,module,exports){
+},{"../../utils/":197,"../../utils/bind":191}],133:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],109:[function(_dereq_,module,exports){
+},{}],134:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -75571,7 +74593,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":182}],110:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":207}],135:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -75752,7 +74774,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":172,"./propertyTypes":104}],111:[function(_dereq_,module,exports){
+},{"../utils/":197,"./propertyTypes":129}],136:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -75928,8 +74950,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":149,"../utils":172,"./schema":110}],112:[function(_dereq_,module,exports){
-/* global HTMLElement */
+},{"../lib/three":174,"../utils":197,"./schema":135}],137:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -76011,7 +75032,7 @@ System.prototype = {
   buildData: function (rawData) {
     var schema = this.schema;
     if (!Object.keys(schema).length) { return; }
-    rawData = rawData || HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
+    rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
     if (isSingleProp(schema)) {
       this.data = parseProperty(rawData, schema);
     } else {
@@ -76087,10 +75108,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":172,"./component":102,"./schema":110}],113:[function(_dereq_,module,exports){
+},{"../utils/":197,"./component":127,"./schema":135}],138:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":114}],114:[function(_dereq_,module,exports){
+},{"./pivot":139}],139:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -76139,7 +75160,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":149}],115:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../lib/three":174}],140:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -76166,7 +75187,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":102,"../../core/shader":111,"../../utils/":172}],116:[function(_dereq_,module,exports){
+},{"../../core/component":127,"../../core/shader":136,"../../utils/":197}],141:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -76182,7 +75203,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":118,"./primitives/a-collada-model":119,"./primitives/a-cursor":120,"./primitives/a-curvedimage":121,"./primitives/a-gltf-model":122,"./primitives/a-image":123,"./primitives/a-light":124,"./primitives/a-obj-model":125,"./primitives/a-sky":126,"./primitives/a-sound":127,"./primitives/a-text":128,"./primitives/a-video":129,"./primitives/a-videosphere":130,"./primitives/meshPrimitives":131}],117:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":143,"./primitives/a-collada-model":144,"./primitives/a-cursor":145,"./primitives/a-curvedimage":146,"./primitives/a-gltf-model":147,"./primitives/a-image":148,"./primitives/a-light":149,"./primitives/a-obj-model":150,"./primitives/a-sky":151,"./primitives/a-sound":152,"./primitives/a-text":153,"./primitives/a-video":154,"./primitives/a-videosphere":155,"./primitives/meshPrimitives":156}],142:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -76275,6 +75296,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             if (mapping) {
               path = utils.entity.getComponentPropertyPath(mapping);
               if (path.constructor === Array) {
+                data[path[0]] = data[path[0]] || {};
                 data[path[0]][path[1]] = attr.value;
               } else {
                 data[path] = attr.value;
@@ -76348,7 +75370,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":98,"../../core/a-register-element":101,"../../core/component":102,"../../utils/":172}],118:[function(_dereq_,module,exports){
+},{"../../core/a-entity":123,"../../core/a-register-element":126,"../../core/component":127,"../../utils/":197}],143:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -76383,7 +75405,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":93,"../primitives":117}],119:[function(_dereq_,module,exports){
+},{"../../../constants/":118,"../primitives":142}],144:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -76392,7 +75414,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":117}],120:[function(_dereq_,module,exports){
+},{"../primitives":142}],145:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76415,22 +75437,19 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       x: 0,
       y: 0,
       z: -1
-    },
-    raycaster: {
-      far: 1000
     }
   },
 
   mappings: {
     far: 'raycaster.far',
     fuse: 'cursor.fuse',
+    'fuse-timeout': 'cursor.fuseTimeout',
     interval: 'raycaster.interval',
-    objects: 'raycaster.objects',
-    'fuse-timeout': 'cursor.fuseTimeout'
+    objects: 'raycaster.objects'
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],146:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76467,7 +75486,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],122:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],147:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -76476,7 +75495,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":117}],123:[function(_dereq_,module,exports){
+},{"../primitives":142}],148:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76500,7 +75519,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],124:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],149:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -76521,7 +75540,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":117}],125:[function(_dereq_,module,exports){
+},{"../primitives":142}],150:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76537,7 +75556,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],126:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],151:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76562,7 +75581,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117,"./meshPrimitives":131}],127:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142,"./meshPrimitives":156}],152:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -76579,12 +75598,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":117}],128:[function(_dereq_,module,exports){
+},{"../primitives":142}],153:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":117}],129:[function(_dereq_,module,exports){
+},{"../primitives":142}],154:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76608,7 +75627,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],130:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],155:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76636,7 +75655,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],131:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],156:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -76676,7 +75695,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":103,"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],132:[function(_dereq_,module,exports){
+},{"../../../core/geometry":128,"../../../utils/":197,"../getMeshMixin":140,"../primitives":142}],157:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76695,7 +75714,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],133:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],158:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76715,7 +75734,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],134:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],159:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76741,7 +75760,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],160:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76765,7 +75784,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],161:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76780,7 +75799,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],162:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76795,7 +75814,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],138:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],163:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -76811,7 +75830,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":132,"./circle.js":133,"./cone.js":134,"./cylinder.js":135,"./dodecahedron.js":136,"./icosahedron.js":137,"./octahedron.js":139,"./plane.js":140,"./ring.js":141,"./sphere.js":142,"./tetrahedron.js":143,"./torus.js":144,"./torusKnot.js":145,"./triangle.js":146}],139:[function(_dereq_,module,exports){
+},{"./box.js":157,"./circle.js":158,"./cone.js":159,"./cylinder.js":160,"./dodecahedron.js":161,"./icosahedron.js":162,"./octahedron.js":164,"./plane.js":165,"./ring.js":166,"./sphere.js":167,"./tetrahedron.js":168,"./torus.js":169,"./torusKnot.js":170,"./triangle.js":171}],164:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76826,7 +75845,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],140:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],165:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76843,7 +75862,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],141:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],166:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76866,7 +75885,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],142:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],167:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76890,7 +75909,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],143:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],168:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76905,7 +75924,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],144:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],169:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76927,7 +75946,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],145:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],170:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76948,7 +75967,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],146:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],171:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77003,15 +76022,15 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":149}],147:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../lib/three":174}],172:[function(_dereq_,module,exports){
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
 var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
-if (document.currentScript && document.currentScript.parentNode !== document.head &&
-    !window.debug) {
+if (window.document.currentScript && window.document.currentScript.parentNode !==
+    window.document.head && !window.debug) {
   warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
        'ensure everything for A-Frame is properly registered before they are used from ' +
        'HTML.');
@@ -77030,7 +76049,7 @@ if (window.location.protocol === 'file:') {
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
 // Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
   BUFFER_SCALE: 1,
@@ -77042,7 +76061,7 @@ window.WebVRConfig = window.WebVRConfig || {
 
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
 // Only for iOS on versions older than 10.
-if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
+if (utils.device.isIOSOlderThan10(window.navigator.userAgent)) {
   window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
 
@@ -77089,7 +76108,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 01-06-2017, Commit #e6b5935)');
+console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #6203704)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77120,7 +76139,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":54,"./components/index":64,"./core/a-animation":95,"./core/a-assets":96,"./core/a-cubemap":97,"./core/a-entity":98,"./core/a-mixin":99,"./core/a-node":100,"./core/a-register-element":101,"./core/component":102,"./core/geometry":103,"./core/scene/a-scene":105,"./core/scene/scenes":108,"./core/schema":110,"./core/shader":111,"./core/system":112,"./extras/components/":113,"./extras/primitives/":116,"./extras/primitives/getMeshMixin":115,"./extras/primitives/primitives":117,"./geometries/index":138,"./lib/three":149,"./shaders/index":151,"./style/aframe.css":156,"./style/rStats.css":157,"./systems/index":161,"./utils/":172,"present":32,"promise-polyfill":34,"tween.js":48,"webvr-polyfill":49}],148:[function(_dereq_,module,exports){
+},{"../package":78,"./components/index":88,"./core/a-animation":120,"./core/a-assets":121,"./core/a-cubemap":122,"./core/a-entity":123,"./core/a-mixin":124,"./core/a-node":125,"./core/a-register-element":126,"./core/component":127,"./core/geometry":128,"./core/scene/a-scene":130,"./core/scene/scenes":133,"./core/schema":135,"./core/shader":136,"./core/system":137,"./extras/components/":138,"./extras/primitives/":141,"./extras/primitives/getMeshMixin":140,"./extras/primitives/primitives":142,"./geometries/index":163,"./lib/three":174,"./shaders/index":176,"./style/aframe.css":181,"./style/rStats.css":182,"./systems/index":186,"./utils/":197,"present":32,"promise-polyfill":34,"tween.js":48,"webvr-polyfill":63}],173:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -77177,7 +76196,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],149:[function(_dereq_,module,exports){
+},{}],174:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -77217,7 +76236,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":177,"../../vendor/VREffect":178,"three":41,"three/examples/js/BlendCharacter":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],150:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":202,"../../vendor/VREffect":203,"three":41,"three/examples/js/BlendCharacter":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],175:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77282,14 +76301,14 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":111,"../lib/three":149,"../utils/":172}],151:[function(_dereq_,module,exports){
+},{"../core/shader":136,"../lib/three":174,"../utils/":197}],176:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":150,"./ios10hls":152,"./msdf":153,"./sdf":154,"./standard":155}],152:[function(_dereq_,module,exports){
+},{"./flat":175,"./ios10hls":177,"./msdf":178,"./sdf":179,"./standard":180}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77324,7 +76343,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":111}],153:[function(_dereq_,module,exports){
+},{"../core/shader":136}],178:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77399,7 +76418,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],154:[function(_dereq_,module,exports){
+},{"../core/shader":136}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77509,7 +76528,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":111}],155:[function(_dereq_,module,exports){
+},{"../core/shader":136}],180:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77674,11 +76693,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":111,"../lib/three":149,"../utils/":172}],156:[function(_dereq_,module,exports){
+},{"../core/shader":136,"../lib/three":174,"../utils/":197}],181:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],157:[function(_dereq_,module,exports){
+},{"browserify-css":4}],182:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":4}],158:[function(_dereq_,module,exports){
+},{"browserify-css":4}],183:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -77805,7 +76824,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":93,"../core/system":112,"../utils/bind":166}],159:[function(_dereq_,module,exports){
+},{"../constants/":118,"../core/system":137,"../utils/bind":191}],184:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -77945,7 +76964,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":103,"../core/system":112,"../lib/three":149}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":128,"../core/system":137,"../lib/three":174}],185:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -77988,7 +77007,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":112,"../lib/three":149}],161:[function(_dereq_,module,exports){
+},{"../core/system":137,"../lib/three":174}],186:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -77998,7 +77017,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":158,"./geometry":159,"./gltf-model":160,"./light":162,"./material":163,"./shadow":164,"./tracked-controls":165}],162:[function(_dereq_,module,exports){
+},{"./camera":183,"./geometry":184,"./gltf-model":185,"./light":187,"./material":188,"./shadow":189,"./tracked-controls":190}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -78083,7 +77102,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":93,"../core/system":112,"../utils/bind":166}],163:[function(_dereq_,module,exports){
+},{"../constants/":118,"../core/system":137,"../utils/bind":191}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78488,7 +77507,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":112,"../lib/three":149,"../utils/":172,"../utils/material":173}],164:[function(_dereq_,module,exports){
+},{"../core/system":137,"../lib/three":174,"../utils/":197,"../utils/material":198}],189:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
@@ -78541,7 +77560,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":112,"../lib/three":149,"../utils/bind":166}],165:[function(_dereq_,module,exports){
+},{"../core/system":137,"../lib/three":174,"../utils/bind":191}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -78583,7 +77602,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":112,"../utils":172,"../utils/tracked-controls":176}],166:[function(_dereq_,module,exports){
+},{"../core/system":137,"../utils":197,"../utils/tracked-controls":201}],191:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -78600,9 +77619,13 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],167:[function(_dereq_,module,exports){
+},{}],192:[function(_dereq_,module,exports){
 /* global THREE */
+var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
+
+var warn = debug('utils:coordinates:warn');
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
@@ -78657,8 +77680,14 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinates = function (value) {
+function isCoordinates (value) {
   return regex.test(value);
+}
+module.exports.isCoordinates = isCoordinates;
+
+module.exports.isCoordinate = function (value) {
+  warn('`AFRAME.utils.isCoordinate` has been renamed to `AFRAME.utils.isCoordinates`');
+  return isCoordinates(value);
 };
 
 function vecParseFloat (vec) {
@@ -78679,7 +77708,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":25}],168:[function(_dereq_,module,exports){
+},{"./debug":193,"object-assign":25}],193:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -78776,7 +77805,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":33,"debug":7,"object-assign":25}],169:[function(_dereq_,module,exports){
+},{"_process":33,"debug":7,"object-assign":25}],194:[function(_dereq_,module,exports){
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
@@ -78828,7 +77857,7 @@ var isMobile = (function () {
     if (isGearVR()) {
       _isMobile = false;
     }
-  })(navigator.userAgent || navigator.vendor || window.opera);
+  })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
 })();
@@ -78839,18 +77868,18 @@ module.exports.isMobile = isMobile;
  *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
  */
 function isTablet (mockUserAgent) {
-  var userAgent = mockUserAgent || navigator.userAgent;
+  var userAgent = mockUserAgent || window.navigator.userAgent;
   return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 }
 module.exports.isTablet = isTablet;
 
 function isIOS () {
-  return /iPad|iPhone|iPod/.test(navigator.platform);
+  return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
 module.exports.isIOS = isIOS;
 
 function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(navigator.userAgent);
+  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
 module.exports.isGearVR = isGearVR;
 
@@ -78885,7 +77914,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"../lib/three":149,"_process":33}],170:[function(_dereq_,module,exports){
+},{"../lib/three":174,"_process":33}],195:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -78928,7 +77957,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],171:[function(_dereq_,module,exports){
+},{}],196:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -78944,7 +77973,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],172:[function(_dereq_,module,exports){
+},{}],197:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -79216,7 +78245,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":166,"./coordinates":167,"./debug":168,"./device":169,"./entity":170,"./forceCanvasResizeSafariMobile":171,"./material":173,"./src-loader":174,"./styleParser":175,"./tracked-controls":176,"deep-assign":9,"object-assign":25}],173:[function(_dereq_,module,exports){
+},{"./bind":191,"./coordinates":192,"./debug":193,"./device":194,"./entity":195,"./forceCanvasResizeSafariMobile":196,"./material":198,"./src-loader":199,"./styleParser":200,"./tracked-controls":201,"deep-assign":9,"object-assign":25}],198:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -79371,7 +78400,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":149}],174:[function(_dereq_,module,exports){
+},{"../lib/three":174}],199:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -79503,7 +78532,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":168}],175:[function(_dereq_,module,exports){
+},{"./debug":193}],200:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -79563,7 +78592,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":36}],176:[function(_dereq_,module,exports){
+},{"style-attr":36}],201:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 
@@ -79684,7 +78713,7 @@ module.exports.emitIfAxesChanged = function (self, axesMapping, evt) {
   });
 };
 
-},{"../constants":93}],177:[function(_dereq_,module,exports){
+},{"../constants":118}],202:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -79859,7 +78888,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],178:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -80338,7 +79367,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],179:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -80603,7 +79632,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],180:[function(_dereq_,module,exports){
+},{}],205:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -81058,7 +80087,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],181:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81120,7 +80149,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],182:[function(_dereq_,module,exports){
+},{}],207:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81196,6 +80225,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":181}]},{},[147])(147)
+},{"./util.js":206}]},{},[172])(172)
 });
 //# sourceMappingURL=aframe-master.js.map

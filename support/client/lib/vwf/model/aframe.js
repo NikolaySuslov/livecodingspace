@@ -279,6 +279,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 case "color":
                                     aframeObject.setAttribute('color', propertyValue);
                                     break;
+                                
+                                case "transparent":
+                                    aframeObject.setAttribute('material','transparent', propertyValue);
+                                    break;
+
+                                case "opacity":
+                                    aframeObject.setAttribute('material','opacity', propertyValue);
+                                    break;
 
                                 case "fog":
                                     aframeObject.setAttribute('material','fog', propertyValue);
@@ -291,16 +299,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     aframeObject.setAttribute('wireframeLinewidth', propertyValue);
                                     break;
 
-                                // case "clickable":
-                                  
-                                //         value = propertyValue;
-
-                                //     break;
+                                //  case "clickable":   
+                                //          console.log("set clickable!");
+                                //          value = propertyValue;
+                                //      break;
 
                                 // case "clickable":
                                 //     if (propertyValue) {
                                 //         aframeObject.addEventListener('click', function (evt) {
-                                //             vwf_view.kernel.fireEvent(node.ID, "clickEvent");
+                                //              console.log("click!");
+                                //             vwf_view.kernel.fireEvent(node.ID, "clickEvent",evt.detail.cursorEl.id);
                                 //         });
                                 //     }
                                 //     break;
@@ -490,38 +498,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                          value = propertyValue;
                           switch (propertyName) {
 
-                                    case "activeForAvatar":
-                                       console.log("set active camera to view");
+                                case "active":
+                                    aframeObject.setAttribute('active', propertyValue);
                                        break;
-
-                                    case "forAvatar":
-                                        if (propertyValue) {
-                                            // aframeObject.addEventListener('componentchanged', function (evt) {
-
-                                            //     if (evt.detail.name === 'position') {
-                                            //         self.kernel.fireEvent(node.ID, "setAvatarPosition", evt.detail.newData);
-
-                                            //     }
-                                            //     if (evt.detail.name === 'rotation') {
-                                            //         self.kernel.fireEvent(node.ID, "setAvatarRotation", evt.detail.newData);
-                                                
-                                            //     }
-                                            // });
-                                        }
-                                        break;
-                    
 
                              default:
                                  value = undefined;
                                  break;
                          }
                      }
-
-
-                    //if (!aframeObject) return value;
-
-                    //if (propertyValue !== undefined) {
-                        //self = this;
 
             }
             return value;
@@ -601,6 +586,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 }
                                 break;
 
+                            case "opacity":
+                                if (aframeObject.getAttribute('material')){
+                                    value = aframeObject.getAttribute('material').opacity;
+                                }
+                                break;
+
+                            case "transparent":
+                                if (aframeObject.getAttribute('material')){
+                                    value = aframeObject.getAttribute('material').transparent;
+                                }
+                                break;
+                                
                             case "wireframe":
                                 value = aframeObject.getAttribute('wireframe');
                                 break;
@@ -609,9 +606,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 value = aframeObject.getAttribute('wireframeLinewidth');
                                 break;
 
-                            // case "clickable":
-                            //   value = propertyValue; 
-                            //     break;
+                            //  case "clickable":
+                            //    value = propertyValue; 
+                            //      break;
 
                             case "src":
                                 value = aframeObject.getAttribute('src');
@@ -718,7 +715,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                  if ( value === undefined && aframeObject.nodeName == "A-CAMERA" ) {
         
                            switch (propertyName) {
-                               
+                                case "active":
+                                    value = aframeObject.getAttribute('active');
+                                    break;
                                 }
                 }
 

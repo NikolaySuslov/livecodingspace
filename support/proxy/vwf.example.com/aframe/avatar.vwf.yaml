@@ -29,24 +29,42 @@ methods:
                 } 
               }
 
-              let cursor = {
-                     "id": 'cursor-' + this.id,
-                     "extends": "http://vwf.example.com/aframe/acursor.vwf"
+              //let cursor = 
+              //{
+              //       "id": 'cursor-' + this.id,
+              //       "extends": "http://vwf.example.com/aframe/acursor.vwf",
+              //}
+
+              let cursorVis = 
+              {
+                     "extends": "http://vwf.example.com/aframe/abox.vwf",
+                     "properties": {
+                        "color": myColor,
+                        "opacity": 0.3,
+                        "transparent": true,
+                        "depth": 3,
+                        "width": 0.02,
+                        "height": 0.02,
+                        "rotation": [0, 180, 0],
+                        "position": [0, 0, -2]
+                     }
+
               }
 
-              let camera = {
+              let camera = 
+              {
                    "id": 'camera-' + this.id,
                     "extends": "http://vwf.example.com/aframe/acamera.vwf",
                     "properties": {
-                        "forAvatar": true,
                         "look-controls-enabled": false,
-                        "wasd-controls": false
+                        "wasd-controls": false,
+                        "active": false
                     }
               }
 
               this.interpolation = "50ms";
               this.children.create( "avatarBody", newNode );
-              this.children.create( "avatarCursor", cursor );
+              this.children.create( "avatarCursor", cursorVis );
               this.children.create( "avatarCamera", camera );
     getRandomColor:
         body: |

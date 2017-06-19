@@ -195,16 +195,3 @@ children:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
       color: "#ECECEC"
-  camentity:
-    extends: http://vwf.example.com/aframe/aentity.vwf
-    properties:
-      position: [0, 0, 0]
-    children:
-      camera:
-        extends: http://vwf.example.com/aframe/acamera.vwf
-        properties:
-          look-controls-enabled: true
-          forAvatar: true
-        children:
-          cursor:
-            extends: http://vwf.example.com/aframe/acursor.vwf
