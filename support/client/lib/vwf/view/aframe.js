@@ -97,7 +97,6 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             switch (propertyName) {
                 case "clickable":
                     if (propertyValue) {
-                        aframeObject.setAttribute('class', 'intersectable');
                         aframeObject.addEventListener('click', function (evt) {
                             let cursorID = 'cursor-avatar-'+self.kernel.moniker();
                            if (evt.detail.cursorEl.id == cursorID) {

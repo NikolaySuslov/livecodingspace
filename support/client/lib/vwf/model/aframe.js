@@ -49,7 +49,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         "name": childName,
                         "prototypes": undefined,
                         "aframeObj": undefined,
-                        "scene": undefined
+                        "scene": undefined,
+                        "events": {
+                            "clickable": false
+                        }
                     };
                 },
                 isAFrameClass: function (prototypes, classID) {
@@ -299,6 +302,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     aframeObject.setAttribute('wireframeLinewidth', propertyValue);
                                     break;
 
+                                 case "clickable":
+                                     if(propertyValue){
+                                        aframeObject.setAttribute('class', 'intersectable');
+                                     } else {
+                                         aframeObject.setAttribute('class', 'nonintersectable');
+                                     }
+                                     node.events.clickable = propertyValue;
+                                     break;
+
+                                   
                                 //  case "clickable":   
                                 //          console.log("set clickable!");
                                 //          value = propertyValue;
@@ -597,7 +610,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     value = aframeObject.getAttribute('material').transparent;
                                 }
                                 break;
-                                
+
                             case "wireframe":
                                 value = aframeObject.getAttribute('wireframe');
                                 break;
@@ -606,9 +619,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 value = aframeObject.getAttribute('wireframeLinewidth');
                                 break;
 
-                            //  case "clickable":
-                            //    value = propertyValue; 
-                            //      break;
+                             case "clickable":
+                               value = node.events.clickable; 
+                                 break;
 
                             case "src":
                                 value = aframeObject.getAttribute('src');
