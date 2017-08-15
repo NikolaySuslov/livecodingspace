@@ -121,7 +121,7 @@ define([
                     $init: function () {
                         let prop = m[1].prop;
                         if (prop.value == undefined) {
-                            prop.value = JSON.stringify(utility.transform(vwf.getProperty(self.currentNodeID, prop.name, []), utility.transforms.transit));
+                            prop.value = JSON.stringify(utility.transform(vwf.getProperty(this._currentNode, prop.name, []), utility.transforms.transit));
                         } 
                         this._prop = prop
                     },
@@ -145,7 +145,7 @@ define([
                                         let propValue = this.value;
                                         try {
                                             propValue = JSON.parse(propValue);
-                                            self.kernel.setProperty(self.currentNodeID, m.name, propValue);
+                                            self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
                                         } catch (e) {
                                             // restore the original value on error
                                             this.value = propValue;
@@ -184,7 +184,7 @@ define([
                                     let propValue = this.value;
                                     try {
                                         propValue = JSON.parse(propValue);
-                                        self.kernel.setProperty(self.currentNodeID, m.name, propValue);
+                                        self.kernel.setProperty(this._currentNode, m.name, propValue);
                                     } catch (e) {
                                         // restore the original value on error
                                         this.value = propValue;
@@ -210,7 +210,7 @@ define([
                         $text: m.name,
                         
                         onclick: function(e){
-                            self.currentNodeID = m.ID;
+                            //self.currentNodeID = m.ID;
                             document.querySelector('#currentNode')._setNode(m.ID);
                           }
                         }]
@@ -231,10 +231,12 @@ define([
                 $type: "div",
                 id: "currentNode",
                 _currentNode: '',
+                _displayedProperties: {},
                 _setNode: function (aNode) {
                     this._currentNode = aNode
                 },
                 $init: function () {
+                    
                     //this._currentNode = vwf_view.kernel.find("", "/")[0];
                     //this._currentNode = '3333';
                 },
@@ -245,12 +247,22 @@ define([
                         },
                 _getNodeProperties: function() {
                     let node = self.nodes[this._currentNode];
-                    return node.properties
+                    this._displayedProperties = {};
+                    let filterFunction = function(prop){
+                        return (!this._displayedProperties[prop.name] && prop.name.indexOf('$') === -1) ? (this._displayedProperties[prop.name] = "instance", true):(false);
+                    };
+                    let props = node.properties.filter(filterFunction.bind(this)); 
+                    return props
                 },
                 _getNodeProtoProperties: function() {
                     let node = self.nodes[this._currentNode];
-                    let prototypeProperties = getProperties.call(self, self.kernel, node.extendsID);
-                    return prototypeProperties
+
+                    let filterFunction = function(prop){
+                        return (!this._displayedProperties[prop[1].prop.name]) ? (this._displayedProperties[prop[1].prop.name] = prop[1].prototype, true):(false);
+                    };
+                    let props = Object.entries(getProperties.call(self, self.kernel, node.extendsID)).filter(filterFunction.bind(this)); 
+
+                    return props
                 },
                 $update: function () {
                     //this.$text = this._currentNode;
@@ -264,8 +276,8 @@ define([
                             onclick: function(e){
                                 let node = self.nodes[this._currentNode];
                                 if (node.parentID !== 0) {
-                                    self.currentNodeID = node.parentID,
-                                    document.querySelector('#currentNode')._setNode(self.currentNodeID)
+                                    //self.currentNodeID = node.parentID,
+                                    document.querySelector('#currentNode')._setNode(node.parentID)
                                 }
                                 
                               }
@@ -294,7 +306,7 @@ define([
                             $cell: true,
                             $type: "ul",
                             class: "mdc-list",
-                            $components: Object.entries(this._getNodeProtoProperties()).map(protoPropertiesCell)
+                            $components: this._getNodeProtoProperties().map(protoPropertiesCell)
                         }
                         ]
                 }
@@ -458,8 +470,11 @@ define([
             var MDCPersistentDrawer = mdc.drawer.MDCPersistentDrawer;
             var drawer = new MDCPersistentDrawer(drawerEl);
             document.querySelector('.demo-menu').addEventListener('click', function () {
-                self.currentNodeID = (self.currentNodeID == '') ? (vwf_view.kernel.find("", "/")[0]) : self.currentNodeID; 
-                document.querySelector('#currentNode')._setNode(self.currentNodeID);
+                //self.currentNodeID = (self.currentNodeID == '') ? (vwf_view.kernel.find("", "/")[0]) : self.currentNodeID; 
+                let currentNode = document.querySelector('#currentNode')._currentNode;
+                currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
+                document.querySelector('#currentNode')._setNode(currentNode);
+                //document.querySelector('#currentNode')._setNode(self.currentNodeID);
                 drawer.open = !drawer.open;
             });
             drawerEl.addEventListener('MDCPersistentDrawer:open', function () {
