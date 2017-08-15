@@ -66932,7 +66932,7 @@ module.exports.Component = registerComponent('line', {
 
 function isEqualVec3 (a, b) {
   if (!a || !b) { return false; }
-  return a.x !== b.x || a.y !== b.y || a.z !== b.z;
+  return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
 },{"../core/component":126}],90:[function(_dereq_,module,exports){
@@ -66972,7 +66972,9 @@ module.exports.Component = registerComponent('link', {
     var strokeColor = data.highlighted ? data.highlightedColor : data.color;
     el.setAttribute('material', 'strokeColor', strokeColor);
     if (data.on !== oldData.on) { this.updateEventListener(); }
-    if (data.peekMode !== oldData.peekMode) { this.updatePeekMode(); }
+    if (data.visualAspectEnabled && oldData.peekMode !== undefined && data.peekMode !== oldData.peekMode) {
+      this.updatePeekMode();
+    }
     if (!data.image || oldData.image === data.image) { return; }
     el.setAttribute('material', 'pano',
                     typeof data.image === 'string' ? data.image : data.image.src);
@@ -67105,6 +67107,7 @@ module.exports.Component = registerComponent('link', {
     var scale = new THREE.Vector3();
     var quaternion = new THREE.Quaternion();
     return function () {
+      if (!this.data.visualAspectEnabled) { return; }
       var el = this.el;
       var object3D = el.object3D;
       var camera = el.sceneEl.camera;
@@ -67694,18 +67697,19 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
+    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     depthTest: {default: true},
     depthWrite: {default: true},
-    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     flatShading: {default: false},
+    npot: {default: false},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     shader: {default: 'standard', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    visible: {default: true},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    npot: {default: false}
+    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
+    visible: {default: true}
   },
 
   init: function () {
@@ -67723,7 +67727,7 @@ module.exports.Component = registerComponent('material', {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);
-    this.updateMaterial();
+    this.updateMaterial(oldData);
   },
 
   updateSchema: function (data) {
@@ -67778,25 +67782,32 @@ module.exports.Component = registerComponent('material', {
     this.updateSchema(data);
   },
 
-  updateMaterial: function () {
+  /**
+   * Set and update base material properties.
+   * Set `needsUpdate` when needed.
+   */
+  updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
-    var needsUpdate = false;
-    var side = parseSide(data.side);
-    if (material.side === THREE.DoubleSide && side !== THREE.DoubleSide ||
-      material.side !== THREE.DoubleSide && side === THREE.DoubleSide) {
-      needsUpdate = true;
-    }
-    material.side = side;
-    material.opacity = data.opacity;
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
+
+    // Base material properties.
+    material.alphaTest = data.alphaTest;
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
+    material.opacity = data.opacity;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.side = parseSide(data.side);
+    material.transparent = data.transparent !== false || data.opacity < 1.0;
+    material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
-    if (data.alphaTest !== material.alphaTest) { needsUpdate = true; }
-    material.alphaTest = data.alphaTest;
-    if (needsUpdate) { material.needsUpdate = true; }
+
+    // Check if material needs update.
+    if (Object.keys(oldData).length &&
+        (oldData.alphaTest !== data.alphaTest ||
+         oldData.side !== data.side ||
+         oldData.vertexColors !== data.vertexColors)) {
+      material.needsUpdate = true;
+    }
   },
 
   /**
@@ -67829,7 +67840,7 @@ module.exports.Component = registerComponent('material', {
 });
 
 /**
- * Returns a three.js constant determining which material face sides to render
+ * Return a three.js constant determining which material face sides to render
  * based on the side parameter (passed as a component property).
  *
  * @param {string} [side=front] - `front`, `back`, or `double`.
@@ -67846,6 +67857,23 @@ function parseSide (side) {
     default: {
       // Including case `front`.
       return THREE.FrontSide;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining vertex coloring.
+ */
+function parseVertexColors (coloring) {
+  switch (coloring) {
+    case 'face': {
+      return THREE.FaceColors;
+    }
+    case 'vertex': {
+      return THREE.VertexColors;
+    }
+    default: {
+      return THREE.NoColors;
     }
   }
 }
@@ -68332,74 +68360,87 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: function (time) {
-    var el = this.el;
-    var data = this.data;
-    var i;
-    var intersectedEls = this.intersectedEls;
-    var intersections;
-    var lineLength;
-    var prevCheckTime = this.prevCheckTime;
-    var prevIntersectedEls = this.prevIntersectedEls;
+  tick: (function () {
+    var intersections = [];
 
-    // Only check for intersection if interval time has passed.
-    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-    // Update check time.
-    this.prevCheckTime = time;
+    return function (time) {
+      var el = this.el;
+      var data = this.data;
+      var i;
+      var intersectedEls = this.intersectedEls;
+      var intersection;
+      var lineLength;
+      var prevCheckTime = this.prevCheckTime;
+      var prevIntersectedEls = this.prevIntersectedEls;
+      var rawIntersections;
 
-    // Store old previously intersected entities.
-    copyArray(this.prevIntersectedEls, this.intersectedEls);
+      // Only check for intersection if interval time has passed.
+      if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+      // Update check time.
+      this.prevCheckTime = time;
 
-    // Raycast.
-    this.updateOriginDirection();
-    intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
+      // Store old previously intersected entities.
+      copyArray(this.prevIntersectedEls, this.intersectedEls);
 
-    // Only keep intersections against objects that have a reference to an entity.
-    intersections = intersections.filter(function hasEl (intersection) {
-      // Don't intersect with own line.
-      if (data.showLine && intersection.object === el.getObject3D('line')) { return false; }
-      return !!intersection.object.el;
-    });
+      // Raycast.
+      this.updateOriginDirection();
+      rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
-    // Update intersectedEls.
-    intersectedEls.length = intersections.length;
-    for (i = 0; i < intersections.length; i++) {
-      intersectedEls[i] = intersections[i].object.el;
-    }
-
-    // Emit intersected on intersected entity per intersected entity.
-    intersections.forEach(function emitEvents (intersection) {
-      var intersectedEl = intersection.object.el;
-      intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
-    });
-
-    // Emit all intersections at once on raycasting entity.
-    if (intersections.length) {
-      el.emit('raycaster-intersection', {
-        els: intersectedEls,
-        intersections: intersections
-      });
-    }
-
-    // Emit intersection cleared on both entities per formerly intersected entity.
-    prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
-      if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      intersectedEl.emit('raycaster-intersected-cleared', {el: el});
-    });
-
-    // Update line length.
-    if (data.showLine) {
-      if (intersections.length) {
-        if (intersections[0].object.el === el && intersections[1]) {
-          lineLength = intersections[1].distance;
-        } else {
-          lineLength = intersections[0].distance;
+      // Only keep intersections against objects that have a reference to an entity.
+      intersections.length = 0;
+      for (i = 0; i < rawIntersections.length; i++) {
+        intersection = rawIntersections[i];
+        // Don't intersect with own line.
+        if (data.showLine && intersection.object === el.getObject3D('line')) {
+          continue;
+        }
+        if (intersection.object.el) {
+          intersections.push(intersection);
         }
       }
-      this.drawLine(lineLength);
-    }
-  },
+
+      // Update intersectedEls.
+      intersectedEls.length = intersections.length;
+      for (i = 0; i < intersections.length; i++) {
+        intersectedEls[i] = intersections[i].object.el;
+      }
+
+      // Emit intersected on intersected entity per intersected entity.
+      for (i = 0; i < intersections.length; i++) {
+        intersections[i].object.el.emit('raycaster-intersected', {
+          el: el,
+          intersection: intersections[i]
+        });
+      }
+
+      // Emit all intersections at once on raycasting entity.
+      if (intersections.length) {
+        el.emit('raycaster-intersection', {
+          els: intersectedEls,
+          intersections: intersections
+        });
+      }
+
+      // Emit intersection cleared on both entities per formerly intersected entity.
+      for (i = 0; i < prevIntersectedEls.length; i++) {
+        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { return; }
+        el.emit('raycaster-intersection-cleared', {el: prevIntersectedEls[i]});
+        prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
+      }
+
+      // Update line length.
+      if (data.showLine) {
+        if (intersections.length) {
+          if (intersections[0].object.el === el && intersections[1]) {
+            lineLength = intersections[1].distance;
+          } else {
+            lineLength = intersections[0].distance;
+          }
+        }
+        this.drawLine(lineLength);
+      }
+    };
+  })(),
 
   /**
    * Update origin and direction of raycaster using entity transforms and supplied origin or
@@ -69378,6 +69419,7 @@ function createEnterVRButton (enterVRHandler) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
+  vrButton.setAttribute('title', 'Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
@@ -70150,11 +70192,13 @@ function PromiseCache () {
 },{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":197,"load-bmfont":24,"path":32,"three-bmfont-text":38}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
-var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
+var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
 
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
-var FOREARM = {x: 0, y: 0, z: -0.175}; // vector from eyes to elbow (divided by user height)
+// Vector from eyes to elbow (divided by user height).
+var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
+// Vector from eyes to elbow (divided by user height).
+var FOREARM = {x: 0, y: 0, z: -0.175};
 
 /**
  * Tracked controls component.
@@ -70204,7 +70248,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Return default user height to use for non-6DOF arm model.
    */
-  defaultUserHeight: function () { return DEFAULT_USER_HEIGHT; }, // default user height (for cameras with zero)
+  defaultUserHeight: function () { return DEFAULT_CAMERA_HEIGHT; }, // default camera height (for cameras with zero)
 
   /**
    * Return head element to use for non-6DOF arm model.
@@ -70217,15 +70261,20 @@ module.exports.Component = registerComponent('tracked-controls', {
   updateGamepad: function () {
     var controllers = this.system.controllers;
     var data = this.data;
-    var matchingControllers;
+    var i;
+    var matchCount = 0;
 
     // Hand IDs: 0 is right, 1 is left.
-    matchingControllers = controllers.filter(function hasIdOrPrefix (controller) {
-      if (data.idPrefix) { return controller.id.indexOf(data.idPrefix) === 0; }
-      return controller.id === data.id;
-    });
-
-    this.controller = matchingControllers[data.controller];
+    for (i = 0; i < controllers.length; i++) {
+      if ((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
+          (!data.idPrefix && controllers[i].id === data.id)) {
+        matchCount++;
+        if (matchCount - 1 === data.controller) {
+          this.controller = controllers[i];
+          return;
+        }
+      }
+    }
   },
 
   applyArmModel: function (controllerPosition) {
@@ -73655,9 +73704,10 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
-      // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
-      // undefined is passed to the rest of types.
-      oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
+      // Pass undefined to rest of types.
+      oldData = (!isSinglePropSchema ||
+                 typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
       // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       this.update(oldData);
@@ -73670,7 +73720,7 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (!skipTypeChecking && utils.deepEqual(this.oldData, this.data)) { return; }
+      if (utils.deepEqual(this.oldData, this.data)) { return; }
      // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.
@@ -73734,10 +73784,14 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var self = this;
     var componentDefined = newData !== undefined && newData !== null;
     var data;
+    var defaultValue;
+    var keys;
+    var keysLength;
+    var mixinData;
     var schema = this.schema;
+    var i;
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
@@ -73745,28 +73799,30 @@ Component.prototype = {
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       // Clone default value if object so components don't share object.
-      data = typeof schema.default === 'object' ? utils.extend({}, schema.default) : schema.default;
+      data = typeof schema.default === 'object' ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
       // Clone default value if object so components don't share object
-      data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
-      Object.keys(schema).forEach(function applyDefault (key) {
-        var defaultValue = schema[key].default;
-        if (data[key] !== undefined) { return; }
-        data[key] = defaultValue && defaultValue.constructor === Object
-          ? utils.extend({}, defaultValue)
+      data = typeof previousData === 'object' ? utils.clone(previousData) : {};
+
+      // Apply defaults.
+      for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
+        defaultValue = schema[keys[i]].default;
+        if (data[keys[i]] !== undefined) { continue; }
+        data[keys[i]] = defaultValue && defaultValue.constructor === Object
+          ? utils.clone(defaultValue)
           : defaultValue;
-      });
+      }
     }
 
     // 2. Mixin values.
-    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
-      var mixinData = mixinEl.getAttribute(self.attrName);
+    for (i = 0; i < mixinEls.length; i++) {
+      mixinData = mixinEls[i].getAttribute(this.attrName);
       if (mixinData) {
         data = extendProperties(data, mixinData, isSinglePropSchema);
       }
-    });
+    }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
@@ -74023,8 +74079,8 @@ registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', '', selectorParse, selectorStringify);
-registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
@@ -74283,6 +74339,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.object3D = new THREE.Scene();
         this.render = bind(this.render, this);
         this.systems = {};
+        this.systemNames = [];
         this.time = 0;
         this.init();
       }
@@ -74290,7 +74347,7 @@ module.exports.AScene = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.behaviors = { tick: [], tock: [] };
+        this.behaviors = {tick: [], tock: []};
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
@@ -74369,6 +74426,7 @@ module.exports.AScene = registerElement('a-scene', {
       value: function (name) {
         if (this.systems[name]) { return; }
         this.systems[name] = new systems[name](this);
+        this.systemNames.push(name);
       }
     },
 
@@ -74533,8 +74591,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     onVRPresentChange: {
       value: function (evt) {
+        // Polyfill places display inside the detail property
+        var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (evt.display.isPresenting) {
+        if (display.isPresenting) {
           this.enterVR(true);
           return;
         }
@@ -74735,20 +74795,23 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tick: {
       value: function (time, timeDelta) {
+        var i;
         var systems = this.systems;
+
         // Animations.
         TWEEN.update();
 
         // Components.
-        this.behaviors.tick.forEach(function (component) {
-          if (!component.el.isPlaying) { return; }
-          component.tick(time, timeDelta);
-        });
+        for (i = 0; i < this.behaviors.tick.length; i++) {
+          if (!this.behaviors.tick[i].el.isPlaying) { continue; }
+          this.behaviors.tick[i].tick(time, timeDelta);
+        }
+
         // Systems.
-        Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tick) { return; }
-          systems[key].tick(time, timeDelta);
-        });
+        for (i = 0; i < this.systemNames.length; i++) {
+          if (!systems[this.systemNames[i]].tick) { continue; }
+          systems[this.systemNames[i]].tick(time, timeDelta);
+        }
       }
     },
 
@@ -74759,18 +74822,20 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tock: {
       value: function (time, timeDelta) {
+        var i;
         var systems = this.systems;
 
         // Components.
-        this.behaviors.tock.forEach(function (component) {
-          if (!component.el.isPlaying) { return; }
-          component.tock(time, timeDelta);
-        });
+        for (i = 0; i < this.behaviors.tock.length; i++) {
+          if (!this.behaviors.tock[i].el.isPlaying) { continue; }
+          this.behaviors.tock[i].tock(time, timeDelta);
+        }
+
         // Systems.
-        Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tock) { return; }
-          systems[key].tock(time, timeDelta);
-        });
+        for (i = 0; i < this.systemNames.length; i++) {
+          if (!systems[this.systemNames[i]].tock) { continue; }
+          systems[this.systemNames[i]].tock(time, timeDelta);
+        }
       }
     },
 
@@ -75076,7 +75141,8 @@ function processPropertyDefinition (propDefinition, componentName) {
   // Check that default value exists.
   if ('default' in propDefinition) {
     // Check that default values are valid.
-    if (!isValidDefaultValue(typeName, defaultVal)) {
+    if (!isValidDefaultValue(typeName, defaultVal) &&
+        typeName !== 'selector' && typeName !== 'selectorAll') {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
            '` in component `' + componentName + '`');
     }
@@ -76155,7 +76221,9 @@ registerGeometry('box', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
+    this.geometry = new THREE.BoxGeometry(
+      data.width, data.height, data.depth,
+      data.segmentsWidth, data.segmentsHeight, data.segmentsDepth);
   }
 });
 
@@ -76553,7 +76621,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 19-07-2017, Commit #83eb39b)');
+console.log('A-Frame Version: 0.6.1 (Date 07-08-2017, Commit #5e3e775)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76997,6 +77065,8 @@ module.exports.Shader = registerShader('standard', {
     displacementBias: {default: 0.5},
     displacementTextureOffset: {type: 'vec2'},
     displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+    emissive: {type: 'color', default: '#000'},
+    emissiveIntensity: {default: 1},
     envMap: {default: ''},
 
     fog: {default: true},
@@ -77118,6 +77188,8 @@ module.exports.Shader = registerShader('standard', {
 function getMaterialData (data) {
   var newData = {
     color: new THREE.Color(data.color),
+    emissive: new THREE.Color(data.emissive),
+    emissiveIntensity: data.emissiveIntensity,
     fog: data.fog,
     metalness: data.metalness,
     roughness: data.roughness,
@@ -77529,14 +77601,15 @@ module.exports.System = registerSystem('light', {
     if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
       return;
     }
+
     ambientLight = document.createElement('a-entity');
-    directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
 
-    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6});
+    directionalLight = document.createElement('a-entity');
+    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6, castShadow: true});
     directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
@@ -80650,9 +80723,9 @@ function iOSWakeLock() {
   this.request = function() {
     if (!timer) {
       timer = setInterval(function() {
-        window.location = window.location;
+        window.location.href = '/';
         setTimeout(window.stop, 0);
-      }, 30000);
+      }, 15000);
     }
   }
 

@@ -32,6 +32,13 @@
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
    <!-- <script type="text/javascript" src="socket.io-sessionid-patch.js"></script> -->
 
+     
+    <script type="text/javascript" src="vwf/view/lib/cell.js"></script>
+    <script type="text/javascript" src="vwf/view/lib/he.js"></script>
+
+    <link rel="stylesheet" href="vwf/view/lib/mdc/dist/material-components-web.css">
+    <script src= "vwf/view/lib/mdc/dist/material-components-web.js"></script>
+
     <script type="text/javascript" src="require.js"></script>
 
     <script type="text/javascript" src="async.js"></script>
@@ -129,7 +136,9 @@
             googleEarth && document.write( "<scr" + "ipt type='text/javascript' src='http://www.google.com/jsapi?hl=en&amp;key=ABQIAAAAwbkbZLyhsmTCWXbTcjbgbRSzHs7K5SvaUdm8ua-Xxy_-2dYwMxQMhnagaawTo7L1FE1-amhuQxIlXw'></scr" + "ipt>");
 
             vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+            
         });
+
     </script>
     <script type="text/javascript">googleEarth && google.load( "earth", "1" )</script>
     
@@ -142,8 +151,7 @@
 
   </head>
 
-  <body>
-
+  <body class="mdc-typography">
     <!-- Generic clients may have nearly empty pages, but pages for custom clients may be laid   -->
     <!-- out in any manner desired. Any view and models that render to the page should be        -->
     <!-- instructed where to attach their content.                                               -->
@@ -160,6 +168,9 @@
     </div>
     <div id="vwf-root"></div>
   
+
+    <script>mdc.autoInit()</script>
+
   </body>
 
 </html>
