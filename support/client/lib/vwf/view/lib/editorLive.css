@@ -39,3 +39,43 @@
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
+
+ /*
+.mdc-persistent-drawer--open {
+
+    width: 300px;  
+    
+}
+
+.mdc-persistent-drawer__drawer {
+
+  width: 300px;  
+
+}
+*/
+
+.mdc-theme--accent {
+
+  color: #2E7D32;
+
+}
+
+.draggable {
+  top: 200px;
+  left: 400px;
+    z-index: 4;
+    background-color: rgba(255, 255, 255, 1);
+  }
+  
+  .draggable.is-pointer-down {
+    background: #999FA4;
+  }
+  .draggable.is-dragging { opacity: 0.9; }
+  
+  .handle {
+    background: #555;
+    background: rgba(132, 141, 132, 0.80);
+    width: 100%;
+  }
+  
+  

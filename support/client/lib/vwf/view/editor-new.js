@@ -86,7 +86,7 @@ define([
 
 
             $('body').append(
-                "<div id='drawer'></div><div id='toolbar'></div<div id='clientsList'></div><div id='editor' class='relClass'>\n" +
+                "<div id='editor' class='relClass'>\n" +
                 "  <div class='uiContainer'>\n" +
                 "    <div class='editor-tabs' id='tabs'>\n" +
                 "      <img id='x' style='display:none' src='images/tab_X.png' alt='x' />\n" +
@@ -110,8 +110,22 @@ define([
             );
 
             //style: "position: absolute; top: 0; left: 0; z-index: 2",
+        //    let draggie = new Draggabilly('.draggable');
+        //   let dragDiv = document.querySelector("#dragDiv").style.visibility = 'hidden';
 
-            
+        // let propDiv = document.createElement("div"); 
+        // var newContent = document.createTextNode("Hi there and greetings!"); 
+        // newDiv.appendChild(newContent); //add the text node to the newly created div. 
+
+        //<div id='drawer'></div><div id='toolbar'></div><div id='clientsList'></div>
+
+       
+
+        ["drawer", "toolbar", "propWindow", "clientsWindow"].forEach(item => {
+            let el = document.createElement("div");
+            el.setAttribute("id", item);
+            document.body.appendChild(el);}
+        );
 
             let protoPropertiesCell = function(m) {
                 return { 
@@ -171,11 +185,18 @@ define([
                         $text: m.name,
                         },
                         {
+                            $cell: true,
+                            $type: "span",
+                            $text: "  "
+                        },
+                        {
                             class: "mdc-textfield",
                             $cell: true,
-                            $type: "div",
-                            $components: [{
+                            $type: "span",
+                            $components: [
+                                {
                                 class: "mdc-textfield__input",
+                                id: "prop-" + m.name,
                                 $cell: true,
                                 $type: "input",
                                 type: "text",
@@ -185,6 +206,7 @@ define([
                                     try {
                                         propValue = JSON.parse(propValue);
                                         self.kernel.setProperty(this._currentNode, m.name, propValue);
+                                      
                                     } catch (e) {
                                         // restore the original value on error
                                         this.value = propValue;
@@ -198,6 +220,10 @@ define([
 
 
             }
+
+
+            
+
 
             let nodeLink = function(m){ 
                 return { 
@@ -226,7 +252,7 @@ define([
             }
 
             let nodesCell = {
-                style:"overflow: scroll; max-height: 600px;",
+                style:"overflow-y: scroll; max-height: 800px;",
                 $cell: true,
                 $type: "div",
                 id: "currentNode",
@@ -269,49 +295,130 @@ define([
                     this.$components = [
                         {
                             $cell: true,
-                            $type: "a",
-                            class: "mdc-list-item mdc-persistent-drawer--selected",
-                            $href: "#",
-                            $text: "<--",
-                            onclick: function(e){
-                                let node = self.nodes[this._currentNode];
-                                if (node.parentID !== 0) {
-                                    //self.currentNodeID = node.parentID,
-                                    document.querySelector('#currentNode')._setNode(node.parentID)
+                            $type: "ul",
+                            class: "mdc-list",
+                            $components:[
+                                {
+                                    $cell: true,
+                                    $type: "a",
+                                    class: "mdc-list-item",
+                                    $href: "#",
+                                    $text: "<--",
+                                    onclick: function(e){
+                                        let node = self.nodes[this._currentNode];
+                                        if (node.parentID !== 0) {
+                                            //self.currentNodeID = node.parentID,
+                                            document.querySelector('#currentNode')._setNode(node.parentID)
+                                        }
+                                        
+                                      }
+        
+                                }, 
+                                {
+                                    $type: "li",
+                                    class: "mdc-list-item",
+                                    $components:[
+                                        { 
+                                    $text: "name",
+                                    $type: "span",
+                                    $init: function(){
+                                        let node = self.nodes[this._currentNode];
+                                        this.$text = node.name
+                                    },
+                                    class: "mdc-list-item__text mdc-typography--headline"
+                                    //<h1 class="mdc-typography--display4">Big header</h1>
+                                }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "ul",
+                                    class: "mdc-list",
+                                    $components: this._getChildNodes().map(nodeLink)
+                                }, listDivider,  {
+                                    $type: "li",
+                                    class: "mdc-list-item",
+                                    $components:[
+                                        { 
+                                    $text: "Properties",
+                                    $type: "span",
+                                    class: "mdc-list-item__text mdc-typography--title"
+                                    //<h1 class="mdc-typography--display4">Big header</h1>
+                                }]
+                                },listDivider,
+                                {
+                                    $cell: true,
+                                    $type: "ul",
+                                    class: "mdc-list",
+                                    $components: this._getNodeProperties().map(propertiesCell)
+                                }, listDivider,
+                                {
+                                    $type: "li",
+                                    class: "mdc-list-item",
+                                    $components:[
+                                        { 
+                                    $text: "Proto properties",
+                                    $type: "span",
+                                    class: "mdc-list-item__text mdc-typography--title"
+                                    //<h1 class="mdc-typography--display4">Big header</h1>
+                                }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "ul",
+                                    class: "mdc-list",
+                                    $components: this._getNodeProtoProperties().map(protoPropertiesCell)
                                 }
-                                
-                              }
 
+                            ]
                         },
-                        {
-                            $cell: true,
-                            $type: "a",
-                            class: "mdc-list-item mdc-persistent-drawer--selected",
-                            $href: "#",
-                            $text: this._currentNode
-                        }, listDivider,
-                        {
-                            $cell: true,
-                            $type: "ul",
-                            class: "mdc-list",
-                            $components: this._getChildNodes().map(nodeLink)
-                        }, listDivider,
-                        {
-                            $cell: true,
-                            $type: "ul",
-                            class: "mdc-list",
-                            $components: this._getNodeProperties().map(propertiesCell)
-                        }, listDivider,
-                        {
-                            $cell: true,
-                            $type: "ul",
-                            class: "mdc-list",
-                            $components: this._getNodeProtoProperties().map(protoPropertiesCell)
-                        }
+                        
+                        
+                       
+                        
                         ]
                 }
                 
             }
+
+           
+            let propWindow = {
+                $cell: true,
+                $type: "div",
+    
+                $components:[
+    
+                    {
+                        $cell: true,
+                    $type: "div",
+                    class: "mdc-list-group",
+                    $components: [
+                        {
+                        $cell: true,
+                        $type: "nav",
+                        class: "mdc-list",
+                        $components: [
+    
+                               //$text: 'Yes!'
+                    nodesCell
+                    
+                    
+    
+    
+                        ]
+                    }
+                    ]},
+                    
+                 
+            //     <button class="mdc-button">
+            //     Flat button
+            //   </button>
+        ]
+    
+            }
+
+            
+
+
 
             let clientListCell = {
                 $cell: true,
@@ -328,7 +435,7 @@ define([
 
                 },
                 $update: function () {
-                    this.$components = this._filteredItems.map(Tr);
+                    
                 },
                 $components: [{
                     $cell: true,
@@ -346,16 +453,24 @@ define([
                 }]
             }
 
+            createCellWindow("clientsWindow", clientListCell);
+            createCellWindow("propWindow", propWindow);
+
             let drawerCell = {
                 $cell: true,
                 $type: "nav",
                 class: "mdc-persistent-drawer__drawer",
+
                 $components: [
+
                     {
                         $cell: true,
                         $type: "div",
                         class: "mdc-persistent-drawer__toolbar-spacer",
                     },
+
+                    
+
                     {
                         $cell: true,
                         $type: "div",
@@ -364,52 +479,67 @@ define([
                             $cell: true,
                             $type: "nav",
                             class: "mdc-list",
-                            $components: [{
-                                $cell: true,
-                                $type: "a",
-                                class: "mdc-list-item mdc-persistent-drawer--selected",
-                                $href: "#",
-                                $components: [{
+                            $components: [
+                                {
                                     $cell: true,
-                                    $type: "i",
-                                    class: "material-icons mdc-list-item__start-detail",
-                                    $text: "inbox"
+                                    $type: "a",
+                                    class: "mdc-list-item mdc-persistent-drawer--selected",
+                                    $href: "#",
+                                    onclick: function(e){
+                                        //self.currentNodeID = m.ID;
+                                        let currentNode = document.querySelector('#currentNode')._currentNode;
+                                        currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
+                                        document.querySelector('#currentNode')._setNode(currentNode);
+                                        document.querySelector('#propWindow').style.visibility = 'visible';
+                                      },
+                                    $components: [{
+                                        $cell: true,
+                                        $type: "i",
+                                        class: "material-icons mdc-list-item__start-detail",
+                                        $text: "inbox"
+                                    },
+                                    {
+                                        $text: "Properties "
+                                    }
+                                    ]
+    
                                 },
                                 {
-                                    $text: "Inbox "
+                                    $cell: true,
+                                    $type: "a",
+                                    class: "mdc-list-item mdc-persistent-drawer--selected",
+                                    $href: "#",
+                                    onclick: function(e){
+                                        //self.currentNodeID = m.ID;
+                                       
+                                        document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                      },
+                                    $components: [{
+                                        $type: "i",
+                                        class: "material-icons mdc-list-item__start-detail",
+                                        'aria-hidden': "true",
+                                        $text: "star"
+                                    },
+                                    {
+                                        $text: "Clients "
+                                    }]
+    
+                                },
+    
+                                {
+                                    class: "mdc-textfield",
+                                    $cell: true,
+                                    $type: "div",
+                                    $components: [{
+                                        class: "mdc-textfield__input",
+                                        $cell: true,
+                                        $type: "input",
+                                        type: "text"
+                                    }]
+    
                                 }
-                                ]
-
-                            },
-                            {
-                                $cell: true,
-                                $type: "a",
-                                class: "mdc-list-item mdc-persistent-drawer--selected",
-                                $href: "#",
-                                $components: [{
-                                    $type: "i",
-                                    class: "material-icons mdc-list-item__start-detail",
-                                    'aria-hidden': "true",
-                                    $text: "star"
-                                },
-                                {
-                                    $text: "Star "
-                                }]
-
-                            },
-
-                            {
-                                class: "mdc-textfield",
-                                $cell: true,
-                                $type: "div",
-                                $components: [{
-                                    class: "mdc-textfield__input",
-                                    $cell: true,
-                                    $type: "input",
-                                    type: "text"
-                                }]
-
-                            }, nodesCell
+    
+                                //nodesCell
                             ]
                         }]
                     }]
@@ -471,9 +601,13 @@ define([
             var drawer = new MDCPersistentDrawer(drawerEl);
             document.querySelector('.demo-menu').addEventListener('click', function () {
                 //self.currentNodeID = (self.currentNodeID == '') ? (vwf_view.kernel.find("", "/")[0]) : self.currentNodeID; 
-                let currentNode = document.querySelector('#currentNode')._currentNode;
-                currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
-                document.querySelector('#currentNode')._setNode(currentNode);
+
+
+                // let currentNode = document.querySelector('#currentNode')._currentNode;
+                // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
+                // document.querySelector('#currentNode')._setNode(currentNode);
+
+
                 //document.querySelector('#currentNode')._setNode(self.currentNodeID);
                 drawer.open = !drawer.open;
             });
@@ -486,6 +620,9 @@ define([
 
 
 
+
+           
+            //==============
 
             
 
@@ -686,6 +823,15 @@ define([
                 // No need to escape propertyValue, because .val does its own escaping
                 $('#input-' + nodeIDAttribute + '-' + propertyNameAttribute).val(node.properties[propertyName].getValue());
             }
+
+            let propCell = document.querySelector("#currentNode #prop-"+propertyName);
+           
+            if (propCell !== null){
+                if (propCell._currentNode == nodeID) {
+                    propCell.value = node.properties[propertyName].getValue();
+                }
+        }
+
         },
 
         //gotProperty: [ /* nodeID, propertyName, propertyValue */ ],
@@ -736,6 +882,71 @@ define([
         //ticked: [ /* time */ ],
 
     });
+
+
+
+    function createCellWindow(elementID, cellNode) {
+
+        document.querySelector('#'+elementID).$cell({
+            $cell: true,
+            $type: "div",
+            id: elementID,
+            class: 'draggable',
+            $init: function(){
+                // let draggie = new Draggabilly('.draggable', {
+                //     handle: '.handle',
+                //     containment: true
+                //   });
+
+                // get all draggie elements
+                var draggableElems = document.querySelectorAll('.draggable');
+                // array of Draggabillies
+                var draggies = []
+                // init Draggabillies
+                for ( var i=0, len = draggableElems.length; i < len; i++ ) {
+                var draggableElem = draggableElems[i];
+                var draggie = new Draggabilly( draggableElem, {
+                    handle: '.handle',
+                    containment: true
+                });
+                draggies.push( draggie );
+                }
+
+
+                this.style.visibility = 'hidden';
+            },
+            $components: [
+                
+                {  
+                    $cell: true,
+                    $type: "div",
+                    class: "handle",
+                    $components: [
+                        {
+                            $cell: true,
+                            $type: "button",
+                            class: "mdc-button mdc-button--compact",
+                            $text: "X",
+                            onclick: function(e){
+                                //self.currentNodeID = m.ID;
+                                document.querySelector('#'+elementID).style.visibility = 'hidden';
+                              }
+        
+                        }
+                        
+                    ]
+                },
+               
+                cellNode
+              // { $text: "23423"}
+            ]
+        }
+        );
+
+
+    }
+
+
 
     // -- getChildByName --------------------------------------------------------------------
 
