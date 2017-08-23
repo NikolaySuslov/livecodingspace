@@ -397,13 +397,9 @@ define([
                         $type: "nav",
                         class: "mdc-list",
                         $components: [
-    
-                               //$text: 'Yes!'
+
                     nodesCell
-                    
-                    
-    
-    
+
                         ]
                     }
                     ]},
@@ -423,38 +419,64 @@ define([
             let clientListCell = {
                 $cell: true,
                 $type: "div",
+                id: "clientsList",
                 _clientNodes: [],
-                _setNode: function (aNodes) {
-                    this._clientNodes = aNodes
+                _visClients: [],
+                _setClientNodes: function (nodes) {
+                    this._clientNodes = nodes;
+                    if (this._clientNodes !== undefined) 
+                    {
+                        this._visClients = this._clientNodes.children.slice();
+                    }
                 },
-                $init: function () {
-                   // var t = this;
-                   // t._clientNodes = self.nodes["http://vwf.example.com/clients.vwf"];
-
-
-
-                },
-                $update: function () {
-                    
-                },
-                $components: [{
-                    $cell: true,
-                    $type: "ul",
-                    class: "mdc-list",
-                    _items: [],
-                    $components: [{
-                        $cell: true,
+                _listElement: function(m) {
+                    return { 
                         $type: "li",
                         class: "mdc-list-item",
-                        $text: "client"
-                    }
+                        $components: [{
+                            $type: "a",
+                            class: "mdc-list-item",
+                            $href: "#",
+                            $text: m.name,
+                            
+                            onclick: function(e){
+                                //self.currentNodeID = m.ID;
+                                //document.querySelector('#currentNode')._setNode(m.ID);
+                              }
+                            }]
+                        }
+                },
+                $init: function () {
+                },
+                $update: function () {
+                    //this._clientNodes
+                    this.$components = [
+                        {
+                            $cell: true,
+                            $type: "ul",
+                            class: "mdc-list",
+                            $components: this._visClients.map(this._listElement)
+                        }
                     ]
+                }
+                // $components: [{
+                //     $cell: true,
+                //     $type: "ul",
+                //     class: "mdc-list",
+                //     _items: [],
+                //     $components: [{
+                //         $cell: true,
+                //         $type: "li",
+                //         class: "mdc-list-item",
+                //         $text: "client"
+                //     }
+                //     ]
 
-                }]
+                // }]
             }
 
-            createCellWindow("clientsWindow", clientListCell);
-            createCellWindow("propWindow", propWindow);
+            createCellWindow("clientsWindow", clientListCell, "Clients");
+            createCellWindow("propWindow", propWindow, "Scene");
 
             let drawerCell = {
                 $cell: true,
@@ -499,7 +521,7 @@ define([
                                         $text: "inbox"
                                     },
                                     {
-                                        $text: "Properties "
+                                        $text: "Scene "
                                     }
                                     ]
     
@@ -512,6 +534,7 @@ define([
                                     onclick: function(e){
                                         //self.currentNodeID = m.ID;
                                        
+                                        document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
                                         document.querySelector('#clientsWindow').style.visibility = 'visible';
                                       },
                                     $components: [{
@@ -612,10 +635,10 @@ define([
                 drawer.open = !drawer.open;
             });
             drawerEl.addEventListener('MDCPersistentDrawer:open', function () {
-                console.log('Received MDCPersistentDrawer:open');
+                //console.log('Received MDCPersistentDrawer:open');
             });
             drawerEl.addEventListener('MDCPersistentDrawer:close', function () {
-                console.log('Received MDCPersistentDrawer:close');
+                //console.log('Received MDCPersistentDrawer:close');
             });
 
 
@@ -885,7 +908,7 @@ define([
 
 
 
-    function createCellWindow(elementID, cellNode) {
+    function createCellWindow(elementID, cellNode, title) {
 
         document.querySelector('#'+elementID).$cell({
             $cell: true,
@@ -932,6 +955,12 @@ define([
                                 document.querySelector('#'+elementID).style.visibility = 'hidden';
                               }
         
+                        },
+                        {
+                            $cell: true,
+                            $type: "span",
+                            class: "mdc-typography--title",
+                            $text: title
                         }
                         
                     ]
