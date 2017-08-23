@@ -77,5 +77,23 @@
     background: rgba(132, 141, 132, 0.80);
     width: 100%;
   }
-  
-  
+
+
+  .propGrid.max-width {
+    max-width: 400px;
+  }
+
+  .codeEditorGrid{
+
+    width: 1000px;
+    height: 500px; 
+
+  }
+
+  .codeEditorGrid.max-width {
+    max-width: 1200px;
+  }
+
+  .aceEditor {
+    width:inherit; height: 400px
+  }

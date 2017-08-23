@@ -110,149 +110,227 @@ define([
             );
 
             //style: "position: absolute; top: 0; left: 0; z-index: 2",
-        //    let draggie = new Draggabilly('.draggable');
-        //   let dragDiv = document.querySelector("#dragDiv").style.visibility = 'hidden';
+            //    let draggie = new Draggabilly('.draggable');
+            //   let dragDiv = document.querySelector("#dragDiv").style.visibility = 'hidden';
 
-        // let propDiv = document.createElement("div"); 
-        // var newContent = document.createTextNode("Hi there and greetings!"); 
-        // newDiv.appendChild(newContent); //add the text node to the newly created div. 
+            // let propDiv = document.createElement("div"); 
+            // var newContent = document.createTextNode("Hi there and greetings!"); 
+            // newDiv.appendChild(newContent); //add the text node to the newly created div. 
 
-        //<div id='drawer'></div><div id='toolbar'></div><div id='clientsList'></div>
+            //<div id='drawer'></div><div id='toolbar'></div><div id='clientsList'></div>
 
-       
 
-        ["drawer", "toolbar", "propWindow", "clientsWindow"].forEach(item => {
-            let el = document.createElement("div");
-            el.setAttribute("id", item);
-            document.body.appendChild(el);}
-        );
 
-            let protoPropertiesCell = function(m) {
-                return { 
-                    $type: "li",
-                    class: "mdc-list-item",
+            ["drawer", "toolbar", "propWindow", "clientsWindow", "codeEditorWindow"].forEach(item => {
+                let el = document.createElement("div");
+                el.setAttribute("id", item);
+                document.body.appendChild(el);
+            }
+            );
+
+            let protoPropertiesCell = function (m) {
+                return {
+                    $type: "div",
+                    class: "mdc-layout-grid__inner",
                     _prop: {},
                     $init: function () {
                         let prop = m[1].prop;
                         if (prop.value == undefined) {
                             prop.value = JSON.stringify(utility.transform(vwf.getProperty(this._currentNode, prop.name, []), utility.transforms.transit));
-                        } 
+                        }
                         this._prop = prop
                     },
                     $update: function () {
-                        this.$components = [{
-                            $type: "span",
-                            class: "mdc-list-item",
-                            $text: this._prop.name,
+                        this.$components = [
+
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    { $text: this._prop.name }
+                                ]
                             },
                             {
-                                class: "mdc-textfield",
-                                $cell: true,
                                 $type: "div",
-                                $components: [{
-                                    class: "mdc-textfield__input",
-                                    $cell: true,
-                                    $type: "input",
-                                    type: "text",
-                                    value: this._prop.value,
-                                    onchange: function(e){
-                                        let propValue = this.value;
-                                        try {
-                                            propValue = JSON.parse(propValue);
-                                            self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
-                                        } catch (e) {
-                                            // restore the original value on error
-                                            this.value = propValue;
-                                        }
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
+                                $components: [
+                                    {
+                                        class: "mdc-textfield",
+                                        $cell: true,
+                                        $type: "div",
+                                        $components: [{
+                                            class: "mdc-textfield__input",
+                                            $cell: true,
+                                            $type: "input",
+                                            type: "text",
+                                            value: this._prop.value,
+                                            onchange: function (e) {
+                                                let propValue = this.value;
+                                                try {
+                                                    propValue = JSON.parse(propValue);
+                                                    self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
+                                                } catch (e) {
+                                                    // restore the original value on error
+                                                    this.value = propValue;
+                                                }
+                                            }
+                                        }]
+
                                     }
-                                }]
-    
+                                ]
+
                             }
                         ]
-
                     }
-                }  
 
+                }
             }
 
-            let propertiesCell = function(m) {
-                return { 
-                    $type: "li",
-                    class: "mdc-list-item",
-                    $components: [{
-                        $type: "span",
-                        class: "mdc-list-item",
-                        $text: m.name,
+            let propertiesCell = function (m) {
+                return {
+                    $type: "div",
+                    class: "mdc-layout-grid__inner",
+                    $components: [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                            $components: [
+                                { $text: m.name }
+                            ]
                         },
                         {
-                            $cell: true,
-                            $type: "span",
-                            $text: "  "
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                         },
                         {
-                            class: "mdc-textfield",
-                            $cell: true,
-                            $type: "span",
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                             $components: [
                                 {
-                                class: "mdc-textfield__input",
-                                id: "prop-" + m.name,
-                                $cell: true,
-                                $type: "input",
-                                type: "text",
-                                value: m.getValue(),
-                                onchange: function(e){
-                                    let propValue = this.value;
-                                    try {
-                                        propValue = JSON.parse(propValue);
-                                        self.kernel.setProperty(this._currentNode, m.name, propValue);
-                                      
-                                    } catch (e) {
-                                        // restore the original value on error
-                                        this.value = propValue;
-                                    }
-                                }
-                            }]
+                                    class: "mdc-textfield",
+                                    $cell: true,
+                                    $type: "span",
+                                    $components: [
+                                        {
+                                            class: "mdc-textfield__input",
+                                            id: "prop-" + m.name,
+                                            $cell: true,
+                                            $type: "input",
+                                            type: "text",
+                                            value: m.getValue(),
+                                            onchange: function (e) {
+                                                let propValue = this.value;
+                                                try {
+                                                    propValue = JSON.parse(propValue);
+                                                    self.kernel.setProperty(this._currentNode, m.name, propValue);
 
+                                                } catch (e) {
+                                                    // restore the original value on error
+                                                    this.value = propValue;
+                                                }
+                                            }
+                                        }]
+
+                                }
+                            ]
                         }
+
                     ]
-                    }
+                }
+
+
+
+
+                // $components: [
+                //     {
+                //     $type: "span",
+                //     class: "mdc-list-item__start-detail grey-bg",
+                //     $components: [
+                //         {
+                //             $type: "i",
+                //             class: "material-icons",
+                //             'aria-hidden': true,
+                //             $text: 'folder'  
+                //     }
+                // ]
+                //     },
+                //     {
+                //         $cell: true,
+                //         $type: "span",
+                //         class: "mdc-list-item__text",
+                //         $text: m.name + ': ',
+                //     },
+                //     {
+                //         class: "mdc-textfield mdc-list-item__start-detail  mdc-textfield--fullwidth",
+                //         $cell: true,
+                //         $type: "span",
+                //         $components: [
+                //             {
+                //             class: "mdc-textfield__input",
+                //             id: "prop-" + m.name,
+                //             $cell: true,
+                //             $type: "input",
+                //             type: "text",
+                //             value: m.getValue(),
+                //             onchange: function(e){
+                //                 let propValue = this.value;
+                //                 try {
+                //                     propValue = JSON.parse(propValue);
+                //                     self.kernel.setProperty(this._currentNode, m.name, propValue);
+
+                //                 } catch (e) {
+                //                     // restore the original value on error
+                //                     this.value = propValue;
+                //                 }
+                //             }
+                //         }]
+
+                //     }
+                // ]
+
 
 
             }
 
 
-            
 
 
-            let nodeLink = function(m){ 
-                return { 
+
+            let nodeLink = function (m) {
+                return {
                     $type: "li",
                     class: "mdc-list-item",
                     $components: [{
                         $type: "a",
-                        class: "mdc-list-item mdc-persistent-drawer--selected",
+                        class: "mdc-list-item",
                         $href: "#",
                         $text: m.name,
-                        
-                        onclick: function(e){
+
+                        onclick: function (e) {
                             //self.currentNodeID = m.ID;
                             document.querySelector('#currentNode')._setNode(m.ID);
-                          }
-                        }]
-                    } 
-                };
+
+                            // document.querySelector('#liveCodeEditor')._editorNode = m.ID;
+                            // createAceEditor(self, m.ID);
+                        }
+                    }]
+                }
+            };
 
             let listDivider = {
-               //<li role="separator" class="mdc-list-divider"></li>
-                    $cell: true,
-                    $type: "li",
-                    class: "mdc-list-divider",
-                    role: "separator"  
+                //<li role="separator" class="mdc-list-divider"></li>
+                $cell: true,
+                $type: "li",
+                class: "mdc-list-divider",
+                role: "separator"
             }
 
             let nodesCell = {
-                style:"overflow-y: scroll; max-height: 800px;",
+
                 $cell: true,
                 $type: "div",
                 id: "currentNode",
@@ -262,31 +340,31 @@ define([
                     this._currentNode = aNode
                 },
                 $init: function () {
-                    
+
                     //this._currentNode = vwf_view.kernel.find("", "/")[0];
                     //this._currentNode = '3333';
                 },
-                _getChildNodes: function() {
-                            let node = self.nodes[this._currentNode];
-                            //let nodeIDAlpha = he.encode(this._currentNode);
-                            return node.children
-                        },
-                _getNodeProperties: function() {
+                _getChildNodes: function () {
+                    let node = self.nodes[this._currentNode];
+                    //let nodeIDAlpha = he.encode(this._currentNode);
+                    return node.children
+                },
+                _getNodeProperties: function () {
                     let node = self.nodes[this._currentNode];
                     this._displayedProperties = {};
-                    let filterFunction = function(prop){
-                        return (!this._displayedProperties[prop.name] && prop.name.indexOf('$') === -1) ? (this._displayedProperties[prop.name] = "instance", true):(false);
+                    let filterFunction = function (prop) {
+                        return (!this._displayedProperties[prop.name] && prop.name.indexOf('$') === -1) ? (this._displayedProperties[prop.name] = "instance", true) : (false);
                     };
-                    let props = node.properties.filter(filterFunction.bind(this)); 
+                    let props = node.properties.filter(filterFunction.bind(this));
                     return props
                 },
-                _getNodeProtoProperties: function() {
+                _getNodeProtoProperties: function () {
                     let node = self.nodes[this._currentNode];
 
-                    let filterFunction = function(prop){
-                        return (!this._displayedProperties[prop[1].prop.name]) ? (this._displayedProperties[prop[1].prop.name] = prop[1].prototype, true):(false);
+                    let filterFunction = function (prop) {
+                        return (!this._displayedProperties[prop[1].prop.name]) ? (this._displayedProperties[prop[1].prop.name] = prop[1].prototype, true) : (false);
                     };
-                    let props = Object.entries(getProperties.call(self, self.kernel, node.extendsID)).filter(filterFunction.bind(this)); 
+                    let props = Object.entries(getProperties.call(self, self.kernel, node.extendsID)).filter(filterFunction.bind(this));
 
                     return props
                 },
@@ -297,122 +375,287 @@ define([
                             $cell: true,
                             $type: "ul",
                             class: "mdc-list",
-                            $components:[
+                            $components: [
                                 {
                                     $cell: true,
                                     $type: "a",
                                     class: "mdc-list-item",
                                     $href: "#",
                                     $text: "<--",
-                                    onclick: function(e){
+                                    onclick: function (e) {
                                         let node = self.nodes[this._currentNode];
                                         if (node.parentID !== 0) {
                                             //self.currentNodeID = node.parentID,
                                             document.querySelector('#currentNode')._setNode(node.parentID)
                                         }
-                                        
-                                      }
-        
-                                }, 
+
+                                    }
+
+                                },
                                 {
                                     $type: "li",
                                     class: "mdc-list-item",
-                                    $components:[
-                                        { 
-                                    $text: "name",
-                                    $type: "span",
-                                    $init: function(){
-                                        let node = self.nodes[this._currentNode];
-                                        this.$text = node.name
-                                    },
-                                    class: "mdc-list-item__text mdc-typography--headline"
-                                    //<h1 class="mdc-typography--display4">Big header</h1>
-                                }]
+                                    $components: [
+                                        {
+                                            $text: "name",
+                                            $type: "span",
+                                            $init: function () {
+                                                let node = self.nodes[this._currentNode];
+                                                this.$text = node.name
+                                            },
+                                            class: "mdc-list-item__text mdc-typography--headline"
+                                            //<h1 class="mdc-typography--display4">Big header</h1>
+                                        }]
+                                }, listDivider,
+                                {
+                                    // $cell: true,
+                                    // $type: "ul",
+                                    // class: "mdc-list",
+                                    $type: "div",
+                                    class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                                    $components: [
+                                        {
+                                            $type: "div",
+                                            class: "mdc-layout-grid__inner",
+                                            $components: [
+                                                {
+                                                    $type: "div",
+                                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                    $components: [
+                                                        {
+                                                            $cell: true,
+                                                            $type: "button",
+                                                            class: "mdc-button mdc-button--compact",
+                                                            $text: "Open in code editor",
+                                                            onclick: function (e) {
+                                                                var currentNode = document.querySelector('#currentNode')._currentNode;
+                                                                if (currentNode == '') {
+                                                                    currentNode = vwf_view.kernel.find("", "/")[0];
+                                                                }
+                                                                document.querySelector('#liveCodeEditor')._setNode(currentNode);
+                                                                //createAceEditor(self, currentNode);
+                                                                document.querySelector('#codeEditorWindow').style.visibility = 'visible';
+                                                            }
+
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                listDivider,
+                                {
+                                    $type: "li",
+                                    class: "mdc-list-item",
+                                    $components: [
+                                        {
+                                            $text: "Children",
+                                            $type: "span",
+                                            class: "mdc-list-item__text mdc-typography--button"
+
+                                        }]
                                 },
                                 {
                                     $cell: true,
                                     $type: "ul",
                                     class: "mdc-list",
                                     $components: this._getChildNodes().map(nodeLink)
-                                }, listDivider,  {
+                                }, listDivider, {
                                     $type: "li",
                                     class: "mdc-list-item",
-                                    $components:[
-                                        { 
-                                    $text: "Properties",
-                                    $type: "span",
-                                    class: "mdc-list-item__text mdc-typography--title"
-                                    //<h1 class="mdc-typography--display4">Big header</h1>
-                                }]
-                                },listDivider,
-                                {
-                                    $cell: true,
-                                    $type: "ul",
-                                    class: "mdc-list",
-                                    $components: this._getNodeProperties().map(propertiesCell)
+                                    $components: [
+                                        {
+                                            $text: "Properties",
+                                            $type: "span",
+                                            class: "mdc-list-item__text mdc-typography--button"
+                                            //<h1 class="mdc-typography--display4">Big header</h1>
+                                        }]
                                 }, listDivider,
                                 {
+                                    // $cell: true,
+                                    // $type: "ul",
+                                    // class: "mdc-list",
+                                    $type: "div",
+                                    class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                                    $components: this._getNodeProperties().map(propertiesCell)
+                                },
+                                listDivider,
+                                {
                                     $type: "li",
                                     class: "mdc-list-item",
-                                    $components:[
-                                        { 
-                                    $text: "Proto properties",
-                                    $type: "span",
-                                    class: "mdc-list-item__text mdc-typography--title"
-                                    //<h1 class="mdc-typography--display4">Big header</h1>
-                                }]
+                                    $components: [
+                                        {
+                                            $text: "Proto properties",
+                                            $type: "span",
+                                            class: "mdc-list-item__text mdc-typography--button"
+
+                                        }]
                                 },
                                 {
                                     $cell: true,
-                                    $type: "ul",
-                                    class: "mdc-list",
+                                    $type: "div",
+                                    class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                     $components: this._getNodeProtoProperties().map(protoPropertiesCell)
                                 }
 
                             ]
-                        },
-                        
-                        
-                       
-                        
-                        ]
+                        }
+
+
+
+
+                    ]
                 }
-                
+
             }
 
-           
+            let codeEditorCell = {
+                $cell: true,
+                $type: "div",
+
+
+                $text: "Code Editor!"
+            }
+
+            //    let codeEditorWindow = {
+            //         $cell: true,
+            //         $type: "div",
+            //         $components: [
+            //             {
+            //                 $type: "div",
+            //                 _editorNode: '',
+            //                 id: "liveCodeEditor",
+            //                 style: "width: 400px; height: 400px"
+            //             }
+            //         ]
+
+            //    }
+
+            let codeEditorWindow = {
+                $cell: true,
+                $type: "div",
+                _editorNode: '',
+                _methodBody: '',
+                _getNodeMethods: function () {
+                    let node = self.nodes[this._editorNode];
+                    return node.methods
+                },
+                id: "liveCodeEditor",
+                _setNode: function (node) {
+                    this._editorNode = node;
+                    this._methodBody = ''
+                },
+                class: "codeEditorGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                _listElement: function (m) {
+                    return {
+                        $type: "li",
+                        class: "mdc-list-item",
+                        $components: [{
+                            $type: "a",
+                            class: "mdc-list-item",
+                            $href: "#",
+                            $text: m[0],
+
+                            onclick: function (e) {
+                               let method = vwf.getMethod(this._editorNode, m[0]);
+                               //document.querySelector('#aceEditor').
+                               this._methodBody = method.body
+                                //self.currentNodeID = m.ID;
+                                //document.querySelector('#currentNode')._setNode(m.ID);
+                            }
+                        }]
+                    }
+                },
+                $update: function () {
+                    this.$components = [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            $components: [
+                                                {
+                                                    $cell: true,
+                                                    $type: "ul",
+                                                    class: "mdc-list",
+                                                    $components: Object.entries(this._getNodeMethods()).map(this._listElement)
+                                                }
+                                            ]
+                                        }
+
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-10",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            class: "aceEditor",
+                                            id: "aceEditor",
+                                            $type: "div",
+                                            $text: this._methodBody,
+                                            $init: function () {
+                                                createAceEditor(self, this._editorNode);
+                                            }
+                                        }
+
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+                //$components: 
+
+            }
+
+
             let propWindow = {
                 $cell: true,
                 $type: "div",
-    
-                $components:[
-    
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                style: "overflow-y: scroll; max-height: 800px;",
+
+                $components: [
                     {
-                        $cell: true,
-                    $type: "div",
-                    class: "mdc-list-group",
-                    $components: [
-                        {
-                        $cell: true,
-                        $type: "nav",
-                        class: "mdc-list",
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
                         $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
 
-                    nodesCell
+                                    nodesCell
 
+                                ]
+                            }
                         ]
                     }
-                    ]},
-                    
-                 
-            //     <button class="mdc-button">
-            //     Flat button
-            //   </button>
-        ]
-    
+
+
+
+
+                    //     <button class="mdc-button">
+                    //     Flat button
+                    //   </button>
+                ]
+
             }
 
-            
+
 
 
 
@@ -424,13 +667,12 @@ define([
                 _visClients: [],
                 _setClientNodes: function (nodes) {
                     this._clientNodes = nodes;
-                    if (this._clientNodes !== undefined) 
-                    {
+                    if (this._clientNodes !== undefined) {
                         this._visClients = this._clientNodes.children.slice();
                     }
                 },
-                _listElement: function(m) {
-                    return { 
+                _listElement: function (m) {
+                    return {
                         $type: "li",
                         class: "mdc-list-item",
                         $components: [{
@@ -438,13 +680,13 @@ define([
                             class: "mdc-list-item",
                             $href: "#",
                             $text: m.name,
-                            
-                            onclick: function(e){
+
+                            onclick: function (e) {
                                 //self.currentNodeID = m.ID;
                                 //document.querySelector('#currentNode')._setNode(m.ID);
-                              }
-                            }]
-                        }
+                            }
+                        }]
+                    }
                 },
                 $init: function () {
                 },
@@ -477,6 +719,7 @@ define([
 
             createCellWindow("clientsWindow", clientListCell, "Clients");
             createCellWindow("propWindow", propWindow, "Scene");
+            createCellWindow("codeEditorWindow", codeEditorWindow, "Code editor");
 
             let drawerCell = {
                 $cell: true,
@@ -491,7 +734,7 @@ define([
                         class: "mdc-persistent-drawer__toolbar-spacer",
                     },
 
-                    
+
 
                     {
                         $cell: true,
@@ -507,13 +750,14 @@ define([
                                     $type: "a",
                                     class: "mdc-list-item mdc-persistent-drawer--selected",
                                     $href: "#",
-                                    onclick: function(e){
+                                    onclick: function (e) {
                                         //self.currentNodeID = m.ID;
                                         let currentNode = document.querySelector('#currentNode')._currentNode;
                                         currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
-                                        document.querySelector('#currentNode')._setNode(currentNode);
+                                            document.querySelector('#currentNode')._setNode(currentNode);
+
                                         document.querySelector('#propWindow').style.visibility = 'visible';
-                                      },
+                                    },
                                     $components: [{
                                         $cell: true,
                                         $type: "i",
@@ -524,19 +768,19 @@ define([
                                         $text: "Scene "
                                     }
                                     ]
-    
+
                                 },
                                 {
                                     $cell: true,
                                     $type: "a",
                                     class: "mdc-list-item mdc-persistent-drawer--selected",
                                     $href: "#",
-                                    onclick: function(e){
+                                    onclick: function (e) {
                                         //self.currentNodeID = m.ID;
-                                       
+
                                         document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
                                         document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                      },
+                                    },
                                     $components: [{
                                         $type: "i",
                                         class: "material-icons mdc-list-item__start-detail",
@@ -546,23 +790,34 @@ define([
                                     {
                                         $text: "Clients "
                                     }]
-    
+
                                 },
-    
                                 {
-                                    class: "mdc-textfield",
                                     $cell: true,
-                                    $type: "div",
+                                    $type: "a",
+                                    class: "mdc-list-item mdc-persistent-drawer--selected",
+                                    $href: "#",
+                                    onclick: function (e) {
+                                        var currentNode = document.querySelector('#currentNode')._currentNode;
+                                        if (currentNode == '') {
+                                            currentNode = vwf_view.kernel.find("", "/")[0];
+                                        }
+                                        document.querySelector('#liveCodeEditor')._setNode(currentNode);
+                                        //createAceEditor(self, currentNode);
+                                        document.querySelector('#codeEditorWindow').style.visibility = 'visible';
+                                    },
                                     $components: [{
-                                        class: "mdc-textfield__input",
-                                        $cell: true,
-                                        $type: "input",
-                                        type: "text"
+                                        $type: "i",
+                                        class: "material-icons mdc-list-item__start-detail",
+                                        'aria-hidden': "true",
+                                        $text: "folder"
+                                    },
+                                    {
+                                        $text: "Code editor "
                                     }]
-    
+
                                 }
-    
-                                //nodesCell
+
                             ]
                         }]
                     }]
@@ -644,10 +899,10 @@ define([
 
 
 
-           
+
             //==============
 
-            
+
 
 
 
@@ -847,13 +1102,13 @@ define([
                 $('#input-' + nodeIDAttribute + '-' + propertyNameAttribute).val(node.properties[propertyName].getValue());
             }
 
-            let propCell = document.querySelector("#currentNode #prop-"+propertyName);
-           
-            if (propCell !== null){
+            let propCell = document.querySelector("#currentNode #prop-" + propertyName);
+
+            if (propCell !== null) {
                 if (propCell._currentNode == nodeID) {
                     propCell.value = node.properties[propertyName].getValue();
                 }
-        }
+            }
 
         },
 
@@ -910,12 +1165,12 @@ define([
 
     function createCellWindow(elementID, cellNode, title) {
 
-        document.querySelector('#'+elementID).$cell({
+        document.querySelector('#' + elementID).$cell({
             $cell: true,
             $type: "div",
             id: elementID,
             class: 'draggable',
-            $init: function(){
+            $init: function () {
                 // let draggie = new Draggabilly('.draggable', {
                 //     handle: '.handle',
                 //     containment: true
@@ -926,21 +1181,21 @@ define([
                 // array of Draggabillies
                 var draggies = []
                 // init Draggabillies
-                for ( var i=0, len = draggableElems.length; i < len; i++ ) {
-                var draggableElem = draggableElems[i];
-                var draggie = new Draggabilly( draggableElem, {
-                    handle: '.handle',
-                    containment: true
-                });
-                draggies.push( draggie );
+                for (var i = 0, len = draggableElems.length; i < len; i++) {
+                    var draggableElem = draggableElems[i];
+                    var draggie = new Draggabilly(draggableElem, {
+                        handle: '.handle',
+                        containment: true
+                    });
+                    draggies.push(draggie);
                 }
 
 
                 this.style.visibility = 'hidden';
             },
             $components: [
-                
-                {  
+
+                {
                     $cell: true,
                     $type: "div",
                     class: "handle",
@@ -950,11 +1205,11 @@ define([
                             $type: "button",
                             class: "mdc-button mdc-button--compact",
                             $text: "X",
-                            onclick: function(e){
+                            onclick: function (e) {
                                 //self.currentNodeID = m.ID;
-                                document.querySelector('#'+elementID).style.visibility = 'hidden';
-                              }
-        
+                                document.querySelector('#' + elementID).style.visibility = 'hidden';
+                            }
+
                         },
                         {
                             $cell: true,
@@ -962,12 +1217,12 @@ define([
                             class: "mdc-typography--title",
                             $text: title
                         }
-                        
+
                     ]
                 },
-               
+
                 cellNode
-              // { $text: "23423"}
+                // { $text: "23423"}
             ]
         }
         );
@@ -979,7 +1234,7 @@ define([
 
     // -- getChildByName --------------------------------------------------------------------
 
-    
+
 
 
     function getChildByName(node, childName) {
@@ -2029,7 +2284,7 @@ define([
     // -- viewScript ------------------------------------------------------------------------
 
     function createAceEditor(view, nodeID) {
-        var editor = view.ace.edit("editorlive");
+        var editor = view.ace.edit("aceEditor");
         editor.setTheme("ace/theme/monokai");
         editor.setFontSize(16);
         editor.getSession().setMode("ace/mode/javascript");
@@ -2048,19 +2303,6 @@ define([
             exec: function () {
                 codeEditorPrintit(editor, nodeID);
             }
-        });
-
-        editor.on('focus', function (event, editor) {
-            // Expand the script editor
-            self.editingScript = true;
-            $('#editor').animate({ 'left': "-800px" }, 175);
-            $('.vwf-tree').animate({ 'width': "800px" }, 175);
-        });
-
-        editor.on('blur', function (event, editor) {
-            //    $('#editor').animate({ 'left' : "-260px" }, 175);
-            //     $('.vwf-tree').animate({ 'width' : "260px" }, 175);
-
         });
 
         return editor;
