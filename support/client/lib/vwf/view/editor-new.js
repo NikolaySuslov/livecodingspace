@@ -332,6 +332,7 @@ define([
                 $cell: true,
                 $type: "div",
                 id: "currentNode",
+                _childNodes: [],
                 _currentNode: '',
                 _displayedProperties: {},
                 _setNode: function (aNode) {
@@ -343,9 +344,9 @@ define([
                     //this._currentNode = '3333';
                 },
                 _getChildNodes: function () {
-                    let node = self.nodes[this._currentNode];
+                    this._childNodes = self.nodes[this._currentNode];
                     //let nodeIDAlpha = he.encode(this._currentNode);
-                    return node.children
+                    return this._childNodes.children
                 },
                 _getNodeProperties: function () {
                     let node = self.nodes[this._currentNode];
@@ -767,14 +768,15 @@ define([
                 $cell: true,
                 $type: "div",
                 id: "clientsList",
-                _clientNodes: [],
-                _visClients: [],
-                _setClientNodes: function (nodes) {
-                    this._clientNodes = nodes;
-                    if (this._clientNodes !== undefined) {
-                        this._visClients = this._clientNodes.children.slice();
-                    }
-                },
+                _watchNodes: [],
+                // _clientNodes: [],
+                // _visClients: [],
+                // _setClientNodes: function (nodes) {
+                //     this._clientNodes = nodes;
+                //     if (this._clientNodes !== undefined) {
+                //         this._visClients = this._clientNodes.children.slice();
+                //     }
+                // },
                 _listElement: function (m) {
                     return {
                         $type: "li",
@@ -793,6 +795,13 @@ define([
                     }
                 },
                 $init: function () {
+                    var t = this;
+                    setInterval(function(){
+                      t._updateMe();
+                    }, 1000);
+                },
+                _updateMe: function() {
+                    this._watchNodes = self.nodes["http://vwf.example.com/clients.vwf"].children.slice()
                 },
                 $update: function () {
                     //this._clientNodes
@@ -801,24 +810,10 @@ define([
                             $cell: true,
                             $type: "ul",
                             class: "mdc-list",
-                            $components: this._visClients.map(this._listElement)
+                            $components: this._watchNodes.map(this._listElement)
                         }
                     ]
                 }
-                // $components: [{
-                //     $cell: true,
-                //     $type: "ul",
-                //     class: "mdc-list",
-                //     _items: [],
-                //     $components: [{
-                //         $cell: true,
-                //         $type: "li",
-                //         class: "mdc-list-item",
-                //         $text: "client"
-                //     }
-                //     ]
-
-                // }]
             }
 
             createCellWindow("clientsWindow", clientListCell, "Clients");
@@ -908,7 +903,7 @@ define([
                                     onclick: function (e) {
                                         //self.currentNodeID = m.ID;
 
-                                        document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                       // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
                                         document.querySelector('#clientsWindow').style.visibility = 'visible';
                                     },
                                     $components: [{
@@ -1131,6 +1126,17 @@ define([
                 this.activeCameraID = childID;
             }
 
+
+            let nodeCell = document.querySelector("#currentNode");
+            
+                        if (nodeCell !== null) {
+                            if (nodeCell._currentNode === nodeID) {
+                                nodeCell._getChildNodes();
+                                
+                            }
+                        }
+
+
             if (nodeID === this.kernel.application()) {
                 // document.querySelector('a-scene').classList.add("mdc-toolbar-fixed-adjust");
                 document.querySelector('body').classList.add("editor-body");
@@ -1163,6 +1169,9 @@ define([
             var nodeIDAttribute = $.encoder.encodeForAlphaNumeric(nodeID); // $.encoder.encodeForHTMLAttribute("id", nodeID, true);
             $('#' + nodeIDAttribute).remove();
             $('#children > div:last').css('border-bottom-width', '3px');
+
+            document.querySelector("#currentNode")._getChildNodes();
+
         },
 
         //addedChild: [ /* nodeID, childID, childName */ ],

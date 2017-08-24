@@ -16,3 +16,4 @@ properties:
   repeat:
   fog:
   interpolation:
+  displayName:
