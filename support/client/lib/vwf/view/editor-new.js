@@ -376,9 +376,8 @@ define([
                             $components: [
                                 {
                                     $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item",
-                                    $href: "#",
+                                    $type: "button",
+                                    class: "mdc-list-item mdc-button mdc-button--raised",
                                     $text: "<--",
                                     onclick: function (e) {
                                         let node = self.nodes[this._currentNode];
@@ -423,7 +422,7 @@ define([
                                                         {
                                                             $cell: true,
                                                             $type: "button",
-                                                            class: "mdc-button mdc-button--compact",
+                                                            class: "mdc-button mdc-button--raised",
                                                             $text: "Open in code editor",
                                                             onclick: function (e) {
                                                                 var currentNode = document.querySelector('#currentNode')._currentNode;
@@ -572,33 +571,11 @@ define([
                                     ]
                                 },
 
-                                {
-                                    $cell: true,
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                    $components: [  
-                                {
-                                    $cell: true,
-                                    $type: "button",
-                                    class: "mdc-button mdc-button--raised",
-                                    $text: "Call",
-                                    onclick: function (e) {
-                                        let params = [];
-                                        if (this._method.parameters) {
-                                            params = this._method.parameters.length
-                                        };
-                                        if (params >= 1) {}
-
-                                        self.kernel.callMethod(this._editorNode, this._methodName, this._method.parameters);
-
-                                    }
-        
-                                }]
-                            },
+                               
                             {
                                 $cell: true,
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-5",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [  
                             {
                                 $cell: true,
@@ -613,7 +590,64 @@ define([
                                 }
     
                             }]
+                        },
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            $components: [  
+                        {
+                            $cell: true,
+                            $type: "button",
+                            class: "mdc-button mdc-button--raised",
+                            $text: "Call",
+                            onclick: function (e) {
+                                let params = [];
+                                if (this._method.parameters) {
+                                    params = this._method.parameters.length
+                                };
+                                if (params >= 1) {}
+
+                                self.kernel.callMethod(this._editorNode, this._methodName, this._method.parameters);
+
+                            }
+
+                        }]
+                    },
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            $components: [  
+                        {
+                            $cell: true,
+                            $type: "button",
+                            class: "mdc-button mdc-button--raised",
+                            $text: "Do It",
+                            onclick: function (e) {
+                                let editor = document.querySelector("#aceEditor").env.editor;
+                                codeEditorDoit.call(self, editor, this._editorNode);
+                            }
+
+                        }]
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                        $components: [  
+                    {
+                        $cell: true,
+                        $type: "button",
+                        class: "mdc-button mdc-button--raised",
+                        $text: "Print It",
+                        onclick: function (e) {
+                            let editor = document.querySelector("#aceEditor").env.editor;
+                            codeEditorPrintit.call(self, editor, this._editorNode);
                         }
+
+                    }]
+                }
 
                             ]
                         },
@@ -832,36 +866,15 @@ define([
                                         $cell: true,
                                         $type: "i",
                                         class: "material-icons mdc-list-item__start-detail",
-                                        $text: "inbox"
+                                        $text: "description"
                                     },
                                     {
-                                        $text: "Scene "
+                                        $text: "Scene"
                                     }
                                     ]
 
                                 },
-                                {
-                                    $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item mdc-persistent-drawer--selected",
-                                    $href: "#",
-                                    onclick: function (e) {
-                                        //self.currentNodeID = m.ID;
-
-                                        document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                        document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                    },
-                                    $components: [{
-                                        $type: "i",
-                                        class: "material-icons mdc-list-item__start-detail",
-                                        'aria-hidden': "true",
-                                        $text: "star"
-                                    },
-                                    {
-                                        $text: "Clients "
-                                    }]
-
-                                },
+                               
                                 {
                                     $cell: true,
                                     $type: "a",
@@ -880,10 +893,32 @@ define([
                                         $type: "i",
                                         class: "material-icons mdc-list-item__start-detail",
                                         'aria-hidden': "true",
-                                        $text: "folder"
+                                        $text: "code"
                                     },
                                     {
-                                        $text: "Code editor "
+                                        $text: "Code editor"
+                                    }]
+
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "a",
+                                    class: "mdc-list-item mdc-persistent-drawer--selected",
+                                    $href: "#",
+                                    onclick: function (e) {
+                                        //self.currentNodeID = m.ID;
+
+                                        document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                        document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                    },
+                                    $components: [{
+                                        $type: "i",
+                                        class: "material-icons mdc-list-item__start-detail",
+                                        'aria-hidden': "true",
+                                        $text: "people"
+                                    },
+                                    {
+                                        $text: "Users"
                                     }]
 
                                 }
