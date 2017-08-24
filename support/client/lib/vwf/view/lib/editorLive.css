@@ -64,7 +64,7 @@
   top: 200px;
   left: 400px;
     z-index: 4;
-    background-color: rgba(255, 255, 255, 1);
+    background-color: rgba(230, 230, 230, 0.95);
   }
   
   .draggable.is-pointer-down {
@@ -73,8 +73,7 @@
   .draggable.is-dragging { opacity: 0.9; }
   
   .handle {
-    background: #555;
-    background: rgba(132, 141, 132, 0.80);
+    background: rgba(67, 103, 163, 0.80);
     width: 100%;
   }
 
