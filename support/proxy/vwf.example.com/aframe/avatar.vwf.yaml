@@ -58,7 +58,7 @@ methods:
                     "properties": {
                         "look-controls-enabled": false,
                         "wasd-controls": false,
-                        "active": false
+                        "userHeight": 0,
                     }
               }
 

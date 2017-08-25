@@ -327,6 +327,8 @@ define([
                 class: "mdc-list-divider",
             }
 
+            
+
             let nodesCell = {
 
                 $cell: true,
@@ -345,8 +347,13 @@ define([
                 },
                 _getChildNodes: function () {
                     this._childNodes = self.nodes[this._currentNode];
-                    //let nodeIDAlpha = he.encode(this._currentNode);
+                   if (this._childNodes !== undefined) {
                     return this._childNodes.children
+                   } else {
+                       return []
+                    }
+                    //let nodeIDAlpha = he.encode(this._currentNode);
+                    
                 },
                 _getNodeProperties: function () {
                     let node = self.nodes[this._currentNode];
@@ -369,12 +376,79 @@ define([
                 },
                 $update: function () {
                     //this.$text = this._currentNode;
+
+                    var viewerProps = {};
+                    var viewerPropsCell = {};
+
+                    let node = self.nodes[this._currentNode];
+                    if (node !== undefined) {
+                        if (node.extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
+                            viewerProps = {
+                                $type: "li",
+                                class: "mdc-list-item",
+                                $components: [
+                                    {
+                                        $text: "Viewer properties",
+                                        $type: "span",
+                                        class: "mdc-list-item__text mdc-typography--button"
+
+                                    }
+                                ]
+                            }
+
+                            viewerPropsCell = {
+                                $cell: true,
+                                $type: "div",
+                                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        class: "mdc-layout-grid__inner",
+                                        $components: [
+                                            {
+                                                $cell: true,
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                $components: [
+                                                    {
+                                                        $cell: true,
+                                                        $type: "button",
+                                                        class: "mdc-button mdc-button--raised",
+                                                        $text: "Active",
+                                                        onclick: function (e) {
+                                                            let camera = document.querySelector('#' + this._currentNode);
+                                                            camera.setAttribute('active', true);
+                                                        }
+
+                                                    }
+
+                                                ]
+                                            }
+                                        ]
+                                    }
+
+                                ]
+                                //$components: this._getNodeProtoProperties().map(protoPropertiesCell)
+                            }
+
+
+                        } else {
+                            viewerProps = {};
+                            viewerPropsCell = {};
+
+                        }
+                    }
+
+
+
                     this.$components = [
                         {
                             $cell: true,
                             $type: "ul",
                             class: "mdc-list",
                             $components: [
+
                                 {
                                     $cell: true,
                                     $type: "button",
@@ -495,7 +569,9 @@ define([
                                     $type: "div",
                                     class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                     $components: this._getNodeProtoProperties().map(protoPropertiesCell)
-                                }
+                                }, listDivider,
+                                viewerProps,
+                                viewerPropsCell
 
                             ]
                         }
@@ -508,12 +584,12 @@ define([
 
             }
 
-         
+
             let codeEditorWindow = {
                 $cell: true,
                 $type: "div",
                 _editorNode: '',
-                _method: {body: ''},
+                _method: { body: '' },
                 _methodName: '',
                 _getNodeMethods: function () {
                     let node = self.nodes[this._editorNode];
@@ -541,10 +617,10 @@ define([
                             $text: m[0],
 
                             onclick: function (e) {
-                               let method = vwf.getMethod(this._editorNode, m[0]);
-                               //document.querySelector('#aceEditor').
-                               this._method = method;
-                               this._methodName = m[0];
+                                let method = vwf.getMethod(this._editorNode, m[0]);
+                                //document.querySelector('#aceEditor').
+                                this._method = method;
+                                this._methodName = m[0];
                                 //self.currentNodeID = m.ID;
                                 //document.querySelector('#currentNode')._setNode(m.ID);
                             }
@@ -566,89 +642,89 @@ define([
                                         {
                                             $type: "h3",
                                             class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--subheading1",
-                                            $text: this._editorNode  
+                                            $text: this._editorNode
                                         }
 
                                     ]
                                 },
 
-                               
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                $components: [  
-                            {
-                                $cell: true,
-                                $type: "button",
-                                class: "mdc-button mdc-button--raised",
-                                $text: "Update",
-                                onclick: function (e) {
-                                    let editor = document.querySelector("#aceEditor").env.editor;
-                                    let evalText = editor.getValue();
-                                    self.kernel.setMethod(this._editorNode, this._methodName,
-                                        { body: evalText, type: "application/javascript", parameters: this._method.parameters });
+
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Update",
+                                            onclick: function (e) {
+                                                let editor = document.querySelector("#aceEditor").env.editor;
+                                                let evalText = editor.getValue();
+                                                self.kernel.setMethod(this._editorNode, this._methodName,
+                                                    { body: evalText, type: "application/javascript", parameters: this._method.parameters });
+                                            }
+
+                                        }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Call",
+                                            onclick: function (e) {
+                                                let params = [];
+                                                if (this._method.parameters) {
+                                                    params = this._method.parameters.length
+                                                };
+                                                if (params >= 1) { }
+
+                                                self.kernel.callMethod(this._editorNode, this._methodName, this._method.parameters);
+
+                                            }
+
+                                        }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Do It",
+                                            onclick: function (e) {
+                                                let editor = document.querySelector("#aceEditor").env.editor;
+                                                codeEditorDoit.call(self, editor, this._editorNode);
+                                            }
+
+                                        }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Print It",
+                                            onclick: function (e) {
+                                                let editor = document.querySelector("#aceEditor").env.editor;
+                                                codeEditorPrintit.call(self, editor, this._editorNode);
+                                            }
+
+                                        }]
                                 }
-    
-                            }]
-                        },
-                        {
-                            $cell: true,
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                            $components: [  
-                        {
-                            $cell: true,
-                            $type: "button",
-                            class: "mdc-button mdc-button--raised",
-                            $text: "Call",
-                            onclick: function (e) {
-                                let params = [];
-                                if (this._method.parameters) {
-                                    params = this._method.parameters.length
-                                };
-                                if (params >= 1) {}
-
-                                self.kernel.callMethod(this._editorNode, this._methodName, this._method.parameters);
-
-                            }
-
-                        }]
-                    },
-                        {
-                            $cell: true,
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                            $components: [  
-                        {
-                            $cell: true,
-                            $type: "button",
-                            class: "mdc-button mdc-button--raised",
-                            $text: "Do It",
-                            onclick: function (e) {
-                                let editor = document.querySelector("#aceEditor").env.editor;
-                                codeEditorDoit.call(self, editor, this._editorNode);
-                            }
-
-                        }]
-                    },
-                    {
-                        $cell: true,
-                        $type: "div",
-                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
-                        $components: [  
-                    {
-                        $cell: true,
-                        $type: "button",
-                        class: "mdc-button mdc-button--raised",
-                        $text: "Print It",
-                        onclick: function (e) {
-                            let editor = document.querySelector("#aceEditor").env.editor;
-                            codeEditorPrintit.call(self, editor, this._editorNode);
-                        }
-
-                    }]
-                }
 
                             ]
                         },
@@ -667,24 +743,24 @@ define([
                                             $cell: true,
                                             $type: "div",
                                             class: "mdc-list-group",
-                                           
+
                                             $components: [
-                                               
+
                                                 {
                                                     $type: "h3",
                                                     class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--button",
-                                                    $text: "Node methods"  
+                                                    $text: "Node methods"
                                                 },
                                                 {
                                                     $cell: true,
                                                     $type: "ul",
                                                     class: "mdc-list",
                                                     $components: Object.entries(this._getNodeMethods()).map(this._listElement)
-                                                },listDivider,
+                                                }, listDivider,
                                                 {
                                                     $type: "h3",
                                                     class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--button",
-                                                    $text: "Proto methods"  
+                                                    $text: "Proto methods"
                                                 },
                                                 {
                                                     $cell: true,
@@ -692,14 +768,14 @@ define([
                                                     class: "mdc-list",
                                                     $components: Object.entries(this._getProtoNodeMethods()).map(this._listElement)
                                                 }
-                                                        
-                                            ] 
-                                                    
-                                                    
+
+                                            ]
+
+
                                         }
-                                   ]
+                                    ]
                                 },
-                            
+
                                 {
                                     $cell: true,
                                     $type: "div",
@@ -712,7 +788,7 @@ define([
                                             $type: "div",
                                             $text: this._method.body,
                                             $init: function () {
-                                               createAceEditor(self, this._editorNode);
+                                                createAceEditor(self, this._editorNode);
                                             }
                                         }
 
@@ -720,11 +796,11 @@ define([
                                 }
                             ]
                         }
-                    
+
                     ]
-                //$components: 
+                    //$components: 
+                }
             }
-        }
 
             let propWindow = {
                 $cell: true,
@@ -796,11 +872,11 @@ define([
                 },
                 $init: function () {
                     var t = this;
-                    setInterval(function(){
-                      t._updateMe();
+                    setInterval(function () {
+                        t._updateMe();
                     }, 1000);
                 },
-                _updateMe: function() {
+                _updateMe: function () {
                     this._watchNodes = self.nodes["http://vwf.example.com/clients.vwf"].children.slice()
                 },
                 $update: function () {
@@ -869,7 +945,7 @@ define([
                                     ]
 
                                 },
-                               
+
                                 {
                                     $cell: true,
                                     $type: "a",
@@ -903,7 +979,7 @@ define([
                                     onclick: function (e) {
                                         //self.currentNodeID = m.ID;
 
-                                       // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                        // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
                                         document.querySelector('#clientsWindow').style.visibility = 'visible';
                                     },
                                     $components: [{
@@ -1128,13 +1204,13 @@ define([
 
 
             let nodeCell = document.querySelector("#currentNode");
-            
-                        if (nodeCell !== null) {
-                            if (nodeCell._currentNode === nodeID) {
-                                nodeCell._getChildNodes();
-                                
-                            }
-                        }
+
+            if (nodeCell !== null) {
+                if (nodeCell._currentNode === nodeID) {
+                    nodeCell._getChildNodes();
+
+                }
+            }
 
 
             if (nodeID === this.kernel.application()) {
@@ -1170,8 +1246,17 @@ define([
             $('#' + nodeIDAttribute).remove();
             $('#children > div:last').css('border-bottom-width', '3px');
 
-            document.querySelector("#currentNode")._getChildNodes();
+            let nodeCellID = document.querySelector("#currentNode");
+            if (nodeCellID._currentNode !== "") {
+                if (nodeCellID._currentNode !== nodeID && (this.nodes[nodeID] !== undefined)) {
+                    nodeCellID._getChildNodes();
+                } else {
+                    nodeCellID._setNode(vwf_view.kernel.find("", "/")[0]);
+                    nodeCellID._getChildNodes();
+                }
+            }
 
+            
         },
 
         //addedChild: [ /* nodeID, childID, childName */ ],

@@ -511,9 +511,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                          value = propertyValue;
                           switch (propertyName) {
 
-                                case "active":
-                                    aframeObject.setAttribute('active', propertyValue);
+                             case "userHeight":
+                                    aframeObject.setAttribute('camera', 'userHeight', propertyValue);
                                        break;
+
+                                // case "active":
+                                //     aframeObject.setAttribute('camera', 'active', propertyValue);
+                                //        break;
 
                              default:
                                  value = undefined;
@@ -727,11 +731,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                  if ( value === undefined && aframeObject.nodeName == "A-CAMERA" ) {
         
-                           switch (propertyName) {
-                                case "active":
-                                    value = aframeObject.getAttribute('active');
+
+                        switch (propertyName) {
+                                case "userHeight":
+                                    value = aframeObject.getAttribute('camera').userHeight;
                                     break;
                                 }
+
+                        //    switch (propertyName) {
+                        //         case "active":
+                        //             value = aframeObject.getAttribute('camera').active;
+                        //             break;
+                        //         }
                 }
 
                   if ( value === undefined && aframeObject.nodeName == "A-COLLADA-MODEL" ) {
@@ -775,6 +786,8 @@ function createAFrameObject(node, config) {
 
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
         aframeObj = document.createElement('a-camera');
+        aframeObj.setAttribute('camera', 'active', false);
+
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/alight.vwf")) {
         aframeObj = document.createElement('a-light');
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acursor.vwf")) {

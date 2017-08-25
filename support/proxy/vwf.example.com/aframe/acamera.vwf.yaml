@@ -3,4 +3,4 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-camera"
 properties:
-  active:
+  userHeight:

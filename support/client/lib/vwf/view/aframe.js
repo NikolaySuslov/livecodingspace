@@ -59,9 +59,6 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                 document.body.append(scene);
                 createAvatarControl(scene);
                 createAvatar(childID);
-                
-               
-                
             }
 
         },
@@ -135,6 +132,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         controlEl.setAttribute('id', 'avatarControl');
         controlEl.setAttribute('wasd-controls', {});
         controlEl.setAttribute('look-controls', {});
+        controlEl.setAttribute('camera', 'active', true);
         aScene.appendChild(controlEl);
 
         let cursorEl = document.createElement('a-cursor');
