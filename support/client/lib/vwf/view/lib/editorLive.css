@@ -96,3 +96,16 @@
   .aceEditor {
     width:inherit; height: 400px
   }
+
+  .avatarName {
+
+    color: #2E7D32;
+    font-weight: bold;
+
+  }
+
+  .nodeItem {
+
+      color: black
+    
+      }

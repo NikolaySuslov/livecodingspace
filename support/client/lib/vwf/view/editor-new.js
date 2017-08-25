@@ -121,12 +121,54 @@ define([
 
 
 
-            ["drawer", "toolbar", "propWindow", "clientsWindow", "codeEditorWindow"].forEach(item => {
+            ["drawer", "toolbar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSettings"].forEach(item => {
                 let el = document.createElement("div");
                 el.setAttribute("id", item);
                 document.body.appendChild(el);
             }
             );
+
+          let  viewSettings = 
+          {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button mdc-button--raised",
+                                        $text: "Reset view",
+                                        onclick: function (e) {
+                                            document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                        }
+
+                                    }
+
+                                ]
+                            }
+                        ]
+                    }
+                
+
+
+            document.querySelector('#' + 'viewSettings').$cell({
+                $cell: true,
+                $type: "div",
+                id: 'viewSettings',
+                style:'z-index: 10; position: absolute; margin-left: 240px;',
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left mdc-toolbar-fixed-adjust",
+                $init: function(){
+                    this.style.visibility = 'hidden';
+                },
+                $components: [viewSettings]
+            })
+
 
             let protoPropertiesCell = function (m) {
                 return {
@@ -301,6 +343,12 @@ define([
 
 
             let nodeLink = function (m) {
+
+                var myClass = "nodeItem";
+               let myAvatarName = 'avatar-'+self.kernel.moniker();
+              (myAvatarName == m.name) ? (myClass = "avatarName mdc-typography--subheading2") : 
+              myClass = "nodeItem"
+
                 return {
                     $type: "li",
                     class: "mdc-list-item",
@@ -308,7 +356,13 @@ define([
                         $type: "a",
                         class: "mdc-list-item",
                         $href: "#",
-                        $text: m.name,
+                        $components:[{
+                            $type: 'span',
+                            class: myClass,
+                            $text: m.name
+                        }
+                        ],
+                       
 
                         onclick: function (e) {
                             //self.currentNodeID = m.ID;
@@ -990,6 +1044,28 @@ define([
                                     },
                                     {
                                         $text: "Users"
+                                    }]
+
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "a",
+                                    class: "mdc-list-item mdc-persistent-drawer--selected",
+                                    $href: "#",
+                                    onclick: function (e) {
+                                        //self.currentNodeID = m.ID;
+
+                                        // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                        document.querySelector('#viewSettings').style.visibility = 'visible';
+                                    },
+                                    $components: [{
+                                        $type: "i",
+                                        class: "material-icons mdc-list-item__start-detail",
+                                        'aria-hidden': "true",
+                                        $text: "star"
+                                    },
+                                    {
+                                        $text: "Settings"
                                     }]
 
                                 }
