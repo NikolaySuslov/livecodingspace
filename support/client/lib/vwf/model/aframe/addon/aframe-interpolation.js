@@ -164,6 +164,8 @@ AFRAME.registerComponent('interpolation', {
         return this.previous && this.next && (this.getTime() < 1);
       };
     
+
+
       this.get = function () {
         return this.previous.lerp(this.next, this.getTime());
       };
@@ -171,6 +173,26 @@ AFRAME.registerComponent('interpolation', {
       this.getTime = function () {
         return (this.getMillis() - this.time) / this.timestep;
       }
+
+      this.matCmp = function (a,b,delta) {
+        let distance = a.distanceTo(b);
+        if (distance > delta) {
+          return false;
+        }
+        // for(var i =0; i < 2; i++) {
+        //     if(Math.abs(a[i] - b[i]) > delta)
+        //         return false;
+        // }
+        
+         return true;
+    }
+
+      this.testForLerp = function(){
+        if(this.previous && this.next && !this.matCmp(this.previous,this.next,.0001) ) { 
+          return true  
+      }
+      return false
+    }
   },
 
   // throttledTick: function (time, deltaTime) {
@@ -228,7 +250,7 @@ AFRAME.registerComponent('interpolation', {
       this.lastPosition = currentPosition;
     }
 
-      if (this.active())
+      if (this.active() && this.testForLerp())
       {
       this.el.object3D.position.copy(this.get());
     }
