@@ -73489,7 +73489,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
       newData: self.data,
       oldData: oldData
     }, false);
-  }, 200);
+  },200);
   this.updateProperties(attrValue);
 };
 

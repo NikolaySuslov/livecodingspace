@@ -30,14 +30,15 @@ if (typeof AFRAME === 'undefined') {
 }
 
 function getMillis () {
-  //return new Date().getTime();
-  return performance.now()
+  return new Date().getTime();
+  //return performance.now()
 }
 
 function PositionInterpolator (timestep, entity) {
   var time = getMillis();
   var previous;
   var next;
+  var v = new THREE.Vector3();
 
   entity.el.addEventListener('componentchanged', function (event) {
 
@@ -66,10 +67,9 @@ function PositionInterpolator (timestep, entity) {
     return previous && next && (getTime() < 1);
   };
 
-  var v = new THREE.Vector3();
-
   this.get = function () {
-    return v.lerpVectors(previous, next, getTime());
+    //return v.lerpVectors(previous, next, getTime());
+    return previous.lerp(next, getTime());
   };
 }
 
@@ -82,6 +82,8 @@ function RotationInterpolator (timestep, entity) {
   var time = getMillis();
   var previous;
   var next;
+  var e = new THREE.Euler();
+  var q = new THREE.Quaternion();
 
   entity.el.addEventListener('componentchanged', function (event) {
     if (getTime() < 0.5 || getTime() == 0) {
@@ -120,8 +122,7 @@ function RotationInterpolator (timestep, entity) {
     return previous && next && (getTime() < 1);
   };
 
-  var e = new THREE.Euler();
-  var q = new THREE.Quaternion();
+  
   this.get = function () {
     THREE.Quaternion.slerp(previous, next, q, getTime());
     return e.setFromQuaternion(q);
@@ -142,12 +143,34 @@ AFRAME.registerComponent('interpolation', {
   init: function () {
 
        // Set up the tick throttling.
-       this.tick = AFRAME.utils.throttleTick(this.throttledTick, 0, this);
+       //this.tick = AFRAME.utils.throttleTick(this.throttledTick, 0, this);
 
-       var el = this.el;
+      var el = this.el;
        this.lastPosition = el.getAttribute('position');
-       this.lastRotation = el.getAttribute('rotation');
+      // this.lastRotation = el.getAttribute('rotation');
 
+
+       this.getMillis = function() {
+        return new Date().getTime();
+        //return performance.now()
+      }
+
+       this.timestep = 50;
+       this.time = this.getMillis();
+       this.previous = new THREE.Vector3();
+       this.next = new THREE.Vector3();
+
+      this.active = function () {
+        return this.previous && this.next && (this.getTime() < 1);
+      };
+    
+      this.get = function () {
+        return this.previous.lerp(this.next, this.getTime());
+      };
+
+      this.getTime = function () {
+        return (this.getMillis() - this.time) / this.timestep;
+      }
   },
 
   // throttledTick: function (time, deltaTime) {
@@ -159,12 +182,17 @@ AFRAME.registerComponent('interpolation', {
    * Generally modifies the entity based on the data.
    */
   update: function (oldData) {
-    if (!this.interpolation) {
-      var timestep = parseInt(this.data.duration, 10);
 
-      this.positionInterpolator = new PositionInterpolator(timestep, this);
-      this.rotationInterpolator = new RotationInterpolator(timestep, this);
-    }
+    if (!this.interpolation) {
+        this.timestep = parseInt(this.data.duration, 10);
+    }  
+
+    // if (!this.interpolation) {
+    //   var timestep = parseInt(this.data.duration, 10);
+
+    //   this.positionInterpolator = new PositionInterpolator(timestep, this);
+    //   this.rotationInterpolator = new RotationInterpolator(timestep, this);
+    // }
   },
 
   /**
@@ -176,14 +204,45 @@ AFRAME.registerComponent('interpolation', {
   /**
    * Called on each scene tick.
    */
-  throttledTick: function (t, dt) {
-    if (this.positionInterpolator && this.positionInterpolator.active()) {
-      this.el.object3D.position.copy(this.positionInterpolator.get());
+  tick: function (t, dt) {
+
+  let currentPosition = this.el.getAttribute('position');
+   
+   if (this.lastPosition !=  currentPosition)
+    {
+
+      if (this.getTime() < 0.5) {
+        // fixme - ignore multiple calls
+        return;
+      }
+
+      if (!this.previous) {
+        this.previous = new THREE.Vector3();
+        this.next = new THREE.Vector3();
+      }
+
+      this.time = this.getMillis();
+      this.previous.copy(this.next);
+      this.next.copy(currentPosition);
+
+      this.lastPosition = currentPosition;
     }
 
-    if (this.rotationInterpolator && this.rotationInterpolator.active()) {
-      this.el.object3D.rotation.copy(this.rotationInterpolator.get());
+      if (this.active())
+      {
+      this.el.object3D.position.copy(this.get());
     }
+
+  
+
+
+    // if (this.positionInterpolator && this.positionInterpolator.active()) {
+    //   this.el.object3D.position.copy(this.positionInterpolator.get());
+    // }
+
+    // if (this.rotationInterpolator && this.rotationInterpolator.active()) {
+    //   this.el.object3D.rotation.copy(this.rotationInterpolator.get());
+    // }
   },
 
   /**
