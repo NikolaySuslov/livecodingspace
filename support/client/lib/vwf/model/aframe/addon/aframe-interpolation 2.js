@@ -30,8 +30,7 @@ if (typeof AFRAME === 'undefined') {
 }
 
 function getMillis () {
-  //return new Date().getTime();
-  return performance.now()
+  return new Date().getTime();
 }
 
 function PositionInterpolator (timestep, entity) {
@@ -40,8 +39,7 @@ function PositionInterpolator (timestep, entity) {
   var next;
 
   entity.el.addEventListener('componentchanged', function (event) {
-
-    if (getTime() < 0.5 || getTime() == 0) {
+    if (getTime() < 0.5) {
       // fixme - ignore multiple calls
       return;
     }
@@ -84,7 +82,7 @@ function RotationInterpolator (timestep, entity) {
   var next;
 
   entity.el.addEventListener('componentchanged', function (event) {
-    if (getTime() < 0.5 || getTime() == 0) {
+    if (getTime() < 0.5) {
       // fixme - ignore multiple calls
       return;
     }
@@ -131,7 +129,7 @@ function RotationInterpolator (timestep, entity) {
 /**
  * Interpolate component for A-Frame.
  */
-AFRAME.registerComponent('interpolation', {
+AFRAME.registerComponent('interpolation-old', {
   schema: {
     duration: { default: 50 }
   },
@@ -142,17 +140,9 @@ AFRAME.registerComponent('interpolation', {
   init: function () {
 
        // Set up the tick throttling.
-       this.tick = AFRAME.utils.throttleTick(this.throttledTick, 0, this);
-
-       var el = this.el;
-       this.lastPosition = el.getAttribute('position');
-       this.lastRotation = el.getAttribute('rotation');
+       this.tick = AFRAME.utils.throttleTick(this.throttledTick, 10, this);
 
   },
-
-  // throttledTick: function (time, deltaTime) {
-
-  // },
 
   /**
    * Called when component is attached and when component data changes.

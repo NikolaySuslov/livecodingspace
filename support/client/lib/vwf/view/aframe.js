@@ -22,14 +22,17 @@
 /// @requires vwf/view
 
 define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $) {
+    var self;
 
     return view.load(module, {
 
         // == Module Definition ====================================================================
 
         initialize: function (options) {
-            var self = this;
+            self = this;
             this.nodes = {};
+
+            this.state.appInitialized = false;
 
             if (typeof options == "object") {
 
@@ -59,6 +62,11 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                 document.body.append(scene);
                 createAvatarControl(scene);
                 createAvatar(childID);
+               // this.state.appInitialized  = true;
+            }
+
+            if(this.state.nodes[childID] && this.state.nodes[childID].aframeObj.object3D instanceof THREE.Object3D) {
+                this.nodes[childID] = {id:childID,extends:childExtendsID};
             }
 
         },
@@ -82,7 +90,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         },
 
         satProperty: function (nodeId, propertyName, propertyValue) {
-            var self = this;
+            var selfs = this;
 
              var node = this.state.nodes[ nodeId ];
 
@@ -95,7 +103,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
                 case "clickable":
                     if (propertyValue) {
                         aframeObject.addEventListener('click', function (evt) {
-                            let cursorID = 'cursor-avatar-'+self.kernel.moniker();
+                            let cursorID = 'cursor-avatar-'+selfs.kernel.moniker();
                            if (evt.detail.cursorEl.id == cursorID) {
                                 vwf_view.kernel.fireEvent(nodeId, "clickEvent")
                            }
@@ -120,15 +128,35 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         },
 
         ticked: function (vwfTime) {
+
+            updateAvatarPosition();
+           
+            //lerpTick ()
         }
 
+
     });
+
+
+    function updateAvatarPosition() {
+
+        let avatarName = 'avatar-' + self.kernel.moniker();
+        let el = document.querySelector('#avatarControl');
+        if (el !== undefined) {
+            let postion = el.getAttribute('position');
+            let rotation = el.getAttribute('rotation');
+
+            vwf_view.kernel.setProperty(avatarName, "position", [postion.x, postion.y, postion.z]);
+            vwf_view.kernel.setProperty(avatarName, "rotation", [rotation.x, rotation.y, rotation.z]);
+        }
+    }
 
     function createAvatarControl(aScene) {
 
         let avatarName = 'avatar-' + self.kernel.moniker();
 
         let controlEl = document.createElement('a-camera');
+       // controlEl.setAttribute('avatar', '');
         controlEl.setAttribute('id', 'avatarControl');
         controlEl.setAttribute('wasd-controls', {});
         controlEl.setAttribute('look-controls', {});
@@ -140,19 +168,22 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         cursorEl.setAttribute('raycaster', {objects: '.intersectable'});
         controlEl.appendChild(cursorEl);
 
+        
+
        
-        controlEl.addEventListener('componentchanged', function (evt) {
-        if (evt.detail.name === 'position') {
-            var eventParameters = evt.detail.newData;
-             vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
-        }
+    //     controlEl.addEventListener('componentchanged', function (evt) {
+    //     if (evt.detail.name === 'position') {
+    //         var eventParameters = evt.detail.newData;
+    //          vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
+    //     }
 
-         if (evt.detail.name === 'rotation') {
-            var eventParameters = evt.detail.newData;
-               vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
-        }
+    //      if (evt.detail.name === 'rotation') {
+    //         var eventParameters = evt.detail.newData;
+    //            vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
+    //     }
 
-    });
+    // });
+
     }
 
     function createAvatar(nodeID) {
@@ -169,4 +200,7 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
         vwf_view.kernel.createChild(nodeID, nodeName, newNode);
         vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
     }
+
+    
+
 });

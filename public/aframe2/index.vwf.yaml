@@ -32,6 +32,15 @@ children:
       value: "Project by Krestianstvo.org"
       color: "#aaa"
       position: [1, 3, -4]
+  boxAnim:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: [0, 0, -3]
+      rotation: [0, 0, 0]
+      color: "#3c7249"
+      depth: 2
+      height: 1
+      width: 1
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:

@@ -85,7 +85,7 @@
   .codeEditorGrid{
 
     width: 1000px;
-    height: 500px; 
+    height: 520px; 
 
   }
 
@@ -108,4 +108,27 @@
 
       color: black
     
+      }
+
+      .sideBar {
+        padding-left: 16px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: rgba(247, 247, 247, 0.95);
+        z-index: 3;
+        position: fixed;
+        width: 400px;
+        height: 95%;
+      }
+
+      .settingsDiv {
+        padding-left: 16px;
+        overflow: auto;
+        background-color: rgba(230, 230, 230, 0.95);
+        z-index: 2;
+        position: absolute;
+      }
+
+      .userList {
+        padding-left: 16px;
       }

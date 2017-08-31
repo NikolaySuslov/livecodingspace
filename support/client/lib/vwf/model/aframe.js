@@ -507,6 +507,47 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                          }
                      }
 
+
+                     if (value === undefined && aframeObject.nodeName == "A-ANIMATION") {
+                         value = propertyValue;
+                         switch (propertyName) {
+
+                             // attribute:
+                             // dur:
+                             // from:
+                             // to:
+                             // repeat:
+
+                             case "dur":
+                                 aframeObject.setAttribute('dur', propertyValue);
+                                 break;
+
+                             case "from":
+                                 aframeObject.setAttribute('from', propertyValue);
+                                 break;
+
+                             case "to":
+                                 aframeObject.setAttribute('to', propertyValue);
+                                 break;
+
+                             case "repeat":
+                                 aframeObject.setAttribute('repeat', propertyValue);
+                                 break;
+                            
+                            case "attribute":
+                                 aframeObject.setAttribute('attribute', propertyValue);
+                                 break;
+                            
+                            case "begin":
+                                 aframeObject.setAttribute('begin', propertyValue);
+                                 break;
+
+                             default:
+                                 value = undefined;
+                                 break;
+                         }
+                     }
+
                         if (value === undefined && aframeObject.nodeName == "A-CAMERA") {
                          value = propertyValue;
                           switch (propertyName) {
@@ -553,7 +594,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     switch ( propertyName ) { 
 
                          case "enabled":
-                                        aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
+                                        aframeObject.gettAttribute('wasd-controls', 'enabled');
                                         break;
 
                     }
@@ -729,6 +770,47 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 }
                 }
 
+
+                if ( value === undefined && aframeObject.nodeName == "A-ANIMATION" ) {
+                    
+
+                     switch (propertyName) {
+
+                        case "attribute":
+                        value = aframeObject.getAttribute('attribute');
+                        break;
+            
+               
+                    case "dur":
+                        value = aframeObject.getAttribute('dur');
+                        break;
+                
+
+               
+                    case "from":
+                        value = aframeObject.getAttribute('from');
+                        break;
+                
+
+                
+                    case "to":
+                        value = aframeObject.getAttribute('to');
+                        break;
+                
+
+             
+                    case "repeat":
+                        value = aframeObject.getAttribute('repeat');
+                        break;
+                    
+                
+                
+                    case "begin":
+                        value = aframeObject.getAttribute('begin');
+                        break;
+                }      
+                }
+
                  if ( value === undefined && aframeObject.nodeName == "A-CAMERA" ) {
         
 
@@ -804,6 +886,8 @@ function createAFrameObject(node, config) {
         aframeObj = document.createElement('a-collada-model');
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
         aframeObj = document.createElement('a-sphere');
+    } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aanimation.vwf")) {
+        aframeObj = document.createElement('a-animation');
     } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
         aframeObj = document.createElement('a-entity');
     }

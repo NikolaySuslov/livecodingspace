@@ -1,0 +1,10 @@
+--- 
+extends: http://vwf.example.com/aframe/node.vwf
+type: "a-animation"
+properties:
+  attribute:
+  dur:
+  from:
+  to:
+  repeat:
+  begin:

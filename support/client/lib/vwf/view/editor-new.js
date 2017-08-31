@@ -77,7 +77,7 @@ define([
 
             $(document.head).append('<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>');
             document.querySelector('head').innerHTML += '<link rel="stylesheet" href="vwf/view/lib/editorLive.css">';
-
+            $(document.head).append('<meta name="viewport" content="width=device-width, initial-scale=1">');
 
 
             // $('body').append('<script>mdc.autoInit()</script>');
@@ -121,15 +121,57 @@ define([
 
 
 
-            ["drawer", "toolbar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSettings"].forEach(item => {
+            ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSettings", "viewSceneProps"].forEach(item => {
                 let el = document.createElement("div");
                 el.setAttribute("id", item);
                 document.body.appendChild(el);
             }
             );
 
+
+            let  avatarSettings = 
+            {
+              $cell: true,
+              $type: "div",
+                  class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                  $components:[
+                      {
+                          $cell: true,
+                          $type: "div",
+                          class: "mdc-layout-grid__inner",
+                          $components: [
+                              {
+                                  $cell: true,
+                                  $type: "div",
+                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                  $components: [
+                                      {
+                                          $cell: true,
+                                          $type: "button",
+                                          class: "mdc-button mdc-button--raised",
+                                          $text: "Reset camera view",
+                                          onclick: function (e) {
+                                              //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                              let controlEl = document.querySelector('#avatarControl');
+                                              controlEl.setAttribute('camera', 'active', true);
+                                          }
+  
+                                      }
+  
+                                  ]
+                              }
+                          ]
+                      }
+                  ]
+              }
+
           let  viewSettings = 
           {
+            $cell: true,
+            $type: "div",
+                class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                $components:[
+                    {
                         $cell: true,
                         $type: "div",
                         class: "mdc-layout-grid__inner",
@@ -143,9 +185,9 @@ define([
                                         $cell: true,
                                         $type: "button",
                                         class: "mdc-button mdc-button--raised",
-                                        $text: "Reset view",
+                                        $text: "Settings",
                                         onclick: function (e) {
-                                            document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
                                         }
 
                                     }
@@ -154,20 +196,36 @@ define([
                             }
                         ]
                     }
+                ]
+            }
                 
-
-
-            document.querySelector('#' + 'viewSettings').$cell({
+         document.querySelector('#' + 'viewSettings').$cell({
                 $cell: true,
                 $type: "div",
                 id: 'viewSettings',
-                style:'z-index: 10; position: absolute; margin-left: 240px;',
-                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left mdc-toolbar-fixed-adjust",
+                //style:'z-index: 10; position: absolute; margin-left: 240px;',
+                class: "settingsDiv mdc-toolbar-fixed-adjust",
                 $init: function(){
                     this.style.visibility = 'hidden';
                 },
                 $components: [viewSettings]
-            })
+            })        
+            
+            
+            
+
+
+            // document.querySelector('#' + 'viewSettings').$cell({
+            //     $cell: true,
+            //     $type: "div",
+            //     id: 'viewSettings',
+            //     style:'z-index: 10; position: absolute; margin-left: 240px;',
+            //     class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left mdc-toolbar-fixed-adjust",
+            //     $init: function(){
+            //         this.style.visibility = 'hidden';
+            //     },
+            //     $components: [viewSettings]
+            // })
 
 
             let protoPropertiesCell = function (m) {
@@ -284,58 +342,6 @@ define([
                     ]
                 }
 
-
-
-
-                // $components: [
-                //     {
-                //     $type: "span",
-                //     class: "mdc-list-item__start-detail grey-bg",
-                //     $components: [
-                //         {
-                //             $type: "i",
-                //             class: "material-icons",
-                //             'aria-hidden': true,
-                //             $text: 'folder'  
-                //     }
-                // ]
-                //     },
-                //     {
-                //         $cell: true,
-                //         $type: "span",
-                //         class: "mdc-list-item__text",
-                //         $text: m.name + ': ',
-                //     },
-                //     {
-                //         class: "mdc-textfield mdc-list-item__start-detail  mdc-textfield--fullwidth",
-                //         $cell: true,
-                //         $type: "span",
-                //         $components: [
-                //             {
-                //             class: "mdc-textfield__input",
-                //             id: "prop-" + m.name,
-                //             $cell: true,
-                //             $type: "input",
-                //             type: "text",
-                //             value: m.getValue(),
-                //             onchange: function(e){
-                //                 let propValue = this.value;
-                //                 try {
-                //                     propValue = JSON.parse(propValue);
-                //                     self.kernel.setProperty(this._currentNode, m.name, propValue);
-
-                //                 } catch (e) {
-                //                     // restore the original value on error
-                //                     this.value = propValue;
-                //                 }
-                //             }
-                //         }]
-
-                //     }
-                // ]
-
-
-
             }
 
 
@@ -392,9 +398,11 @@ define([
                 _currentNode: '',
                 _displayedProperties: {},
                 _setNode: function (aNode) {
-                    this._currentNode = aNode
+                    this._currentNode = aNode;
+                    document.querySelector('#sideBar')._sideCurrentNode = this._currentNode
                 },
                 $init: function () {
+                    this._currentNode = document.querySelector('#sideBar')._sideCurrentNode
 
                     //this._currentNode = vwf_view.kernel.find("", "/")[0];
                     //this._currentNode = '3333';
@@ -897,21 +905,12 @@ define([
             let clientListCell = {
                 $cell: true,
                 $type: "div",
+                class: "mdc-list",
                 id: "clientsList",
                 _watchNodes: [],
-                // _clientNodes: [],
-                // _visClients: [],
-                // _setClientNodes: function (nodes) {
-                //     this._clientNodes = nodes;
-                //     if (this._clientNodes !== undefined) {
-                //         this._visClients = this._clientNodes.children.slice();
-                //     }
-                // },
                 _listElement: function (m) {
                     return {
-                        $type: "li",
-                        class: "mdc-list-item",
-                        $components: [{
+
                             $type: "a",
                             class: "mdc-list-item",
                             $href: "#",
@@ -921,7 +920,6 @@ define([
                                 //self.currentNodeID = m.ID;
                                 //document.querySelector('#currentNode')._setNode(m.ID);
                             }
-                        }]
                     }
                 },
                 $init: function () {
@@ -935,144 +933,263 @@ define([
                 },
                 $update: function () {
                     //this._clientNodes
-                    this.$components = [
-                        {
-                            $cell: true,
-                            $type: "ul",
-                            class: "mdc-list",
-                            $components: this._watchNodes.map(this._listElement)
-                        }
-                    ]
+                    this.$components = this._watchNodes.map(this._listElement)
                 }
             }
 
-            createCellWindow("clientsWindow", clientListCell, "Clients");
-            createCellWindow("propWindow", propWindow, "Scene");
+            //createCellWindow("clientsWindow", clientListCell, "Clients");
+            //createCellWindow("propWindow", propWindow, "Scene");
             createCellWindow("codeEditorWindow", codeEditorWindow, "Code editor");
+
+
+           
+
+            let viewSceneProps = {
+                $cell: true,
+                $type: "div",
+                    class: "propGrid mdc-layout-grid mdc-layout-grid--align-left",
+                    //style: "overflow-y: scroll; max-height: 500px; overflow-x: hidden;",
+                    $components:[
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+    
+                                        nodesCell
+    
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+            }
+
+
+            let sideBar =  {
+                $cell: true,
+                $type: "div",
+                id: 'sideBar',
+                class: "sideBar mdc-toolbar-fixed-adjust",
+                _sideBarComponent: {},
+                _sideCurrentNode: '',
+                $init: function(){
+                    this.style.visibility = 'hidden';
+                },
+                $update: function(){
+                    this.$components = [
+                        {
+                            $cell: true,
+                            $type: "button",
+                            class: "mdc-button mdc-button--compact",
+                            $text: "X",
+                            onclick: function (e) {
+                                document.querySelector('#sideBar').style.visibility = 'hidden';
+                            }
+
+                        }, 
+                        this._sideBarComponent
+                    ]
+                }
+                //$components: [this._sideComponents]
+            }
+
+            document.querySelector('#' + 'sideBar').$cell(sideBar)          
+
 
             let drawerCell = {
                 $cell: true,
                 $type: "nav",
-                class: "mdc-persistent-drawer__drawer",
+                class: "mdc-temporary-drawer__drawer",
 
                 $components: [
-
                     {
                         $cell: true,
-                        $type: "div",
-                        class: "mdc-persistent-drawer__toolbar-spacer",
+                        $type: "header",
+                        class: "mdc-temporary-drawer__header",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-temporary-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
+                                $text: "Home"
+                            }
+                        ]
                     },
 
-
-
                     {
                         $cell: true,
-                        $type: "div",
-                        class: "mdc-list-group",
-                        $components: [{
-                            $cell: true,
-                            $type: "nav",
-                            class: "mdc-list",
-                            $components: [
-                                {
-                                    $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item mdc-persistent-drawer--selected",
-                                    $href: "#",
-                                    onclick: function (e) {
-                                        //self.currentNodeID = m.ID;
-                                        let currentNode = document.querySelector('#currentNode')._currentNode;
-                                        currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
-                                            document.querySelector('#currentNode')._setNode(currentNode);
-
-                                        document.querySelector('#propWindow').style.visibility = 'visible';
-                                    },
-                                    $components: [{
+                        $type: "nav",
+                        class: "mdc-temporary-drawer__content mdc-list-group",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-list",
+                                $components: [
+                                    {
                                         $cell: true,
-                                        $type: "i",
-                                        class: "material-icons mdc-list-item__start-detail",
-                                        $text: "description"
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+
+                                            let sideBar = document.querySelector('#sideBar');
+                                            sideBar._sideBarComponent = viewSceneProps;
+
+                                            let currentNode = document.querySelector('#sideBar')._sideCurrentNode;
+                                            currentNode == '' ? document.querySelector('#sideBar')._sideCurrentNode = (vwf_view.kernel.find("", "/")[0]) :
+                                                document.querySelector('#sideBar')._sideCurrentNode = currentNode;
+
+                                               document.querySelector('#sideBar').style.visibility = 'visible';
+                                               drawer.open = !drawer.open
+                                            // let currentNode = document.querySelector('#currentNode')._currentNode;
+                                            // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
+                                            //     document.querySelector('#currentNode')._setNode(currentNode);
+                                              
+                                             
+
+                                            
+                                        },
+                                        $components: [{
+                                            $cell: true,
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            $text: "description"
+                                        },
+                                        {
+                                            $text: "Scene"
+                                        }
+                                        ]
+    
+                                    },
+    
+                                    {
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+                                            //self.currentNodeID = m.ID;
+    
+                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                           // document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                           let sideBar = document.querySelector('#sideBar');
+                                           sideBar._sideBarComponent = avatarSettings;
+
+                                           drawer.open = !drawer.open
+                                           document.querySelector('#sideBar').style.visibility = 'visible';
+                                        },
+                                        $components: [{
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            'aria-hidden': "true",
+                                            $text: "account_circle"
+                                        },
+                                        {
+                                            $text: "My Avatar"
+                                        }]
+    
+                                    },
+                                    
+                                    
+                                    {
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+                                            //self.currentNodeID = m.ID;
+    
+                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+
+                                            let sideBar = document.querySelector('#sideBar');
+                                            sideBar._sideBarComponent = viewSettings;
+
+                                            drawer.open = !drawer.open
+                                            document.querySelector('#sideBar').style.visibility = 'visible';
+                                        },
+                                        $components: [{
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            'aria-hidden': "true",
+                                            $text: "settings"
+                                        },
+                                        {
+                                            $text: "Settings"
+                                        }]
+    
                                     },
                                     {
-                                        $text: "Scene"
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+                                            // var currentNode = document.querySelector('#currentNode')._currentNode;
+                                            // if (currentNode == '') {
+                                            //     currentNode = vwf_view.kernel.find("", "/")[0];
+                                            // }
+                                            document.querySelector('#liveCodeEditor')._setNode(vwf_view.kernel.find("", "/")[0]);
+                                            //createAceEditor(self, currentNode);
+                                            document.querySelector('#codeEditorWindow').style.visibility = 'visible';
+                                        },
+                                        $components: [{
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            'aria-hidden': "true",
+                                            $text: "code"
+                                        },
+                                        {
+                                            $text: "Code editor"
+                                        }]
+    
                                     }
-                                    ]
 
-                                },
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "hr",
+                                class: "mdc-list-divider",
+                            },
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "userList mdc-list-group__subheader",
+                                $text: "Users online"
+                            },
+                            clientListCell
+                        ]
+                    }
 
-                                {
-                                    $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item mdc-persistent-drawer--selected",
-                                    $href: "#",
-                                    onclick: function (e) {
-                                        // var currentNode = document.querySelector('#currentNode')._currentNode;
-                                        // if (currentNode == '') {
-                                        //     currentNode = vwf_view.kernel.find("", "/")[0];
-                                        // }
-                                        document.querySelector('#liveCodeEditor')._setNode(vwf_view.kernel.find("", "/")[0]);
-                                        //createAceEditor(self, currentNode);
-                                        document.querySelector('#codeEditorWindow').style.visibility = 'visible';
-                                    },
-                                    $components: [{
-                                        $type: "i",
-                                        class: "material-icons mdc-list-item__start-detail",
-                                        'aria-hidden': "true",
-                                        $text: "code"
-                                    },
-                                    {
-                                        $text: "Code editor"
-                                    }]
+                    // {
+                    //     $cell: true,
+                    //     $type: "div",
+                    //     class: "mdc-persistent-drawer__toolbar-spacer",
+                    // },
 
-                                },
-                                {
-                                    $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item mdc-persistent-drawer--selected",
-                                    $href: "#",
-                                    onclick: function (e) {
-                                        //self.currentNodeID = m.ID;
 
-                                        // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                        document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                    },
-                                    $components: [{
-                                        $type: "i",
-                                        class: "material-icons mdc-list-item__start-detail",
-                                        'aria-hidden': "true",
-                                        $text: "people"
-                                    },
-                                    {
-                                        $text: "Users"
-                                    }]
 
-                                },
-                                {
-                                    $cell: true,
-                                    $type: "a",
-                                    class: "mdc-list-item mdc-persistent-drawer--selected",
-                                    $href: "#",
-                                    onclick: function (e) {
-                                        //self.currentNodeID = m.ID;
+                    // {
+                    //     $cell: true,
+                    //     $type: "div",
+                    //     class: "mdc-list-group",
+                    //     $components: [{
+                    //         $cell: true,
+                    //         $type: "nav",
+                    //         class: "mdc-list",
+                    //         $components: [
+                                
 
-                                        // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                        document.querySelector('#viewSettings').style.visibility = 'visible';
-                                    },
-                                    $components: [{
-                                        $type: "i",
-                                        class: "material-icons mdc-list-item__start-detail",
-                                        'aria-hidden': "true",
-                                        $text: "star"
-                                    },
-                                    {
-                                        $text: "Settings"
-                                    }]
-
-                                }
-
-                            ]
-                        }]
-                    }]
+                    //         ]
+                    //     }]
+                    // }
+                ]
 
             };
 
@@ -1084,7 +1201,7 @@ define([
             document.querySelector("#drawer").$cell({
                 $cell: true,
                 $type: "aside",
-                class: "mdc-persistent-drawer",
+                class: "mdc-temporary-drawer",
                 $components: [drawerCell]
             }
             );
@@ -1126,9 +1243,9 @@ define([
             // let drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
             // document.querySelector('.menu').addEventListener('click', () => drawer.open = true);
 
-            var drawerEl = document.querySelector('.mdc-persistent-drawer');
-            var MDCPersistentDrawer = mdc.drawer.MDCPersistentDrawer;
-            var drawer = new MDCPersistentDrawer(drawerEl);
+            var drawerEl = document.querySelector('.mdc-temporary-drawer');
+            var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
+            var drawer = new MDCTemporaryDrawer(drawerEl);
             document.querySelector('.demo-menu').addEventListener('click', function () {
                 //self.currentNodeID = (self.currentNodeID == '') ? (vwf_view.kernel.find("", "/")[0]) : self.currentNodeID; 
 
@@ -1141,10 +1258,10 @@ define([
                 //document.querySelector('#currentNode')._setNode(self.currentNodeID);
                 drawer.open = !drawer.open;
             });
-            drawerEl.addEventListener('MDCPersistentDrawer:open', function () {
+            drawerEl.addEventListener('MDCTemporaryDrawer:open', function () {
                 //console.log('Received MDCPersistentDrawer:open');
             });
-            drawerEl.addEventListener('MDCPersistentDrawer:close', function () {
+            drawerEl.addEventListener('MDCTemporaryDrawer:close', function () {
                 //console.log('Received MDCPersistentDrawer:close');
             });
 
@@ -1322,13 +1439,15 @@ define([
             $('#' + nodeIDAttribute).remove();
             $('#children > div:last').css('border-bottom-width', '3px');
 
-            let nodeCellID = document.querySelector("#currentNode");
-            if (nodeCellID._currentNode !== "") {
-                if (nodeCellID._currentNode !== nodeID && (this.nodes[nodeID] !== undefined)) {
-                    nodeCellID._getChildNodes();
-                } else {
-                    nodeCellID._setNode(vwf_view.kernel.find("", "/")[0]);
-                    nodeCellID._getChildNodes();
+            let nodeCell = document.querySelector("#currentNode");
+            if (nodeCell) {
+                if (nodeCell._currentNode !== "") {
+                    if (nodeCell._currentNode !== nodeID && (this.nodes[nodeID] !== undefined)) {
+                        nodeCell._getChildNodes();
+                    } else {
+                        nodeCell._setNode(vwf_view.kernel.find("", "/")[0]);
+                        nodeCell._getChildNodes();
+                    }
                 }
             }
 
