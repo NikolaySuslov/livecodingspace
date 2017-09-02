@@ -29,56 +29,13 @@ if (typeof AFRAME === 'undefined') {
   throw new Error('Component attempted to register before AFRAME was available.');
 }
 
-function getMillis () {
-  return new Date().getTime();
-  //return performance.now()
-}
-
-function PositionInterpolator (timestep, entity) {
-  var time = getMillis();
-  var previous;
-  var next;
-  var v = new THREE.Vector3();
-
-  entity.el.addEventListener('componentchanged', function (event) {
-
-    if (getTime() < 0.5 || getTime() == 0) {
-      // fixme - ignore multiple calls
-      return;
-    }
-
-    if (event.detail.name === 'position') {
-      if (!previous) {
-        previous = new THREE.Vector3();
-        next = new THREE.Vector3();
-      }
-
-      time = getMillis();
-      previous.copy(next);
-      next.copy(event.detail.newData);
-    }
-  });
-
-  function getTime () {
-    return (getMillis() - time) / timestep;
-  }
-
-  this.active = function () {
-    return previous && next && (getTime() < 1);
-  };
-
-  this.get = function () {
-    //return v.lerpVectors(previous, next, getTime());
-    return previous.lerp(next, getTime());
-  };
-}
 
 function radians(degrees) {
- // return degrees * Math.PI / 180.0;
- return THREE.Math.degToRad(degrees)
+  // return degrees * Math.PI / 180.0;
+  return THREE.Math.degToRad(degrees)
 }
 
-function RotationInterpolator (timestep, entity) {
+function RotationInterpolator(timestep, entity) {
   var time = getMillis();
   var previous;
   var next;
@@ -102,7 +59,7 @@ function RotationInterpolator (timestep, entity) {
       next.setFromEuler(new THREE.Euler(
         radians(event.detail.newData.x),
         radians(event.detail.newData.y),
-        radians(event.detail.newData.z),'YXZ'
+        radians(event.detail.newData.z), 'YXZ'
       ));
     }
   });
@@ -114,7 +71,7 @@ function RotationInterpolator (timestep, entity) {
 
 
 
-  function getTime () {
+  function getTime() {
     return (getMillis() - time) / timestep;
   }
 
@@ -122,11 +79,96 @@ function RotationInterpolator (timestep, entity) {
     return previous && next && (getTime() < 1);
   };
 
-  
+
   this.get = function () {
     THREE.Quaternion.slerp(previous, next, q, getTime());
     return e.setFromQuaternion(q);
   };
+}
+
+class Interpolator {
+  constructor(comp) {
+    this.component = comp;
+    this.time = this.getMillis();
+  }
+
+  active() {
+    return this.previous && this.next && (this.getTime() < 1);
+  }
+
+  getMillis() {
+    return new Date().getTime();
+  }
+
+  getTime() {
+    return (this.getMillis() - this.time) / this.component.timestep;
+  }
+
+}
+
+// class RotationInterpolator extends Interpolator {
+  
+//     constructor(comp) {
+//       super(comp);
+
+//       this.previous = new THREE.Quaternion();
+//       this.next = new THREE.Quaternion();
+
+  
+//     }
+//   }
+
+
+class PositionInterpolator extends Interpolator {
+
+  constructor(comp) {
+    super(comp);
+    this.lastPosition = this.component.el.getAttribute('position');
+    this.previous = (new THREE.Vector3()).fromArray(Object.values(this.lastPosition));
+    this.next = (new THREE.Vector3()).fromArray(Object.values(this.lastPosition));
+
+  }
+
+  vecCmp(a, b, delta) {
+
+    let distance = a.distanceTo(b);
+    if (distance > delta) {
+      return false;
+    }
+    return true;
+  }
+
+  testForLerp() {
+    if (this.previous && this.next && this.vecCmp(this.previous, this.next, this.component.delta)) {
+      return true
+    }
+    return false
+  }
+
+  get() {
+    return this.previous.lerp(this.next, this.getTime());
+  }
+
+  tick(currentPosition) {
+
+    if (this.getTime() < 0.5) {
+      // fixme - ignore multiple calls
+      return;
+    }
+
+    if (!this.previous) {
+      this.previous = (new THREE.Vector3()).fromArray(Object.values(this.lastPosition));
+      this.next = (new THREE.Vector3()).fromArray(Object.values(currentPosition));
+    }
+
+    this.time = this.getMillis();
+    this.previous.copy(this.next);
+    this.next.copy(currentPosition);
+
+    this.lastPosition = currentPosition;
+
+  }
+
 }
 
 /**
@@ -134,65 +176,30 @@ function RotationInterpolator (timestep, entity) {
  */
 AFRAME.registerComponent('interpolation', {
   schema: {
-    duration: { default: 50 }
+    duration: { default: 50 },
+    enabled: { default: true },
+    delta: { default: 0.5 }
   },
+
+
 
   /**
    * Called once when component is attached. Generally for initial setup.
    */
   init: function () {
 
-       // Set up the tick throttling.
-       //this.tick = AFRAME.utils.throttleTick(this.throttledTick, 0, this);
+    // Set up the tick throttling.
+    //this.tick = AFRAME.utils.throttleTick(this.throttledTick, 0, this);
 
-      var el = this.el;
-       this.lastPosition = el.getAttribute('position');
-      // this.lastRotation = el.getAttribute('rotation');
-
-
-       this.getMillis = function() {
-        return new Date().getTime();
-        //return performance.now()
-      }
-
-       this.timestep = 50;
-       this.time = this.getMillis();
-       this.previous = new THREE.Vector3();
-       this.next = new THREE.Vector3();
-
-      this.active = function () {
-        return this.previous && this.next && (this.getTime() < 1);
-      };
-    
+    //var el = this.el;
+    //this.lastPosition = el.getAttribute('position');
 
 
-      this.get = function () {
-        return this.previous.lerp(this.next, this.getTime());
-      };
+    //this.timestep = 50;
+    //this.time = this.getMillis();
+    //  this.previous = (new THREE.Vector3()).fromArray(Object.values(this.lastPosition));
+    //  this.next = (new THREE.Vector3()).fromArray(Object.values(this.lastPosition));
 
-      this.getTime = function () {
-        return (this.getMillis() - this.time) / this.timestep;
-      }
-
-      this.matCmp = function (a,b,delta) {
-        let distance = a.distanceTo(b);
-        if (distance > delta) {
-          return false;
-        }
-        // for(var i =0; i < 2; i++) {
-        //     if(Math.abs(a[i] - b[i]) > delta)
-        //         return false;
-        // }
-        
-         return true;
-    }
-
-      this.testForLerp = function(){
-        if(this.previous && this.next && !this.matCmp(this.previous,this.next,.0001) ) { 
-          return true  
-      }
-      return false
-    }
   },
 
   // throttledTick: function (time, deltaTime) {
@@ -206,8 +213,12 @@ AFRAME.registerComponent('interpolation', {
   update: function (oldData) {
 
     if (!this.interpolation) {
-        this.timestep = parseInt(this.data.duration, 10);
-    }  
+      this.timestep = parseInt(this.data.duration, 10);
+      this.delta = parseFloat(this.data.delta);
+
+      this.posInterpolator = new PositionInterpolator(this);
+
+    }
 
     // if (!this.interpolation) {
     //   var timestep = parseInt(this.data.duration, 10);
@@ -228,34 +239,20 @@ AFRAME.registerComponent('interpolation', {
    */
   tick: function (t, dt) {
 
-  let currentPosition = this.el.getAttribute('position');
-   
-   if (this.lastPosition !=  currentPosition)
-    {
+    let currentPosition = this.el.getAttribute('position');
 
-      if (this.getTime() < 0.5) {
-        // fixme - ignore multiple calls
-        return;
-      }
+    //if (this.checkForLerp(this.lastPosition, currentPosition)) {
 
-      if (!this.previous) {
-        this.previous = new THREE.Vector3();
-        this.next = new THREE.Vector3();
-      }
-
-      this.time = this.getMillis();
-      this.previous.copy(this.next);
-      this.next.copy(currentPosition);
-
-      this.lastPosition = currentPosition;
+    if (this.posInterpolator.lastPosition != currentPosition) {
+      this.posInterpolator.tick(currentPosition)
     }
 
-      if (this.active() && this.testForLerp())
-      {
-      this.el.object3D.position.copy(this.get());
+
+    if (this.posInterpolator.active() && this.posInterpolator.testForLerp()) {
+      this.el.object3D.position.copy(this.posInterpolator.get());
     }
 
-  
+
 
 
     // if (this.positionInterpolator && this.positionInterpolator.active()) {
