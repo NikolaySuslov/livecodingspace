@@ -1,4 +1,9 @@
-/* Interpolate component for A-Frame VR. https://github.com/scenevr/aframe-interpolate-component.git
+/* 
+The MIT License (MIT)
+Copyright (c) 2017 Nikolai Suslov
+Updated for using in LiveCoding.space and A-Frame 0.6.x
+
+Interpolate component for A-Frame VR. https://github.com/scenevr/aframe-interpolate-component.git
 
 The MIT License (MIT)
 
@@ -30,62 +35,6 @@ if (typeof AFRAME === 'undefined') {
 }
 
 
-function radians(degrees) {
-  // return degrees * Math.PI / 180.0;
-  return THREE.Math.degToRad(degrees)
-}
-
-function RotationInterpolator(timestep, entity) {
-  var time = getMillis();
-  var previous;
-  var next;
-  var e = new THREE.Euler();
-  var q = new THREE.Quaternion();
-
-  entity.el.addEventListener('componentchanged', function (event) {
-    if (getTime() < 0.5 || getTime() == 0) {
-      // fixme - ignore multiple calls
-      return;
-    }
-
-    if (event.detail.name === 'rotation') {
-      if (!previous) {
-        previous = new THREE.Quaternion();
-        next = new THREE.Quaternion();
-      }
-
-      time = getMillis();
-      previous.copy(next);
-      next.setFromEuler(new THREE.Euler(
-        radians(event.detail.newData.x),
-        radians(event.detail.newData.y),
-        radians(event.detail.newData.z), 'YXZ'
-      ));
-    }
-  });
-
-  // var data = this.data;
-  // var object3D = this.el.object3D;
-  // object3D.rotation.set(degToRad(data.x), degToRad(data.y), degToRad(data.z));
-  // object3D.rotation.order = 'YXZ';
-
-
-
-  function getTime() {
-    return (getMillis() - time) / timestep;
-  }
-
-  this.active = function () {
-    return previous && next && (getTime() < 1);
-  };
-
-
-  this.get = function () {
-    THREE.Quaternion.slerp(previous, next, q, getTime());
-    return e.setFromQuaternion(q);
-  };
-}
-
 class Interpolator {
   constructor(comp) {
     this.component = comp;
@@ -104,19 +53,103 @@ class Interpolator {
     return (this.getMillis() - this.time) / this.component.timestep;
   }
 
+  vecCmp(a, b, delta) {
+
+    let distance = a.distanceTo(b);
+    if (distance > delta) {
+      return false;
+    }
+    return true;
+  }
+
 }
 
-// class RotationInterpolator extends Interpolator {
-  
-//     constructor(comp) {
-//       super(comp);
+class RotationInterpolator extends Interpolator {
 
-//       this.previous = new THREE.Quaternion();
-//       this.next = new THREE.Quaternion();
+  constructor(comp) {
+    super(comp);
 
-  
-//     }
-//   }
+    this.lastRotation = this.component.el.getAttribute('rotation');
+    this.previous = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+      this.radians(this.lastRotation.x),
+      this.radians(this.lastRotation.y),
+      this.radians(this.lastRotation.z), 'YXZ'
+    ));
+    this.next = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+      this.radians(this.lastRotation.x),
+      this.radians(this.lastRotation.y),
+      this.radians(this.lastRotation.z), 'YXZ'
+    ));
+
+
+  }
+
+  radians(degrees) {
+    // return degrees * Math.PI / 180.0;
+    return THREE.Math.degToRad(degrees)
+  }
+
+  makeInterpolation() {
+    let q = new THREE.Quaternion();
+    let e = new THREE.Euler();
+
+    THREE.Quaternion.slerp(this.previous, this.next, q, this.getTime());
+    return e.setFromQuaternion(q);
+  }
+
+  testForLerp() {
+
+    if (this.component.deltaRot == 0) {
+      return true
+    }
+
+    let prev = (new THREE.Euler()).setFromQuaternion(this.previous).toVector3();
+    let next = (new THREE.Euler()).setFromQuaternion(this.next).toVector3();
+
+    if (prev && next && this.vecCmp(prev, next, this.component.deltaRot)) {
+      return true
+    }
+    return false
+  }
+
+
+  inTick(currentRotation) {
+
+    if (this.getTime() < 0.5) {
+      // fixme - ignore multiple calls
+      return;
+    }
+
+
+    if (!this.previous) {
+      // this.previous = new THREE.Quaternion();
+      // this.next = new THREE.Quaternion();
+      this.previous = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+        this.radians(this.lastRotation.x),
+        this.radians(this.lastRotation.y),
+        this.radians(this.lastRotation.z), 'YXZ'
+      ));
+
+      this.next = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+        this.radians(currentRotation.x),
+        this.radians(currentRotation.y),
+        this.radians(currentRotation.z), 'YXZ'
+      ));
+    }
+
+    this.time = this.getMillis();
+    this.previous.copy(this.next);
+    this.next.setFromEuler(new THREE.Euler(
+      this.radians(currentRotation.x),
+      this.radians(currentRotation.y),
+      this.radians(currentRotation.z), 'YXZ'
+    ));
+
+    this.lastRotation = currentRotation;
+
+  }
+
+}
 
 
 class PositionInterpolator extends Interpolator {
@@ -129,27 +162,24 @@ class PositionInterpolator extends Interpolator {
 
   }
 
-  vecCmp(a, b, delta) {
-
-    let distance = a.distanceTo(b);
-    if (distance > delta) {
-      return false;
-    }
-    return true;
-  }
 
   testForLerp() {
-    if (this.previous && this.next && this.vecCmp(this.previous, this.next, this.component.delta)) {
+
+    if (this.component.deltaPos == 0) {
+      return true
+    }
+
+    if (this.previous && this.next && this.vecCmp(this.previous, this.next, this.component.deltaPos)) {
       return true
     }
     return false
   }
 
-  get() {
+  makeInterpolation() {
     return this.previous.lerp(this.next, this.getTime());
   }
 
-  tick(currentPosition) {
+  inTick(currentPosition) {
 
     if (this.getTime() < 0.5) {
       // fixme - ignore multiple calls
@@ -178,7 +208,8 @@ AFRAME.registerComponent('interpolation', {
   schema: {
     duration: { default: 50 },
     enabled: { default: true },
-    delta: { default: 0.5 }
+    deltaPos: { default: 0 },
+    deltaRot: { default: 0 }
   },
 
 
@@ -214,10 +245,15 @@ AFRAME.registerComponent('interpolation', {
 
     if (!this.interpolation) {
       this.timestep = parseInt(this.data.duration, 10);
-      this.delta = parseFloat(this.data.delta);
+      this.deltaPos = parseFloat(this.data.deltaPos);
+      this.deltaRot = THREE.Math.degToRad(parseFloat(this.data.deltaRot));
 
-      this.posInterpolator = new PositionInterpolator(this);
+      this.enabled = JSON.parse(this.data.enabled);
 
+      if (this.enabled) {
+        this.posInterpolator = new PositionInterpolator(this);
+        this.rotInterpolator = new RotationInterpolator(this);
+      }
     }
 
     // if (!this.interpolation) {
@@ -240,20 +276,26 @@ AFRAME.registerComponent('interpolation', {
   tick: function (t, dt) {
 
     let currentPosition = this.el.getAttribute('position');
+    let currentRotation = this.el.getAttribute('rotation');
 
-    //if (this.checkForLerp(this.lastPosition, currentPosition)) {
+    if (this.enabled) {
 
-    if (this.posInterpolator.lastPosition != currentPosition) {
-      this.posInterpolator.tick(currentPosition)
+      if (this.posInterpolator.lastPosition != currentPosition) {
+        this.posInterpolator.inTick(currentPosition)
+      }
+      if (this.posInterpolator.active() && this.posInterpolator.testForLerp()) {
+        this.el.object3D.position.copy(this.posInterpolator.makeInterpolation());
+      }
+
+
+      if (this.rotInterpolator.lastRotation != currentRotation) {
+        this.rotInterpolator.inTick(currentRotation)
+      }
+      if (this.rotInterpolator.active() && this.rotInterpolator.testForLerp()) {
+        this.el.object3D.rotation.copy(this.rotInterpolator.makeInterpolation());
+      }
+
     }
-
-
-    if (this.posInterpolator.active() && this.posInterpolator.testForLerp()) {
-      this.el.object3D.position.copy(this.posInterpolator.get());
-    }
-
-
-
 
     // if (this.positionInterpolator && this.positionInterpolator.active()) {
     //   this.el.object3D.position.copy(this.positionInterpolator.get());

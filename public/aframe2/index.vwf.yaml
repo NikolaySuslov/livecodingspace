@@ -87,7 +87,15 @@ children:
           position: [2, -0.75, 0]
           color: "#2167a5"
           depth: 1
-          interpolation: "50ms"
+        children:
+          interpolation:
+            extends: http://vwf.example.com/aframe/interpolation-component.vwf
+            type: "component"
+            properties:
+              enabled: true
+              duration: 50
+              deltaPos: 0.1
+              deltaRot: 1
         methods:
           run:
             body: |

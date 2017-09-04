@@ -225,7 +225,39 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     
                 }
 
-                var componentName = "wasd-controls";
+                var componentName = "interpolation";
+
+                if ( value === undefined && aframeObject.attributes.hasOwnProperty(componentName)) {
+                   value = propertyValue;
+                   
+                   switch ( propertyName ) { 
+
+                        case "enabled":
+                           aframeObject.setAttribute(componentName, 'enabled', propertyValue);
+                               break;
+                    
+                        case "duration":
+                               aframeObject.setAttribute(componentName, 'duration', propertyValue);
+                                   break;
+
+                            case "deltaPos":
+                                   aframeObject.setAttribute(componentName, 'deltaPos', propertyValue);
+                                       break;
+                        case "deltaRot":
+                                       aframeObject.setAttribute(componentName, 'deltaRot', propertyValue);
+                                           break;
+
+                       default:
+                           value = undefined;
+                           break; 
+
+
+                   }
+
+                }
+
+
+                componentName = "wasd-controls";
                  if ( value === undefined && aframeObject.attributes.hasOwnProperty(componentName)) {
                     value = propertyValue;
                     
@@ -265,9 +297,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     
                     switch ( propertyName ) { 
 
-                            case "interpolation":
-                                aframeObject.setAttribute('interpolation', { duration: propertyValue});
-                                    break;
+                            // case "interpolation":
+                            //     aframeObject.setAttribute('interpolation', { duration: propertyValue});
+                            //         break;
 
                          case "position":
                                     aframeObject.setAttribute('position', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
@@ -602,17 +634,42 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                  }
 
 
+                 if ( value === undefined && aframeObject.attributes.hasOwnProperty("interpolation")) {
+                    value = propertyValue;
+                    
+                    switch ( propertyName ) { 
+
+                         case "enabled":
+                                        aframeObject.getAttribute('interpolation').enabled;
+                                        break;
+
+                                        case "duration":
+                                        aframeObject.getAttribute('interpolation').duration;
+                                        break;
+                                        case "posDelta":
+                                        aframeObject.getAttribute('interpolation').posDelta;
+                                        break;
+                                        case "rotDelta":
+                                        aframeObject.getAttribute('interpolation').rotDelta;
+                                        break;
+
+                    }
+
+                 }
+
+
+
 
                 if ( value === undefined && isAEntityDefinition( node.prototypes ) ) {
                     
                     switch ( propertyName ) { 
 
-                        case "interpolation":
-                            var interpolation = aframeObject.getAttribute('interpolation');
-                            if (interpolation !== null && interpolation !== undefined) {
-                                value = interpolation.duration;
-                            }
-                            break;
+                        // case "interpolation":
+                        //     var interpolation = aframeObject.getAttribute('interpolation');
+                        //     if (interpolation !== null && interpolation !== undefined) {
+                        //         value = interpolation.duration;
+                        //     }
+                        //     break;
 
                         case "position":
                                 var pos = aframeObject.getAttribute('position');
@@ -852,6 +909,10 @@ function setAFrameObjectComponents(node, config) {
 
     if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/wasd-controls.vwf")) {
         parentNode.aframeObj.setAttribute('wasd-controls', {});
+    }
+
+    if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
+        parentNode.aframeObj.setAttribute('interpolation', {});
     }
 
     node.aframeObj = parentNode.aframeObj;

@@ -62,7 +62,21 @@ methods:
                     }
               }
 
-              this.interpolation = "50ms";
+            let interpolation =
+             {
+                "id": 'interpolation-' + this.id,
+                 "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                 "type": "component",
+                 "properties": {
+                        "enabled": true,
+                        "duration": 50,
+                        "deltaPos": 0,
+                        "deltaRot": 0
+                    }
+             }
+
+              //this.interpolation = "50ms";
+            this.children.create( "interpolation", interpolation );
               this.children.create( "avatarBody", newNode );
               this.children.create( "avatarCursor", cursorVis );
               this.children.create( "avatarCamera", camera );

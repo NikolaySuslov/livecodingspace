@@ -142,12 +142,14 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
         let avatarName = 'avatar-' + self.kernel.moniker();
         let el = document.querySelector('#avatarControl');
-        if (el !== undefined) {
+        if (el) {
             let postion = el.getAttribute('position');
             let rotation = el.getAttribute('rotation');
 
+            if ( postion && rotation) {
             vwf_view.kernel.setProperty(avatarName, "position", [postion.x, postion.y, postion.z]);
             vwf_view.kernel.setProperty(avatarName, "rotation", [rotation.x, rotation.y, rotation.z]);
+            }
         }
     }
 
