@@ -21,7 +21,7 @@
 /// @module vwf/view/aframe
 /// @requires vwf/view
 
-define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $) {
+define(["module", "vwf/view"], function (module, view) {
     var self;
 
     return view.load(module, {
@@ -61,13 +61,20 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
                 document.body.append(scene);
                 createAvatarControl(scene);
-                createAvatar(childID);
+                createAvatar.call(this, childID);
                // this.state.appInitialized  = true;
             }
 
-            if(this.state.nodes[childID] && this.state.nodes[childID].aframeObj.object3D instanceof THREE.Object3D) {
-                this.nodes[childID] = {id:childID,extends:childExtendsID};
-            }
+            if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
+                    this.nodes[childID] = {id:childID,extends:childExtendsID};
+                }
+
+            // if(this.state.nodes[childID]) {
+            //     this.nodes[childID] = {id:childID,extends:childExtendsID};
+            // } 
+            // else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj.object3D instanceof THREE.Object3D) {
+            //     this.nodes[childID] = {id:childID,extends:childExtendsID};
+            // }
 
         },
 
@@ -78,6 +85,9 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             if (!node) {
                 return;
             }
+
+
+          
 
         },
 
@@ -117,6 +127,29 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
             //var avatarID = vwf_view.kernel.find("", avatarName)
 
             var avatarName = 'avatar-' + self.kernel.moniker();
+
+            if (eventName == "createAvatar") {
+                console.log("!!!!");
+
+                let avatarID = self.kernel.moniker();
+                var nodeName = 'avatar-' + avatarID;
+        
+                var newNode = {
+                    "id": avatarName,
+                    "uri": avatarName,
+                    "extends": "http://vwf.example.com/aframe/avatar.vwf",
+                    "properties":{}
+                }
+                
+               
+                if (!self.state.nodes[avatarName]) {
+
+                this.kernel.createChild(nodeID, avatarName, newNode, undefined, undefined);
+                this.kernel.addChild(nodeID, avatarName, avatarName);
+                this.kernel.callMethod(avatarName, "createAvatarBody");
+                }
+
+            }
 
             if (eventName == "setAvatarRotation") {
                 vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
@@ -167,7 +200,12 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-'+avatarName);
-        cursorEl.setAttribute('raycaster', {objects: '.intersectable'});
+        cursorEl.setAttribute('raycaster', {});
+        cursorEl.setAttribute('raycaster', 'objects', '.intersectable');
+        cursorEl.setAttribute('raycaster', 'showLine', false);
+
+       // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
+       // cursorEl.setAttribute('raycaster', 'showLine', true);
         controlEl.appendChild(cursorEl);
 
         
@@ -190,17 +228,20 @@ define(["module", "vwf/view", "jquery", "jquery-ui"], function (module, view, $)
 
     function createAvatar(nodeID) {
 
-        let avatarID = self.kernel.moniker();
-        var nodeName = 'avatar-' + avatarID;
+        vwf_view.kernel.fireEvent(nodeID, "createAvatar")
 
-        var newNode = {
-            "id": nodeName,
-            "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/avatar.vwf"
-        }
+        // let avatarID = self.kernel.moniker();
+        // var nodeName = 'avatar-' + avatarID;
+
+        // var newNode = {
+        //     "id": nodeName,
+        //     "uri": nodeName,
+        //     "extends": "http://vwf.example.com/aframe/avatar.vwf"
+        // }
         
-        vwf_view.kernel.createChild(nodeID, nodeName, newNode);
-        vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
+       
+        // vwf_view.kernel.createChild(nodeID, nodeName, newNode);
+        // vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
     }
 
     

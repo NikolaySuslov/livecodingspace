@@ -13,7 +13,8 @@ methods:
                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                 "properties": {
                     "color": myColor,
-                    "position": [0,0,0.5]
+                    "position": [0,0,0.5],
+                    "height": 2
                 },
               "children": {
                 "avatarNameNode": {
@@ -36,19 +37,21 @@ methods:
               //}
 
               let cursorVis = 
-              {
-                     "extends": "http://vwf.example.com/aframe/abox.vwf",
-                     "properties": {
-                        "color": myColor,
-                        "opacity": 0.3,
-                        "transparent": true,
-                        "depth": 3,
-                        "width": 0.02,
-                        "height": 0.02,
-                        "rotation": [0, 180, 0],
-                        "position": [0, 0, -2]
-                     }
-
+              {            
+                   "id": 'myCursor-' + this.id, 
+                   "extends": "http://vwf.example.com/aframe/aentity.vwf",
+                    "properties": {},
+                    "children": {
+                        "line": {
+                            "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
+                            "type": "component",
+                            "properties": {
+                                "start": "0 0 -1",
+                                "end": "0 0 -3",
+                                "color": myColor
+                            }
+                    }
+                }
               }
 
               let camera = 
@@ -64,7 +67,6 @@ methods:
 
             let interpolation =
              {
-                "id": 'interpolation-' + this.id,
                  "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                  "type": "component",
                  "properties": {
@@ -75,11 +77,17 @@ methods:
                     }
              }
 
-              //this.interpolation = "50ms";
+             
             this.children.create( "interpolation", interpolation );
-              this.children.create( "avatarBody", newNode );
-              this.children.create( "avatarCursor", cursorVis );
-              this.children.create( "avatarCamera", camera );
+            this.children.create( "avatarBody", newNode );
+            this.children.create( "avatarCursor", cursorVis );
+            this.children.create( "avatarCamera", camera );
+             
+            //this.interpolation = "50ms";
+              //vwf_view.kernel.createChild(this.id, "avatarCursor", cursorVis);
+
+              
+              
     getRandomColor:
         body: |
           var letters = '0123456789ABCDEF';

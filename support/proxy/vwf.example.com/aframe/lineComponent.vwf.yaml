@@ -1,0 +1,10 @@
+#https://aframe.io/docs/0.6.0/components/line.html#properties_visible
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  start:
+  end:
+  color:
+  opacity:
+  visible:

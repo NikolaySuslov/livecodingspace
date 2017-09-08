@@ -371,12 +371,13 @@
                 { library: "vwf/model/stage/log", active: true },
 
                 { library: "vwf/model/ohm", active: true },
-
+              
                   { library: "vwf/model/aframe", 
                     linkedLibraries: [ "vwf/model/aframe/aframe-master",
                     "vwf/model/aframe/addon/aframe-interpolation" ], 
                     active: false 
                 },
+                { library: "vwf/model/aframeComponent", active: true },
 
 
                 { library: "vwf/model/kineticjs", 
@@ -422,9 +423,11 @@
 
                 { library: "vwf/view/ohm", active: true },
 
+                
                  { library: "vwf/view/aframe", active: false },
                 { library: "vwf/model/aframe/aframe-master", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
+                { library: "vwf/view/aframeComponent", active: true },
 
                 { library: "vwf/view/kineticjs", active: false },
                 { library: "vwf/view/mil-sym", active: false },
@@ -467,7 +470,9 @@
                     { library: "vwf/model/sound", active: false },
 
                      { library: "vwf/model/ohm", active: true },
+                  
                      { library: "vwf/model/aframe", active: false },
+                     { library: "vwf/model/aframeComponent", active: true },
 
                     { library: "vwf/model/kineticjs", active: false },
                     { library: "vwf/model/mil-sym", active: false },
@@ -494,7 +499,9 @@
                     { library: "vwf/view/touch", active: false },
 
                      { library: "vwf/view/ohm", active: true },
+                     
                       { library: "vwf/view/aframe", active: false },
+                      { library: "vwf/view/aframeComponent", active: true },
 
                     { library: "vwf/view/kineticjs", active: false },
                     { library: "vwf/view/mil-sym", active: false },
@@ -1199,6 +1206,21 @@
             if ( nodeID || nodeID === 0 ) args.push( nodeID );
             if ( memberName ) args.push( memberName );
             if ( parameters ) args = args.concat( parameters ); // flatten
+
+            if(actionName == 'createChild')
+                {
+                    console.log("create child!");
+                    // args.push(function(childID)
+                    // {
+                    //     //when creating over the reflector, call ready on heirarchy after create.
+                    //     //nodes from setState are readied in createNode
+                    //     // vwf.decendants(childID).forEach(function(i){
+                    //     //     vwf.callMethod(i,'ready',[]);
+                    //     // });
+                    //     // vwf.callMethod(childID,'ready',[]);
+                    //     console.log("create child!");
+                    // });
+                }
 
             // Invoke the action.
 

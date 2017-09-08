@@ -156,7 +156,22 @@ define([
                                               controlEl.setAttribute('camera', 'active', true);
                                           }
   
-                                      }
+                                      },
+                                      {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button mdc-button--raised",
+                                        $text: "Hide cursor",
+                                        onclick: function (e) {
+                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                            let cursorID = 'myCursor-avatar-' + self.kernel.moniker();
+                                            let controlEl = document.querySelector("[id='"+cursorID+"']");
+                                            let vis = controlEl.getAttribute('visible');
+                                            this.$text = vis ? 'Show cursor': 'Hide cursor';
+                                            controlEl.setAttribute('visible', !vis);
+                                        }
+
+                                    }
   
                                   ]
                               }
@@ -191,7 +206,7 @@ define([
                                         }
 
                                     }
-
+                                    
                                 ]
                             }
                         ]

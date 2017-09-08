@@ -1,3 +1,4 @@
 --- 
-extends: http://vwf.example.com/node.vwf
+extends: http://vwf.example.com/aframe/componentNode.vwf
+type: "component"
 properties:
