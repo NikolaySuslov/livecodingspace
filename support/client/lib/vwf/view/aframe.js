@@ -144,9 +144,8 @@ define(["module", "vwf/view"], function (module, view) {
                
                 if (!self.state.nodes[avatarName]) {
 
-                this.kernel.createChild(nodeID, avatarName, newNode, undefined, undefined);
-                this.kernel.addChild(nodeID, avatarName, avatarName);
-                this.kernel.callMethod(avatarName, "createAvatarBody");
+                vwf_view.kernel.createChild(nodeID, avatarName, newNode);
+                vwf_view.kernel.callMethod(avatarName, "createAvatarBody");
                 }
 
             }
@@ -181,8 +180,8 @@ define(["module", "vwf/view"], function (module, view) {
 
             if ( postion && rotation) {
                 //[postion.x, postion.y, postion.z] //[rotation.x, rotation.y, rotation.z]
-            vwf_view.kernel.setProperty(avatarName, "position", postion);
-            vwf_view.kernel.setProperty(avatarName, "rotation", rotation);
+            vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(postion));
+            vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
             }
         }
     }

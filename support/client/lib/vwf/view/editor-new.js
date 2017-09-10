@@ -121,7 +121,7 @@ define([
 
 
 
-            ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSettings", "viewSceneProps"].forEach(item => {
+            ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSceneProps"].forEach(item => {
                 let el = document.createElement("div");
                 el.setAttribute("id", item);
                 document.body.appendChild(el);
@@ -214,17 +214,146 @@ define([
                 ]
             }
                 
-         document.querySelector('#' + 'viewSettings').$cell({
-                $cell: true,
-                $type: "div",
-                id: 'viewSettings',
-                //style:'z-index: 10; position: absolute; margin-left: 240px;',
-                class: "settingsDiv mdc-toolbar-fixed-adjust",
-                $init: function(){
-                    this.style.visibility = 'hidden';
-                },
-                $components: [viewSettings]
-            })        
+
+            let  loadSaveSettings = 
+            {
+              $cell: true,
+              $type: "div",
+              _getRoot: function(){
+                var app = window.location.pathname;
+                var pathSplit = app.split('/');
+                if (pathSplit[0] == "") {
+                    pathSplit.shift();
+                }
+                if (pathSplit[pathSplit.length - 1] == "") {
+                    pathSplit.pop();
+                }
+                var instIndex = pathSplit.length - 1;
+                if (pathSplit.length > 2) {
+                    if (pathSplit[pathSplit.length - 2] == "load") {
+                        instIndex = pathSplit.length - 3;
+                    }
+                }
+                if (pathSplit.length > 3) {
+                    if (pathSplit[pathSplit.length - 3] == "load") {
+                        instIndex = pathSplit.length - 4;
+                    }
+                }
+
+                var root = "";
+                for (var i = 0; i < instIndex; i++) {
+                    if (root != "") {
+                        root = root + "/";
+                    }
+                    root = root + pathSplit[i];
+                }
+        
+                if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
+
+                return root
+              },
+
+                  class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                  $components:[
+                      {
+                          $cell: true,
+                          $type: "div",
+                          class: "mdc-layout-grid__inner",
+                          $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        class: "mdc-textfield",
+                                        $cell: true,
+                                        $type: "span",
+                                        $components: [
+                                            {
+                                                class: "mdc-textfield__input",
+                                                id: "fileName",
+                                                $cell: true,
+                                                $type: "input",
+                                                type: "text",
+                                                value: ""
+                                              
+                                                
+                                            }]
+    
+                                    }
+                                    
+                                ]
+                            },
+                           
+                              {
+                                  $cell: true,
+                                  $type: "div",
+                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                  $components: [
+                                      {
+                                          $cell: true,
+                                          $type: "button",
+                                          class: "mdc-button mdc-button--raised",
+                                          $text: "Save",
+                                          onclick: function (e) {
+                                              let fileName = document.querySelector('#fileName')
+                                            saveStateAsFile.call(self, fileName.value);
+                                            document.querySelector("#fileName").value = '';
+                                              //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                          }
+  
+                                      }
+                                      
+                                  ]
+                              },
+                              {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    { 
+                                        $type: "div", 
+                                        $text: "Loading" },
+                                    
+                                ]
+                            },
+                              {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button mdc-button--raised",
+                                        $text: "Load",
+                                        onclick: function (e) {
+                                         
+                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                        }
+
+                                    }
+                                    
+                                ]
+                            }
+                          ]
+                      }
+                  ]
+              }
+    
+
+        //  document.querySelector('#' + 'viewSettings').$cell({
+        //         $cell: true,
+        //         $type: "div",
+        //         id: 'viewSettings',
+        //         //style:'z-index: 10; position: absolute; margin-left: 240px;',
+        //         class: "settingsDiv mdc-toolbar-fixed-adjust",
+        //         $init: function(){
+        //             this.style.visibility = 'hidden';
+        //         },
+        //         $components: [viewSettings]
+        //     })        
             
             
             
@@ -1136,6 +1265,35 @@ define([
                                         },
                                         {
                                             $text: "Settings"
+                                        }]
+    
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+                                            //self.currentNodeID = m.ID;
+    
+                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+
+                                            let sideBar = document.querySelector('#sideBar');
+                                            
+                                            sideBar._sideBarComponent = loadSaveSettings;
+                                            //document.querySelector("#fileNameTitle").$text = '';
+
+                                            drawer.open = !drawer.open
+                                            document.querySelector('#sideBar').style.visibility = 'visible';
+                                        },
+                                        $components: [{
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            'aria-hidden': "true",
+                                            $text: "save"
+                                        },
+                                        {
+                                            $text: "Load/Save"
                                         }]
     
                                     },
@@ -3549,11 +3707,14 @@ define([
     {
         this.logger.info("Saving: " + filename);
 
+        var clients = this.nodes["http://vwf.example.com/clients.vwf"];
+
         if (supportAjaxUploadWithProgress.call(this)) {
             var xhr = new XMLHttpRequest();
 
             // Save State Information
             var state = vwf.getState();
+            state.nodes[0].children = {};
 
             var timestamp = state["queue"].time;
             timestamp = Math.round(timestamp * 1000);
