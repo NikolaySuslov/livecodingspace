@@ -22,7 +22,7 @@
 /// @requires vwf/model
 
 define(["module", "vwf/model", "vwf/utility"], function (module, model, utility) {
-var self;
+    var self;
 
     return model.load(module, {
 
@@ -76,7 +76,19 @@ var self;
                         }
                     }
                     return found;
-                }
+                },
+                setAFrameProperty: function (propertyName, propertyValue, aframeObject) {
+                    
+                            if (propertyValue.hasOwnProperty('x')) {
+                                aframeObject.setAttribute(propertyName, propertyValue)
+                            } else
+                                if (Array.isArray(propertyValue)) {
+                                    aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
+                                } else if (typeof propertyValue === 'string') {
+                                    aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                                }
+                    
+                        }
             };
 
             this.state.kernel = this.kernel.kernel.kernel;
@@ -133,11 +145,11 @@ var self;
                 //     }
                 // } else {
 
-                    node.aframeObj = createAFrameObject(node);
-                    addNodeToHierarchy(node);
+                node.aframeObj = createAFrameObject(node);
+                addNodeToHierarchy(node);
 
-                    //notifyDriverOfPrototypeAndBehaviorProps();
-              //  }
+                //notifyDriverOfPrototypeAndBehaviorProps();
+                //  }
 
                 //addNodeToHierarchy(node);
             }
@@ -149,10 +161,10 @@ var self;
         // initializingNode: function( nodeID, childID, childExtendsID, childImplementsIDs,
         //     childSource, childType, childIndex, childName ) {
         //     var node = this.state.nodes[childID];
-            
+
 
         //     if ( node && childType == "component" ) {
-                
+
         //     }
         // },
 
@@ -175,7 +187,7 @@ var self;
             return this.initializingProperty(nodeID, propertyName, propertyValue);
         },
 
-        
+
 
         // -- deletingNode -------------------------------------------------------------------------
 
@@ -209,9 +221,9 @@ var self;
             var node = this.state.nodes[nodeID];
             var value = undefined;
 
-        //    if (node.componentName == 'line') {
-        //        console.log(node.aframeObj);
-        //    }
+            //    if (node.componentName == 'line') {
+            //        console.log(node.aframeObj);
+            //    }
 
             if (node && node.aframeObj && utility.validObject(propertyValue)) {
 
@@ -229,7 +241,7 @@ var self;
                     }
 
                 }
-                
+
 
                 if (value === undefined && isAEntityDefinition(node.prototypes)) {
 
@@ -242,13 +254,33 @@ var self;
                         //         break;
 
                         case "position":
-                            aframeObject.setAttribute('position', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
+
+                        this.state.setAFrameProperty('position', propertyValue, aframeObject);
+                            // if (propertyValue.hasOwnProperty('x')) {
+                            //     aframeObject.setAttribute('position', propertyValue)
+                            // } else
+                            //     if (Array.isArray(propertyValue)) {
+                            //         aframeObject.setAttribute('position', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
+                            //     } else if (typeof propertyValue === 'string') {
+                            //         aframeObject.setAttribute('position', AFRAME.utils.coordinates.parse(propertyValue))
+                            //     }
+
                             break;
                         case "rotation":
-                            aframeObject.setAttribute('rotation', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
+                        this.state.setAFrameProperty('rotation', propertyValue, aframeObject);
+                            // if (Array.isArray(propertyValue)) {
+                            //     aframeObject.setAttribute('rotation', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
+                            // } else {
+                            //     aframeObject.setAttribute('rotation', AFRAME.utils.coordinates.parse(propertyValue));
+                            // }
                             break;
                         case "scale":
-                            aframeObject.setAttribute('scale', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
+                        this.state.setAFrameProperty('scale', propertyValue, aframeObject);
+                            // if (Array.isArray(propertyValue)) {
+                            //     aframeObject.setAttribute('scale', { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] });
+                            // } else {
+                            //     aframeObject.setAttribute('scale', AFRAME.utils.coordinates.parse(propertyValue));
+                            // }
                             break;
 
                         case "color":
@@ -283,7 +315,7 @@ var self;
                             node.events.clickable = propertyValue;
                             break;
 
-                            case "visible":
+                        case "visible":
                             aframeObject.setAttribute('visible', propertyValue);
                             break;
 
@@ -577,20 +609,20 @@ var self;
                         case "position":
                             var pos = aframeObject.getAttribute('position');
                             if (pos !== undefined) {
-                                value = [pos.x, pos.y, pos.z];
+                                value = AFRAME.utils.coordinates.stringify(pos);
                             }
                             break;
                         case "scale":
                             var scale = aframeObject.getAttribute('scale');
                             if (scale !== undefined) {
-                                value = [scale.x, scale.y, scale.z];
+                                value = AFRAME.utils.coordinates.stringify(scale);
                             }
                             break;
 
                         case "rotation":
                             var rot = aframeObject.getAttribute('rotation');
                             if (rot !== undefined) {
-                                value = [rot.x, rot.y, rot.z];
+                                value = AFRAME.utils.coordinates.stringify(rot);
                             }
                             break;
 
@@ -844,7 +876,7 @@ var self;
             aframeObj = document.createElement('a-animation');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
             aframeObj = document.createElement('a-entity');
-        } 
+        }
         aframeObj.setAttribute('id', node.ID);
         return aframeObj;
     }
@@ -904,7 +936,7 @@ var self;
         return found;
     }
 
-   
+
 
 
 
@@ -979,6 +1011,8 @@ var self;
             throw Error('Bad Url Format');
         }
     }
+
+ 
 
 
 });

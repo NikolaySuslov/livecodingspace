@@ -151,13 +151,13 @@ define(["module", "vwf/view"], function (module, view) {
 
             }
 
-            if (eventName == "setAvatarRotation") {
-                vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
-            }
+            // if (eventName == "setAvatarRotation") {
+            //     vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
+            // }
 
-             if (eventName == "setAvatarPosition") {
-                vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
-            }
+            //  if (eventName == "setAvatarPosition") {
+            //     vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
+            // }
         },
 
         ticked: function (vwfTime) {
@@ -180,8 +180,9 @@ define(["module", "vwf/view"], function (module, view) {
             let rotation = el.getAttribute('rotation');
 
             if ( postion && rotation) {
-            vwf_view.kernel.setProperty(avatarName, "position", [postion.x, postion.y, postion.z]);
-            vwf_view.kernel.setProperty(avatarName, "rotation", [rotation.x, rotation.y, rotation.z]);
+                //[postion.x, postion.y, postion.z] //[rotation.x, rotation.y, rotation.z]
+            vwf_view.kernel.setProperty(avatarName, "position", postion);
+            vwf_view.kernel.setProperty(avatarName, "rotation", rotation);
             }
         }
     }

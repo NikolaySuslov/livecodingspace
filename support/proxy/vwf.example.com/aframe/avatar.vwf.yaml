@@ -13,7 +13,7 @@ methods:
                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                 "properties": {
                     "color": myColor,
-                    "position": [0,0,0.5],
+                    "position": "0 0 0.5",
                     "height": 2
                 },
               "children": {
@@ -23,8 +23,8 @@ methods:
                         "color": myColor,
                         "value": this.id,
                         "side": "double",
-                        "rotation": [0, 180, 0],
-                        "position": [0, 1, 0.5]
+                        "rotation": "0 180 0",
+                        "position": "0 1 0.5"
                     }
                   }
                 } 
