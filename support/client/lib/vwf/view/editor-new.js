@@ -31,14 +31,14 @@ define([
     "jquery-encoder-0.1.0"
 ], function (module, version, view, utility, ace, $) {
 
-
+    var self;
 
     return view.load(module, {
 
         // == Module Definition ====================================================================
 
         initialize: function () {
-            var self = this;
+            self = this;
             this.ace = window.ace;
 
             this.nodes = {};
@@ -82,7 +82,39 @@ define([
 
             // $('body').append('<script>mdc.autoInit()</script>');
 
+            this.getRoot = function () {
+                var app = window.location.pathname;
+                var pathSplit = app.split('/');
+                if (pathSplit[0] == "") {
+                    pathSplit.shift();
+                }
+                if (pathSplit[pathSplit.length - 1] == "") {
+                    pathSplit.pop();
+                }
+                var instIndex = pathSplit.length - 1;
+                if (pathSplit.length > 2) {
+                    if (pathSplit[pathSplit.length - 2] == "load") {
+                        instIndex = pathSplit.length - 3;
+                    }
+                }
+                if (pathSplit.length > 3) {
+                    if (pathSplit[pathSplit.length - 3] == "load") {
+                        instIndex = pathSplit.length - 4;
+                    }
+                }
 
+                var root = "";
+                for (var i = 0; i < instIndex; i++) {
+                    if (root != "") {
+                        root = root + "/";
+                    }
+                    root = root + pathSplit[i];
+                }
+
+                if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
+
+                return root
+            }
 
 
             $('body').append(
@@ -129,234 +161,325 @@ define([
             );
 
 
-            let  avatarSettings = 
-            {
-              $cell: true,
-              $type: "div",
-                  class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
-                  $components:[
-                      {
-                          $cell: true,
-                          $type: "div",
-                          class: "mdc-layout-grid__inner",
-                          $components: [
-                              {
-                                  $cell: true,
-                                  $type: "div",
-                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                  $components: [
-                                      {
-                                          $cell: true,
-                                          $type: "button",
-                                          class: "mdc-button mdc-button--raised",
-                                          $text: "Reset camera view",
-                                          onclick: function (e) {
-                                              //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                              let controlEl = document.querySelector('#avatarControl');
-                                              controlEl.setAttribute('camera', 'active', true);
-                                          }
-  
-                                      },
-                                      {
-                                        $cell: true,
-                                        $type: "button",
-                                        class: "mdc-button mdc-button--raised",
-                                        $text: "Hide cursor",
-                                        onclick: function (e) {
-                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                            let cursorID = 'myCursor-avatar-' + self.kernel.moniker();
-                                            let controlEl = document.querySelector("[id='"+cursorID+"']");
-                                            let vis = controlEl.getAttribute('visible');
-                                            this.$text = vis ? 'Show cursor': 'Hide cursor';
-                                            controlEl.setAttribute('visible', !vis);
+            let avatarSettings =
+                {
+                    $cell: true,
+                    $type: "div",
+                    class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                    $components: [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Reset camera view",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                let controlEl = document.querySelector('#avatarControl');
+                                                controlEl.setAttribute('camera', 'active', true);
+                                            }
+
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Hide cursor",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                let cursorID = 'myCursor-avatar-' + self.kernel.moniker();
+                                                let controlEl = document.querySelector("[id='" + cursorID + "']");
+                                                let vis = controlEl.getAttribute('visible');
+                                                this.$text = vis ? 'Show cursor' : 'Hide cursor';
+                                                controlEl.setAttribute('visible', !vis);
+                                            }
+
                                         }
 
-                                    }
-  
-                                  ]
-                              }
-                          ]
-                      }
-                  ]
-              }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
 
-          let  viewSettings = 
-          {
-            $cell: true,
-            $type: "div",
-                class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
-                $components:[
-                    {
-                        $cell: true,
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
+            let viewSettings =
+                {
+                    $cell: true,
+                    $type: "div",
+                    class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                    $components: [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Settings",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                            }
+
+                                        }
+
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+
+            let savedStateEl = function (item) {
+                return {
+
+                    $type: "li",
+                    class: "mdc-list-item",
+                    role: "option",
+                    $components: [
+                        {
+                            $text: "Saved world"
+                        }
+                    ]
+
+                }
+            }
+
+            let stateListElement = function (item) {
+
+                let applicationName = item.applicationpath.split("/");
+
+                let liEl = {}
+
+                if (applicationName.length > 0) {
+                    applicationName = applicationName[applicationName.length - 1];
+                }
+
+                if (applicationName.length > 0) {
+                    applicationName = applicationName.charAt(0).toUpperCase() + applicationName.slice(1);
+                }
+
+                if (item.latestsave ) {
+                    liEl = {
+                        $type: "li",
+                        class: "mdc-list-item",
+                        role: "option",
+                        id: item.savename,
+                        applicationpath: item.applicationpath,
                         $components: [
                             {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "button",
-                                        class: "mdc-button mdc-button--raised",
-                                        $text: "Settings",
-                                        onclick: function (e) {
-                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                        }
-
-                                    }
-                                    
-                                ]
+                                $text: applicationName + ": " + item.savename
                             }
                         ]
                     }
-                ]
-            }
-                
 
-            let  loadSaveSettings = 
-            {
-              $cell: true,
-              $type: "div",
-              _getRoot: function(){
-                var app = window.location.pathname;
-                var pathSplit = app.split('/');
-                if (pathSplit[0] == "") {
-                    pathSplit.shift();
                 }
-                if (pathSplit[pathSplit.length - 1] == "") {
-                    pathSplit.pop();
-                }
-                var instIndex = pathSplit.length - 1;
-                if (pathSplit.length > 2) {
-                    if (pathSplit[pathSplit.length - 2] == "load") {
-                        instIndex = pathSplit.length - 3;
-                    }
-                }
-                if (pathSplit.length > 3) {
-                    if (pathSplit[pathSplit.length - 3] == "load") {
-                        instIndex = pathSplit.length - 4;
-                    }
-                }
-
-                var root = "";
-                for (var i = 0; i < instIndex; i++) {
-                    if (root != "") {
-                        root = root + "/";
-                    }
-                    root = root + pathSplit[i];
-                }
-        
-                if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
-
-                return root
-              },
-
-                  class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
-                  $components:[
-                      {
-                          $cell: true,
-                          $type: "div",
-                          class: "mdc-layout-grid__inner",
-                          $components: [
+                else {
+                    liEl = {
+                        $type: "li",
+                        class: "mdc-list-item",
+                        role: "option",
+                        id: item.savename,
+                        revision: item.revision,
+                        applicationpath: item.applicationpath,
+                        $components: [
                             {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        class: "mdc-textfield",
-                                        $cell: true,
-                                        $type: "span",
-                                        $components: [
-                                            {
-                                                class: "mdc-textfield__input",
-                                                id: "fileName",
-                                                $cell: true,
-                                                $type: "input",
-                                                type: "text",
-                                                value: ""
-                                              
-                                                
-                                            }]
-    
-                                    }
-                                    
-                                ]
-                            },
-                           
-                              {
-                                  $cell: true,
-                                  $type: "div",
-                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                  $components: [
-                                      {
-                                          $cell: true,
-                                          $type: "button",
-                                          class: "mdc-button mdc-button--raised",
-                                          $text: "Save",
-                                          onclick: function (e) {
-                                              let fileName = document.querySelector('#fileName')
-                                            saveStateAsFile.call(self, fileName.value);
-                                            document.querySelector("#fileName").value = '';
-                                              //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                          }
-  
-                                      }
-                                      
-                                  ]
-                              },
-                              {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    { 
-                                        $type: "div", 
-                                        $text: "Loading" },
-                                    
-                                ]
-                            },
-                              {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "button",
-                                        class: "mdc-button mdc-button--raised",
-                                        $text: "Load",
-                                        onclick: function (e) {
-                                         
-                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                        }
-
-                                    }
-                                    
-                                ]
+                                $text: applicationName + ": " + item.savename + " Rev(" + item.revision + ")"
                             }
-                          ]
-                      }
-                  ]
-              }
-    
+                        ]
+                    }
 
-        //  document.querySelector('#' + 'viewSettings').$cell({
-        //         $cell: true,
-        //         $type: "div",
-        //         id: 'viewSettings',
-        //         //style:'z-index: 10; position: absolute; margin-left: 240px;',
-        //         class: "settingsDiv mdc-toolbar-fixed-adjust",
-        //         $init: function(){
-        //             this.style.visibility = 'hidden';
-        //         },
-        //         $components: [viewSettings]
-        //     })        
-            
-            
-            
+                
+            }
+                return liEl
+
+            }
+
+
+            let loadSaveSettings =
+                {
+                    $cell: true,
+                    $type: "div",
+                    id: "loadSaveSettings",
+                    class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                    _saveStates: [],
+                    _getStates: async function () {
+                        let response = await fetch("/" + self.getRoot() + "/listallsaves");
+                        let data = await response.json();
+                        this._saveStates = data;
+                        //let appName = self.getRoot();
+                        //console.log(data.filter(item => item.applicationpath.split("/")[1] == appName));
+                        return data
+                        //console.log(data);
+                    },
+                    $init: function () {
+                        this._getStates();
+
+                    },
+                    $update: function () {
+                        this.$components =
+                            [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__inner",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                            $components: [
+                                                {
+                                                    class: "mdc-textfield",
+                                                    $cell: true,
+                                                    $type: "span",
+                                                    $components: [
+                                                        {
+                                                            class: "mdc-textfield__input",
+                                                            id: "fileName",
+                                                            $cell: true,
+                                                            $type: "input",
+                                                            type: "text",
+                                                            value: self.getRoot()
+
+
+                                                        }]
+
+                                                }
+
+                                            ]
+                                        },
+
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                            $components: [
+                                                {
+                                                    $cell: true,
+                                                    $type: "button",
+                                                    class: "mdc-button mdc-button--raised",
+                                                    $text: "Save",
+                                                    onclick: function (e) {
+                                                        let fileName = document.querySelector('#fileName')
+                                                        saveStateAsFile.call(self, fileName.value);
+                                                        document.querySelector("#fileName").value = '';
+                                                        //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                    }
+
+                                                }
+
+                                            ]
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                            $components: [
+                                                {
+                                                    $cell: true,
+                                                    $type: "div",
+                                                    class: "mdc-select",
+                                                    $init: function () {
+                                                        var MDCSelect = mdc.select.MDCSelect;
+                                                        const select = new MDCSelect(document.querySelector('.mdc-select'));
+                                                        select.listen('MDCSelect:change', () => {
+                                                            //this._selectedState = select.value;
+                                                            document.querySelector('#loadStateButton')._selectedState = select.selectedOptions[0];
+                                                            //console.log(select.value);
+                                                            //.selectedOptions[0]
+                                                        });
+
+                                                    },
+                                                    role: "listbox",
+                                                    $components: [
+                                                        {
+                                                            $type: "span",
+                                                            class: "mdc-select__selected-text",
+                                                            $text: "Select saved state"
+                                                        },
+                                                        {
+                                                            $type: "div",
+                                                            class: "mdc-simple-menu mdc-select__menu",
+                                                            $components: [
+                                                                {
+                                                                    $type: "ul",
+                                                                    class: "mdc-list mdc-simple-menu__items",
+                                                    $components: this._saveStates.filter(item => item.applicationpath.split("/")[1] == self.getRoot()).map(stateListElement)
+
+
+
+                                                                }
+                                                            ]
+                                                        }
+
+                                                    ]
+                                                }
+
+                                            ]
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                            $components: [
+                                                {
+                                                    $cell: true,
+                                                    $type: "button",
+                                                    _selectedState: {},
+                                                    id: "loadStateButton",
+                                                    class: "mdc-button mdc-button--raised",
+                                                    $text: "Load",
+                                                    onclick: function (e) {
+
+                                                        loadSavedState.call(self, this._selectedState.getAttribute('id'), this._selectedState.getAttribute('applicationpath'), this._selectedState.getAttribute('revision'));
+                                                        //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                    }
+
+                                                }
+
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+
+                    }
+
+
+                }
+
+
+            //  document.querySelector('#' + 'viewSettings').$cell({
+            //         $cell: true,
+            //         $type: "div",
+            //         id: 'viewSettings',
+            //         //style:'z-index: 10; position: absolute; margin-left: 240px;',
+            //         class: "settingsDiv mdc-toolbar-fixed-adjust",
+            //         $init: function(){
+            //             this.style.visibility = 'hidden';
+            //         },
+            //         $components: [viewSettings]
+            //     })        
+
+
+
 
 
             // document.querySelector('#' + 'viewSettings').$cell({
@@ -495,9 +618,9 @@ define([
             let nodeLink = function (m) {
 
                 var myClass = "nodeItem";
-               let myAvatarName = 'avatar-'+self.kernel.moniker();
-              (myAvatarName == m.name) ? (myClass = "avatarName mdc-typography--subheading2") : 
-              myClass = "nodeItem"
+                let myAvatarName = 'avatar-' + self.kernel.moniker();
+                (myAvatarName == m.name) ? (myClass = "avatarName mdc-typography--subheading2") :
+                    myClass = "nodeItem"
 
                 return {
                     $type: "li",
@@ -506,13 +629,13 @@ define([
                         $type: "a",
                         class: "mdc-list-item",
                         $href: "#",
-                        $components:[{
+                        $components: [{
                             $type: 'span',
                             class: myClass,
                             $text: m.name
                         }
                         ],
-                       
+
 
                         onclick: function (e) {
                             //self.currentNodeID = m.ID;
@@ -531,7 +654,7 @@ define([
                 class: "mdc-list-divider",
             }
 
-            
+
 
             let nodesCell = {
 
@@ -553,13 +676,13 @@ define([
                 },
                 _getChildNodes: function () {
                     this._childNodes = self.nodes[this._currentNode];
-                   if (this._childNodes !== undefined) {
-                    return this._childNodes.children
-                   } else {
-                       return []
+                    if (this._childNodes !== undefined) {
+                        return this._childNodes.children
+                    } else {
+                        return []
                     }
                     //let nodeIDAlpha = he.encode(this._currentNode);
-                    
+
                 },
                 _getNodeProperties: function () {
                     let node = self.nodes[this._currentNode];
@@ -1055,15 +1178,15 @@ define([
                 _listElement: function (m) {
                     return {
 
-                            $type: "a",
-                            class: "mdc-list-item",
-                            $href: "#",
-                            $text: m.name,
+                        $type: "a",
+                        class: "mdc-list-item",
+                        $href: "#",
+                        $text: m.name,
 
-                            onclick: function (e) {
-                                //self.currentNodeID = m.ID;
-                                //document.querySelector('#currentNode')._setNode(m.ID);
-                            }
+                        onclick: function (e) {
+                            //self.currentNodeID = m.ID;
+                            //document.querySelector('#currentNode')._setNode(m.ID);
+                        }
                     }
                 },
                 $init: function () {
@@ -1086,45 +1209,45 @@ define([
             createCellWindow("codeEditorWindow", codeEditorWindow, "Code editor");
 
 
-           
+
 
             let viewSceneProps = {
                 $cell: true,
                 $type: "div",
-                    class: "propGrid mdc-layout-grid mdc-layout-grid--align-left",
-                    //style: "overflow-y: scroll; max-height: 500px; overflow-x: hidden;",
-                    $components:[
-                        {
-                            $type: "div",
-                            class: "mdc-layout-grid__inner",
-                            $components: [
-                                {
-                                    $cell: true,
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-    
-                                        nodesCell
-    
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
+                class: "propGrid mdc-layout-grid mdc-layout-grid--align-left",
+                //style: "overflow-y: scroll; max-height: 500px; overflow-x: hidden;",
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+
+                                    nodesCell
+
+                                ]
+                            }
+                        ]
+                    }
+                ]
             }
 
 
-            let sideBar =  {
+            let sideBar = {
                 $cell: true,
                 $type: "div",
                 id: 'sideBar',
                 class: "sideBar mdc-toolbar-fixed-adjust",
                 _sideBarComponent: {},
                 _sideCurrentNode: '',
-                $init: function(){
+                $init: function () {
                     this.style.visibility = 'hidden';
                 },
-                $update: function(){
+                $update: function () {
                     this.$components = [
                         {
                             $cell: true,
@@ -1135,14 +1258,14 @@ define([
                                 document.querySelector('#sideBar').style.visibility = 'hidden';
                             }
 
-                        }, 
+                        },
                         this._sideBarComponent
                     ]
                 }
                 //$components: [this._sideComponents]
             }
 
-            document.querySelector('#' + 'sideBar').$cell(sideBar)          
+            document.querySelector('#' + 'sideBar').$cell(sideBar)
 
 
             let drawerCell = {
@@ -1189,15 +1312,15 @@ define([
                                             currentNode == '' ? document.querySelector('#sideBar')._sideCurrentNode = (vwf_view.kernel.find("", "/")[0]) :
                                                 document.querySelector('#sideBar')._sideCurrentNode = currentNode;
 
-                                               document.querySelector('#sideBar').style.visibility = 'visible';
-                                               drawer.open = !drawer.open
+                                            document.querySelector('#sideBar').style.visibility = 'visible';
+                                            drawer.open = !drawer.open
                                             // let currentNode = document.querySelector('#currentNode')._currentNode;
                                             // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
                                             //     document.querySelector('#currentNode')._setNode(currentNode);
-                                              
-                                             
 
-                                            
+
+
+
                                         },
                                         $components: [{
                                             $cell: true,
@@ -1209,9 +1332,9 @@ define([
                                             $text: "Scene"
                                         }
                                         ]
-    
+
                                     },
-    
+
                                     {
                                         $cell: true,
                                         $type: "a",
@@ -1219,14 +1342,14 @@ define([
                                         $href: "#",
                                         onclick: function (e) {
                                             //self.currentNodeID = m.ID;
-    
-                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                           // document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                           let sideBar = document.querySelector('#sideBar');
-                                           sideBar._sideBarComponent = avatarSettings;
 
-                                           drawer.open = !drawer.open
-                                           document.querySelector('#sideBar').style.visibility = 'visible';
+                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                            // document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                            let sideBar = document.querySelector('#sideBar');
+                                            sideBar._sideBarComponent = avatarSettings;
+
+                                            drawer.open = !drawer.open
+                                            document.querySelector('#sideBar').style.visibility = 'visible';
                                         },
                                         $components: [{
                                             $type: "i",
@@ -1237,10 +1360,10 @@ define([
                                         {
                                             $text: "My Avatar"
                                         }]
-    
+
                                     },
-                                    
-                                    
+
+
                                     {
                                         $cell: true,
                                         $type: "a",
@@ -1248,7 +1371,7 @@ define([
                                         $href: "#",
                                         onclick: function (e) {
                                             //self.currentNodeID = m.ID;
-    
+
                                             // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
 
                                             let sideBar = document.querySelector('#sideBar');
@@ -1266,7 +1389,7 @@ define([
                                         {
                                             $text: "Settings"
                                         }]
-    
+
                                     },
                                     {
                                         $cell: true,
@@ -1275,13 +1398,17 @@ define([
                                         $href: "#",
                                         onclick: function (e) {
                                             //self.currentNodeID = m.ID;
-    
+
                                             // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
 
                                             let sideBar = document.querySelector('#sideBar');
-                                            
+
                                             sideBar._sideBarComponent = loadSaveSettings;
-                                            //document.querySelector("#fileNameTitle").$text = '';
+
+                                            if (document.querySelector('#loadSaveSettings')) {
+                                                document.querySelector('#loadSaveSettings')._getStates();
+                                            }
+                                            //sideBar._sideBarComponent._getStates();
 
                                             drawer.open = !drawer.open
                                             document.querySelector('#sideBar').style.visibility = 'visible';
@@ -1295,7 +1422,7 @@ define([
                                         {
                                             $text: "Load/Save"
                                         }]
-    
+
                                     },
                                     {
                                         $cell: true,
@@ -1320,7 +1447,7 @@ define([
                                         {
                                             $text: "Code editor"
                                         }]
-    
+
                                     }
 
                                 ]
@@ -1357,7 +1484,7 @@ define([
                     //         $type: "nav",
                     //         class: "mdc-list",
                     //         $components: [
-                                
+
 
                     //         ]
                     //     }]
@@ -1624,7 +1751,7 @@ define([
                 }
             }
 
-            
+
         },
 
         //addedChild: [ /* nodeID, childID, childName */ ],
