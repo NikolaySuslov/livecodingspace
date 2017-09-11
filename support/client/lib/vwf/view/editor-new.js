@@ -263,9 +263,25 @@ define([
 
             let stateListElement = function (item) {
 
+                let liEl = {
+                    $type: "li",
+                    class: "mdc-list-item",
+                    role: "option",
+                    id: "",
+                    applicationpath: "",
+                    $components: [
+                        {
+                            $text: "no saves"
+                        }
+                    ]
+                }
+
                 let applicationName = item.applicationpath.split("/");
 
-                let liEl = {}
+
+                if (applicationName == "") {
+                    return liEl
+                }
 
                 if (applicationName.length > 0) {
                     applicationName = applicationName[applicationName.length - 1];
@@ -275,7 +291,7 @@ define([
                     applicationName = applicationName.charAt(0).toUpperCase() + applicationName.slice(1);
                 }
 
-                if (item.latestsave ) {
+                if (item.latestsave) {
                     liEl = {
                         $type: "li",
                         class: "mdc-list-item",
@@ -305,8 +321,8 @@ define([
                         ]
                     }
 
-                
-            }
+
+                }
                 return liEl
 
             }
@@ -322,11 +338,26 @@ define([
                     _getStates: async function () {
                         let response = await fetch("/" + self.getRoot() + "/listallsaves");
                         let data = await response.json();
-                        this._saveStates = data;
+                        //this._saveStates = data;
                         //let appName = self.getRoot();
                         //console.log(data.filter(item => item.applicationpath.split("/")[1] == appName));
-                        return data
+                        let filterData = data.filter(item => item.applicationpath.split("/")[1] == self.getRoot());
+                        if (filterData.length !== 0) {
+                            this._saveStates = filterData
+                            //return filterData
+                        } else {
+                            this._saveStates = [{
+                                savename: "",
+                                latestsave: "",
+                                revision: "",
+                                applicationpath: "",
+                                url: ""
+                            }]
+                        }
+                        // this._saveStates.filter(item => item.applicationpath.split("/")[1] == self.getRoot()).map(stateListElement)
+                        //return data
                         //console.log(data);
+                        return this._saveStates
                     },
                     $init: function () {
                         this._getStates();
@@ -421,7 +452,7 @@ define([
                                                                 {
                                                                     $type: "ul",
                                                                     class: "mdc-list mdc-simple-menu__items",
-                                                    $components: this._saveStates.filter(item => item.applicationpath.split("/")[1] == self.getRoot()).map(stateListElement)
+                                                                    $components: this._saveStates.map(stateListElement)
 
 
 
