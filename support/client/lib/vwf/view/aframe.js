@@ -195,6 +195,7 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('id', 'avatarControl');
         controlEl.setAttribute('wasd-controls', {});
         controlEl.setAttribute('look-controls', {});
+        controlEl.setAttribute('gamepad-controls', {});
         controlEl.setAttribute('camera', 'active', true);
         aScene.appendChild(controlEl);
 

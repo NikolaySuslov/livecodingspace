@@ -465,6 +465,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "src":
+                            aframeObject.setAttribute('src', propertyValue);
+                            break;
+
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-COLLADA-MODEL") {
                     value = propertyValue;
 
@@ -832,6 +848,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
+                    
+                                        switch (propertyName) {
+                                            case "src":
+                                                value = aframeObject.getAttribute('src');
+                                                break;
+                                        }
+                                    }
+
+
+
             }
 
             if (value !== undefined) {
@@ -870,6 +897,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-text');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acolladamodel.vwf")) {
             aframeObj = document.createElement('a-collada-model');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
+            aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
             aframeObj = document.createElement('a-sphere');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aanimation.vwf")) {

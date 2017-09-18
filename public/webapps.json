@@ -25,5 +25,11 @@
         "title":"GearVR controller",
         "imgUrl": "",
         "text": "Example app with GearVR"
+    },
+
+    "vr":{
+        "title":"Live monument",
+        "imgUrl": "",
+        "text": "App"
     }
 }

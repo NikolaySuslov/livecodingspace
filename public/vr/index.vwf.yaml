@@ -1,0 +1,36 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  assets: "assets.json"
+children:
+  skySun:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    children:
+      sun:
+        extends: http://vwf.example.com/aframe/app-sun-component.vwf
+  newSky:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    children:
+      skyshader:
+        extends: http://vwf.example.com/aframe/app-skyshader-component.vwf
+  lightAmbient:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      color: "#CCC"
+  myLight:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "hemisphere"
+      position: "0 20 0"
+  model:
+    extends: http://vwf.example.com/aframe/agltfmodel.vwf
+    properties:
+      src: "#mon"
+      position: "20 6.1 -15"
+      rotation: "0 90 0"
+    children:
+      envmap:
+        extends: http://vwf.example.com/aframe/app-envmap-component.vwf

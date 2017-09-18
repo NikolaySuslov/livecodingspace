@@ -326,6 +326,18 @@
                      "vwf/model/aframe/addon/aframe-interpolation": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
+                    "vwf/model/aframe/addon/aframe-gamepad-controls.min": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
+                    "vwf/model/aframe/addon/SkyShader": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
+                    "vwf/model/aframe/addon/monument-app": {
+                        deps: [ "vwf/model/aframe/addon/SkyShader" ]
+                    },
+                    "vwf/model/aframe/addon/monument-app": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
                 }
             };
 
@@ -372,11 +384,25 @@
 
                 { library: "vwf/model/ohm", active: true },
               
+               
+
+                { library: "vwf/model/aframe/addon/monument-app", 
+                linkedLibraries: [ "vwf/model/aframe/addon/SkyShader" ], 
+                active: false 
+            },
+
                   { library: "vwf/model/aframe", 
                     linkedLibraries: [ "vwf/model/aframe/aframe-master",
-                    "vwf/model/aframe/addon/aframe-interpolation" ], 
+                    "vwf/model/aframe/addon/aframe-interpolation",
+                    "vwf/model/aframe/addon/SkyShader",
+                    "vwf/model/aframe/addon/monument-app",
+                    "vwf/model/aframe/addon/aframe-gamepad-controls.min"
+                 ], 
                     active: false 
                 },
+
+                
+
                 { library: "vwf/model/aframeComponent", active: true },
 
 
@@ -427,6 +453,12 @@
                  { library: "vwf/view/aframe", active: false },
                 { library: "vwf/model/aframe/aframe-master", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
+                { library: "vwf/model/aframe/addon/SkyShader", active: false },
+                { library: "vwf/model/aframe/addon/monument-app", active: false },
+                { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
+                
+              
+
                 { library: "vwf/view/aframeComponent", active: true },
 
                 { library: "vwf/view/kineticjs", active: false },
