@@ -19,5 +19,11 @@
         "title":"L-System parser example in Ohm and VWF",
         "imgUrl": "./ohmlang-lsys/webimg.jpg",
         "text": "Example app with L-System grammar"
+    },
+
+    "gearvr":{
+        "title":"GearVR controller",
+        "imgUrl": "",
+        "text": "Example app with GearVR"
     }
 }

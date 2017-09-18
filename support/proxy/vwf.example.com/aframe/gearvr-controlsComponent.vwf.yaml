@@ -1,0 +1,12 @@
+#https://aframe.io/docs/master/components/gearvr-controls.html
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  armModel:
+  buttonColor:
+  buttonTouchedColor:
+  buttonHighlightColor:
+  hand:
+  model:
+  rotationOffset:

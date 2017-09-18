@@ -305,6 +305,60 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+                    
+                                        value = propertyValue;
+                    
+                                        //let parentNodeAF = self.state.kernel.find(node.parentID);
+                    
+                                        // aframeObject.el.setAttribute('line', 'color')
+                                        let parentNodeAF = aframeObject.el;
+                    
+                                        switch (propertyName) {
+                    
+                                            case "armModel":
+                    
+                                                parentNodeAF.setAttribute(aframeObject.compName, { armModel: propertyValue });
+                                                break;
+                    
+                                            case "buttonColor":
+                    
+                                                parentNodeAF.setAttribute(aframeObject.compName, { buttonColor: propertyValue });
+                                                break;
+                    
+                                            case "buttonTouchedColor":
+                    
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'buttonTouchedColor', propertyValue);
+                                                break;
+                    
+                                            case "buttonHighlightColor":
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'buttonHighlightColor', propertyValue);
+                                                break;
+                    
+                                            case "hand":
+                    
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'hand', propertyValue);
+                                                break;
+                    
+                                            case "model":
+
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'model', propertyValue);
+                                                break;
+
+                                            case "rotationOffset":
+
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'rotationOffset', propertyValue);
+                                                break;
+
+                                            default:
+                                                value = undefined;
+                                                break;
+                                        }
+                    
+                                    }
+
+
+
 
             }
 
@@ -402,6 +456,47 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
+                if (value === undefined && isGearVRControlsDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "armModel":
+
+                            value = AFRAME.utils.coordinates.stringify(parentNodeAF.getAttribute(aframeObject.compName).armModel);
+                            break;
+
+                        case "buttonColor":
+                            value = AFRAME.utils.coordinates.stringify(parentNodeAF.getAttribute(aframeObject.compName).buttonColor);
+                            break;
+
+                        case "buttonTouchedColor":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).buttonTouchedColor;
+                            break;
+
+                        case "buttonHighlightColor":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).buttonHighlightColor;
+                            break;
+
+                        case "hand":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).hand;
+                            break;
+
+                            case "model":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).model;
+                            break;
+                    
+                            case "rotationOffset":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).rotationOffset;
+                            break;
+
+                    }
+                }
+
+
 
             }
 
@@ -446,6 +541,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
                 found = (prototypes[i] == "http://vwf.example.com/aframe/lineComponent.vwf");
+            }
+        }
+        return found;
+    }
+
+    function isGearVRControlsDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf");
             }
         }
         return found;
@@ -504,6 +609,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf")) {
+            
+ 
+                // aframeObj.el.setAttribute(node.type, {});
+             aframeObj.compName = "gearvr-controls";
+             aframeObj.el.setAttribute(aframeObj.compName, {});
+ 
+         }
 
 
         return aframeObj;
