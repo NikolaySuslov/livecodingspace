@@ -25,6 +25,14 @@ children:
     properties:
       type: "hemisphere"
       position: "0 20 0"
+  bvhtest:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    properties:
+      position: "0 0 -20"
+      scale: "0.3 0.3 0.3"
+    children:
+      avatarbvh:
+        extends: http://vwf.example.com/aframe/app-avatarbvh-component.vwf
   model:
     extends: http://vwf.example.com/aframe/agltfmodel.vwf
     properties:

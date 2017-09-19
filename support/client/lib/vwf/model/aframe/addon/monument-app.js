@@ -167,3 +167,61 @@ AFRAME.registerComponent('skyshader', {
         }
     })
     
+
+    AFRAME.registerComponent('avatarbvh', {
+        
+            /**
+             * Creates a new THREE.ShaderMaterial using the two shaders defined
+             * in vertex.glsl and fragment.glsl.
+             */
+            init: function () {
+                let skeletonHelper;
+                let self = this;
+                this.clock = new THREE.Clock();
+
+
+
+               let loader = new THREE.BVHLoader();
+                loader.load( "./assets/walk.bvh", function( result ) {
+    
+                    skeletonHelper = new THREE.SkeletonHelper( result.skeleton.bones[ 0 ] );
+                    skeletonHelper.skeleton = result.skeleton; // allow animation mixer to bind to SkeletonHelper directly
+    
+                    //var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors, depthTest: false, depthWrite: false, transparent: true } );
+
+                    skeletonHelper.material.depthTest = true;
+                    skeletonHelper.material.lineWidth = 10.0;
+                    skeletonHelper.material.depthWrite = true;
+                    skeletonHelper.material.transparent = false;
+                    skeletonHelper.material.flatShading = true;
+
+                    var boneContainer = new THREE.Group();
+                    boneContainer.add( result.skeleton.bones[ 0 ] );
+    
+                    self.el.setObject3D('skeletonHelper', skeletonHelper);
+                    self.el.setObject3D('mesh', boneContainer);
+                    //scene.add( skeletonHelper );
+                   // scene.add( boneContainer );
+    
+                    // play animation
+                    self.mixer = new THREE.AnimationMixer( skeletonHelper );
+                    self.mixer.clipAction( result.clip ).setEffectiveWeight( 1.0 ).play();
+    
+                } );
+
+            },
+            /**
+             * Update the ShaderMaterial when component data changes.
+             */
+            update: function () {
+        
+            },
+        
+          
+       
+            tick: function (t) {
+                                var delta = this.clock.getDelta();
+                
+                                if ( this.mixer ) this.mixer.update( delta );
+            }
+        })

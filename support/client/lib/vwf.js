@@ -332,12 +332,15 @@
                     "vwf/model/aframe/addon/SkyShader": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
-                    "vwf/model/aframe/addon/monument-app": {
-                        deps: [ "vwf/model/aframe/addon/SkyShader" ]
-                    },
-                    "vwf/model/aframe/addon/monument-app": {
+                    "vwf/model/aframe/addon/BVHLoader": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
+                    
+                    "vwf/model/aframe/addon/monument-app": {
+                        deps: [ "vwf/model/aframe/aframe-master", "vwf/model/aframe/addon/SkyShader",
+                        "vwf/model/aframe/addon/BVHLoader"]
+                    }
+                    
                 }
             };
 
@@ -396,7 +399,8 @@
                     "vwf/model/aframe/addon/aframe-interpolation",
                     "vwf/model/aframe/addon/SkyShader",
                     "vwf/model/aframe/addon/monument-app",
-                    "vwf/model/aframe/addon/aframe-gamepad-controls.min"
+                    "vwf/model/aframe/addon/aframe-gamepad-controls.min",
+                    "vwf/model/aframe/addon/BVHLoader"
                  ], 
                     active: false 
                 },
@@ -456,6 +460,7 @@
                 { library: "vwf/model/aframe/addon/SkyShader", active: false },
                 { library: "vwf/model/aframe/addon/monument-app", active: false },
                 { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
+                { library: "vwf/model/aframe/addon/BVHLoader", active: false },
                 
               
 
