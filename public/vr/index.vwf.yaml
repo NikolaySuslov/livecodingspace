@@ -23,22 +23,17 @@ children:
   myLight:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:
-      type: "hemisphere"
+      type: "directional"
       position: "0 20 0"
-  bvhtest:
-    extends: http://vwf.example.com/aframe/aentity.vwf
-    properties:
-      position: "0 0 -20"
-      scale: "0.3 0.3 0.3"
-    children:
-      avatarbvh:
-        extends: http://vwf.example.com/aframe/app-avatarbvh-component.vwf
   model:
     extends: http://vwf.example.com/aframe/agltfmodel.vwf
     properties:
-      src: "#mon"
-      position: "20 6.1 -15"
-      rotation: "0 90 0"
+      src: "#av"
+      position: "0 0 -4"
     children:
-      envmap:
-        extends: http://vwf.example.com/aframe/app-envmap-component.vwf
+      animation-mixer:
+        extends: http://vwf.example.com/aframe/anim-mixer-component.vwf
+        properties:
+          clip: "*"
+          duration: 3
+          crossFadeDuration: 0.5

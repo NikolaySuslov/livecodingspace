@@ -279,6 +279,45 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                     switch (propertyName) {
 
+                        case "clip":
+                        parentNodeAF.setAttribute(aframeObject.compName, 'clip', propertyValue);
+                            break;
+
+                        case "duration":
+                        parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
+                            break;
+
+                        case "crossFadeDuration":
+                        parentNodeAF.setAttribute(aframeObject.compName, 'crossFadeDuration', propertyValue);
+                            break;
+
+                        case "loop":
+                        parentNodeAF.setAttribute(aframeObject.compName, 'loop', propertyValue);
+                            break;
+
+                            case "repetitions":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'repetitions', propertyValue);
+                                break;
+
+                        default:
+                            value = undefined;
+                            break;
+
+
+                    }
+
+                }
+
+
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+                    
+                                        value = propertyValue;
+                    
+
+                                        let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
                         case "enabled":
                         parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
                             break;
@@ -426,6 +465,38 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
+                if (value === undefined && isAAnimMixerDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "clip":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).clip;
+                            break;
+
+                        case "duration":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).duration;
+                            break;
+
+                        case "crossFadeDuration":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).crossFadeDuration;
+                            break;
+
+                        case "loop":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).loop;
+                            break;
+
+                            case "repetitions":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).repetitions;
+                            break;
+
+                    }
+
+                }
+
 
                 if (value === undefined && isAInterpolationDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -525,6 +596,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
 
+    function isAAnimMixerDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/anim-mixer-component.vwf");
+            }
+        }
+        return found;
+    }
 
     function isAInterpolationDefinition(prototypes) {
         var found = false;
@@ -609,6 +689,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/anim-mixer-component.vwf")) {
+            
+ 
+                // aframeObj.el.setAttribute(node.type, {});
+             aframeObj.compName = "animation-mixer";
+             aframeObj.el.setAttribute(aframeObj.compName, {});
+ 
+         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-envmap-component.vwf")) {
             

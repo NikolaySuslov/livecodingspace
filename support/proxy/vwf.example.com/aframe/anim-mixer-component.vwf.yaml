@@ -1,0 +1,10 @@
+# Animation-Mixer
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  clip:
+  duration:
+  crossFadeDuration:
+  loop:
+  repetitions:

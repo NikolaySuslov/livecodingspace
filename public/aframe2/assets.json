@@ -14,5 +14,13 @@
      "bg2":{
         "tag": "img",
         "src": "/../assets/checker.jpg"
+    },
+    "maleAvatar":{
+        "tag": "a-asset-item",
+        "src": "/../assets/avatars/male/avatar1.gltf"
+    },
+    "femaleAvatar":{
+        "tag": "a-asset-item",
+        "src": "/../assets/avatars/female/avatar1.gltf"
     }
 }

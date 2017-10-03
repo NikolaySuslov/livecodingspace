@@ -1,17 +1,32 @@
-.exp-card-wide.mdl-card {
-  width: 512px;
-}
-.exp-card-wide > .mdl-card__title {
-  color: #FFF;
-  height: 176px;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('images/default.jpg') center / cover;
-}
-.exp-card-wide > .mdl-card__menu {
-  color: #fff;
-}
-
 .numClients {
-
     font-weight: bold;
+}
+
+.world-card__16-9-media {
+background-repeat: no-repeat;
+height: 176px;
+background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('images/default.jpg') center / cover;
 
 }
+
+.world-card {
+  background-color: white;
+}
+
+.world-link a:link {
+  color: #446BA1;
+}
+
+.world-link a:hover { 
+  background: #E7E7E7;
+}
+
+.world-link a:active {
+  color: #446BA1;
+  background: #E7E7E7;
+}
+.world-link a:visited {
+  color: #446BA1;
+  background: #E7E7E7;
+}
+

@@ -5,93 +5,20 @@ extends: http://vwf.example.com/aframe/aentity.vwf
 type: "avatar"
 properties:
 methods:
+    showHideCursor:
+        parameters:
+            - bool
+    createSimpleAvatar:
+    createAvatarFromGLTF:
+        parameters:
+            - modelSrc
     createAvatarBody:
-        body: |
-            let myColor = this.getRandomColor();
-            var newNode = 
-            {
-                "extends": "http://vwf.example.com/aframe/abox.vwf",
-                "properties": {
-                    "color": myColor,
-                    "position": "0 0 0.5",
-                    "height": 2
-                },
-              "children": {
-                "avatarNameNode": {
-                    "extends": "http://vwf.example.com/aframe/atext.vwf",
-                    "properties": {
-                        "color": myColor,
-                        "value": this.id,
-                        "side": "double",
-                        "rotation": "0 180 0",
-                        "position": "0 1 0.5"
-                    }
-                  }
-                } 
-              }
-
-              //let cursor = 
-              //{
-              //       "id": 'cursor-' + this.id,
-              //       "extends": "http://vwf.example.com/aframe/acursor.vwf",
-              //}
-
-              let cursorVis = 
-              {            
-                   "id": 'myCursor-' + this.id, 
-                   "extends": "http://vwf.example.com/aframe/aentity.vwf",
-                    "properties": {},
-                    "children": {
-                        "line": {
-                            "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
-                            "type": "component",
-                            "properties": {
-                                "start": "0 0 -1",
-                                "end": "0 0 -3",
-                                "color": myColor
-                            }
-                    }
-                }
-              }
-
-              let camera = 
-              {
-                   "id": 'camera-' + this.id,
-                    "extends": "http://vwf.example.com/aframe/acamera.vwf",
-                    "properties": {
-                        "look-controls-enabled": false,
-                        "wasd-controls": false,
-                        "userHeight": 0,
-                    }
-              }
-
-            let interpolation =
-             {
-                 "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                 "type": "component",
-                 "properties": {
-                        "enabled": true,
-                        "duration": 50,
-                        "deltaPos": 0,
-                        "deltaRot": 0
-                    }
-             }
-
-             
-            this.children.create( "interpolation", interpolation );
-            this.children.create( "avatarBody", newNode );
-            this.children.create( "avatarCursor", cursorVis );
-            this.children.create( "avatarCamera", camera );
-             
-            //this.interpolation = "50ms";
-              //vwf_view.kernel.createChild(this.id, "avatarCursor", cursorVis);
-
-              
-              
+        parameters:
+            - modelSrc
     getRandomColor:
-        body: |
-          var letters = '0123456789ABCDEF';
-          var color = '#';
-          for (var i = 0; i < 6; i++) {
-              color += letters[Math.floor(this.random() * 16)]; }
-          return color;
+    followAvatarControl:
+        parameters:
+            - position
+            - rotation
+scripts:
+- source: "http://vwf.example.com/aframe/avatar.js"

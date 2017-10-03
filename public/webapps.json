@@ -29,7 +29,7 @@
 
     "vr":{
         "title":"Live monument",
-        "imgUrl": "",
+        "imgUrl": "./vr/webimg.jpg",
         "text": "App"
     }
 }

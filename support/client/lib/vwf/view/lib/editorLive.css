@@ -132,3 +132,18 @@
       .userList {
         padding-left: 16px;
       }
+
+      .avatar-card {
+        cursor:pointer;
+        background-repeat: no-repeat;
+        height: 200px;
+        background-position: center top;
+        background-size: 100%;
+      }
+
+  /*    .avatar-card .mdc-card__primary,
+      .avatar-card .mdc-card__actions {
+        background: rgba(0, 0, 0, .4);
+      }
+
+      */

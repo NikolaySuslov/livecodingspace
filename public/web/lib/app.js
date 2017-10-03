@@ -39,71 +39,21 @@ function parseAppInstancesData(data) {
             parsed[name] = {};
             parsed[name][prop] = jsonObj[prop];
         }
-        
+
     }
     //console.log(parsed);
 
+    document.querySelector("#main")._emptyLists();
+
     for (var prop in parsed) {
-       var name = prop;
-        let element = document.getElementById(name);
+        var name = prop;
+        let element = document.getElementById(name + 'List');
         if (element) {
-            var list = document.getElementById(name + 'List');
-
-                var topList = list.parentNode;
-                topList.removeChild(list);
-                var list = document.createElement('ol');
-                list.setAttribute("id", name + 'List');
-                topList.appendChild(list);
-            
-            var newListProps = parsed[prop];
-             for (var propEntry in newListProps) {
-
-            let entry = document.createElement('li');
-            entry.setAttribute("class", "instance");
-            let node = document.createElement("A");
-            let textLink = document.createTextNode(newListProps[propEntry].instance);
-            node.setAttribute("href", 'http://' + newListProps[propEntry].instance);
-            node.setAttribute("target", "_blank");
-            node.setAttribute("onclick", "refresh();");
-
-            node.appendChild(textLink);
-
-            let numClientsEl = document.createElement('span');
-            numClientsEl.setAttribute("class", "numClients");
-            let numClients = document.createTextNode('Users online: ' + newListProps[propEntry].clients);
-
-            entry.appendChild(node);
-            entry.appendChild(document.createElement('br'));
-            entry.appendChild(numClientsEl).appendChild(numClients);
-
-            list.appendChild(entry);
-            
-         }
+            element._setListData(parsed[prop]);
         }
         //needToUpdate = true
     }
     // console.log(data)
-
-}
-
-function parseWebAppData(data) {
-
-    let jsonObj = JSON.parse(data);
-    for (var prop in jsonObj) {
-        let main = document.getElementById('main');
-        let app = document.createElement("DIV");
-        app.setAttribute("class", "mdl-cell mdl-cell--4-col exp-card-wide mdl-card mdl-shadow--2dp");
-        var appCard = '<div class="mdl-card__title"><h2 id="' + prop + 'Title" class="mdl-card__title-text">' + jsonObj[prop].title + '</h2></div><div id="' + prop + 'Text" class="mdl-card__supporting-text">' + jsonObj[prop].text + '</div><div id="' + prop + '"  class="mdl-card__actions mdl-card--border"> <a href="/' + prop + '" onclick="refresh();" target="_blank" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Start new</a><hr/><p/><span class="mdl-color-text--grey-500">...or connect to:</span><ol id="' + prop + 'List"></ol></div>';
-        app.innerHTML = appCard;
-        if (jsonObj[prop].imgUrl !== "") {
-            app.firstChild.style.backgroundImage = 'linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(' + jsonObj[prop].imgUrl + ')';
-        }
-
-        main.appendChild(app);
-    }
-    //console.log(data);
-    // getAllAppInstances();
-
 }
 
 function getAllAppInstances() {
@@ -114,17 +64,195 @@ function getAllAppInstances() {
         });
 }
 
+function parseWebAppDataForCell(data) {
+
+    document.querySelector("#main").$cell({
+        $cell: true,
+        $type: "div",
+        id: "main",
+        _jsonData: {},
+        _emptyLists: function () {
+            Object.entries(this._jsonData).forEach(function (element) {
+                //console.log(element);
+                document.getElementById(element[0] + 'List')._setListData({});
+            });
+        },
+        $init: function () {
+            this._jsonData = JSON.parse(data);
+        },
+        _makeWorldCard: function (m) {
+            return {
+                $cell: true,
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                $components: [
+                    this._worldCardDef(m)
+                ]
+            }
+
+        },
+        $update: function () {
+            this.$components = [
+                // siteHeader,
+                {
+                    $type: "div",
+                    class: "mdc-layout-grid",
+                    $components: [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: Object.entries(this._jsonData).map(this._makeWorldCard)
+                        }
+                    ]
+
+                },
+
+
+            ]
+        },
+        _worldCardDef: function (desc) {
+
+            return {
+                $cell: true,
+                $type: "div",
+                class: "mdc-card world-card",
+                $components: [
+                    {
+                        $type: "section",
+                        class: "mdc-card__media world-card__16-9-media",
+                        $init: function () {
+                            if (desc[1].imgUrl !== "") {
+                                this.style.backgroundImage = 'linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(' + desc[1].imgUrl + ')';
+                            }
+                        }
+                    },
+                    {
+                        $type: "section",
+                        class: "mdc-card__primary",
+                        $components: [
+                            {
+                                $type: "h1",
+                                class: "mdc-card__title mdc-card__title--large",
+                                $text: desc[1].title
+                            },
+                            {
+                                $type: "h2",
+                                class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                $text: desc[1].text
+                            }
+                        ]
+                    },
+                    {
+                        $type: "section",
+                        class: "mdc-card__actions",
+                        $components: [
+                            {
+                                $type: "a",
+                                class: "mdc-button mdc-button--compact mdc-card__action mdc-button--raised",
+                                $text: "Start new",
+                                target: "_blank",
+                                href: "/" + desc[0],
+                                onclick: function (e) {
+                                    refresh();
+                                }
+                            }
+
+
+                        ]
+                    },
+
+                    {
+                        $type: "section",
+                        class: "mdc-card__actions",
+                        $components: [
+
+                            {
+                                $type: "ul",
+                                _listData: {},
+                                _setListData: function (data) {
+                                    this._listData = data;
+                                },
+                                class: "mdc-list mdc-list--two-line",
+                                id: desc[0] + 'List',
+                                $update: function () {
+                                    var connectText = {}
+
+                                    if (Object.entries(this._listData).length !== 0) {
+                                        connectText = {
+                                            // $type: "span",
+                                            // class: "mdc-theme--text-secondary",
+                                            // $text: "...or connect to:"
+                                        }
+                                    }
+                                    this.$components = [
+                                        {
+                                            $type: "hr",
+                                            class: "mdc-list-divider"
+                                        }
+                                    ].concat(Object.entries(this._listData).map(this._worldListItem))
+                                    //     [connectText]
+                                    // }].concat(Object.entries(this._listData).map(this._worldListItem))
+
+
+                                },
+                                _worldListItem: function (m) {
+                                    return {
+                                        $type: "li",
+                                        class: "mdc-list-item",
+                                        $components: [
+                                            {
+                                                $type: "span",
+                                                class: "world-link mdc-list-item__text",
+                                                $components: [
+                                                    {
+                                                        $type: "a",
+                                                        $text: m[1].instance,
+                                                        target: "_blank",
+                                                        href: "http://" + m[1].instance,
+                                                        onclick: function (e) {
+                                                            refresh();
+                                                        }
+                                                    },
+                                                    {
+                                                        $type: "span",
+                                                        class: "mdc-list-item__text__secondary",
+                                                        $text: "Users online: " + m[1].clients
+                                                    }
+                                                ]
+                                            }
+
+
+
+                                        ]
+
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+
+    })
+
+
+
+}
+
 function getAppDetails() {
+
     let appDetails = httpGetJson('webapps.json')
         .then(res => {
-            parseWebAppData(res)
+            parseWebAppDataForCell(res)
         })
         .then(res => refresh());
 }
 
 
 function refresh() {
-   // socket.emit('getWebAppUpdate', "");
+    // socket.emit('getWebAppUpdate', "");
 }
 
 
@@ -160,3 +288,5 @@ async function httpGetJson(url) {
         throw Error('Bad Url Format');
     }
 }
+
+

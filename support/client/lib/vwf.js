@@ -326,7 +326,7 @@
                      "vwf/model/aframe/addon/aframe-interpolation": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
-                    "vwf/model/aframe/addon/aframe-gamepad-controls.min": {
+                    "vwf/model/aframe/extras/aframe-extras": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
                     "vwf/model/aframe/addon/SkyShader": {
@@ -335,9 +335,10 @@
                     "vwf/model/aframe/addon/BVHLoader": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
-                    
                     "vwf/model/aframe/addon/monument-app": {
-                        deps: [ "vwf/model/aframe/aframe-master", "vwf/model/aframe/addon/SkyShader",
+                        deps: [ "vwf/model/aframe/aframe-master",
+                        "vwf/model/aframe/extras/aframe-extras",
+                        "vwf/model/aframe/addon/SkyShader",
                         "vwf/model/aframe/addon/BVHLoader"]
                     }
                     
@@ -396,10 +397,10 @@
 
                   { library: "vwf/model/aframe", 
                     linkedLibraries: [ "vwf/model/aframe/aframe-master",
+                    "vwf/model/aframe/extras/aframe-extras",
                     "vwf/model/aframe/addon/aframe-interpolation",
                     "vwf/model/aframe/addon/SkyShader",
                     "vwf/model/aframe/addon/monument-app",
-                    "vwf/model/aframe/addon/aframe-gamepad-controls.min",
                     "vwf/model/aframe/addon/BVHLoader"
                  ], 
                     active: false 
@@ -456,10 +457,10 @@
                 
                  { library: "vwf/view/aframe", active: false },
                 { library: "vwf/model/aframe/aframe-master", active: false },
+                { library: "vwf/model/aframe/extras/aframe-extras", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
                 { library: "vwf/model/aframe/addon/SkyShader", active: false },
                 { library: "vwf/model/aframe/addon/monument-app", active: false },
-                { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
                 { library: "vwf/model/aframe/addon/BVHLoader", active: false },
                 
               

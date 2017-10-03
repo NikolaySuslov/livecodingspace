@@ -161,6 +161,50 @@ define([
             );
 
 
+            function avatarCardDef(src, desc, onclickfunc) {
+
+                return {
+                    $cell: true,
+                    $type: "div",
+                    class: "mdc-card avatar-card",
+                    $init: function () {
+                        this.style.backgroundImage = 'linear-gradient(0deg, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.0) ), url(' + src + ')'
+
+                    },
+                    onclick: onclickfunc,
+                    $components: [
+                        {
+                            $type: "section",
+                            class: "mdc-card__primary",
+                            $components: [
+                                {
+                                    $type: "h1",
+                                    class: "mdc-card__title mdc-card__title--large",
+                                    $text: desc.subtitle
+                                },
+                                {
+                                    $type: "h2",
+                                    class: "mdc-card__subtitle",
+                                    $text: desc.title
+                                }
+                            ]
+                        },
+                        {
+                            $type: "section",
+                            class: "mdc-card__actions",
+                            $components: [
+                                {
+                                    $type: "button",
+                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    //$text: "Use it",
+                                    onclick: onclickfunc
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+
             let avatarSettings =
                 {
                     $cell: true,
@@ -196,17 +240,128 @@ define([
                                             $text: "Hide cursor",
                                             onclick: function (e) {
                                                 //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                let cursorID = 'myCursor-avatar-' + self.kernel.moniker();
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
+                                                let cursorID = 'myCursor-' + avatarID;
                                                 let controlEl = document.querySelector("[id='" + cursorID + "']");
                                                 let vis = controlEl.getAttribute('visible');
                                                 this.$text = vis ? 'Show cursor' : 'Hide cursor';
-                                                controlEl.setAttribute('visible', !vis);
+
+                                                vwf_view.kernel.callMethod(avatarID, "showHideCursor", [!vis]);
+                                                //controlEl.setAttribute('visible', !vis);
                                             }
 
                                         }
 
                                     ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+
+                                        {
+                                            $type: "div",
+                                            class: "mdc-layout-grid",
+                                            $components: [
+                                                {
+                                                    $type: "div",
+                                                    class: "mdc-layout-grid__inner",
+                                                    $components: [
+
+                                                        {
+                                                            $cell: true,
+                                                            $type: "div",
+                                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                            $components: [
+
+                                                                avatarCardDef("/../assets/avatars/ico/simple.jpg", { title: "Simple", subtitle: "Cube" },
+                                                                    function (e) {
+                                                                        let avatarID = 'avatar-' + self.kernel.moniker();
+                                                                        vwf_view.kernel.callMethod(avatarID, "createSimpleAvatar");
+
+                                                                    }
+                                                                )
+                                                            ]
+                                                        },
+                                                        {
+                                                            $cell: true,
+                                                            $type: "div",
+                                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                            $components: [
+                                                                avatarCardDef("/../assets/avatars/ico/female.jpg", { title: "Human", subtitle: "Female" },
+                                                                    function (e) {
+                                                                        let avatarID = 'avatar-' + self.kernel.moniker();
+                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/female/avatar1.gltf"]);
+                                                                    }
+                                                                )]
+                                                        },
+                                                        {
+                                                            $cell: true,
+                                                            $type: "div",
+                                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                            $components: [
+                                                                avatarCardDef("/../assets/avatars/ico/male.jpg", { title: "Human", subtitle: "Male" },
+                                                                    function (e) {
+                                                                        let avatarID = 'avatar-' + self.kernel.moniker();
+                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/male/avatar1.gltf"]);
+                                                                    }
+                                                                )]
+                                                        }
+
+                                                    ]
+                                                }
+                                            ]
+
+                                        },
+
+                                        // {
+                                        //     $cell: true,
+                                        //     $type: "button",
+                                        //     class: "mdc-button mdc-button--raised",
+                                        //     $text: "Simple Avatar",
+                                        //     onclick: function (e) {
+                                        //         let avatarID = 'avatar-' + self.kernel.moniker();
+                                        //         vwf_view.kernel.callMethod(avatarID, "createSimpleAvatar");
+
+                                        //     }
+
+                                        // },
+                                        // {
+                                        //     $cell: true,
+                                        //     $type: "button",
+                                        //     class: "mdc-button mdc-button--raised",
+                                        //     $text: "Male Avatar",
+                                        //     onclick: function (e) {
+
+                                        //         let avatarID = 'avatar-' + self.kernel.moniker();
+                                        //         vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/male/avatar1.gltf"]);
+
+
+
+                                        //     }
+
+                                        // },
+                                        // {
+                                        //     $cell: true,
+                                        //     $type: "button",
+                                        //     class: "mdc-button mdc-button--raised",
+                                        //     $text: "Female Avatar",
+                                        //     onclick: function (e) {
+
+                                        //         let avatarID = 'avatar-' + self.kernel.moniker();
+                                        //         vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/female/avatar1.gltf"]);
+
+
+
+                                        //     }
+
+                                        // },
+
+
+                                    ]
                                 }
+
                             ]
                         }
                     ]
@@ -1558,6 +1713,7 @@ define([
                             class: "mdc-toolbar__title catalog-title",
                             $text: "LiveCoding.space"
                         }
+                        
                     ]
                 }]
 

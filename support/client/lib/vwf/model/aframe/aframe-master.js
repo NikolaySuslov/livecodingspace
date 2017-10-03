@@ -66054,7 +66054,7 @@ function extend() {
 },{}],77:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -66072,7 +66072,7 @@ module.exports={
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
-    "prerelease": "node scripts/release.js 0.6.0 0.6.1",
+    "prerelease": "node scripts/release.js 0.6.1 0.7.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
@@ -66959,7 +66959,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -67010,22 +67009,14 @@ module.exports.Component = registerComponent('gearvr-controls', {
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
-  onGamepadConnectionEvent: function (evt) {
-    this.checkIfControllerPresent();
-  },
-
   play: function () {
     this.checkIfControllerPresent();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
     this.addControllersUpdateListener();
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   injectTrackedControls: function () {
@@ -67052,7 +67043,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 
@@ -67341,6 +67331,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
   init: function () {
     var self = this;
+    var el = this.el;
     // Current pose.
     this.gesture = ANIMATIONS.open;
     // Active buttons populated by events provided by the attached controls.
@@ -67369,6 +67360,11 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
     this.onSurfaceTouchEnd = function () { self.handleButton('surface', 'touchend'); };
+    this.onControllerConnected = function () { self.setModelVisibility(true); };
+    this.onControllerDisconnected = function () { self.setModelVisibility(false); };
+
+    el.addEventListener('controllerconnected', this.onControllerConnected);
+    el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   play: function () {
@@ -67458,9 +67454,6 @@ module.exports.Component = registerComponent('hand-controls', {
       model: false,
       rotationOffset: hand === 'left' ? 90 : -90
     };
-    el.setAttribute('vive-controls', controlConfiguration);
-    el.setAttribute('oculus-touch-controls', controlConfiguration);
-    el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set model.
     if (hand !== previousHand) {
@@ -67471,6 +67464,11 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
+        // hidden by default
+        mesh.visible = false;
+        el.setAttribute('vive-controls', controlConfiguration);
+        el.setAttribute('oculus-touch-controls', controlConfiguration);
+        el.setAttribute('windows-motion-controls', controlConfiguration);
       });
     }
   },
@@ -67625,6 +67623,12 @@ module.exports.Component = registerComponent('hand-controls', {
     fromAction.play();
     toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
+  },
+
+  setModelVisibility: function (visible) {
+    var model = this.el.getObject3D('mesh');
+    if (!model) { return; }
+    model.visible = visible;
   }
 });
 
@@ -67711,6 +67715,7 @@ registerComponent('laser-controls', {
     var config = this.config;
     var data = this.data;
     var el = this.el;
+    var self = this;
 
     // Set all controller models.
     el.setAttribute('daydream-controls', {hand: data.hand});
@@ -67721,7 +67726,11 @@ registerComponent('laser-controls', {
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
-    el.addEventListener('controllermodelready', createRay);
+    el.addEventListener('controllerdisconnected', hideRay);
+    el.addEventListener('controllermodelready', function (evt) {
+      createRay(evt);
+      self.modelReady = true;
+    });
 
     function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
@@ -67744,13 +67753,19 @@ registerComponent('laser-controls', {
 
       // Only apply a default raycaster if it does not yet exist. This prevents it overwriting
       // config applied from a controllermodelready event.
-      if (evt.detail.rayOrigin || !el.hasAttribute('raycaster')) {
+      if (evt.detail.rayOrigin || !self.modelReady) {
         el.setAttribute('raycaster', raycasterConfig);
+      } else {
+        el.setAttribute('raycaster', 'showLine', true);
       }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
+    }
+
+    function hideRay () {
+      el.setAttribute('raycaster', 'showLine', false);
     }
   },
 
@@ -68471,7 +68486,7 @@ registerShader('portal', {
       'vec2 sampleUV;',
       'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
       'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
-      'sampleUV.x = atan(direction.z, direction.x) * -RECIPROCAL_PI2 + 0.5;',
+      'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
       'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
         'gl_FragColor = vec4(strokeColor, 1.0);',
       '} else {',
@@ -68513,7 +68528,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
     this.hmdEuler = new THREE.Euler();
-    this.position = {};
+    this.position = new THREE.Vector3();
     this.rotation = {};
 
     this.setupMouseControls();
@@ -68712,34 +68727,25 @@ module.exports.Component = registerComponent('look-controls', {
   /**
    * Handle positional tracking.
    */
-  updatePosition: (function () {
-    var deltaHMDPosition = new THREE.Vector3();
+  updatePosition: function () {
+    var el = this.el;
+    var currentHMDPosition;
+    var currentPosition;
+    var position = this.position;
+    var previousHMDPosition = this.previousHMDPosition;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var el = this.el;
-      var currentHMDPosition;
-      var currentPosition;
-      var position = this.position;
-      var previousHMDPosition = this.previousHMDPosition;
-      var sceneEl = this.el.sceneEl;
+    if (!sceneEl.is('vr-mode')) { return; }
 
-      if (!sceneEl.is('vr-mode')) { return; }
+    // Calculate change in position.
+    currentHMDPosition = this.calculateHMDPosition();
 
-      // Calculate change in position.
-      currentHMDPosition = this.calculateHMDPosition();
-      deltaHMDPosition.copy(currentHMDPosition).sub(previousHMDPosition);
+    currentPosition = el.getAttribute('position');
 
-      if (isNullVector(deltaHMDPosition)) { return; }
-
-      previousHMDPosition.copy(currentHMDPosition);
-
-      currentPosition = el.getAttribute('position');
-      position.x = currentPosition.x + deltaHMDPosition.x;
-      position.y = currentPosition.y + deltaHMDPosition.y;
-      position.z = currentPosition.z + deltaHMDPosition.z;
-      el.setAttribute('position', position);
-    };
-  })(),
+    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
+    el.setAttribute('position', position);
+    previousHMDPosition.copy(currentHMDPosition);
+  },
 
   /**
    * Get headset position from VRControls.
@@ -69269,15 +69275,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
@@ -71387,7 +71389,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerPosition = new THREE.Vector3();
     this.controllerQuaternion = new THREE.Quaternion();
     this.deltaControllerPosition = new THREE.Vector3();
-    this.position = {};
+    this.position = new THREE.Vector3();
     this.rotation = {};
     this.standingMatrix = new THREE.Matrix4();
 
@@ -71431,8 +71433,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       data.controller
     );
 
-    // Only replace the stored controller if we find a new one.
-    this.controller = controller || this.controller;
+    this.controller = controller;
   },
 
   applyArmModel: function (controllerPosition) {
@@ -71494,15 +71495,14 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controller = this.controller;
     var controllerEuler = this.controllerEuler;
     var controllerPosition = this.controllerPosition;
-    var currentPosition;
-    var deltaControllerPosition = this.deltaControllerPosition;
+    var elPosition;
+    var previousControllerPosition = this.previousControllerPosition;
     var dolly = this.dolly;
     var el = this.el;
     var pose;
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
     var headEl = this.getHeadElement();
-    var headObject3D = headEl.object3D;
     var headCamera = headEl.components.camera;
     var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
 
@@ -71510,53 +71510,48 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     // Compose pose from Gamepad.
     pose = controller.pose;
-    // If no orientation, use camera.
-    if (pose.orientation) {
+    if (pose.orientation !== null) {
       dolly.quaternion.fromArray(pose.orientation);
-    } else {
-      dolly.quaternion.copy(headObject3D.quaternion);
     }
-    if (pose.position) {
+
+    // controller position or arm model
+    if (pose.position !== null) {
       dolly.position.fromArray(pose.position);
     } else {
-      if (this.data.armModel) {
-        // Controller not 6DOF, apply arm model.
-        this.applyArmModel(controllerPosition);
-      }
-      dolly.position.copy(controllerPosition);
+      // Controller not 6DOF, apply arm model.
+      if (this.data.armModel) { this.applyArmModel(dolly.position); }
     }
-    dolly.updateMatrix();
 
     // Apply transforms, if 6DOF and in VR.
-    if (pose.position && vrDisplay) {
+    if (pose.position != null && vrDisplay) {
       if (vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-        dolly.applyMatrix(standingMatrix);
+        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
+        dolly.matrix.multiplyMatrices(standingMatrix, dolly.matrix);
       } else {
         // Apply default camera height
         dolly.position.y += userHeight;
-        dolly.updateMatrix();
+        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
       }
+    } else {
+      dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
     }
 
     // Decompose.
     controllerEuler.setFromRotationMatrix(dolly.matrix);
     controllerPosition.setFromMatrixPosition(dolly.matrix);
 
-    // Apply rotation (as absolute, with rotation offset).
+    // Apply rotation.
     this.rotation.x = THREE.Math.radToDeg(controllerEuler.x);
     this.rotation.y = THREE.Math.radToDeg(controllerEuler.y);
     this.rotation.z = THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset;
     el.setAttribute('rotation', this.rotation);
 
-    // Apply position (as delta from previous Gamepad position).
-    deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
-    this.previousControllerPosition.copy(controllerPosition);
-    currentPosition = el.getAttribute('position');
-    this.position.x = currentPosition.x + deltaControllerPosition.x;
-    this.position.y = currentPosition.y + deltaControllerPosition.y;
-    this.position.z = currentPosition.z + deltaControllerPosition.z;
+    // Apply position.
+    elPosition = el.getAttribute('position');
+    this.position.copy(elPosition).sub(previousControllerPosition).add(controllerPosition);
     el.setAttribute('position', this.position);
+    previousControllerPosition.copy(controllerPosition);
   },
 
   /**
@@ -71759,15 +71754,11 @@ module.exports.Component = registerComponent('vive-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   bindMethods: function () {
@@ -72224,8 +72215,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       'thumbstick': 'THUMBSTICK_PRESS',
       'trackpad': 'TOUCHPAD_PRESS'
     },
-    pointingPoseMeshName: 'Pointing_Pose',
-    holdingPoseMeshName: 'Holding_Pose'
+    pointingPoseMeshName: 'POINTING_POSE'
   },
 
   bindMethods: function () {
@@ -72238,11 +72228,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   init: function () {
     var self = this;
+    var el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt, 'touchend'); };
+    this.onControllerConnected = function () { self.setModelVisibility(true); };
+    this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
@@ -72257,12 +72250,16 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     // Pointing poses
     this.rayOrigin = {
       origin: new THREE.Vector3(),
-      direction: new THREE.Vector3(0, 0, -1)
+      direction: new THREE.Vector3(0, 0, -1),
+      createdFromMesh: false
     };
 
     // Stored on object to allow for mocking in tests
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
     this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+
+    el.addEventListener('controllerconnected', this.onControllerConnected);
+    el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   addEventListeners: function () {
@@ -72296,31 +72293,21 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       hand: this.data.hand,
       index: this.data.pair
     });
-
-    if (this.data.hideDisconnected) {
-      this.el.setAttribute('visible', this.controllerPresent);
-    }
   },
 
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-
-    window.addEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-
-    window.removeEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
     // If we do not want to load a model, or, have already loaded the model, emit the controllermodelready event.
-    if (!this.data.model || this.el.getAttribute('gltf-model')) {
+    if (!this.data.model || this.rayOrigin.createdFromMesh) {
       this.modelReady();
       return;
     }
@@ -72365,7 +72352,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       controller: data.pair,
-      hand: data.hand
+      hand: data.hand,
+      armModel: false
     });
 
     this.updateControllerModel();
@@ -72394,27 +72382,20 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    debug('Loading asset from: ' + url);
-
     // The model is loaded by the gltf-model compoent when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
+    var rootNode = this.controllerModel = evt.detail.model;
     var loadedMeshInfo = this.loadedMeshInfo;
     var i;
     var meshName;
     var mesh;
     var meshInfo;
-    var quaternion = new THREE.Quaternion();
 
     debug('Processing model');
-
-    // Find the appropriate nodes
-    var rootNode = controllerObject3D.getObjectByName('RootNode');
-    rootNode.updateMatrixWorld();
 
     // Reset the caches
     loadedMeshInfo.buttonMeshes = {};
@@ -72486,36 +72467,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
         }
       }
 
-      // Calculate the pointer pose (used for rays), by applying the inverse holding pose, then the pointing pose.
-      this.rayOrigin.origin.set(0, 0, 0);
-      this.rayOrigin.direction.set(0, 0, -1);
-
-      // Holding pose
-      mesh = rootNode.getObjectByName(this.mapping.holdingPoseMeshName);
-      if (mesh) {
-        mesh.localToWorld(this.rayOrigin.origin);
-        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation).inverse());
-      } else {
-        debug('Mesh does not contain holding origin data.');
-        document.getElementById('debug').innerHTML += '<br />Mesh does not contain holding origin data.';
-      }
-
-      // Pointing pose
-      mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
-      if (mesh) {
-        var offset = new THREE.Vector3();
-        mesh.localToWorld(offset);
-        this.rayOrigin.origin.add(offset);
-
-        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation));
-      } else {
-        debug('Mesh does not contain pointing origin data, defaulting to none.');
-      }
-
-      // Emit event stating that our pointing ray is now accurate.
-      this.modelReady();
-    } else {
-      warn('No node with name "RootNode" in controller glTF.');
+      this.calculateRayOriginFromMesh(rootNode);
+      // Determine if the model has to be visible or not.
+      this.setModelVisibility();
     }
 
     debug('Model load complete.');
@@ -72531,6 +72485,46 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       return undefined;
     }
   },
+
+  calculateRayOriginFromMesh: (function () {
+    var quaternion = new THREE.Quaternion();
+    return function (rootNode) {
+      var mesh;
+
+      // Calculate the pointer pose (used for rays), by applying the world transform of th POINTER_POSE node
+      // in the glTF (assumes that root node is at world origin)
+      this.rayOrigin.origin.set(0, 0, 0);
+      this.rayOrigin.direction.set(0, 0, -1);
+      this.rayOrigin.createdFromMesh = true;
+
+      // Try to read Pointing pose from the source model
+      mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
+      if (mesh) {
+        var parent = rootNode.parent;
+
+        // We need to read pose transforms accumulated from the root of the glTF, not the scene.
+        if (parent) {
+          rootNode.parent = null;
+          rootNode.updateMatrixWorld(true);
+          rootNode.parent = parent;
+        }
+
+        mesh.getWorldPosition(this.rayOrigin.origin);
+        mesh.getWorldQuaternion(quaternion);
+        this.rayOrigin.direction.applyQuaternion(quaternion);
+
+        // Recalculate the world matrices now that the rootNode is re-attached to the parent.
+        if (parent) {
+          rootNode.updateMatrixWorld(true);
+        }
+      } else {
+        debug('Mesh does not contain pointing origin data, defaulting to none.');
+      }
+
+      // Emit event stating that our pointing ray is now accurate.
+      this.modelReady();
+    };
+  })(),
 
   lerpAxisTransform: (function () {
     var quaternion = new THREE.Quaternion();
@@ -72608,6 +72602,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
 
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
+
+  setModelVisibility: function (visible) {
+    var model = this.el.getObject3D('mesh');
+    visible = visible !== undefined ? visible : this.modelVisible;
+    this.modelVisible = visible;
+    if (!model) { return; }
+    model.visible = visible;
   }
 });
 
@@ -76027,9 +76029,6 @@ module.exports.AScene = registerElement('a-scene', {
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
-        // Enter VR on `vrdisplayconnect` (e.g. plugging on Rift headset).
-        window.addEventListener('vrdisplayconnect', this.enterVRBound);
-
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
@@ -76358,12 +76357,13 @@ module.exports.AScene = registerElement('a-scene', {
         var canvas = this.canvas;
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
-        // Possible camera or canvas not injected yet.
-        // ON MOBILE the webvr-polyfill relies on the fullscreen API to enter
-        // VR mode. The canvas is resized by VREffect following the values returned
-        // by getEyeParameters. We don't want to overwrite the size with the
-        // windows width and height.
-        if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
+        var isEffectPresenting = this.effect && this.effect.isPresenting;
+        // Do not update renderer, if a camera or a canvas have not been injected.
+        // In VR mode, VREffect handles canvas resize based on the dimensions returned by
+        // the getEyeParameters function of the WebVR API. These dimensions are independent of
+        // the window size, therefore should not be overwritten with the window's width and height,
+        // except when in fullscreen mode.
+        if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;
@@ -76383,11 +76383,6 @@ module.exports.AScene = registerElement('a-scene', {
           antialias: shouldAntiAlias(this),
           alpha: true
         });
-        // r86 shipped with a bug fixed in https://github.com/mrdoob/three.js/pull/11970
-        // We need to setup a dummy VRDevice to avoid a TypeError
-        // when vrdisplaypresentchange fires.
-        // This line can be removed after updating to THREE r87.
-        renderer.vr.setDevice({});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
@@ -78343,7 +78338,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 08-09-2017, Commit #ee643e1)');
+console.log('A-Frame Version: 0.7.0 (Date 22-09-2017, Commit #75ac4d8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81004,6 +80999,9 @@ THREE.VRControls = function ( object, onError ) {
 
 	}
 
+	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
+	window.addEventListener('vrdisplaydisconnect', function () { vrDisplay = undefined });
+
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;
@@ -81184,6 +81182,18 @@ THREE.VREffect = function( renderer, onError ) {
 
 	}
 
+	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
+	window.addEventListener('vrdisplaydisconnect', function (evt) {
+		var f;
+		
+		scope.exitPresent();
+		// Cancels current request animation frame.
+		f = scope.cancelAnimationFrame();
+		vrDisplay = undefined;
+		// Resumes the request animation frame.
+		scope.requestAnimationFrame(f);
+	});
+
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;
@@ -81343,10 +81353,12 @@ THREE.VREffect = function( renderer, onError ) {
 
 	this.requestAnimationFrame = function( f ) {
 
+		var f = scope.f = f || scope.f;
+
+		if (!f) { return; }
+
 		if ( vrDisplay !== undefined ) {
-
 			return vrDisplay.requestAnimationFrame( f );
-
 		} else {
 
 			return window.requestAnimationFrame( f );
@@ -81356,6 +81368,10 @@ THREE.VREffect = function( renderer, onError ) {
 	};
 
 	this.cancelAnimationFrame = function( h ) {
+
+		var f = scope.f;
+
+		scope.f = undefined;
 
 		if ( vrDisplay !== undefined ) {
 
@@ -81367,6 +81383,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 		}
 
+		return f;
 	};
 
 	this.submitFrame = function() {
