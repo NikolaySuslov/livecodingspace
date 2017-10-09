@@ -51,15 +51,34 @@ children:
       height: 1
       width: 1
       clickable: true
+    children:
+      raycaster-listener:
+        extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
     events:
       clickEvent:
+      intersectEvent:
+      clearIntersectEvent:
     methods:
       clickEventMethod:
         body: |
           if (this.clickable) {
           let genColor = this.generateColor();
           this.color = genColor 
-          }
+            }
+      intersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -90 0"
+            }
+      clearIntersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -30 0"
+            }
       generateColor:
         body: |
           var letters = '0123456789ABCDEF';
@@ -71,6 +90,12 @@ children:
       - |
         this.clickEvent = function(){
           this.clickEventMethod();
+         }
+         this.intersectEvent = function(){
+          this.intersectEventMethod();
+         }
+         this.clearIntersectEvent = function(){
+          this.clearIntersectEventMethod();
          }
   sphere:
     extends: http://vwf.example.com/aframe/asphere.vwf

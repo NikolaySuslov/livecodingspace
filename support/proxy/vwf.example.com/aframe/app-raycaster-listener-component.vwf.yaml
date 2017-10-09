@@ -1,0 +1,5 @@
+# raycaster listener
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:

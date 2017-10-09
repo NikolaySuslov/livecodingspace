@@ -147,20 +147,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         // -- deletingNode -------------------------------------------------------------------------
 
-          deletingNode: function (nodeID) {
-            
-                        if (this.state.nodes[nodeID] !== undefined) {
-            
-                            var node = this.state.nodes[nodeID];
-                            if (node.aframeObj !== undefined) {
-                                // removes and destroys object
-                                node.aframeObj = undefined;
-                            }
-            
-                            delete this.state.nodes[nodeID];
-                        }
-            
-                    },
+        deletingNode: function (nodeID) {
+
+            if (this.state.nodes[nodeID] !== undefined) {
+
+                var node = this.state.nodes[nodeID];
+                if (node.aframeObj !== undefined) {
+                    // removes and destroys object
+                    node.aframeObj = undefined;
+                }
+
+                delete this.state.nodes[nodeID];
+            }
+
+        },
 
         // -- initializingProperty -----------------------------------------------------------------
 
@@ -224,8 +224,141 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+
+                if (value === undefined && isARayCasterDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        let defs = ['direction', 'far', 'interval', 'near', 'objects', 'origin', 'recursive', 'showLine', 'useWorldCoordinates'];
+
+                        defs.forEach(element => {
+                            element == propertyName ? parentNodeAF.setAttribute('raycaster', element, propertyValue) :
+                                value = undefined;
+                        })
+                    }
+                }
+
+
                 //isALineDefinition(node.prototypes)
                 //if (value === undefined && node.componentName == 'line') { //isALineDefinition( node.prototypes )
+                if (node.extendsID == "http://vwf.example.com/aframe/lineComponent.vwf") {
+                    if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+
+                        //let parentNodeAF = self.state.kernel.find(node.parentID);
+
+                        // aframeObject.el.setAttribute('line', 'color')
+                        let parentNodeAF = aframeObject.el;
+
+                        switch (propertyName) {
+
+                            case "start":
+
+                                parentNodeAF.setAttribute(aframeObject.compName, { start: propertyValue });
+                                break;
+
+                            case "end":
+
+                                parentNodeAF.setAttribute(aframeObject.compName, { end: propertyValue });
+                                break;
+
+                            case "color":
+
+                                parentNodeAF.setAttribute(aframeObject.compName, 'color', propertyValue);
+                                break;
+
+                            case "opacity":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'opacity', propertyValue);
+                                break;
+
+                            case "visible":
+
+                                parentNodeAF.setAttribute(aframeObject.compName, 'visible', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
+                        }
+
+                    }
+                }
+
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                    value = propertyValue;
+
+
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "clip":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'clip', propertyValue);
+                            break;
+
+                        case "duration":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
+                            break;
+
+                        case "crossFadeDuration":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'crossFadeDuration', propertyValue);
+                            break;
+
+                        case "loop":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'loop', propertyValue);
+                            break;
+
+                        case "repetitions":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'repetitions', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+
+
+                    }
+
+                }
+
+
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                    value = propertyValue;
+
+
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "enabled":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
+                            break;
+
+                        case "duration":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
+                            break;
+
+                        case "deltaPos":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
+                            break;
+
+                        case "deltaRot":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'deltaRot', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+
+
+                    }
+
+                }
+
 
                 if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
 
@@ -238,28 +371,38 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                     switch (propertyName) {
 
-                        case "start":
+                        case "armModel":
 
-                            parentNodeAF.setAttribute(aframeObject.compName, { start: propertyValue });
+                            parentNodeAF.setAttribute(aframeObject.compName, { armModel: propertyValue });
                             break;
 
-                        case "end":
+                        case "buttonColor":
 
-                            parentNodeAF.setAttribute(aframeObject.compName, { end: propertyValue });
+                            parentNodeAF.setAttribute(aframeObject.compName, { buttonColor: propertyValue });
                             break;
 
-                        case "color":
+                        case "buttonTouchedColor":
 
-                            parentNodeAF.setAttribute(aframeObject.compName, 'color', propertyValue);
+                            parentNodeAF.setAttribute(aframeObject.compName, 'buttonTouchedColor', propertyValue);
                             break;
 
-                        case "opacity":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'opacity', propertyValue);
+                        case "buttonHighlightColor":
+                            parentNodeAF.setAttribute(aframeObject.compName, 'buttonHighlightColor', propertyValue);
                             break;
 
-                        case "visible":
+                        case "hand":
 
-                            parentNodeAF.setAttribute(aframeObject.compName, 'visible', propertyValue);
+                            parentNodeAF.setAttribute(aframeObject.compName, 'hand', propertyValue);
+                            break;
+
+                        case "model":
+
+                            parentNodeAF.setAttribute(aframeObject.compName, 'model', propertyValue);
+                            break;
+
+                        case "rotationOffset":
+
+                            parentNodeAF.setAttribute(aframeObject.compName, 'rotationOffset', propertyValue);
                             break;
 
                         default:
@@ -268,133 +411,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
 
                 }
-
-
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
-                                        value = propertyValue;
-                    
-
-                                        let parentNodeAF = aframeObject.el;
-
-                    switch (propertyName) {
-
-                        case "clip":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'clip', propertyValue);
-                            break;
-
-                        case "duration":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
-                            break;
-
-                        case "crossFadeDuration":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'crossFadeDuration', propertyValue);
-                            break;
-
-                        case "loop":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'loop', propertyValue);
-                            break;
-
-                            case "repetitions":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'repetitions', propertyValue);
-                                break;
-
-                        default:
-                            value = undefined;
-                            break;
-
-
-                    }
-
-                }
-
-
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
-                                        value = propertyValue;
-                    
-
-                                        let parentNodeAF = aframeObject.el;
-
-                    switch (propertyName) {
-
-                        case "enabled":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
-                            break;
-
-                        case "duration":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
-                            break;
-
-                        case "deltaPos":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
-                            break;
-
-                        case "deltaRot":
-                        parentNodeAF.setAttribute(aframeObject.compName, 'deltaRot', propertyValue);
-                            break;
-
-                        default:
-                            value = undefined;
-                            break;
-
-
-                    }
-
-                }
-
-
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
-                                        value = propertyValue;
-                    
-                                        //let parentNodeAF = self.state.kernel.find(node.parentID);
-                    
-                                        // aframeObject.el.setAttribute('line', 'color')
-                                        let parentNodeAF = aframeObject.el;
-                    
-                                        switch (propertyName) {
-                    
-                                            case "armModel":
-                    
-                                                parentNodeAF.setAttribute(aframeObject.compName, { armModel: propertyValue });
-                                                break;
-                    
-                                            case "buttonColor":
-                    
-                                                parentNodeAF.setAttribute(aframeObject.compName, { buttonColor: propertyValue });
-                                                break;
-                    
-                                            case "buttonTouchedColor":
-                    
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'buttonTouchedColor', propertyValue);
-                                                break;
-                    
-                                            case "buttonHighlightColor":
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'buttonHighlightColor', propertyValue);
-                                                break;
-                    
-                                            case "hand":
-                    
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'hand', propertyValue);
-                                                break;
-                    
-                                            case "model":
-
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'model', propertyValue);
-                                                break;
-
-                                            case "rotationOffset":
-
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'rotationOffset', propertyValue);
-                                                break;
-
-                                            default:
-                                                value = undefined;
-                                                break;
-                                        }
-                    
-                                    }
 
 
 
@@ -431,6 +447,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
                 // isALineDefinition( node.prototypes ) aframeObject.compName == compName
+
+
+
+                if (value === undefined && isARayCasterDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    let parentNodeAF = aframeObject.el;
+                    let defs = ['direction', 'far', 'interval', 'near', 'objects', 'origin', 'recursive', 'showLine', 'useWorldCoordinates'];
+
+                    defs.forEach(element => {
+                        if (element == propertyName) {
+                            let val = parentNodeAF.getAttribute('raycaster').element;
+                            value = AFRAME.utils.coordinates.isCoordinates(val) ? AFRAME.utils.coordinates.stringify(val) : val
+                        }
+                    })
+                }
+
 
                 if (value === undefined && isALineDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -489,7 +522,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute(aframeObject.compName).loop;
                             break;
 
-                            case "repetitions":
+                        case "repetitions":
                             value = parentNodeAF.getAttribute(aframeObject.compName).repetitions;
                             break;
 
@@ -556,11 +589,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute(aframeObject.compName).hand;
                             break;
 
-                            case "model":
+                        case "model":
                             value = parentNodeAF.getAttribute(aframeObject.compName).model;
                             break;
-                    
-                            case "rotationOffset":
+
+                        case "rotationOffset":
                             value = parentNodeAF.getAttribute(aframeObject.compName).rotationOffset;
                             break;
 
@@ -616,6 +649,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+
+
+    function isARayCasterDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/raycasterComponent.vwf");
+            }
+        }
+        return found;
+    }
+
     function isALineDefinition(prototypes) {
         var found = false;
         if (prototypes) {
@@ -664,7 +709,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         aframeObj.id = node.parentID;
         aframeObj.el = sceneEl.children[node.parentID];
-        aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => {return item.id == aframeObj.id})[0];
+        aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => { return item.id == aframeObj.id })[0];
 
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/lineComponent.vwf")) {
@@ -681,70 +726,98 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
-           
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/raycasterComponent.vwf")) {
 
-               // aframeObj.el.setAttribute(node.type, {});
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "raycaster";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "interpolation";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/anim-mixer-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "animation-mixer";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "animation-mixer";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-envmap-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "envmap";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
 
-         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-sun-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "sun";
-             aframeObj.el.setAttribute('id', "sun");
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
 
-         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "skyshader";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "envmap";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
 
-         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-avatarbvh-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "avatarbvh";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
-         
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-sun-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "sun";
+            aframeObj.el.setAttribute('id', "sun");
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "skyshader";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-avatarbvh-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "avatarbvh";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "gearvr-controls";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "gearvr-controls";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "raycaster-listener";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-cursor-listener-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "cursor-listener";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
 
         return aframeObj;
@@ -784,7 +857,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     parent.children.push(node.ID);
                     //console.info( "Adding child: " + childID + " to " + nodeID );
                     //node.aframeObj.setAttribute(node.componentName, {});
-                    console.info("Adding child: " + node.ID);
+
+                  //  console.info("Adding child: " + node.ID);
+                  
                     //parent.aframeObj.appendChild(node.aframeObj);
                 }
             }

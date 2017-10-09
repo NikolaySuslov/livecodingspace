@@ -27,12 +27,15 @@ children:
       color: "#1d7027"
       position: [1, 2.5, -2]
       scale: [3, 3, 3]
+      side: "double"
     methods:
       calcMe:
         body: |
           let match = this.parent.calcText.calcLang.grammar.match(this.parent.calcText.value);
           if (match.succeeded()){
+            if (typeof this.parent.calcText.calcLang.semantics === 'function'){
           this.value = this.parent.calcText.calcLang.semantics(match).interpret()}
+          }
           this.future( 0.1 ).calcMe();
   calcText:
     extends: http://vwf.example.com/aframe/atext.vwf
@@ -41,6 +44,7 @@ children:
       color: "#b74217"
       position: [-1, 2.5, -2]
       scale: [2, 2, 2]
+      side: "double"
     children:
       calcLang:
         extends: http://vwf.example.com/ohm/node.vwf

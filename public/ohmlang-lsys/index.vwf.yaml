@@ -32,27 +32,19 @@ methods:
   makeMe:
       parameters:
             - childName
-            - position
+            - startPosition
+            - endPosition
       body: |
-              var pos = position;
-              if (typeof position === 'string' ){
-                pos = JSON.parse(position);}
               let nodeId = this.turtleDraw.id;
               var childComponent = {
-                "id": childName,
-                "uri": childName,
-                "extends": "http://vwf.example.com/aframe/abox.vwf",
-                "properties": {
-                    "height": "0.2",
-                    "width": "0.2",
-                    "depth": "0.2",
-                    "color": "green",
-                    "position": [pos[0], pos[1], pos[2]]
-                },
-                "methods": {
-                },
-                "scripts": []
-                };
+                                "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
+                                "type": "component",
+                                "properties": {
+                                    "start": startPosition,
+                                    "end": endPosition,
+                                    "color": "green"
+                                }
+                            }
                 vwf_view.kernel.createChild(nodeId, childName, childComponent);
   parseLSys: |
     var str = this.rule;
@@ -173,6 +165,7 @@ children:
       radius: 1
       wireframe: true
       angleInRadians: 0
+      counter: 1
     methods:
       turn:
          parameters:
@@ -185,12 +178,15 @@ children:
         parameters:
           - step
         body: |
-          var x0 = this.position[0];
-          var y0 = this.position[1];
+          let pos = AFRAME.utils.coordinates.parse(this.position);
+          var x0 = pos.x;
+          var y0 = pos.y;
           var xx = Math.sin(this.angleInRadians);
           var yy = Math.cos(this.angleInRadians);
-          this.position = [x0 + step * xx, y0 + step * yy, this.position[2]];
-          this.parent.makeMe('draw-' + this.random(), this.position);
+          let endPosition = AFRAME.utils.coordinates.stringify({x: x0 + step * xx, y: y0 + step * yy, z: pos.z});
+          this.counter = this.counter + 1;
+          this.parent.makeMe('line__' + this.counter, this.position, endPosition);
+          this.position = endPosition;
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:

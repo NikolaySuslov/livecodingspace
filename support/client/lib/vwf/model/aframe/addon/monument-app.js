@@ -1,6 +1,75 @@
 if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
+
+AFRAME.registerComponent('cursor-listener', {
+    init: function () {
+        this.el.addEventListener('click', function (evt) {
+            console.log('I was clicked at: ', evt.detail.intersection.point);
+            let cursorID = 'cursor-avatar-'+ vwf_view.kernel.moniker();
+            if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
+                 vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
+            }
+            
+            //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
+      });
+    }
+  });
+
+AFRAME.registerComponent('raycaster-listener', {
+    init: function () {
+
+        let self = this;
+        this.intersected = false;
+        this.casters = {}
+
+      this.el.addEventListener('raycaster-intersected', function (evt) {
+
+        if (evt.detail.el.nodeName == 'A-CURSOR') {
+            //console.log('CURSOR was intersected at: ', evt.detail.intersection.point);
+
+        } else {
+            if (self.intersected) { 
+                
+
+            } else {
+                console.log('I was intersected at: ', evt.detail.intersection.point);
+                vwf_view.kernel.fireEvent(evt.detail.target.id, "intersectEvent")
+            }
+          
+            self.casters[evt.detail.el.id] = evt.detail.el;
+            self.intersected = true;
+        }
+        
+      });
+
+      this.el.addEventListener('raycaster-intersected-cleared', function (evt) {
+
+
+        if (evt.detail.el.nodeName == 'A-CURSOR') {
+            //console.log('CURSOR was intersected at: ', evt.detail.intersection.point);
+
+        } else {
+            if (self.intersected) { 
+                console.log('Clear intersection');
+                if (Object.entries(self.casters).length == 1 && (self.casters[evt.detail.el.id] !== undefined))
+                {
+                    vwf_view.kernel.fireEvent(evt.detail.target.id, "clearIntersectEvent")
+            }
+                delete self.casters[evt.detail.el.id]
+            } else {}
+        
+            self.intersected = false;
+        }
+
+        
+
+      });
+
+
+    }
+  });
+
 AFRAME.registerComponent('envmap', {
 
     /**

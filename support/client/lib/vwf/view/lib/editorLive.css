@@ -93,6 +93,10 @@
     max-width: 1200px;
   }
 
+  .propEditorGrid.max-width {
+    max-width: 700px;
+  }
+
   .aceEditor {
     width:inherit; height: 400px
   }

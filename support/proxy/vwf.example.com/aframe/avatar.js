@@ -44,7 +44,7 @@ this.createAvatarBody = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            position: [0, -userHeight, 0]
+            position: [0, -userHeight, 0]   
         },
         children: {
            
@@ -102,7 +102,46 @@ this.createAvatarBody = function (modelSrc) {
                                     "end": "0 0 -3",
                                     "color": myColor
                                 }
+                            },
+                            // "realCursor":{
+                            //     "extends": "http://vwf.example.com/aframe/acursor.vwf",
+                            //     "properties": {
+                            //         visible: false
+                            //     },
+                            //     "children": {
+                            //         "raycaster": {
+                            //             "extends": "http://vwf.example.com/aframe/raycasterComponent.vwf",
+                            //             "type": "component",
+                            //             "properties": {
+                            //                 //recursive: false,
+                            //                 //interval: 1000,
+                            //                 far: 100,
+                            //                 //objects: ".intersectable"
+                            //             }
+                            //         }
+                            //     }
+                            // },
+                           "myRayCaster": {
+                            "extends": "http://vwf.example.com/aframe/aentity.vwf",
+                            "properties": {},
+                            "children": {
+                                "raycaster": {
+                                    "extends": "http://vwf.example.com/aframe/raycasterComponent.vwf",
+                                    "type": "component",
+                                    "properties": {
+                                        recursive: false,
+                                        interval: 1000,
+                                        far: 3,
+                                        objects: ".intersectable"
+                                    }
+                                }
                             }
+                        },
+                        //     "raycaster-listener": {
+                        //         "extends": "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf",
+                        //         "type": "component"
+                        //     }
+                           
                         }
                     }
                 }
@@ -161,7 +200,7 @@ this.createAvatarBody = function (modelSrc) {
 
     this.children.create("avatarNode", newNode);
 
-
+   // this.children.create("avatarNode", newNode);
 
     // this.children.create( "avatarBodyModel", newNodeModel );
 

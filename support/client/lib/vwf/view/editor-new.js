@@ -153,7 +153,7 @@ define([
 
 
 
-            ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "viewSceneProps"].forEach(item => {
+            ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "propEditorWindow","viewSceneProps"].forEach(item => {
                 let el = document.createElement("div");
                 el.setAttribute("id", item);
                 document.body.appendChild(el);
@@ -744,56 +744,144 @@ define([
             }
 
             let propertiesCell = function (m) {
-                return {
-                    $type: "div",
-                    class: "mdc-layout-grid__inner",
-                    $components: [
-                        {
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
-                            $components: [
-                                { $text: m.name }
-                            ]
-                        },
-                        {
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                        },
-                        {
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
-                            $components: [
-                                {
-                                    class: "mdc-textfield",
-                                    $cell: true,
-                                    $type: "span",
-                                    $components: [
-                                        {
-                                            class: "mdc-textfield__input",
-                                            id: "prop-" + m.name,
-                                            $cell: true,
-                                            $type: "input",
-                                            type: "text",
-                                            value: m.getValue(),
-                                            onchange: function (e) {
-                                                let propValue = this.value;
-                                                try {
-                                                    propValue = JSON.parse(propValue);
-                                                    self.kernel.setProperty(this._currentNode, m.name, propValue);
 
-                                                } catch (e) {
-                                                    // restore the original value on error
-                                                    this.value = propValue;
-                                                }
-                                            }
-                                        }]
+                var editComponents = [{},{}]
 
+                if (m.name.indexOf("semantics") > -1) { }
+                else if (m.name.indexOf("grammar") > -1) { }
+                else if (m.name.indexOf("ohm") > -1) {
+
+                    editComponents = [
+
+                        {
+                        $type: "div",
+                        $cell: true,
+                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-6",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "button",
+                                class: "mdc-button",
+                                $text: "Edit", //edit grammar
+                                onclick: function (e) {
+                                    var currentNode = document.querySelector('#currentNode')._currentNode;
+                                    if (currentNode == '') {
+                                        currentNode = vwf_view.kernel.find("", "/")[0];
+                                    }
+                                    let editor = document.querySelector('#livePropEditor');
+                                    editor._setNode(currentNode);
+                                    editor._propName = m.name;
+                                    editor._prop = {body: m.rawValue, type: 'complex' }
+                                 
+                                    document.querySelector('#propEditorWindow').style.visibility = 'visible';
                                 }
-                            ]
-                        }
+                               
+
+                            }
+                        ]
+                    },
+                    {
+                        $type: "div",
+                        $cell: true,
+                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                        $components: []
+                    }
 
                     ]
-                }
+
+                } else {
+
+                    editComponents =  [
+                        {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-6",
+                                $components: [
+                                    {
+                                        class: "mdc-textfield",
+                                        $cell: true,
+                                        $type: "span",
+                                        $components: [
+                                            {
+                                                class: "mdc-textfield__input",
+                                                id: "prop-" + m.name,
+                                                $cell: true,
+                                                $type: "input",
+                                                type: "text",
+                                                value: m.getValue(),
+                                                onchange: function (e) {
+                                                    let propValue = this.value;
+                                                    try {
+                                                        propValue = JSON.parse(propValue);
+                                                        self.kernel.setProperty(this._currentNode, m.name, propValue);
+                    
+                                                    } catch (e) {
+                                                        // restore the original value on error
+                                                        this.value = propValue;
+                                                    }
+                                                }
+                                            }
+                                        ]
+
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button",
+                                        $text: "^", //edit grammar
+                                        onclick: function (e) {
+                                            var currentNode = document.querySelector('#currentNode')._currentNode;
+                                            if (currentNode == '') {
+                                                currentNode = vwf_view.kernel.find("", "/")[0];
+                                            }
+                                            let editor = document.querySelector('#livePropEditor');
+                                            editor._setNode(currentNode);
+                                            editor._propName = m.name;
+                                            editor._prop = {body: m.getValue(), type: 'simple' }
+                                         
+                                            document.querySelector('#propEditorWindow').style.visibility = 'visible';
+                                        }
+                                       
+        
+                                    }
+                                ]
+                            }
+                        
+                        
+
+                        
+                    
+                    ];
+                    }
+
+                    return {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    { $text: m.name }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            }, 
+                            editComponents[0],
+                            editComponents[1]
+                            
+
+                        ]
+                    }
+
+                
 
             }
 
@@ -870,6 +958,16 @@ define([
                     //let nodeIDAlpha = he.encode(this._currentNode);
 
                 },
+                // _getNodeComplexProperties: function () {
+                //     let node = self.nodes[this._currentNode];
+                //     let props = this._getNodeProperties();
+                //     let filterFunction = function (prop) {
+                //         return (prop.name == 'ohmLang') 
+                //     };
+                //     let complexProps = props.filter(filterFunction.bind(this));
+
+                //     return complexProps
+                // },
                 _getNodeProperties: function () {
                     let node = self.nodes[this._currentNode];
                     this._displayedProperties = {};
@@ -1100,6 +1198,116 @@ define([
             }
 
 
+            let propEditorWindow = {
+                $cell: true,
+                $type: "div",
+                _editorNode: '',
+                _prop: { body: '', type: 'simple'},
+                _propName: '',
+                id: "livePropEditor",
+                _setNode: function (node) {
+                    this._editorNode = node;
+                    this._prop.body = ''
+                },
+                class: "propEditorGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                $update: function () {
+                    this.$components = [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                               
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Update",
+                                            onclick: function (e) {
+                                                let editor = document.querySelector("#propAceEditor").env.editor;
+                                                let value = editor.getValue();
+
+                                                try {
+                                                   let propValue = (this._prop.type == 'simple') ? (JSON.parse(value)): (value)
+                                                    //propValue = JSON.parse(value);
+                                                    self.kernel.setProperty(this._editorNode, this._propName, propValue);
+                
+                                                } catch (e) {
+                                                    // restore the original value on error
+                                                    this.value = propValue;
+                                                }
+
+                                            }
+
+                                        }]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-5",
+                                    $components: [
+                                        {
+                                            $type: "h3",
+                                            class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--subheading1",
+                                            $text: this._editorNode
+                                        }
+
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-5",
+                                    $components: [
+                                        {
+                                            $type: "h3",
+                                            class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--subheading1",
+                                            $text: this._propName
+                                        }
+
+                                    ]
+                                }
+
+
+
+                            ]
+                        },
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            class: "aceEditor",
+                                            id: "propAceEditor",
+                                            $type: "div",
+                                            $text: this._prop.body,
+                                            $init: function () {
+                                                createAceEditor(self, this._editorNode, "propAceEditor");
+                                            }
+                                        }
+
+                                    ]
+                                }
+                            ]
+                        }
+
+                    ]
+                    //$components: 
+                }
+            }
+
             let codeEditorWindow = {
                 $cell: true,
                 $type: "div",
@@ -1121,6 +1329,37 @@ define([
                     this._method.body = ''
                 },
                 class: "codeEditorGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                // _getComplexProps: function(){
+                //     let node = self.nodes[this._editorNode];
+                //     let currentNode = document.querySelector('#currentNode');
+                //     var props = {}
+                //     if (currentNode !== null) {
+                //         props = currentNode._getNodeComplexProperties();
+                //     }
+                //     return props
+                // },
+                // _listPropertyElement: function (m) {
+
+                //     return {
+                //         $type: "li",
+                //         class: "mdc-list-item",
+                //         $components: [{
+                //             $type: "a",
+                //             class: "mdc-list-item",
+                //             $href: "#",
+                //             $text: m[1].name,
+
+                //             onclick: function (e) {
+
+                //                 this._method = {};
+                //                 this._methodName = m[1].name;
+                //                 this._method.body = m[1].rawValue
+                //                 this._method.type = "complexProperty"
+
+                //             }
+                //         }]
+                //     }
+                // },
                 _listElement: function (m) {
                     return {
                         $type: "li",
@@ -1177,6 +1416,21 @@ define([
                                             onclick: function (e) {
                                                 let editor = document.querySelector("#aceEditor").env.editor;
                                                 let evalText = editor.getValue();
+
+                                            //    if (this._method.type == 'complexProperty') {
+                                               
+                                            //         let propValue = evalText;
+                                            //         try {
+                                            //             //propValue = JSON.parse(propValue);
+                                            //             self.kernel.setProperty(this._editorNode, this._methodName, propValue);
+                    
+                                            //         } catch (e) {
+                                            //             // restore the original value on error
+                                            //             this.value = propValue;
+                                            //         }
+                                            //     } else {
+                                               
+                                            //     }
                                                 self.kernel.setMethod(this._editorNode, this._methodName,
                                                     { body: evalText, type: "application/javascript", parameters: this._method.parameters });
                                             }
@@ -1252,7 +1506,7 @@ define([
                                     $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
-                                    style: "overflow-y: scroll; max-height: 800px;",
+                                    style: "overflow-y: scroll; max-height: 400px;",
                                     $components: [
                                         {
                                             $cell: true,
@@ -1282,7 +1536,18 @@ define([
                                                     $type: "ul",
                                                     class: "mdc-list",
                                                     $components: Object.entries(this._getProtoNodeMethods()).map(this._listElement)
+                                                },listDivider,
+                                                {
+                                                    $type: "h3",
+                                                    class: "mdc-list-group__subheader mdc-list-item__text mdc-typography--button",
+                                                    $text: "Events"
                                                 }
+                                                // {
+                                                //     $cell: true,
+                                                //     $type: "ul",
+                                                //     class: "mdc-list",
+                                                //     $components: Object.entries(this._getComplexProps()).map(this._listPropertyElement)
+                                                // }
 
                                             ]
 
@@ -1303,7 +1568,7 @@ define([
                                             $type: "div",
                                             $text: this._method.body,
                                             $init: function () {
-                                                createAceEditor(self, this._editorNode);
+                                                createAceEditor(self, this._editorNode, "aceEditor");
                                             }
                                         }
 
@@ -1393,6 +1658,7 @@ define([
             //createCellWindow("clientsWindow", clientListCell, "Clients");
             //createCellWindow("propWindow", propWindow, "Scene");
             createCellWindow("codeEditorWindow", codeEditorWindow, "Code editor");
+            createCellWindow("propEditorWindow", propEditorWindow, "Prop editor");
 
 
 
@@ -1713,7 +1979,7 @@ define([
                             class: "mdc-toolbar__title catalog-title",
                             $text: "LiveCoding.space"
                         }
-                        
+
                     ]
                 }]
 
@@ -3171,8 +3437,8 @@ define([
 
     // -- viewScript ------------------------------------------------------------------------
 
-    function createAceEditor(view, nodeID) {
-        var editor = view.ace.edit("aceEditor");
+    function createAceEditor(view, nodeID, elID) {
+        var editor = view.ace.edit(elID);
         editor.setTheme("ace/theme/monokai");
         editor.setFontSize(16);
         editor.getSession().setMode("ace/mode/javascript");

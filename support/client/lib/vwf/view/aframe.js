@@ -108,19 +108,19 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            var aframeObject = node.aframeObj;
-            switch (propertyName) {
-                case "clickable":
-                    if (propertyValue) {
-                        aframeObject.addEventListener('click', function (evt) {
-                            let cursorID = 'cursor-avatar-'+selfs.kernel.moniker();
-                           if (evt.detail.cursorEl.id == cursorID) {
-                                vwf_view.kernel.fireEvent(nodeId, "clickEvent")
-                           }
-                        });
-                    }
-                    break;
-            }
+            // var aframeObject = node.aframeObj;
+            // switch (propertyName) {
+            //     case "clickable":
+            //         if (propertyValue) {
+            //             aframeObject.addEventListener('click', function (evt) {
+            //                 let cursorID = 'cursor-avatar-'+selfs.kernel.moniker();
+            //                if (evt.detail.cursorEl.id == cursorID) {
+            //                     vwf_view.kernel.fireEvent(nodeId, "clickEvent")
+            //                }
+            //             });
+            //         }
+            //         break;
+            // }
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
@@ -138,7 +138,8 @@ define(["module", "vwf/view"], function (module, view) {
                     "id": avatarName,
                     "uri": avatarName,
                     "extends": "http://vwf.example.com/aframe/avatar.vwf",
-                    "properties":{}
+                    "properties":{
+                    }
                 }
                 
                

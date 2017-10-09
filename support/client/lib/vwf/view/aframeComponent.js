@@ -100,7 +100,7 @@ define(["module", "vwf/view"], function (module, view) {
                 case "color":
                     if (propertyValue) {
                        // self.kernel.callMethod (nodeId, 'initLang');
-                       console.log("sat color "+ propertyValue)
+                      // console.log("sat color "+ propertyValue)
                     }
                     break;
             }

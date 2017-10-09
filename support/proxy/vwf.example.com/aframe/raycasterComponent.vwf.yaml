@@ -1,0 +1,14 @@
+#https://aframe.io/docs/0.7.0/components/raycaster.html
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  direction:
+  far:
+  interval:
+  near:
+  objects:
+  origin:
+  recursive:
+  showLine:
+  useWorldCoordinates:
