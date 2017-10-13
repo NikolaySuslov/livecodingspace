@@ -1449,11 +1449,12 @@ define([
                                             $text: "Call",
                                             onclick: function (e) {
                                                 var params = [];
+
                                                 if (this._method.parameters) {
-                                                    params = this._method.parameters.length
-                                                };
+                                                    let paramsLength = this._method.parameters.length
                                                 
-                                                if (params >= 1) { 
+                                                
+                                                if (paramsLength >= 1) { 
                                                     let paramsVal = document.querySelector("#methodParams").value;
                                                     try {
                                                        params = JSON.parse(paramsVal);
@@ -1461,10 +1462,8 @@ define([
                                                     } catch (e) {
                                                         self.logger.error('Invalid Value');
                                                     }  
-
-
                                                 }
-
+                                            };
                                                 self.kernel.callMethod(this._editorNode, this._methodName, params);
 
                                             }
@@ -1597,13 +1596,36 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
-                                        {}
+                                        {
+                                            class: "mdc-textfield",
+                                            $cell: true,
+                                            $type: "div",
+                                            $components: [{
+                                                class: "mdc-textfield__input",
+                                                id: "methodName",
+                                                $cell: true,
+                                                $type: "input",
+                                                type: "text",
+                                                value: "newMethodName",
+                                                onchange: function (e) {
+                                                    let propValue = this.value;
+                                                    try {
+                                                      
+                                                    } catch (e) {
+                                                        // restore the original value on error
+                                                       
+                                                    }
+                                                }
+                                            }]
+    
+                                        }
                                     ]
                                 },
+                                
                                 {
                                     $cell: true,
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-9",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                     $components: [
                                         {
                                             class: "mdc-textfield params-textfield-input",
@@ -1627,6 +1649,44 @@ define([
                                                 }
                                             }]
     
+                                        }
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        
+                                                {
+                                                    $cell: true,
+                                                    $type: "button",
+                                                    class: "mdc-button mdc-button--raised",
+                                                    $text: "Create",
+                                                    onclick: function (e) {
+                                                        let methodName = document.querySelector('#methodName').value;
+                                                        //let methodParams = document.querySelector('#methodParams');
+                                                        var params = [];
+                                                        let body = '';
+                                                        let paramsVal = document.querySelector("#methodParams").value;
+                                                        if (paramsVal !== '')
+                                                        {
+                                                             try {
+                                                           params = JSON.parse(paramsVal);
+                                                            //params.push(prmtr);
+                                                        } catch (e) {
+                                                            self.logger.error('Invalid Value');
+                                                        } 
+                                                     }
+
+                                                        
+                                                        self.kernel.createMethod(this._editorNode, methodName, params, body);
+                                                        this._setNode(this._editorNode);
+                                                        // let editor = document.querySelector("#aceEditor").env.editor;
+                                                        // codeEditorDoit.call(self, editor, this._editorNode);
+                                                    }
+        
+                                                
                                         }
                                     ]
                                 }
