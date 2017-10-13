@@ -2,7 +2,7 @@ this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
         "color": "white",
-        "position": "0 0.66 0.5",
+        "position": "0 0.66 0",
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
@@ -52,20 +52,10 @@ this.createAvatarBody = function (modelSrc) {
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
-                    "position": "0 1.6 0.5",
+                    "position": "0 1.6 0",
                     "visible": true
                 },
                 children: {
-                    "visual": {
-                        "extends": "http://vwf.example.com/aframe/abox.vwf",
-                        "properties": {
-                            "color": myColor,
-                            "height": 0.5,
-                            "width": 0.5,
-                            "depth": 0.1,
-                            "visible": true
-                        }
-                    },
                     "interpolation":
                     {
                         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
@@ -77,12 +67,23 @@ this.createAvatarBody = function (modelSrc) {
                             "deltaRot": 0
                         }
                     },
+                    "visual": {
+                        "extends": "http://vwf.example.com/aframe/abox.vwf",
+                        "properties": {
+                            "color": myColor,
+                            "height": 0.5,
+                            "width": 0.5,
+                            "depth": 0.1,
+                            "visible": true
+                        }
+                    },
+                    
                     "myCamera":
                     {
                         "id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
-                            "position": "0 0 -0.5",
+                            "position": "0 0 0",
                             "look-controls-enabled": false,
                             "wasd-controls": false,
                             "userHeight": 0,
@@ -94,6 +95,17 @@ this.createAvatarBody = function (modelSrc) {
                         "extends": "http://vwf.example.com/aframe/aentity.vwf",
                         "properties": {},
                         "children": {
+                            "vis": {
+                                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                                "properties": {
+                                    "color": myColor,
+                                    "position": "0 0 -3",
+                                    "height": 0.05,
+                                    "width": 0.05,
+                                    "depth": 0.01,
+                                    "visible": true
+                                }
+                            },
                             "line": {
                                 "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
                                 "type": "component",
