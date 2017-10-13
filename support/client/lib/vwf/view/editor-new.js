@@ -1448,13 +1448,24 @@ define([
                                             class: "mdc-button mdc-button--raised",
                                             $text: "Call",
                                             onclick: function (e) {
-                                                let params = [];
+                                                var params = [];
                                                 if (this._method.parameters) {
                                                     params = this._method.parameters.length
                                                 };
-                                                if (params >= 1) { }
+                                                
+                                                if (params >= 1) { 
+                                                    let paramsVal = document.querySelector("#methodParams").value;
+                                                    try {
+                                                       params = JSON.parse(paramsVal);
+                                                        //params.push(prmtr);
+                                                    } catch (e) {
+                                                        self.logger.error('Invalid Value');
+                                                    }  
 
-                                                self.kernel.callMethod(this._editorNode, this._methodName, this._method.parameters);
+
+                                                }
+
+                                                self.kernel.callMethod(this._editorNode, this._methodName, params);
 
                                             }
 
@@ -1572,6 +1583,51 @@ define([
                                             }
                                         }
 
+                                    ]
+                                }
+                            ]
+                        },
+                        { //params input
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                    $components: [
+                                        {}
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-9",
+                                    $components: [
+                                        {
+                                            class: "mdc-textfield params-textfield-input",
+                                            $cell: true,
+                                            $type: "div",
+                                            $components: [{
+                                                class: "mdc-textfield__input",
+                                                id: "methodParams",
+                                                $cell: true,
+                                                $type: "input",
+                                                type: "text",
+                                                value: JSON.stringify(this._method.parameters),
+                                                onchange: function (e) {
+                                                    let propValue = this.value;
+                                                    try {
+                                                      
+                                                    } catch (e) {
+                                                        // restore the original value on error
+                                                       
+                                                    }
+                                                }
+                                            }]
+    
+                                        }
                                     ]
                                 }
                             ]

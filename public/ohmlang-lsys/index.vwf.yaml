@@ -10,7 +10,6 @@ properties:
     rule: 'F++F++F'
     axiomF: 'F-F++F-F'
     axiomG: ''
-    app: 'appui.js'
 methods:
   initialize:
     body: |

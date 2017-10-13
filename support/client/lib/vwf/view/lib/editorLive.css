@@ -85,8 +85,12 @@
   .codeEditorGrid{
 
     width: 1000px;
-    height: 520px; 
+    height: 540px;
 
+  }
+  
+  .params-textfield-input {
+    width: 400px;
   }
 
   .codeEditorGrid.max-width {
