@@ -26,10 +26,11 @@ define([
     "vwf/view",
     "vwf/utility",
     "vwf/view/lib/ace/ace",
+    "vwf/view/lib/colorpicker/colorpicker.min",
     "jquery",
     "jquery-ui",
     "jquery-encoder-0.1.0"
-], function (module, version, view, utility, ace, $) {
+], function (module, version, view, utility, ace, colorpicker, $) {
 
     var self;
 
@@ -77,6 +78,13 @@ define([
 
             $(document.head).append('<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>');
             document.querySelector('head').innerHTML += '<link rel="stylesheet" href="vwf/view/lib/editorLive.css">';
+
+            //document.querySelector('head').innerHTML += '<script type="text/javascript" src="vwf/view/lib/colorpicker/colorpicker.min.js">';
+            document.querySelector('head').innerHTML += '<link rel="stylesheet" href="vwf/view/lib/colorpicker/themes.css">';
+          
+
+           
+
             $(document.head).append('<meta name="viewport" content="width=device-width, initial-scale=1">');
 
 
@@ -1211,6 +1219,7 @@ define([
                 },
                 class: "propEditorGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                 $update: function () {
+
                     this.$components = [
                         {
                             $cell: true,
@@ -1285,7 +1294,7 @@ define([
                                 {
                                     $cell: true,
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-8",
                                     $components: [
                                         {
                                             $cell: true,
@@ -1295,8 +1304,105 @@ define([
                                             $text: this._prop.body,
                                             $init: function () {
                                                 createAceEditor(self, this._editorNode, "propAceEditor");
+                                                this.env.editor.$blockScrolling = Infinity
                                             }
                                         }
+
+                                    ]
+                                },
+                                // {
+                                //     $cell: true,
+                                //     $type: "div",
+                                //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                //     $components: []
+                                // },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                                    $init: function () {
+                                        let myEl = this;
+                                       let cp =  ColorPicker(
+
+                                            document.getElementById('slide'),
+                                            document.getElementById('picker'),
+
+                                            
+
+                                            function (hex, hsv, rgb, mousePicker, mouseSlide) {
+                                                ColorPicker.positionIndicators(
+                                                    document.getElementById('slide-indicator'),
+                                                    document.getElementById('picker-indicator'),
+                                                    mouseSlide, mousePicker
+                                                );
+                                                if (myEl._propName == 'color') {
+
+                                                    // console.log(hex);    
+                                                    document.querySelector('#propAceEditor').env.editor.setValue(JSON.stringify(hex));
+                                                    self.kernel.setProperty(myEl._editorNode, myEl._propName, hex);
+                                                }
+                                            });
+                                            if (myEl._propName == 'color') {
+                                            cp.setHex(JSON.parse(myEl._prop.body));
+                                            }
+                                    },
+                                    $components: [
+                                        {
+                                        $cell: true,
+                                        $type: "div",
+                                        id: "color-picker",
+                                        class: "cp-default",
+                                        $components:[
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "picker-wrapper",
+                                            $components: [
+                                                {
+                                                    $cell: true,
+                                                    $type: "div",
+                                                    id: "picker",
+                                                    class: "picker",
+                                                    style: "width: 130px; height: 130px"
+                                                },
+                                                {
+                                                    $cell: true,
+                                                    $type: "div",
+                                                    id: "picker-indicator",
+                                                    class: "picker-indicator"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            class: "slide-wrapper",
+                                            $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            id: "slide",
+                                            class: "slide",
+                                            style: "width: 30px; height: 130px"
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "div",
+                                            id: "slide-indicator",
+                                            class: "slide-indicator"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                                        // {
+                                        //     $cell: true,
+                                        //     $type: "div",
+                                        //     id: "color-picker",
+                                        //     $init: function () {
+
+                                        //     }
+                                        // }
 
                                     ]
                                 }
@@ -1452,18 +1558,18 @@ define([
 
                                                 if (this._method.parameters) {
                                                     let paramsLength = this._method.parameters.length
-                                                
-                                                
-                                                if (paramsLength >= 1) { 
-                                                    let paramsVal = document.querySelector("#methodParams").value;
-                                                    try {
-                                                       params = JSON.parse(paramsVal);
-                                                        //params.push(prmtr);
-                                                    } catch (e) {
-                                                        self.logger.error('Invalid Value');
-                                                    }  
-                                                }
-                                            };
+
+
+                                                    if (paramsLength >= 1) {
+                                                        let paramsVal = document.querySelector("#methodParams").value;
+                                                        try {
+                                                            params = JSON.parse(paramsVal);
+                                                            //params.push(prmtr);
+                                                        } catch (e) {
+                                                            self.logger.error('Invalid Value');
+                                                        }
+                                                    }
+                                                };
                                                 self.kernel.callMethod(this._editorNode, this._methodName, params);
 
                                             }
@@ -1586,6 +1692,24 @@ define([
                                 }
                             ]
                         },
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            $text: "-"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         { //params input
                             $cell: true,
                             $type: "div",
@@ -1610,18 +1734,18 @@ define([
                                                 onchange: function (e) {
                                                     let propValue = this.value;
                                                     try {
-                                                      
+
                                                     } catch (e) {
                                                         // restore the original value on error
-                                                       
+
                                                     }
                                                 }
                                             }]
-    
+
                                         }
                                     ]
                                 },
-                                
+
                                 {
                                     $cell: true,
                                     $type: "div",
@@ -1641,14 +1765,14 @@ define([
                                                 onchange: function (e) {
                                                     let propValue = this.value;
                                                     try {
-                                                      
+
                                                     } catch (e) {
                                                         // restore the original value on error
-                                                       
+
                                                     }
                                                 }
                                             }]
-    
+
                                         }
                                     ]
                                 },
@@ -1657,36 +1781,35 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-                                        
-                                                {
-                                                    $cell: true,
-                                                    $type: "button",
-                                                    class: "mdc-button mdc-button--raised",
-                                                    $text: "Create",
-                                                    onclick: function (e) {
-                                                        let methodName = document.querySelector('#methodName').value;
-                                                        //let methodParams = document.querySelector('#methodParams');
-                                                        var params = [];
-                                                        let body = '';
-                                                        let paramsVal = document.querySelector("#methodParams").value;
-                                                        if (paramsVal !== '')
-                                                        {
-                                                             try {
-                                                           params = JSON.parse(paramsVal);
-                                                            //params.push(prmtr);
-                                                        } catch (e) {
-                                                            self.logger.error('Invalid Value');
-                                                        } 
-                                                     }
 
-                                                        
-                                                        self.kernel.createMethod(this._editorNode, methodName, params, body);
-                                                        this._setNode(this._editorNode);
-                                                        // let editor = document.querySelector("#aceEditor").env.editor;
-                                                        // codeEditorDoit.call(self, editor, this._editorNode);
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Create",
+                                            onclick: function (e) {
+                                                let methodName = document.querySelector('#methodName').value;
+                                                //let methodParams = document.querySelector('#methodParams');
+                                                var params = [];
+                                                let body = '';
+                                                let paramsVal = document.querySelector("#methodParams").value;
+                                                if (paramsVal !== '') {
+                                                    try {
+                                                        params = JSON.parse(paramsVal);
+                                                        //params.push(prmtr);
+                                                    } catch (e) {
+                                                        self.logger.error('Invalid Value');
                                                     }
-        
-                                                
+                                                }
+
+
+                                                self.kernel.createMethod(this._editorNode, methodName, params, body);
+                                                this._setNode(this._editorNode);
+                                                // let editor = document.querySelector("#aceEditor").env.editor;
+                                                // codeEditorDoit.call(self, editor, this._editorNode);
+                                            }
+
+
                                         }
                                     ]
                                 }
@@ -1853,7 +1976,7 @@ define([
 
             document.querySelector('#' + 'sideBar').$cell(sideBar)
 
-            let defaultApp = function(){
+            let defaultApp = function () {
                 return {
                     $cell: true,
                     $type: "div",
@@ -1874,10 +1997,10 @@ define([
                                             $type: "h3",
                                             class: "mdc-typography--headline",
                                             $text: "Application",
-                                           
-                
+
+
                                         }
-                
+
                                     ]
                                 }
                             ]
@@ -1927,9 +2050,9 @@ define([
 
                                             try {
                                                 sideBar._sideBarComponent = createApp();
-                                              } catch (e) {
+                                            } catch (e) {
                                                 sideBar._sideBarComponent = defaultApp();
-                                              }
+                                            }
 
                                             drawer.open = !drawer.open
                                             document.querySelector('#sideBar').style.visibility = 'visible';
@@ -2096,8 +2219,8 @@ define([
                                         }]
 
                                     }
-                                   
-                                    
+
+
 
                                 ]
                             },
