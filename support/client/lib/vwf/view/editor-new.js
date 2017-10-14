@@ -1205,6 +1205,97 @@ define([
 
             }
 
+            let colorPickerComponent = {
+                $cell: true,
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                $init: function () {
+                    let myEl = this;
+                   let cp =  ColorPicker(
+
+                        document.getElementById('slide'),
+                        document.getElementById('picker'),
+
+                        
+
+                        function (hex, hsv, rgb, mousePicker, mouseSlide) {
+                            ColorPicker.positionIndicators(
+                                document.getElementById('slide-indicator'),
+                                document.getElementById('picker-indicator'),
+                                mouseSlide, mousePicker
+                            );
+                            if (myEl._propName == 'color') {
+
+                                // console.log(hex);    
+                                document.querySelector('#propAceEditor').env.editor.setValue(JSON.stringify(hex));
+                                self.kernel.setProperty(myEl._editorNode, myEl._propName, hex);
+                            }
+                        });
+                        if (myEl._propName == 'color') {
+                        cp.setHex(JSON.parse(myEl._prop.body));
+                        }
+                },
+                $components: [
+                    {
+                    $cell: true,
+                    $type: "div",
+                    id: "color-picker",
+                    class: "cp-default",
+                    $components:[
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "picker-wrapper",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                id: "picker",
+                                class: "picker",
+                                style: "width: 130px; height: 130px"
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                id: "picker-indicator",
+                                class: "picker-indicator"
+                            }
+                        ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "slide-wrapper",
+                        $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        id: "slide",
+                        class: "slide",
+                        style: "width: 30px; height: 130px"
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        id: "slide-indicator",
+                        class: "slide-indicator"
+                    }
+                ]
+            }
+        ]
+    }
+                    // {
+                    //     $cell: true,
+                    //     $type: "div",
+                    //     id: "color-picker",
+                    //     $init: function () {
+
+                    //     }
+                    // }
+
+                ]
+            }
+
 
             let propEditorWindow = {
                 $cell: true,
@@ -1219,6 +1310,19 @@ define([
                 },
                 class: "propEditorGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                 $update: function () {
+
+                    var editorClass = "mdc-layout-grid__cell mdc-layout-grid__cell--span-8"
+                    var livePropertyComponent = {}
+
+                    if (this._prop.type == 'simple') {
+                        if (this._propName == 'color'){
+                            livePropertyComponent = colorPickerComponent
+                        }
+                        
+                    } else {
+                        editorClass = "mdc-layout-grid__cell mdc-layout-grid__cell--span-12"
+                    }
+
 
                     this.$components = [
                         {
@@ -1294,7 +1398,7 @@ define([
                                 {
                                     $cell: true,
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-8",
+                                    class: editorClass,
                                     $components: [
                                         {
                                             $cell: true,
@@ -1309,103 +1413,14 @@ define([
                                         }
 
                                     ]
-                                },
+                                }, livePropertyComponent
                                 // {
                                 //     $cell: true,
                                 //     $type: "div",
                                 //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 //     $components: []
                                 // },
-                                {
-                                    $cell: true,
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                    $init: function () {
-                                        let myEl = this;
-                                       let cp =  ColorPicker(
-
-                                            document.getElementById('slide'),
-                                            document.getElementById('picker'),
-
-                                            
-
-                                            function (hex, hsv, rgb, mousePicker, mouseSlide) {
-                                                ColorPicker.positionIndicators(
-                                                    document.getElementById('slide-indicator'),
-                                                    document.getElementById('picker-indicator'),
-                                                    mouseSlide, mousePicker
-                                                );
-                                                if (myEl._propName == 'color') {
-
-                                                    // console.log(hex);    
-                                                    document.querySelector('#propAceEditor').env.editor.setValue(JSON.stringify(hex));
-                                                    self.kernel.setProperty(myEl._editorNode, myEl._propName, hex);
-                                                }
-                                            });
-                                            if (myEl._propName == 'color') {
-                                            cp.setHex(JSON.parse(myEl._prop.body));
-                                            }
-                                    },
-                                    $components: [
-                                        {
-                                        $cell: true,
-                                        $type: "div",
-                                        id: "color-picker",
-                                        class: "cp-default",
-                                        $components:[
-                                        {
-                                            $cell: true,
-                                            $type: "div",
-                                            class: "picker-wrapper",
-                                            $components: [
-                                                {
-                                                    $cell: true,
-                                                    $type: "div",
-                                                    id: "picker",
-                                                    class: "picker",
-                                                    style: "width: 130px; height: 130px"
-                                                },
-                                                {
-                                                    $cell: true,
-                                                    $type: "div",
-                                                    id: "picker-indicator",
-                                                    class: "picker-indicator"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            $cell: true,
-                                            $type: "div",
-                                            class: "slide-wrapper",
-                                            $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "div",
-                                            id: "slide",
-                                            class: "slide",
-                                            style: "width: 30px; height: 130px"
-                                        },
-                                        {
-                                            $cell: true,
-                                            $type: "div",
-                                            id: "slide-indicator",
-                                            class: "slide-indicator"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                                        // {
-                                        //     $cell: true,
-                                        //     $type: "div",
-                                        //     id: "color-picker",
-                                        //     $init: function () {
-
-                                        //     }
-                                        // }
-
-                                    ]
-                                }
+                                
                             ]
                         }
 
@@ -1704,7 +1719,7 @@ define([
                                     $components: [
                                         {
                                             $type: "span",
-                                            $text: "-"
+                                            $text: "*"
                                         }
                                     ]
                                 }
