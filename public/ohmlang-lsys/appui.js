@@ -22,7 +22,18 @@ return {
                             $text: "Draw L-System",
                             onclick: function (e) {
                                 let sceneID = vwf.find("","/")[0];
-                                vwf_view.kernel.callMethod(sceneID, "testDrawLsys");
+                                vwf_view.kernel.callMethod(sceneID, "drawLSys1");
+                            }
+
+                        },
+                        {
+                            $cell: true,
+                            $type: "button",
+                            class: "mdc-button mdc-button--raised",
+                            $text: "Create new turtle",
+                            onclick: function (e) {
+                                let sceneID = vwf.find("","/")[0];
+                                vwf_view.kernel.callMethod(sceneID, "createNewTurtle");
                             }
 
                         }

@@ -1230,7 +1230,7 @@ define([
                                             $type: "span",
                                             $init: function () {
                                                 let node = self.nodes[this._currentNode];
-                                                this.$text = node.name
+                                                if (node) this.$text = node.name
                                             },
                                             class: "mdc-list-item__text mdc-typography--headline"
                                             //<h1 class="mdc-typography--display4">Big header</h1>
