@@ -41,6 +41,19 @@ children:
       depth: 2
       height: 1
       width: 1
+    methods:
+      createGizmo:
+        body: |
+          let gizmoNode = 
+            {
+            "extends": "http://vwf.example.com/aframe/gizmoComponent.vwf",
+            "type": "component",
+            "properties":
+            {
+              "mode": "translate"
+            }
+              }
+            this.children.create("gizmo", gizmoNode);
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:

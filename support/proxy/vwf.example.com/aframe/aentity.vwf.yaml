@@ -17,3 +17,11 @@ properties:
   fog:
   displayName:
   visible:
+  edit:
+methods:
+  setGizmoMode:
+    parameters:
+      - mode
+  showCloseGizmo:
+scripts:
+  - source: "http://vwf.example.com/aframe/aentity.js"

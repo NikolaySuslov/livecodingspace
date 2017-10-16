@@ -81,9 +81,9 @@ define([
 
             //document.querySelector('head').innerHTML += '<script type="text/javascript" src="vwf/view/lib/colorpicker/colorpicker.min.js">';
             document.querySelector('head').innerHTML += '<link rel="stylesheet" href="vwf/view/lib/colorpicker/themes.css">';
-          
 
-           
+
+
 
             $(document.head).append('<meta name="viewport" content="width=device-width, initial-scale=1">');
 
@@ -936,7 +936,132 @@ define([
                 class: "mdc-list-divider",
             }
 
+            let gizmoEdit = {
 
+                $type: "div",
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                $components: [
+                    {
+
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            $components: [
+                                {
+
+                                    $cell: true,
+                                    $type: "span",
+                                    $text: "Edit: ",
+                                  
+                                }
+                            ]
+                        },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        class: "mdc-switch",
+                                        $components: [
+                                            {
+                                                $type: "input",
+                                                type: "checkbox",
+                                                class: "mdc-switch__native-control",
+                                                id: 'editnode',
+                                                $init: function () {
+
+                                                    vwf_view.kernel.getProperty(this._currentNode, 'edit');
+
+                                                },
+                                                //id: "basic-switch",
+                                                onchange: function (e) {
+
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    let chkAttr = this.getAttribute('checked');
+                                                    if (chkAttr == "") {
+                                                        self.kernel.setProperty(this._currentNode, 'edit', false);
+
+                                                    } else {
+                                                        self.kernel.setProperty(this._currentNode, 'edit', true);
+                                                    }
+
+                                                    vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+
+
+                                                }
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-switch__background",
+                                                $components: [
+                                                    {
+                                                        $type: "div",
+                                                        class: "mdc-switch__knob"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "gizmomode",
+                                        $text: "T",
+                                        onclick: function (e) {
+                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "gizmomode",
+                                        $text: "R",
+                                        onclick: function (e) {
+                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "gizmomode",
+                                        $text: "S",
+                                        onclick: function (e) {
+                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+
+                ]
+            }
 
             let nodesCell = {
 
@@ -998,10 +1123,21 @@ define([
                 $update: function () {
                     //this.$text = this._currentNode;
 
+                    let node = self.nodes[this._currentNode];
+                    let nodeProtos = getPrototypes(self.kernel, node.extendsID);
+
                     var viewerProps = {};
                     var viewerPropsCell = {};
 
-                    let node = self.nodes[this._currentNode];
+                    var gizmoCell = {};
+                    if (this._currentNode !== self.kernel.application()) {
+                        if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
+                            //gizmoCell = {};
+                        } else {
+                            gizmoCell = gizmoEdit
+                        }
+                    }
+
                     if (node !== undefined) {
                         if (node.extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
                             viewerProps = {
@@ -1119,7 +1255,7 @@ define([
                                                             $cell: true,
                                                             $type: "button",
                                                             class: "mdc-button mdc-button--raised",
-                                                            $text: "Open in code editor",
+                                                            $text: "Methods browser",
                                                             onclick: function (e) {
                                                                 var currentNode = document.querySelector('#currentNode')._currentNode;
                                                                 if (currentNode == '') {
@@ -1133,10 +1269,12 @@ define([
                                                         }
                                                     ]
                                                 }
+
                                             ]
                                         }
                                     ]
                                 },
+                                gizmoCell,
                                 listDivider,
                                 {
                                     $type: "li",
@@ -1211,12 +1349,12 @@ define([
                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                 $init: function () {
                     let myEl = this;
-                   let cp =  ColorPicker(
+                    let cp = ColorPicker(
 
                         document.getElementById('slide'),
                         document.getElementById('picker'),
 
-                        
+
 
                         function (hex, hsv, rgb, mousePicker, mouseSlide) {
                             ColorPicker.positionIndicators(
@@ -1231,59 +1369,59 @@ define([
                                 self.kernel.setProperty(myEl._editorNode, myEl._propName, hex);
                             }
                         });
-                        if (myEl._propName == 'color') {
+                    if (myEl._propName == 'color') {
                         cp.setHex(JSON.parse(myEl._prop.body));
-                        }
+                    }
                 },
                 $components: [
                     {
-                    $cell: true,
-                    $type: "div",
-                    id: "color-picker",
-                    class: "cp-default",
-                    $components:[
-                    {
                         $cell: true,
                         $type: "div",
-                        class: "picker-wrapper",
+                        id: "color-picker",
+                        class: "cp-default",
                         $components: [
                             {
                                 $cell: true,
                                 $type: "div",
-                                id: "picker",
-                                class: "picker",
-                                style: "width: 130px; height: 130px"
+                                class: "picker-wrapper",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        id: "picker",
+                                        class: "picker",
+                                        style: "width: 130px; height: 130px"
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        id: "picker-indicator",
+                                        class: "picker-indicator"
+                                    }
+                                ]
                             },
                             {
                                 $cell: true,
                                 $type: "div",
-                                id: "picker-indicator",
-                                class: "picker-indicator"
+                                class: "slide-wrapper",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        id: "slide",
+                                        class: "slide",
+                                        style: "width: 30px; height: 130px"
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "div",
+                                        id: "slide-indicator",
+                                        class: "slide-indicator"
+                                    }
+                                ]
                             }
                         ]
-                    },
-                    {
-                        $cell: true,
-                        $type: "div",
-                        class: "slide-wrapper",
-                        $components: [
-                    {
-                        $cell: true,
-                        $type: "div",
-                        id: "slide",
-                        class: "slide",
-                        style: "width: 30px; height: 130px"
-                    },
-                    {
-                        $cell: true,
-                        $type: "div",
-                        id: "slide-indicator",
-                        class: "slide-indicator"
                     }
-                ]
-            }
-        ]
-    }
                     // {
                     //     $cell: true,
                     //     $type: "div",
@@ -1315,10 +1453,10 @@ define([
                     var livePropertyComponent = {}
 
                     if (this._prop.type == 'simple') {
-                        if (this._propName == 'color'){
+                        if (this._propName == 'color') {
                             livePropertyComponent = colorPickerComponent
                         }
-                        
+
                     } else {
                         editorClass = "mdc-layout-grid__cell mdc-layout-grid__cell--span-12"
                     }
@@ -1420,7 +1558,7 @@ define([
                                 //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 //     $components: []
                                 // },
-                                
+
                             ]
                         }
 
@@ -2528,9 +2666,12 @@ define([
             $('#children > div:last').css('border-bottom-width', '3px');
 
             let nodeCell = document.querySelector("#currentNode");
+
+
             if (nodeCell) {
                 if (nodeCell._currentNode !== "") {
-                    if (nodeCell._currentNode !== nodeID && (this.nodes[nodeID] !== undefined)) {
+                    if (nodeCell._currentNode !== nodeID) {
+                        //&& (this.nodes[nodeID] !== undefined)
                         nodeCell._getChildNodes();
                     } else {
                         nodeCell._setNode(vwf_view.kernel.find("", "/")[0]);
@@ -2538,6 +2679,7 @@ define([
                     }
                 }
             }
+
 
 
         },
@@ -2584,6 +2726,16 @@ define([
                 $('#input-' + nodeIDAttribute + '-' + propertyNameAttribute).val(node.properties[propertyName].getValue());
             }
 
+            let nodeCell = document.querySelector('#currentNode');
+
+            if (nodeCell !== null) {
+                if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
+                    console.log('EDIT !!!')
+                }
+
+            }
+
+
             let propCell = document.querySelector("#currentNode #prop-" + propertyName);
 
             if (propCell !== null) {
@@ -2595,6 +2747,36 @@ define([
         },
 
         //gotProperty: [ /* nodeID, propertyName, propertyValue */ ],
+
+        gotProperty: function (nodeID, propertyName, propertyValue) {
+            var node = this.nodes[nodeID];
+
+            if (!node) return;  // TODO: patch until full-graph sync is working; drivers should be able to assume that nodeIDs refer to valid objects
+
+            let nodeCell = document.querySelector('#currentNode');
+
+            if (nodeCell !== null) {
+                if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
+                    let editCheckBox = document.querySelector("#currentNode #editnode");
+                    if (editCheckBox) {
+                        if (propertyValue) {
+                            editCheckBox.setAttribute('checked', '');
+                        } else {
+                            let checkAttr = editCheckBox.getAttribute('checked');
+                            if (checkAttr) editCheckBox.removeAttribute('checked');
+                        }
+                    }
+                    console.log('EDIT !!! is ' + propertyValue)
+
+                }
+
+            }
+
+
+        },
+
+
+
 
         createdMethod: function (nodeID, methodName, methodParameters, methodBody) {
             var node = this.nodes[nodeID];

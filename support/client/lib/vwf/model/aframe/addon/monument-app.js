@@ -2,6 +2,80 @@ if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+AFRAME.registerComponent('gizmo', {
+
+    schema: {
+        mode: { default: 'translate' }
+      },
+
+    update: function (old) {
+        let modes = ['translate', 'rotate', 'scale'];
+        if (!this.gizmo) {
+            let newMode = modes.filter(el => {
+                return el == this.data.mode
+            })
+            if (newMode.length !== 0) {
+            this.mode = this.data.mode
+            this.transformControls.setMode(this.mode)
+            }
+        }
+    },
+
+    init: function () {
+        let self = this
+        this.mode = this.data.mode
+        let activeCamera = document.querySelector('#avatarControl').getObject3D('camera');
+        let renderer = this.el.sceneEl.renderer;
+
+        this.transformControls = new THREE.TransformControls(activeCamera, renderer.domElement);
+
+        this.transformControls.attach( this.el.object3D);
+        this.el.sceneEl.setObject3D('control-'+this.el.id,  this.transformControls);
+
+        this.transformControls.addEventListener('change', function (evt) {
+           // console.log('changed');
+            var object = self.transformControls.object;
+            if (object === undefined) {
+              return;
+            }
+
+            var transformMode = self.transformControls.getMode();
+            switch (transformMode) {
+              case 'translate':
+              vwf_view.kernel.setProperty(object.el.id, 'position', 
+              [object.position.x, object.position.y, object.position.z] )  
+           
+                break;
+              case 'rotate':
+              vwf_view.kernel.setProperty(object.el.id, 'rotation', 
+              [THREE.Math.radToDeg(object.rotation.x), THREE.Math.radToDeg(object.rotation.y), THREE.Math.radToDeg(object.rotation.z)] )  
+              
+                break;
+              case 'scale':
+              vwf_view.kernel.setProperty(object.el.id, 'scale', 
+              [object.scale.x, object.scale.y, object.scale.z] )
+               
+                break;
+            }
+            
+            //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
+      });
+    },
+
+    remove: function () {
+        this.transformControls.detach();
+        this.el.sceneEl.removeObject3D('control-'+this.el.id);
+       
+      },
+
+    tick: function (t) {
+        this.transformControls.update();
+    }
+
+  });
+
+
+
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
         this.el.addEventListener('click', function (evt) {

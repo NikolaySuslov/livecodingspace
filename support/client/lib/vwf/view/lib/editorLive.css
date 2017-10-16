@@ -141,6 +141,10 @@
         padding-left: 16px;
       }
 
+      .gizmomode {
+        cursor:pointer;
+      }
+
       .avatar-card {
         cursor:pointer;
         background-repeat: no-repeat;

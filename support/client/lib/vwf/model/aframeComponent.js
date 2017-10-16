@@ -152,8 +152,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             if (this.state.nodes[nodeID] !== undefined) {
 
                 var node = this.state.nodes[nodeID];
-                if (node.aframeObj !== undefined) {
+
+                if (node.aframeObj.compName !== undefined) {
                     // removes and destroys object
+                    node.aframeObj.el.removeAttribute(node.aframeObj.compName);
                     node.aframeObj = undefined;
                 }
 
@@ -359,6 +361,27 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+                    
+                                        value = propertyValue;
+                    
+                    
+                                        let parentNodeAF = aframeObject.el;
+                    
+                                        switch (propertyName) {
+                    
+                                            case "mode":
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'mode', propertyValue);
+                                                break;
+                    
+                                            default:
+                                                value = undefined;
+                                                break;
+                    
+                    
+                                        }
+                    
+                                    }
 
                 if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
 
@@ -559,6 +582,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if (value === undefined && isAGizmoDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "mode":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).mode;
+                            break;
+
+                       
+
+                    }
+
+                }
+
 
                 if (value === undefined && isGearVRControlsDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -650,6 +691,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
     }
 
 
+    function isAGizmoDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/gizmoComponent.vwf");
+            }
+        }
+        return found;
+    }
 
     function isARayCasterDefinition(prototypes) {
         var found = false;
@@ -725,6 +775,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gizmoComponent.vwf")) {
+            
+            
+                        // aframeObj.el.setAttribute(node.type, {});
+                        aframeObj.compName = "gizmo";
+                        aframeObj.el.setAttribute(aframeObj.compName, {});
+            
+                    }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/raycasterComponent.vwf")) {
 
