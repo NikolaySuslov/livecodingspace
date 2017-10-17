@@ -174,7 +174,7 @@ children:
             makeLSys: |
                 if (this.ready) 
                 {
-                this.clearDraw();
+                //this.clearDraw();
                 this.parseLSys();
                 this.future(0.1).drawLSys();
                 }
@@ -223,7 +223,9 @@ children:
                     this.drawNode.position = endPosition;
             initialize:
                 body: |
+                   // vwf_view.kernel.createProperty(this.id, "angle", function() { return 90 })
                     this.ready = true;
+                    //this.makeLSys();
                     console.log("initialising turtle");
                     //vwf_view.kernel.callMethod(this.id, "testDrawLsys");
 methods:
@@ -236,7 +238,7 @@ methods:
     this.turtle.makeLSys()
   createNewTurtle: |
         console.log("create new turtle");
-        let newTurtle = this.turtle;
+        let newTurtle = vwf.getNode(this.turtle.id, true);
         let randomName = "turtle-" + this.random();
         this.children.create(randomName, newTurtle);
   testTurtle: |

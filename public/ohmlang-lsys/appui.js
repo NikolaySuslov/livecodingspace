@@ -25,18 +25,19 @@ return {
                                 vwf_view.kernel.callMethod(sceneID, "drawLSys1");
                             }
 
-                        },
-                        {
-                            $cell: true,
-                            $type: "button",
-                            class: "mdc-button mdc-button--raised",
-                            $text: "Create new turtle",
-                            onclick: function (e) {
-                                let sceneID = vwf.find("","/")[0];
-                                vwf_view.kernel.callMethod(sceneID, "createNewTurtle");
-                            }
-
                         }
+                        // {
+                        //     $cell: true,
+                        //     $type: "button",
+                        //     class: "mdc-button mdc-button--raised",
+                        //     $text: "Create new turtle",
+                        //     onclick: function (e) {
+                        //        // let sceneID = vwf.find("","/")[0];
+                        //         vwf_view.kernel.callMethod(sceneID, "createNewTurtle");
+                        //        // let proto = self.getCleanNodePrototype(this._currentNode);
+                        //     }
+
+                        // }
 
                     ]
                 }
