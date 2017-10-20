@@ -90,6 +90,41 @@ define([
 
             // $('body').append('<script>mdc.autoInit()</script>');
 
+
+
+            this.removeProps = (obj) => {
+                Object.keys(obj).forEach(key =>
+                (key === 'id' || key === 'patches' || key === 'random' || key === 'sequence') && delete obj[key] ||
+                (obj[key] && typeof obj[key] === 'object') && this.removeProps(obj[key])
+                );
+                return obj;
+            };
+
+            this.getNodeDef = function(nodeID) {
+                let node = vwf.getNode(nodeID, true);
+                let nodeDef = self.removeProps(node);
+                return nodeDef
+            }
+
+
+            this.GUID = function()
+            {
+                var S4 = function ()
+                {
+                    return Math.floor(
+                            Math.random() * 0x10000 /* 65536 */
+                        ).toString(16);
+                };
+    
+                return (
+                        S4() + S4() + "-" +
+                        S4() + "-" +
+                        S4() + "-" +
+                        S4() + "-" +
+                        S4() + S4() + S4()
+                    );
+            }
+
             this.getRoot = function () {
                 var app = window.location.pathname;
                 var pathSplit = app.split('/');
@@ -169,7 +204,7 @@ define([
             );
 
 
-            function avatarCardDef(src, desc, onclickfunc) {
+            this.avatarCardDef = function(src, desc, onclickfunc) {
 
                 return {
                     $cell: true,
@@ -283,7 +318,7 @@ define([
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
 
-                                                                avatarCardDef("/../assets/avatars/ico/simple.jpg", { title: "Simple", subtitle: "Cube" },
+                                                                self.avatarCardDef("/../assets/avatars/ico/simple.jpg", { title: "Simple", subtitle: "Cube" },
                                                                     function (e) {
                                                                         let avatarID = 'avatar-' + self.kernel.moniker();
                                                                         vwf_view.kernel.callMethod(avatarID, "createSimpleAvatar");
@@ -297,7 +332,7 @@ define([
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
-                                                                avatarCardDef("/../assets/avatars/ico/female.jpg", { title: "Human", subtitle: "Female" },
+                                                                self.avatarCardDef("/../assets/avatars/ico/female.jpg", { title: "Human", subtitle: "Female" },
                                                                     function (e) {
                                                                         let avatarID = 'avatar-' + self.kernel.moniker();
                                                                         vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/female/avatar1.gltf"]);
@@ -309,7 +344,7 @@ define([
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
-                                                                avatarCardDef("/../assets/avatars/ico/male.jpg", { title: "Human", subtitle: "Male" },
+                                                                self.avatarCardDef("/../assets/avatars/ico/male.jpg", { title: "Human", subtitle: "Male" },
                                                                     function (e) {
                                                                         let avatarID = 'avatar-' + self.kernel.moniker();
                                                                         vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/male/avatar1.gltf"]);
@@ -695,8 +730,10 @@ define([
                     class: "mdc-layout-grid__inner",
                     _prop: {},
                     $init: function () {
+                        
                         let prop = m[1].prop;
-                        if (prop.value == undefined) {
+                       
+                        if (prop.value == undefined && this._currentNode !== undefined) {
                             prop.value = JSON.stringify(utility.transform(vwf.getProperty(this._currentNode, prop.name, []), utility.transforms.transit));
                         }
                         this._prop = prop
@@ -2202,7 +2239,7 @@ define([
                                             let sideBar = document.querySelector('#sideBar');
 
                                             try {
-                                                sideBar._sideBarComponent = createApp();
+                                                sideBar._sideBarComponent = createApp.call(self);
                                             } catch (e) {
                                                 sideBar._sideBarComponent = defaultApp();
                                             }

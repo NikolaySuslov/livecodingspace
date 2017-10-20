@@ -253,6 +253,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         //     aframeObject.setAttribute('interpolation', { duration: propertyValue});
                         //         break;
 
+                        case "worldPosition":
+                       
+                        break;
+
                         case "position":
 
                         this.state.setAFrameProperty('position', propertyValue, aframeObject);
@@ -621,6 +625,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         //         value = interpolation.duration;
                         //     }
                         //     break;
+
+                        case "worldPosition":
+                        var pos = aframeObject.object3D.getWorldPosition();
+                        if (pos !== undefined) {
+                            value = pos;
+                        }
+                        break;
 
                         case "position":
                             var pos = aframeObject.getAttribute('position');

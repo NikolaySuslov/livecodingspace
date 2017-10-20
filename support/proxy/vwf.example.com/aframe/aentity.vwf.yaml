@@ -18,6 +18,7 @@ properties:
   displayName:
   visible:
   edit:
+  worldPosition:
 methods:
   setGizmoMode:
     parameters:

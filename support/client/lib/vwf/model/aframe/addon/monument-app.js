@@ -2,6 +2,55 @@ if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+AFRAME.registerComponent('linepath', {
+    schema: {
+      color: { default: '#000' },
+      width: { default: 0.01 },
+      path: {
+        default: [
+          { x: -0.5, y: 0, z: 0 },
+          { x: 0.5, y: 0, z: 0 }
+        ]
+  
+        // Deserialize path in the form of comma-separated vec3s: `0 0 0, 1 1 1, 2 0 3`.
+        // parse: function (value) {
+        //   return value.split(',').map(coordinates.parse);
+        // },
+  
+        // Serialize array of vec3s in case someone does setAttribute('line', 'path', [...]).
+        // stringify: function (data) {
+        //   return data.map(coordinates.stringify).join(',');
+        // }
+      }
+    },
+    
+    update: function () {
+      var material = new MeshLineMaterial({
+            color: new THREE.Color(this.data.color), //this.data.color
+            lineWidth: this.data.width
+      });
+  
+      var geometry = new THREE.Geometry();
+      this.data.path.forEach(function (vec3) {
+        geometry.vertices.push(
+          new THREE.Vector3(vec3.x, vec3.y, vec3.z)
+        );
+      });
+  
+     let line = new MeshLine();
+      line.setGeometry( geometry );
+
+//new THREE.Line(geometry, material)
+
+      this.el.setObject3D('mesh', new THREE.Mesh( line.geometry, material ));
+    },
+    
+    remove: function () {
+      this.el.removeObject3D('mesh');
+    }
+  });
+
+
 AFRAME.registerComponent('gizmo', {
 
     schema: {

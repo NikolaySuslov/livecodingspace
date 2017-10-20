@@ -23,45 +23,51 @@ children:
         properties:
             position: [1, 1.25, -4]
             color: "#e0e014"
-            radius: 0.3
+            radius: 0.2
             wireframe: true
             angleInRadians: 0
-            counter: 1
             iteration:
                 set: |
                     this.iteration = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: 3
             angle:
                 set: |
                     this.angle = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: 60  
             stepLength: 
                 set: |
                     this.stepLength = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: 0.5  
             rule: 
                 set: |
                     this.rule = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: 'F++F++F'
             axiomF: 
                 set: |
                     this.axiomF = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: 'F-F++F-F'
             axiomG:
                 set: |
                     this.axiomG = value;
-                    this.makeLSys();
+                    this.redrawEvent();
                 value: ''
             lsys: ''
-            ready: false
+            readyForDraw: true
         children:
             drawNode:
                 extends: http://vwf.example.com/aframe/aentity.vwf
+                children:
+                    linepath:
+                        extends: http://vwf.example.com/aframe/linepath.vwf
+                        properties:
+                            color: "green"
+                            path: []
+                            width: 0.02
             lsysLang:
                 extends: http://vwf.example.com/ohm/node.vwf
                 properties:
@@ -142,22 +148,13 @@ children:
                                         //vwf_view.kernel.callMethod(turtleID, 'turn', [this.args.y]);
                                         self.parent.turn(this.args.y);
                                     if (this.sourceString == "-")
-                                        // vwf_view.kernel.callMethod(turtleID, 'turn', [-1 * this.args.y]);
+                                        //vwf_view.kernel.callMethod(turtleID, 'turn', [-1 * this.args.y]);
                                         self.parent.turn(-1*this.args.y);
                                     }
                             });  
+        events:
+            redrawEvent:
         methods:
-            clearDraw: |
-                let self = this
-                let drawDef = {
-                    "extends": "http://vwf.example.com/aframe/aentity.vwf",
-                }
-                this.children.delete(this.drawNode);
-                this.children.create("drawNode", drawDef);
-                this.angleInRadians = 0
-                //this.drawNode.children.forEach(el => {
-                //   self.drawNode.children.delete(el)
-                //})
             parseLSys: |
                 var str = this.rule;
                 var axioms = {"F": this.axiomF, "G": this.axiomG};
@@ -172,35 +169,19 @@ children:
                 console.log(str);
                 this.lsys = str;
             makeLSys: |
-                if (this.ready) 
-                {
-                //this.clearDraw();
+                if (this.readyForDraw){
+                this.drawNode.position = [0, 0, 0]
+                this.angleInRadians = 0;
+                this.drawNode.linepath.path = [];
                 this.parseLSys();
-                this.future(0.1).drawLSys();
+                this.drawLSys();
+                this.drawNode.position = [0, 0, 0]
                 }
             drawLSys: |
                 var match = this.turtleLang.grammar.match(this.lsys, 'Draw<"1","1">');
                 if (match.succeeded()){
                     var res = this.turtleLang.semantics(match).draw(this.stepLength, this.angle);
                 }
-            makeMe:
-                parameters:
-                        - childName
-                        - startPosition
-                        - endPosition
-                body: |
-                        //let nodeId = this.drawNode.id;
-                        var childComponent = {
-                                            "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
-                                            "type": "component",
-                                            "properties": {
-                                                "start": startPosition,
-                                                "end": endPosition,
-                                                "color": "green"
-                                            }
-                                        }
-                            //vwf_view.kernel.createChild(this.id, childName, childComponent);
-                            this.drawNode.children.create(childName, childComponent);
             turn:
                 parameters:
                     - angle
@@ -217,30 +198,34 @@ children:
                     var y0 = pos.y;
                     var xx = Math.sin(this.angleInRadians);
                     var yy = Math.cos(this.angleInRadians);
-                    let endPosition = AFRAME.utils.coordinates.stringify({x: x0 + step * xx, y: y0 + step * yy, z: pos.z});
-                    this.counter = this.counter + 1;
-                    this.makeMe('line__' + this.counter, this.drawNode.position, endPosition);
+                    let startPosition = AFRAME.utils.coordinates.parse(this.drawNode.position);
+                    let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos.z};
+                    var drawPath = this.drawNode.linepath.path;
+                    drawPath.push(startPosition);
+                    drawPath.push(endPosition);
+                    vwf_view.kernel.setProperty(this.drawNode.linepath.id, 'path', drawPath);
                     this.drawNode.position = endPosition;
+            setTurtleParams:
+                parameters:
+                    - val
+                body: |
+                    this.readyForDraw = false;
+                    val.forEach(el => {
+                        this[el[0]] = el[1]
+                    })
+                    this.readyForDraw = true;
+                    this.makeLSys();
             initialize:
                 body: |
-                   // vwf_view.kernel.createProperty(this.id, "angle", function() { return 90 })
-                    this.ready = true;
-                    //this.makeLSys();
+                    this.redrawEvent = function(){this.makeLSys()}
+                    vwf_view.kernel.callMethod(this.id, "makeLSys");
                     console.log("initialising turtle");
-                    //vwf_view.kernel.callMethod(this.id, "testDrawLsys");
 methods:
   initialize:
     body: |
-        //this.turtle.ready = true;
         console.log("initialising scene");
-        //vwf_view.kernel.callMethod(this.id, "testDrawLsys");
   drawLSys1: |
     this.turtle.makeLSys()
-  createNewTurtle: |
-        console.log("create new turtle");
-        let newTurtle = vwf.getNode(this.turtle.id, true);
-        let randomName = "turtle-" + this.random();
-        this.children.create(randomName, newTurtle);
   testTurtle: |
     this.turtle.goForward(1);
     this.turtle.goForward(1);

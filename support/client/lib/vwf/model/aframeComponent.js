@@ -241,6 +241,36 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+                    
+                                        value = propertyValue;
+                    
+                    
+                                        let parentNodeAF = aframeObject.el;
+                    
+                                        switch (propertyName) {
+                    
+                                            case "color":
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'color', propertyValue);
+                                                break;
+                    
+                                            case "path":
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'path', propertyValue);
+                                                break;
+                    
+                                                case "width":
+                                                parentNodeAF.setAttribute(aframeObject.compName, 'width', propertyValue);
+                                                break;
+
+                                            default:
+                                                value = undefined;
+                                                break;
+                    
+                    
+                                        }
+                    
+                                    }
+
 
                 //isALineDefinition(node.prototypes)
                 //if (value === undefined && node.componentName == 'line') { //isALineDefinition( node.prototypes )
@@ -553,6 +583,31 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if (value === undefined && isALinePathDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "color":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).color;
+                            break;
+
+                        case "path":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).path;
+                            break;
+
+                            case "width":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).width;
+                            break;
+                        
+
+                    }
+
+                }
+
 
                 if (value === undefined && isAInterpolationDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -690,6 +745,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+    function isALinePathDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/linepath.vwf");
+            }
+        }
+        return found;
+    }
 
     function isAGizmoDefinition(prototypes) {
         var found = false;
@@ -794,6 +858,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/linepath.vwf")) {
+            
+            
+                        // aframeObj.el.setAttribute(node.type, {});
+                        aframeObj.compName = "linepath";
+                        aframeObj.el.setAttribute(aframeObj.compName, {});
+            
+                    }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
 
