@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript">
+
+        vwf_view.satProperty = function (nodeID, propertyName, propertyValue) {
+            if (propertyValue === undefined || propertyValue == null) {
+                return;
+            }
+
+            let props = ["angle", "iteration", "stepLength", "rule", "axiomF", "axiomG"]
+
+
+            if (props.includes(propertyName)) {
+                vwf_view.kernel.callMethod(nodeID, "makeLSys");
+                 //console.log(propertyName +' - '+ propertyValue);
+            }
+
+            // switch ( propertyName ) {
+            //     case "iteration":
+            //     vwf_view.kernel.callMethod(nodeID, "makeLSys");
+            //     console.log("here!!")
+            //     break;
+
+            //     default:
+            //         break;
+            // }
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>

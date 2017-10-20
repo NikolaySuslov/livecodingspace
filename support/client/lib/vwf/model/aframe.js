@@ -636,20 +636,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "position":
                             var pos = aframeObject.getAttribute('position');
                             if (pos !== undefined) {
-                                value = AFRAME.utils.coordinates.stringify(pos);
+                                value = pos//[pos.x, pos.y, pos.z]//AFRAME.utils.coordinates.stringify(pos);
                             }
                             break;
                         case "scale":
                             var scale = aframeObject.getAttribute('scale');
                             if (scale !== undefined) {
-                                value = AFRAME.utils.coordinates.stringify(scale);
+                                value = scale//AFRAME.utils.coordinates.stringify(scale);
                             }
                             break;
 
                         case "rotation":
                             var rot = aframeObject.getAttribute('rotation');
                             if (rot !== undefined) {
-                                value = AFRAME.utils.coordinates.stringify(rot);
+                                value = rot//AFRAME.utils.coordinates.stringify(rot);
                             }
                             break;
 

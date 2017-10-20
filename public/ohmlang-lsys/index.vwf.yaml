@@ -26,36 +26,12 @@ children:
             radius: 0.2
             wireframe: true
             angleInRadians: 0
-            iteration:
-                set: |
-                    this.iteration = value;
-                    this.redrawEvent();
-                value: 3
-            angle:
-                set: |
-                    this.angle = value;
-                    this.redrawEvent();
-                value: 60  
-            stepLength: 
-                set: |
-                    this.stepLength = value;
-                    this.redrawEvent();
-                value: 0.5  
-            rule: 
-                set: |
-                    this.rule = value;
-                    this.redrawEvent();
-                value: 'F++F++F'
-            axiomF: 
-                set: |
-                    this.axiomF = value;
-                    this.redrawEvent();
-                value: 'F-F++F-F'
-            axiomG:
-                set: |
-                    this.axiomG = value;
-                    this.redrawEvent();
-                value: ''
+            iteration: 3
+            angle: 60  
+            stepLength: 0.5  
+            rule: 'F++F++F'
+            axiomF: 'F-F++F-F'
+            axiomG: ''
             lsys: ''
             readyForDraw: true
         children:
@@ -151,9 +127,7 @@ children:
                                         //vwf_view.kernel.callMethod(turtleID, 'turn', [-1 * this.args.y]);
                                         self.parent.turn(-1*this.args.y);
                                     }
-                            });  
-        events:
-            redrawEvent:
+                            });
         methods:
             parseLSys: |
                 var str = this.rule;
@@ -217,7 +191,7 @@ children:
                     this.makeLSys();
             initialize:
                 body: |
-                    this.redrawEvent = function(){this.makeLSys()}
+                    //this.redrawEvent = function(){this.makeLSys()}
                     vwf_view.kernel.callMethod(this.id, "makeLSys");
                     console.log("initialising turtle");
 methods:

@@ -250,6 +250,7 @@ this.followAvatarControl = function (position, rotation) {
     //this.avatarNameNode.rotation = [myRot.x, myRot.y, rotation.z]; 
 
     this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
+    
     // this.avatarNode.myCursor.rotation = [rotation.x, myHeadRot.y, rotation.z];
 
     // this.avatarCamera.rotation = [rotation.x, myHeadRot.y, rotation.z];  
