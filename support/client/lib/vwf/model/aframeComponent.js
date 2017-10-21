@@ -894,24 +894,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-sun-component.vwf")) {
-
-
-            // aframeObj.el.setAttribute(node.type, {});
-            aframeObj.compName = "sun";
-            aframeObj.el.setAttribute('id', "sun");
-            aframeObj.el.setAttribute(aframeObj.compName, {});
-
-        }
-
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
-
-
-            // aframeObj.el.setAttribute(node.type, {});
-            aframeObj.compName = "skyshader";
-            aframeObj.el.setAttribute(aframeObj.compName, {});
-
-        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-avatarbvh-component.vwf")) {
 

@@ -6,9 +6,9 @@ properties:
     assets: "assets.json"
 children:
     sky:
-        extends: http://vwf.example.com/aframe/asky.vwf
+        extends: http://vwf.example.com/aframe/a-sun-sky.vwf
         properties:
-            color: "#ECECEC"
+            sunPosition: "-0.2 5 -5"
     groundPlane:
         extends: http://vwf.example.com/aframe/aplane.vwf
         properties:
@@ -41,7 +41,7 @@ children:
                     linepath:
                         extends: http://vwf.example.com/aframe/linepath.vwf
                         properties:
-                            color: "green"
+                            color: "#445447"
                             path: []
                             width: 0.02
             lsysLang:

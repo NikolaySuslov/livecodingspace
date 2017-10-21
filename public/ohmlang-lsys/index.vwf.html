@@ -11,9 +11,12 @@
 
             let props = ["angle", "iteration", "stepLength", "rule", "axiomF", "axiomG"]
 
-
+            let readyForDraw = vwf.getProperty(nodeID, 'readyForDraw');
             if (props.includes(propertyName)) {
+
+                if (readyForDraw) {
                 vwf_view.kernel.callMethod(nodeID, "makeLSys");
+                }
                  //console.log(propertyName +' - '+ propertyValue);
             }
 

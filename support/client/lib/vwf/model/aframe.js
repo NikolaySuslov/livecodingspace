@@ -592,6 +592,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                     }
                 }
+                if (value === undefined && aframeObject.nodeName == "A-SUN-SKY") {
+                    value = propertyValue;
+                    switch (propertyName) {
+
+                        case "sunPosition":
+                            aframeObject.setAttribute('material', 'sunPosition', propertyValue);
+                            break;
+
+                        // case "active":
+                        //     aframeObject.setAttribute('camera', 'active', propertyValue);
+                        //        break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
 
             }
             return value;
@@ -850,6 +867,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     //         }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-SUN-SKY") {
+                    
+                    
+                                        switch (propertyName) {
+                                            case "sunPosition":
+                                                value = aframeObject.getAttribute('material').sunPosition;
+                                                break;
+                                        }
+                    
+                                        //    switch (propertyName) {
+                                        //         case "active":
+                                        //             value = aframeObject.getAttribute('camera').active;
+                                        //             break;
+                                        //         }
+                                    }
+
                 if (value === undefined && aframeObject.nodeName == "A-COLLADA-MODEL") {
 
                     switch (propertyName) {
@@ -900,6 +933,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-cursor');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
             aframeObj = document.createElement('a-sky');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-sun-sky.vwf")) {
+                aframeObj = document.createElement('a-sun-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/abox.vwf")) {
             aframeObj = document.createElement('a-box');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aplane.vwf")) {
