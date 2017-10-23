@@ -10,32 +10,51 @@ children:
     properties:
       value: "Virtual World Framework & A-Frame"
       color: "#b74217"
-      position: [-2, 2.5, -2]
+      position: "-2 2.5 -2"
   spaceText2:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
       value: "Project by Krestianstvo.org"
       color: "#305b32"
-      position: [1, 3, -4]
+      position: "1 3 -4"
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
-      position: [-1, 0.5, -3]
-      rotation: [0, -30, 0]
+      position: "-1 0.5 -3"
+      rotation: "0 -30 0"
       color: "#3c7249"
       depth: 2
       height: 1
       width: 1
       clickable: true
+    children:
+      raycaster-listener:
+        extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
     events:
       clickEvent:
+      intersectEvent:
+      clearIntersectEvent:
     methods:
       clickEventMethod:
         body: |
           if (this.clickable) {
           let genColor = this.generateColor();
           this.color = genColor 
-          }
+            }
+      intersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -90 0"
+            }
+      clearIntersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -30 0"
+            }
       generateColor:
         body: |
           var letters = '0123456789ABCDEF';
@@ -48,10 +67,16 @@ children:
         this.clickEvent = function(){
           this.clickEventMethod();
          }
+         this.intersectEvent = function(){
+          this.intersectEventMethod();
+         }
+         this.clearIntersectEvent = function(){
+          this.clearIntersectEventMethod();
+         }
   sphere:
     extends: http://vwf.example.com/aframe/asphere.vwf
     properties:
-      position: [1, 1.25, -4]
+      position: "1 1.25 -4"
       color: "#e0e014"
       radius: 1
       wireframe: true
@@ -59,10 +84,18 @@ children:
       box2:
         extends: http://vwf.example.com/aframe/abox.vwf
         properties:
-          position: [2, -1.25, 0]
+          src: "#bg"
+          position: "2 -0.75 0"
           color: "#2167a5"
           depth: 1
-          interpolation: "50ms"
+        children:
+          interpolation:
+            extends: http://vwf.example.com/aframe/interpolation-component.vwf
+            properties:
+              enabled: true
+              duration: 50
+              deltaPos: 0.1
+              deltaRot: 1
         methods:
           run:
             body: |

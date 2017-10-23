@@ -430,8 +430,10 @@ define([
                                             $cell: true,
                                             $type: "button",
                                             class: "mdc-button mdc-button--raised",
-                                            $text: "Settings",
+                                            $text: "OSC Settings",
                                             onclick: function (e) {
+                                                let sideBar = document.querySelector('#sideBar');
+                                                sideBar._sideBarComponent = oscSettings;
                                                 //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
                                             }
 
@@ -525,7 +527,157 @@ define([
 
             }
 
+            let oscSettings =
+            {
+                $cell: true,
+                $type: "div",
+                id: "oscSettings",
+                class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                _oscHost:'',
+                _oscPort: '',
+                _oscStatus: '',
+                _updateStatus: function(){
+                    this._oscStatus = window._OSCManager.getStatus()
+                },
+                $init: function () {
+                    if (window._OSCManager) {
+                    this._oscHost = window._OSCManager.hostValue;
+                    this._oscPort = window._OSCManager.portValue;
+                    this._oscStatus = window._OSCManager.getStatus();
 
+                    // var t = this;
+                    // setInterval(function () {
+                    //     t._updateStatus();
+                    // }, 1000);
+                    
+                    }
+                },
+                $update: function(){
+
+                    let that = this
+                    var buttonText = "Connect";
+                    var buttonFunc = function (e) {
+                    }
+
+                    if (this._oscStatus == 1) {
+                        buttonText = "Disconnect";
+                        buttonFunc = function (e) {
+                            window._OSCManager.disconnect();
+                        }
+                    } else {
+
+
+                    var buttonFunc = function (e) {
+                        window._OSCManager.connect();
+                        window._OSCManager.port.on("open", function () {
+                            that._oscStatus = window._OSCManager.getStatus();
+                            console.log("connected");
+                        });
+                        window._OSCManager.port.on("close", function () {
+                            that._oscStatus = window._OSCManager.getStatus();
+                            console.log("disconnected");
+                        });
+
+                    }
+
+                }
+
+                    this.$components = [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                                $type: "span",
+                                                $text: "Host: "
+                                        },
+                                        {
+                                            class: "mdc-textfield",
+                                            $cell: true,
+                                            $type: "span",
+                                            $components: [
+                                                {
+                                                    class: "mdc-textfield__input",
+                                                    id: "oscHost",
+                                                    $cell: true,
+                                                    $type: "input",
+                                                    type: "text",
+                                                    value: this._oscHost,
+                                                    onchange: function (e) {
+                                                        this._oscHost = this.value;
+                                                        window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                                    }
+                                                }
+                                                
+                                            ]
+    
+                                        }
+    
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                                $type: "span",
+                                                $text: "Port: "
+                                        },
+                                        {
+                                            class: "mdc-textfield",
+                                            $cell: true,
+                                            $type: "span",
+                                            $components: [
+                                                {
+                                                    class: "mdc-textfield__input",
+                                                    id: "oscPort",
+                                                    $cell: true,
+                                                    $type: "input",
+                                                    type: "text",
+                                                    value: this._oscPort,
+                                                    onchange: function (e) {
+                                                        this._oscPort = this.value;
+                                                        window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                                    }
+                                                }
+                                                
+                                            ]
+    
+                                        }
+    
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: buttonText,
+                                            onclick: buttonFunc
+
+                                        }
+
+                                    ]
+                                }
+                               
+                            ]
+                        }
+                    ]
+                }
+                
+
+            }
             let loadSaveSettings =
                 {
                     $cell: true,
@@ -693,35 +845,6 @@ define([
 
 
                 }
-
-
-            //  document.querySelector('#' + 'viewSettings').$cell({
-            //         $cell: true,
-            //         $type: "div",
-            //         id: 'viewSettings',
-            //         //style:'z-index: 10; position: absolute; margin-left: 240px;',
-            //         class: "settingsDiv mdc-toolbar-fixed-adjust",
-            //         $init: function(){
-            //             this.style.visibility = 'hidden';
-            //         },
-            //         $components: [viewSettings]
-            //     })        
-
-
-
-
-
-            // document.querySelector('#' + 'viewSettings').$cell({
-            //     $cell: true,
-            //     $type: "div",
-            //     id: 'viewSettings',
-            //     style:'z-index: 10; position: absolute; margin-left: 240px;',
-            //     class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left mdc-toolbar-fixed-adjust",
-            //     $init: function(){
-            //         this.style.visibility = 'hidden';
-            //     },
-            //     $components: [viewSettings]
-            // })
 
 
             let protoPropertiesCell = function (m) {

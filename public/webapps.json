@@ -21,6 +21,12 @@
         "text": "Example app with L-System grammar"
     },
 
+    "osc-example":{
+        "title":"Simple app with Ohm & OSC control",
+        "imgUrl": "./osc-example/webimg.jpg",
+        "text": "Example app with OSC control"
+    },
+
     "gearvr":{
         "title":"GearVR controller",
         "imgUrl": "",

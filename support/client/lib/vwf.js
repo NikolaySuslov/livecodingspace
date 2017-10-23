@@ -397,6 +397,7 @@
                 { library: "vwf/model/stage/log", active: true },
 
                 { library: "vwf/model/ohm", active: true },
+                { library: "vwf/model/osc", active: true },
               
 
                   { library: "vwf/model/aframe", 
@@ -459,6 +460,7 @@
                 { library: "vwf/view/cesium", active: false },
 
                 { library: "vwf/view/ohm", active: true },
+                { library: "vwf/view/osc", active: true },
 
                 
                  { library: "vwf/view/aframe", active: false },
@@ -517,6 +519,7 @@
                     { library: "vwf/model/sound", active: false },
 
                      { library: "vwf/model/ohm", active: true },
+                     { library: "vwf/model/osc", active: true },
                   
                      { library: "vwf/model/aframe", active: false },
                      { library: "vwf/model/aframeComponent", active: true },
@@ -546,6 +549,7 @@
                     { library: "vwf/view/touch", active: false },
 
                      { library: "vwf/view/ohm", active: true },
+                     { library: "vwf/view/osc", active: true },
                      
                       { library: "vwf/view/aframe", active: false },
                       { library: "vwf/view/aframeComponent", active: true },

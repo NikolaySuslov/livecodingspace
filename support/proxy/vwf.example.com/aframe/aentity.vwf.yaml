@@ -19,6 +19,7 @@ properties:
   visible:
   edit:
   worldPosition:
+  osc:
 methods:
   setGizmoMode:
     parameters:
