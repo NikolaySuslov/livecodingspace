@@ -1,9 +1,0 @@
-# http://kineticjs.com/docs/Kinetic.Arc.html
-
---- 
-extends: http://vwf.example.com/kinetic/shape.vwf
-properties:
-  angle:
-  innerRadius:
-  outerRadius:
-  clockwise:
