@@ -936,27 +936,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return aframeObj;
     }
 
-
-    // function addNodeToHierarchy(node) {
-
-
-    //                 if (self.state.nodes[node.parentID] !== undefined) {
-    //                     var parent = self.state.nodes[node.parentID];
-
-
-    //                         if (parent.children === undefined) {
-    //                             parent.children = [];
-    //                         }
-    //                         parent.children.push(node.ID);
-    //                         console.info( "Adding child: " + node.ID );
-
-
-    //                 }
-
-
-    //         }
-
-
     function addNodeToHierarchy(node) {
 
         if (node.aframeObj) {
@@ -968,12 +947,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         parent.children = [];
                     }
                     parent.children.push(node.ID);
-                    //console.info( "Adding child: " + childID + " to " + nodeID );
-                    //node.aframeObj.setAttribute(node.componentName, {});
 
-                  //  console.info("Adding child: " + node.ID);
-                  
-                    //parent.aframeObj.appendChild(node.aframeObj);
                 }
             }
 
