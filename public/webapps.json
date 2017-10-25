@@ -30,12 +30,5 @@
         "imgUrl": "./osc-example/webimg.jpg",
         "text": "Example app with OSC control",
         "featured": false
-    },
-
-    "gearvr":{
-        "title":"GearVR controller",
-        "imgUrl": "",
-        "text": "Example app with GearVR",
-        "featured": false
     }
 }

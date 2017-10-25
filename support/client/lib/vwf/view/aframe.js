@@ -216,6 +216,10 @@ define(["module", "vwf/view"], function (module, view) {
        // cursorEl.setAttribute('raycaster', 'showLine', true);
         controlEl.appendChild(cursorEl);
 
+        // let gearVRControlsEl = document.createElement('a-entity');
+        // gearVRControlsEl.setAttribute('id', 'gearvr-'+avatarName);
+        // gearVRControlsEl.setAttribute('gearvr-controls', {});
+        // aScene.appendChild(gearVRControlsEl);
         
 
        
