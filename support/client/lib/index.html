@@ -44,16 +44,6 @@
 
     <script type="text/javascript" src="async.js"></script>
 
-    <script type="text/javascript" src="closure/base.js"></script>
-    <script type="text/javascript">
-        goog.require('goog.vec.Vec2')
-    </script>
-    <script type="text/javascript">
-        goog.require('goog.vec.Mat4')
-    </script>
-    <script type="text/javascript">
-        goog.require('goog.vec.Quaternion')
-    </script>
 
     <script type="text/javascript" src="crypto.js"></script>
     <script type="text/javascript" src="md5.js"></script>
@@ -90,22 +80,19 @@
         var application;
         var regex = /([^&=]+)=?([^&]*)/g;
 
+        
+
         var requireConfig = {
             paths: {
                 jquery: "jquery-1.10.2.min",
-                "jquery-ui": "jquery-ui-1.10.3.custom.min",
-                hammer: "jquery.hammer",
+                "jquery-ui": "jquery-ui-1.10.3.custom.min"
             },
             shim: {
                 "jquery-ui": {
                     deps: ["jquery"],
                     exports: "$"
                 },
-                "jquery-encoder-0.1.0": ["jquery"],
-                "hammer": {
-                    deps: ["jquery"],
-                    exports: "Hammer"
-                }
+                "jquery-encoder-0.1.0": ["jquery"] 
             }
         };
         require(requireConfig, ["jquery", "jquery-encoder-0.1.0"], function ($) {

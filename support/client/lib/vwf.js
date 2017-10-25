@@ -323,9 +323,6 @@
                 { library: "vwf/kernel/model", active: true },
                 { library: "vwf/model/javascript", active: true },
 
-                { library: "vwf/model/scenejs", active: false },
-
-                { library: "vwf/model/sound", active: false },
                 { library: "vwf/model/object", active: true },
                 { library: "vwf/model/stage/log", active: true },
 
@@ -347,27 +344,16 @@
                 },
 
                 { library: "vwf/model/aframeComponent", active: true },
-                { library: "vwf/model/buzz", 
-                    linkedLibraries: ["vwf/model/buzz/buzz.min"], 
-                    active: false 
-                },
-                { library: "vwf/model/jPlayer", 
-                    linkedLibraries: ["vwf/model/jPlayer.2.7.1/jquery.jplayer.min"], 
-                    active: false 
-                },
+
                 { library: "vwf/kernel/view", active: true },
                 { library: "vwf/view/document", active: true },
-                { library: "vwf/view/editor", active: false },
-                { library: "vwf/view/editor-live", active: false },
+
                 { library: "vwf/view/editor-new", active: false },
 
                 { library: "vwf/view/webrtc", 
                     linkedLibraries: ["vwf/view/webrtc/adapter"],  
                     active: false 
                 },
-
-                { library: "vwf/view/sound", active: false },
-                { library: "vwf/view/touch", active: false },
 
                 { library: "vwf/view/ohm", active: true },
                 { library: "vwf/view/osc", active: true },
@@ -383,18 +369,13 @@
                 { library: "vwf/model/aframe/addon/TransformControls", active: false },
                 { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
                 
-                
-              
 
                 { library: "vwf/view/aframeComponent", active: true },
 
-                { library: "vwf/view/audio", active: false },
                 { library: "vwf/kernel/utility", active: true },
                 { library: "vwf/utility", active: true },
                 { library: "vwf/view/webrtc/adapter", active: false },
 
-                { library: "vwf/model/buzz/buzz.min", active: false }, 
-                { library: "vwf/model/jPlayer.2.7.1/jquery.jplayer.min", active: false },
                 { library: "vwf/admin", active: true }
 
                
@@ -404,27 +385,17 @@
                 model: [
                     { library: "vwf/model/javascript", active: true },
 
-                    { library: "vwf/model/sound", active: false },
-
                      { library: "vwf/model/ohm", active: true },
                      { library: "vwf/model/osc", active: true },
                   
                      { library: "vwf/model/aframe", active: false },
                      { library: "vwf/model/aframeComponent", active: true },
 
-                    { library: "vwf/model/buzz", active: false },
-                    { library: "vwf/model/jPlayer", active: false },
-
                     { library: "vwf/model/object", active: true }
                 ],
                 view: [
                     { library: "vwf/view/document", active: true },
-                    { library: "vwf/view/editor", active: false },
-                    { library: "vwf/view/editor-live", active: false },
                     { library: "vwf/view/editor-new", active: false },
-
-                    { library: "vwf/view/sound", active: false },
-                    { library: "vwf/view/touch", active: false },
 
                      { library: "vwf/view/ohm", active: true },
                      { library: "vwf/view/osc", active: true },
@@ -432,7 +403,6 @@
                       { library: "vwf/view/aframe", active: false },
                       { library: "vwf/view/aframeComponent", active: true },
 
-                    { library: "vwf/view/audio", active: false },
                     { library: "vwf/view/webrtc", active: false}
 
                   

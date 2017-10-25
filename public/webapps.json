@@ -2,34 +2,40 @@
     "aframe":{
         "title":"Simple VWF & A-Frame app",
         "imgUrl": "./aframe/webimg.jpg",
-        "text": "Example application showing Virtual World Framework & A-Frame integration"
+        "text": "Example application showing Virtual World Framework & A-Frame integration",
+        "featured": false
     },
 
     "aframe2":{
         "title":"Textures and Models in VWF & A-Frame",
         "imgUrl": "./aframe2/webimg.jpg",
-        "text": "Example app with loaded textures and models"
+        "text": "Example app with loaded textures and models",
+        "featured": true
     },
       "ohmlang-calc":{
         "title":"Calculator in Ohm and VWF",
         "imgUrl": "./ohmlang-calc/webimg.jpg",
-        "text": "Example calc app with simple Ohm grammar"
+        "text": "Example calc app with simple Ohm grammar",
+        "featured": true
     },
      "ohmlang-lsys":{
         "title":"L-System parser example in Ohm and VWF",
         "imgUrl": "./ohmlang-lsys/webimg.jpg",
-        "text": "Example app with L-System grammar"
+        "text": "Example app with L-System grammar",
+        "featured": true
     },
 
     "osc-example":{
         "title":"Simple app with Ohm & OSC control",
         "imgUrl": "./osc-example/webimg.jpg",
-        "text": "Example app with OSC control"
+        "text": "Example app with OSC control",
+        "featured": false
     },
 
     "gearvr":{
         "title":"GearVR controller",
         "imgUrl": "",
-        "text": "Example app with GearVR"
+        "text": "Example app with GearVR",
+        "featured": false
     }
 }
