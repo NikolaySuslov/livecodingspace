@@ -125,7 +125,13 @@ children:
                         number: function(_) {return parseFloat(this.sourceString)},
                         propSingle: function(_){return this.sourceString}
                     });     
-  sky:
-    extends: http://vwf.example.com/aframe/a-sun-sky.vwf
-    properties:
-      sunPosition: "-0.2 5 -5"
+  skySun:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    children:
+      sun:
+        extends: http://vwf.example.com/aframe/app-sun-component.vwf
+  newSky:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    children:
+      skyshader:
+        extends: http://vwf.example.com/aframe/app-skyshader-component.vwf

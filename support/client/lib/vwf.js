@@ -286,12 +286,20 @@
                      "vwf/model/aframe/addon/aframe-interpolation": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
-                    "vwf/model/aframe/extras/aframe-extras": {
+                    "vwf/model/aframe/extras/aframe-extras.loaders": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
                     "vwf/model/aframe/addon/aframe-sun-sky": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
+
+                    "vwf/model/aframe/addon/aframe-gamepad-controls.min": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
+                    "vwf/model/aframe/addon/SkyShader": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
+
                     "vwf/model/aframe/addon/BVHLoader": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
@@ -304,8 +312,9 @@
                     
                     "vwf/model/aframe/addon/aframe-components": {
                         deps: [ "vwf/model/aframe/aframe-master",
-                        "vwf/model/aframe/extras/aframe-extras",
+                        "vwf/model/aframe/extras/aframe-extras.loaders",
                         "vwf/model/aframe/addon/aframe-sun-sky",
+                        "vwf/model/aframe/addon/SkyShader",
                         "vwf/model/aframe/addon/BVHLoader",
                         "vwf/model/aframe/addon/TransformControls",
                         "vwf/model/aframe/addon/THREE.MeshLine"
@@ -330,12 +339,19 @@
                 { library: "vwf/model/osc", active: true },
               
 
+                { library: "vwf/model/aframe/addon/aframe-components", 
+                linkedLibraries: [ "vwf/model/aframe/addon/SkyShader" ], 
+                active: false 
+            },
+
                   { library: "vwf/model/aframe", 
                     linkedLibraries: [ "vwf/model/aframe/aframe-master",
-                    "vwf/model/aframe/extras/aframe-extras",
+                    "vwf/model/aframe/extras/aframe-extras.loaders",
                     "vwf/model/aframe/addon/aframe-interpolation",
                     "vwf/model/aframe/addon/aframe-sun-sky",
                     "vwf/model/aframe/addon/aframe-components",
+                    "vwf/model/aframe/addon/SkyShader",
+                    "vwf/model/aframe/addon/aframe-gamepad-controls.min",
                     "vwf/model/aframe/addon/BVHLoader",
                     "vwf/model/aframe/addon/TransformControls",
                     "vwf/model/aframe/addon/THREE.MeshLine"    
@@ -361,7 +377,7 @@
                 
                  { library: "vwf/view/aframe", active: false },
                 { library: "vwf/model/aframe/aframe-master", active: false },
-                { library: "vwf/model/aframe/extras/aframe-extras", active: false },
+                { library: "vwf/model/aframe/extras/aframe-extras.loaders", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
                 { library: "vwf/model/aframe/addon/aframe-sun-sky", active: false },
                 { library: "vwf/model/aframe/addon/aframe-components", active: false },
@@ -369,6 +385,8 @@
                 { library: "vwf/model/aframe/addon/TransformControls", active: false },
                 { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
                 
+                { library: "vwf/model/aframe/addon/SkyShader", active: false },
+                { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
 
                 { library: "vwf/view/aframeComponent", active: true },
 
