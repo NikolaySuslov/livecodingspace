@@ -20,16 +20,17 @@ npm run
 
 - Decentralized network model for A-Frame components and entities based on VWF replicated computation architecture
 - Ohm language driver for sharing user-defined grammars, parsers, tokenisers inside virtual space
-- In browser Code and Properties editor based on [Cell.js](https://github.com/intercellular/cell)  
+- In browser Code and Properties editor based on [Cell.js](https://github.com/intercellular/cell)
+- OSC messaging through [OSC realy](https://github.com/NikolaySuslov/osc-relay-lcs) on the client
+- Avatars
+..
+
 <img src="./public/doc/images/codeeditor.jpg" width="400">
-<p/>
-- OSC messaging through [OSC realy](https://github.com/NikolaySuslov/osc-relay-lcs) on the client   
+<br>
 <img src="./public/doc/images/osc.jpg" width="400">
-<p/>
-- Avatars  
+<br>
 <img src="./public/doc/images/avatar.jpg" width="400">
-<p/>
-- more..
+<br>
 
 ## Docs
 ..soon
