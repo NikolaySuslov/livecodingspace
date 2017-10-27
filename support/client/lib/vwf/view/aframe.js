@@ -139,6 +139,10 @@ define(["module", "vwf/view"], function (module, view) {
                     "uri": avatarName,
                     "extends": "http://vwf.example.com/aframe/avatar.vwf",
                     "properties":{
+                        "localUrl": '',
+                        "remoteUrl":'',
+                        "displayName": randId(),
+                        "sharing": { audio: true, video: true }
                     }
                 }
                 
@@ -256,6 +260,9 @@ define(["module", "vwf/view"], function (module, view) {
         // vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
     }
 
+    function randId() {
+        return '_' + Math.random().toString(36).substr(2, 9);
+   }
     
 
 });

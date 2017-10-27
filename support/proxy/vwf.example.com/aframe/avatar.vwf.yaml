@@ -4,6 +4,10 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "avatar"
 properties:
+    localUrl:
+    remoteUrl: 
+    displayName:
+    sharing: { audio: true, video: true }
 methods:
     showHideCursor:
         parameters:
@@ -20,5 +24,8 @@ methods:
         parameters:
             - position
             - rotation
+    setVideoTexture:
+        parameters:
+            - val
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

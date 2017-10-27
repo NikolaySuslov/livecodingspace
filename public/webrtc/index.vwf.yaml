@@ -1,0 +1,46 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  fog: "type: linear; color: #ECECEC; far: 20; near: 0"
+  assets: "assets.json"
+children:
+  groundPlane:
+    extends: http://vwf.example.com/aframe/aplane.vwf
+    properties:
+      height: 50
+      width: 50
+      repeat: "10 10"
+      rotation: "-90 0 0"
+      color: "white"
+      wireframe: false
+      src: "#bg2"
+  myLight:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "hemisphere"
+      color: "white"
+      position: "0 10 5"
+      rotation: "0 0 0"
+  sky:
+    extends: http://vwf.example.com/aframe/asky.vwf
+    properties:
+      color: "#ECECEC"
+      src: "#sky"
+      fog: false
+  spaceText:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "WebRTC app"
+      color: "white"
+      position: "-2 2.5 -2"
+  box:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "0 0 -3"
+      rotation: "0 0 0"
+      color: "#3c7249"
+      depth: 3
+      height: 0.2
+      width: 3

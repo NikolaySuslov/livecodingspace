@@ -44,7 +44,7 @@ this.createAvatarBody = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            position: [0, -userHeight, 0]   
+            "position": [0, -userHeight, 0]
         },
         children: {
            
@@ -212,6 +212,11 @@ this.createAvatarBody = function (modelSrc) {
 
     this.children.create("avatarNode", newNode);
 
+    // this.localUrl = '';
+    // this.remoteUrl = '';
+    // this.displayName = this.id;
+    // this.sharing = { audio: true, video: true };
+
    // this.children.create("avatarNode", newNode);
 
     // this.children.create( "avatarBodyModel", newNodeModel );
@@ -291,4 +296,11 @@ this.createAvatarFromGLTF = function(modelSrc){
 
 this.showHideCursor = function(bool){
     this.avatarNode.myHead.myCursor.properties.visible = bool;
+}
+
+this.setVideoTexture = function(val){
+    console.log(val);
+    this.avatarNode.myHead.visual.color = "white";
+    this.avatarNode.myHead.visual.src = '#temp';
+    this.avatarNode.myHead.visual.src = '#'+val;
 }

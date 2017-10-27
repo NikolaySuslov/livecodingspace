@@ -5,6 +5,7 @@
   "author": "Nikolai Suslov",
   "scripts": {
     "start": "node ./node-server.js --applicationPath=./public -p 3001",
+    "startSSL": "node ./node-server.js --applicationPath=./public -p 3001 -s -k ./cert/key.pem -c ./cert/cert.pem",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "directories": {

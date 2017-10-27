@@ -309,7 +309,7 @@
                     "vwf/model/aframe/addon/THREE.MeshLine": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
-                    
+
                     "vwf/model/aframe/addon/aframe-components": {
                         deps: [ "vwf/model/aframe/aframe-master",
                         "vwf/model/aframe/extras/aframe-extras.loaders",
@@ -354,7 +354,8 @@
                     "vwf/model/aframe/addon/aframe-gamepad-controls.min",
                     "vwf/model/aframe/addon/BVHLoader",
                     "vwf/model/aframe/addon/TransformControls",
-                    "vwf/model/aframe/addon/THREE.MeshLine"    
+                    "vwf/model/aframe/addon/THREE.MeshLine"
+                       
                  ], 
                     active: false 
                 },
@@ -367,7 +368,7 @@
                 { library: "vwf/view/editor-new", active: false },
 
                 { library: "vwf/view/webrtc", 
-                    linkedLibraries: ["vwf/view/webrtc/adapter"],  
+             //       linkedLibraries: ["vwf/view/webrtc/adapter"],  
                     active: false 
                 },
 
@@ -385,6 +386,7 @@
                 { library: "vwf/model/aframe/addon/TransformControls", active: false },
                 { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
                 
+                
                 { library: "vwf/model/aframe/addon/SkyShader", active: false },
                 { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
 
@@ -392,7 +394,9 @@
 
                 { library: "vwf/kernel/utility", active: true },
                 { library: "vwf/utility", active: true },
-                { library: "vwf/view/webrtc/adapter", active: false },
+               // { library: "vwf/view/webrtc/adapter", active: false },
+
+                //{ library: "vwf/view/webrtc/adapterWebRTC", active: false },
 
                 { library: "vwf/admin", active: true }
 

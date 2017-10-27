@@ -125,9 +125,11 @@ function startVWF() {
     global.applicationRoot = parseApplicationPath( );
 
     var ssl = ( argv.s  || argv.ssl );
+    var pass = ( ( argv.w) ? ( argv.w) : undefined );
     var sslOptions = {
         key: ( ( argv.k || argv.key ) ? fs.readFileSync( argv.k || argv.key ) : undefined ),
-        cert: ( ( argv.c || argv.cert ) ? fs.readFileSync( argv.c || argv.cert ) : undefined )
+        cert: ( ( argv.c || argv.cert ) ? fs.readFileSync( argv.c || argv.cert ) : undefined ),
+        passphrase: JSON.stringify(pass)
     };
 
     //create the server

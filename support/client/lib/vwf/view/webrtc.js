@@ -110,7 +110,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                     "connection": undefined,
                     "localUrl": undefined, 
                     "remoteUrl": undefined,
-                    "color": "rgb(0,0,0)",
+                    //"color": "rgb(0,0,0)",
                     "createProperty": true, 
                     "sharing": { audio: true, video: true }                   
                 };
@@ -191,8 +191,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             }
             // debugger;
 
-            if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
-                var moniker = this.kernel.name( nodeID );
+            //if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
+                //if ( this.kernel.find( nodeID ).length > 0 ) {
+                var moniker = nodeID.slice(-20);//this.kernel.name( nodeID );
                 var client = undefined;
 
                 if ( moniker == this.kernel.moniker() ) {
@@ -223,7 +224,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
                      
                 }
-            }         
+            //}         
 
         },
   
@@ -338,6 +339,33 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
     } );
  
+    function createVideoElementAsAsset(id) {
+        
+          var video = document.querySelector('#' + id);
+        
+          if (!video) {
+            video = document.createElement('video');
+          }
+        
+          video.setAttribute('id', id);
+          video.setAttribute('autoplay', true);
+          video.setAttribute('src', '');
+        
+          var assets = document.querySelector('a-assets');
+        
+        //   if (!assets) {
+        //     assets = document.createElement('a-assets');
+        //     document.querySelector('a-scene').appendChild(assets);
+        //   }
+        
+          if (!assets.contains(video)) {
+            assets.appendChild(video);
+          }
+        
+          return video;
+        }
+
+
     function getPrototypes( extendsID ) {
         var prototypes = [];
         var id = extendsID;
@@ -402,7 +430,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             
             var videoE = $( '#'+ videoId )[0];
             if ( videoE && stream ) {
-                attachMediaStream( videoE, stream );
+                navigator.attachMediaStream( videoE, stream );
                 if ( muted ) {
                     videoE.muted = true;  // firefox isn't mapping the muted property correctly
                 }
@@ -424,7 +452,13 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             "name": name, 
             "muted": muted, 
             "color": clr ? clr : color
-        }, destMoniker ] );          
+        }, destMoniker ] );       
+        
+        
+        let video = createVideoElementAsAsset(name);
+        video.srcObject = stream;
+
+       this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
 
         return divId;
     }
@@ -472,7 +506,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             };
 
             try { 
-                getUserMedia( constraints, successCallback, errorCallback );
+                navigator.getUserMedia( constraints, successCallback, errorCallback );
             } catch (e) { 
                 console.log("getUserMedia: error " + e ); 
             };
@@ -480,7 +514,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
     }  
 
     function appMoniker( name ) {
-        return name.substr( 6, name.length-1 );
+        return name.substr( 7, name.length-1 );
     }
     
     function findClientByMoniker( moniker ) {
@@ -608,7 +642,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         if ( prototypes ) {
             var len = prototypes.length;
             for ( var i = 0; i < len && !foundClient; i++ ) {
-                foundClient = ( prototypes[i] == "http://vwf.example.com/client.vwf" );
+                foundClient = ( prototypes[i] == "http://vwf.example.com/aframe/avatar.vwf" );
             }
         }
 
@@ -802,7 +836,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             };
 
             // temporary measure to remove Moz* constraints in Chrome
-            if ( webrtcDetectedBrowser === "chrome" ) {
+            if ( navigator.webrtcDetectedBrowser === "chrome" ) {
                 for ( var prop in constraints.mandatory ) {
                     if ( prop.indexOf("Moz") != -1 ) {
                         delete constraints.mandatory[ prop ];
