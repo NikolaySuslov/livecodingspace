@@ -350,6 +350,8 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
           video.setAttribute('id', id);
           video.setAttribute('autoplay', true);
           video.setAttribute('src', '');
+          video.setAttribute("webkit-playsinline", true);
+          video.setAttribute("controls", true);
         
           var assets = document.querySelector('a-assets');
         
@@ -858,7 +860,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 self.view.kernel.setProperty( self.peerNode.ID, self.view.kernel.moniker(), sessionDescription );
             };
 
-            this.pc.createOffer( offerer, null, constraints );
+            var onFailure = function(e) {
+                console.log(e)
+            }
+
+            this.pc.createOffer( offerer, onFailure, constraints );
         };
 
         this.setBandwidth = function( sdp ) {
