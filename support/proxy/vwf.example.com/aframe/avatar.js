@@ -298,8 +298,21 @@ this.showHideCursor = function(bool){
     this.avatarNode.myHead.myCursor.properties.visible = bool;
 }
 
+this.setBigVideoHead = function(val){
+    this.avatarNode.myHead.visual.height = 4;
+    this.avatarNode.myHead.visual.width = 3;
+    this.avatarNode.myBody.visible = false;
+}
+
+this.setSmallVideoHead = function(val){
+    this.avatarNode.myHead.visual.height = 0.5;
+    this.avatarNode.myHead.visual.width = 0.5;
+    this.avatarNode.myBody.visible = true;
+}
+
 this.setVideoTexture = function(val){
     console.log(val);
+    this.setSmallVideoHead();
     this.avatarNode.myHead.visual.color = "white";
     this.avatarNode.myHead.visual.src = '#temp';
     this.avatarNode.myHead.visual.src = '#'+val;

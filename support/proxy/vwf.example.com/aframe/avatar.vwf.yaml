@@ -24,6 +24,8 @@ methods:
         parameters:
             - position
             - rotation
+    setSmallVideoHead:
+    setBigVideoHead:
     setVideoTexture:
         parameters:
             - val
