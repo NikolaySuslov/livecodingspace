@@ -10,7 +10,7 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(
 }
 
 .world-card {
-  background-color: white;
+  background-color: #f5f5f5;
 }
 
 .world-link a:link {
