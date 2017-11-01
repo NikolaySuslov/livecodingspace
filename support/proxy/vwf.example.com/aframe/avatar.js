@@ -312,7 +312,7 @@ this.setSmallVideoHead = function(val){
 
 this.setVideoTexture = function(val){
     console.log(val);
-    this.setSmallVideoHead();
+   // this.setSmallVideoHead();
     this.avatarNode.myHead.visual.color = "white";
     this.avatarNode.myHead.visual.src = '#temp';
     this.avatarNode.myHead.visual.src = '#'+val;

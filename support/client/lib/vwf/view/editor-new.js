@@ -44,6 +44,7 @@ define([
             this.allScripts = {};
 
 
+
             //$(document.head).append('<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>');
             document.querySelector('head').innerHTML += '<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>';
             document.querySelector('head').innerHTML += '<link rel="stylesheet" href="vwf/view/lib/editorLive.css">';
@@ -122,14 +123,18 @@ define([
                 return root
             };
 
-            
+            this.getRandomInt = function (min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+            };
 
             ["drawer", "toolbar", "sideBar", "propWindow", "clientsWindow", "codeEditorWindow", "propEditorWindow", "viewSceneProps"].forEach(item => {
                 let el = document.createElement("div");
                 el.setAttribute("id", item);
                 document.body.appendChild(el);
             }
-                );
+            );
 
             this.avatarCardDef = function (src, desc, onclickfunc) {
 
@@ -192,6 +197,58 @@ define([
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
                                         {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Go forward",
+                                            onclick: function (e) {
+
+                                                function getMovementVector(el) {
+                                                    var directionVector = new THREE.Vector3(0, 0, 0);
+                                                    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+
+                                                    var rotation = el.getAttribute('rotation');
+                                                    var velocity = new THREE.Vector3(0, 0, -0.5);
+                                                    var xRotation;
+
+                                                    directionVector.copy(velocity);
+                                                    directionVector.multiplyScalar(1.0);
+
+                                                    // Absolute.
+                                                    if (!rotation) { return directionVector; }
+
+                                                    xRotation = 0;
+
+                                                    // Transform direction relative to heading.
+                                                    rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
+                                                    directionVector.applyEuler(rotationEuler);
+                                                    return directionVector;
+
+                                                }
+
+                                                let el = document.querySelector('#avatarControl');
+
+                                                let currentPosition = el.getAttribute('position');
+                                                let movementVector = getMovementVector(el);
+                                                let position = {};
+
+                                                position.x = currentPosition.x + movementVector.x;
+                                                position.y = currentPosition.y + movementVector.y;
+                                                position.z = currentPosition.z + movementVector.z;
+                                                el.setAttribute('position', position);
+
+                                            }
+
+                                        },
+                                    ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                        
                                             $cell: true,
                                             $type: "button",
                                             class: "mdc-button mdc-button--raised",
@@ -2855,7 +2912,7 @@ define([
         return childNode;
     };
 
-    
+
 
     // -- viewScript ------------------------------------------------------------------------
 
