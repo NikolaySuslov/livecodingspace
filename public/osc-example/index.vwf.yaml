@@ -125,11 +125,6 @@ children:
                         number: function(_) {return parseFloat(this.sourceString)},
                         propSingle: function(_){return this.sourceString}
                     });     
-  skySun:
-    extends: http://vwf.example.com/aframe/aentity.vwf
-    children:
-      sun:
-        extends: http://vwf.example.com/aframe/app-sun-component.vwf
   newSky:
     extends: http://vwf.example.com/aframe/aentity.vwf
     children:

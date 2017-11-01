@@ -71,7 +71,16 @@ define(["module", "vwf/view", "vwf/view/oscjs/dist/osc-module"], function(module
 
 	function findAllNodesWithOSC(oscMessage){
 
-		var children = vwf.children(vwf.application());
+		let appID = vwf.application();
+		var oscSceneProp = vwf.getProperty(appID, 'osc');
+		if (oscSceneProp !== undefined){
+			if (oscSceneProp){
+				//console.log('now callMethod');
+				vwf_view.kernel.callMethod(appID, 'getOSC', [oscMessage]);
+			}
+		}
+
+		var children = vwf.children(appID);
 			children.forEach(function(child){
 				var oscprop = vwf.getProperty(child, 'osc');
 				if (oscprop !== undefined){
