@@ -37,96 +37,106 @@ children:
       depth: 1
       height: 1
       width: 1
-      osc: true
-    methods:
-      getOSC:
-        parameters:
-          - msg
-        body: |
-              this.parseColorOSC(msg);
-              this.parseSingleOSC(msg);
-      parseColorOSC:
-        parameters:
-          - msg
-        body: |
-                let str = msg.address + JSON.stringify(msg.args);
-                var match = this.oscLang.grammar.match(str, "rgb");
-                if (match.succeeded())
-                {
-                    let res = this.oscLang.semantics(match).parse();
-                   this.setColorFromOSC(res);
-                }
-      setSinglePropFromOSC:
-        parameters:
-          - val
-        body: |
-                if (this.properties[val.propName]){
-                  this[val.propName] = val.propValue
-                }
-      setColorFromOSC:
-        parameters:
-          - propValue
-        body: |
-              this.color = propValue;
-              //this.parent.myLight.color = propValue;
-      parseSingleOSC:
-        parameters:
-          - msg
-        body: |
-                let str = msg.address + JSON.stringify(msg.args[0]);
-                var match = this.oscLang.grammar.match(str, "prop");
-                if (match.succeeded())
-                {
-                    let res = this.oscLang.semantics(match).parse();
-                    this.setSinglePropFromOSC(res);
-                }
     children:
-      oscLang:
-          extends: http://vwf.example.com/ohm/node.vwf
-          properties:
-            grammar:
-            semantics:
-            ohmLang: |
-                      parseOSC {
-                        rgb = "/rgb/" row
-                        row = "[" col rep "]"
-                        rep = ("," col)*
-                        col = colChar*
-                        colChar = ~("[" | "," | "]") number
-                        prop = "/" propSingle "/" number
-                        propSingle = letter*
-                        number  (a number)
-                          = digit* "." digit+  -- fract
-                          | digit+             -- whole
-                      }
-          methods:
-            initLang:
-              body: |
-                    console.log("add operations to semantics")
-                    this.addOperationLang();
-            addOperationLang:
-              body: |
-                    var self = this;
-                    this.semantics.addOperation('parse',
-                    {
-                        rgb: function(_, e)
-                        {
-                            return 'rgb('+ e.parse() + ')'
-                        },
-                         prop: function(_l, e, _r, k){
-                                return {'propName': e.parse(), 'propValue': k.parse()};
-                        },
-                        row: function(_l, e, k, _e){
-                                return e.parse() +','+ k.parse();
-                        },
-                        rep: function(_, e){ return e.parse()},
-                        col: function(e) {return e.parse()},
-                        colChar: function(e) {return e.parse()},
-                        number: function(_) {return parseFloat(this.sourceString)},
-                        propSingle: function(_){return this.sourceString}
-                    });     
+      sphere:
+        extends: http://vwf.example.com/aframe/asphere.vwf
+        properties:
+          position: "0 2 0"
+          rotation: "0 0 0"
+          color: "#3c7249"
+          radius: 0.4
   newSky:
     extends: http://vwf.example.com/aframe/aentity.vwf
     children:
       skyshader:
         extends: http://vwf.example.com/aframe/app-skyshader-component.vwf
+  oscLang:
+    extends: http://vwf.example.com/ohm/node.vwf
+    properties:
+      osc: true
+      grammar:
+      semantics:
+      ohmLang: |
+                parseOSC {
+                            all = address ":" props
+                            address = ("/" addr)*
+                            addr = ~("/") propSingle
+                            props 
+                                = propSingle row  -- single
+                                | "rgb" row       -- rgb
+                                | propSingle number -- prop
+                            row = "[" col rep "]"
+                            rep = ("," col)*
+                            col = colChar*
+                            colChar = ~("[" | "," | "]") number
+                            propSingle = ~("rgb") letter*
+                            number  (a number)
+                                = digit* "." digit+  -- fract
+                                | digit+             -- whole
+                            }
+    methods:
+      initLang:
+        body: |
+              console.log("add operations to semantics")
+              this.addOperationLang();
+      addOperationLang:
+        body: |
+              var self = this;
+              this.semantics.addOperation('parse',
+              {
+                  all: function(e, _, k){ return {"address": e.parse(), "params": k.parse()} },
+                  address: function(_, e){ return e.parse()},
+                  addr: function(e) {return e.parse() },
+                  props: function(e) {return e.parse()},
+                  props_single: function( e, k){
+                          return {'propName': e.parse(), 'propValue': k.parse()};
+                  },
+                  props_rgb: function(_, e)
+                  {
+                      return {'propName': 'color', 'propValue': ['rgb('+ e.parse() + ')']};
+                  },
+                  props_prop: function(e, k){
+                          return {'propName': e.parse(), 'propValue': k.parse()};
+                  },
+                  row: function(_l, e, k, _e){
+                         let end = k.parse();
+                          if (end.length !== 0) {
+                           return e.parse() +','+ k.parse();
+                         }
+                         return e.parse()    
+                  },
+                  rep: function(_, e){ return e.parse()},
+                  col: function(e) {return e.parse()},
+                  colChar: function(e) {return e.parse()},
+                  number: function(_) {return parseFloat(this.sourceString)},
+                  propSingle: function(_){return this.sourceString}
+              });
+      getOSC:
+        parameters:
+          - msg
+        body: |
+              this.parseOSC(msg);
+      parseOSC:
+        parameters:
+          - msg
+        body: |
+                let str = msg.address + JSON.stringify(msg.args);
+                var match = this.grammar.match(str, "all");
+                if (match.succeeded())
+                {
+                    let res = this.semantics(match).parse();
+                    this.setPropsFromOSC(res);
+                }
+      setPropsFromOSC:
+        parameters:
+          - res
+        body: |
+              //console.log(res);
+              let address = '/'+res.address.join('/');
+              let nodeID = vwf.find("", address);
+              if (res.params.propValue.length == 1) {
+                  vwf_view.kernel.setProperty(nodeID, res.params.propName, [res.params.propValue[0]])
+              }
+              if (res.params.propValue.length >= 1) {
+                  vwf_view.kernel.setProperty(nodeID, res.params.propName, [res.params.propValue])
+              }
