@@ -58,8 +58,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
-
-                document.body.append(scene);
+                document.body.appendChild(scene); //append is not working in Edge browser
                 createAvatarControl(scene);
                 createAvatar.call(this, childID);
                // this.state.appInitialized  = true;
