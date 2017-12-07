@@ -37,5 +37,11 @@
         "imgUrl": "./webrtc/webimg.jpg",
         "text": "Audio and video streaming for Avatars",
         "featured": false
+    },
+    "gearvr":{
+        "title":"Control in VR app",
+        "imgUrl": "./gear/webimg.jpg",
+        "text": "VR controler example",
+        "featured": false
     }
 }

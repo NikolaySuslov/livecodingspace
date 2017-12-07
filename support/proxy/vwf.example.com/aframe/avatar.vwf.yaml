@@ -24,6 +24,10 @@ methods:
         parameters:
             - position
             - rotation
+    updateAvatarVRControl:
+        parameters:
+            - position
+            - rotation
     setSmallVideoHead:
     setBigVideoHead:
     setVideoTexture:

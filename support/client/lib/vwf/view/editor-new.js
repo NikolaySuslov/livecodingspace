@@ -346,6 +346,30 @@ define([
 
 
                                     ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                        
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "GearVR controller",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                let sceneEl = document.querySelector('a-scene');
+                                                let gearvr = document.createElement('a-entity');
+                                                gearvr.setAttribute('id','gearvrcontrols');
+                                                gearvr.setAttribute('gearvr-controls','');
+                                                gearvr.setAttribute('gearvr-controls', 'hand', 'right');
+                                                sceneEl.appendChild(gearvr);
+                                            }
+
+                                        }
+                                    ]
                                 }
 
                             ]

@@ -923,6 +923,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
  
          }
 
+         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gearvrcontrol-component.vwf")) {
+            
+ 
+                // aframeObj.el.setAttribute(node.type, {});
+             aframeObj.compName = "gearvrcontrol";
+             aframeObj.el.setAttribute(aframeObj.compName, {});
+ 
+         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf")) {
 

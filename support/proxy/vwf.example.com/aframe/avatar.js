@@ -1,3 +1,22 @@
+this.simpleVrControllerDef = {
+    "extends": "http://vwf.example.com/aframe/abox.vwf",
+    "properties": {
+        "color": "white",
+        "position": "0.5 0 -2",
+        "height": 0.3,
+        "width": 0.3,
+        "depth": 1,
+    },
+    children: {
+        "gearvr":
+        {
+            "extends": "http://vwf.example.com/aframe/gearvrcontrol-component.vwf",
+            "type": "component",
+            "properties": {
+            }
+        }
+    }
+}
 this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
@@ -39,6 +58,8 @@ this.createAvatarBody = function (modelSrc) {
 
     let myColor = this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
+    let myHandDef = this.simpleVrControllerDef;
+
     myBodyDef.properties.color = myColor;
 
     var newNode = {
@@ -49,6 +70,7 @@ this.createAvatarBody = function (modelSrc) {
         children: {
            
             "myBody": myBodyDef,
+            //"myHand": myHandDef,
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
@@ -260,6 +282,16 @@ this.followAvatarControl = function (position, rotation) {
 
     // this.avatarCamera.rotation = [rotation.x, myHeadRot.y, rotation.z];  
 }
+
+this.updateAvatarVRControl = function(position, rotation){
+
+    let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);
+    this.avatarNode.myHand.rotation = rotation;
+    this.avatarNode.myHand.position = position;
+    //console.log(this.avatarNode.myHand.rotation);
+
+}
+
 
 this.createSimpleAvatar = function(){
        if (this.avatarNode.myBody) {

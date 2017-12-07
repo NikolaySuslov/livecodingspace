@@ -4,5 +4,5 @@ info:
 model:
   vwf/model/aframe:
 view:
-  vwf/view/aframe:
+  vwf/view/aframe: {gearvr: true, wmrleft: true, wmrright: true}
   vwf/view/editor-new:

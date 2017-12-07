@@ -34,6 +34,8 @@ define(["module", "vwf/view"], function (module, view) {
 
             this.state.appInitialized = false;
 
+            if ( options === undefined ) { options = {}; }
+
             if (typeof options == "object") {
 
                 this.rootSelector = options["application-root"];
@@ -42,7 +44,9 @@ define(["module", "vwf/view"], function (module, view) {
                 this.rootSelector = options;
             }
 
-         
+            this.gearvr = options.gearvr !== undefined  ? options.gearvr : false;
+            this.wmrright = options.wmrright !== undefined  ? options.wmrright : false;
+            this.wmrleft = options.wmrleft !== undefined  ? options.wmrleft : false;
         },
 
         createdNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
@@ -61,7 +65,25 @@ define(["module", "vwf/view"], function (module, view) {
                 document.body.appendChild(scene); //append is not working in Edge browser
                 createAvatarControl(scene);
                 createAvatar.call(this, childID);
+
                // this.state.appInitialized  = true;
+
+               if (this.gearvr == true) {
+                   console.log("CREATE GEARVR HERE!!");
+                   createGearVRControls();
+                   createControlVR.call(this, childID, 'controlvr-');
+               }
+               if (this.wmrright == true) {
+                console.log("CREATE WMR RIGHT HERE!!");
+                createWMRVRControls('right');
+                createControlVR.call(this, childID, 'wmrvr-right-');
+            }
+            if (this.wmrright == true) {
+                console.log("CREATE WMR LEFT HERE!!");
+                createWMRVRControls('left');
+                createControlVR.call(this, childID, 'wmrvr-left-');
+            }
+                
             }
 
             if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
@@ -167,6 +189,10 @@ define(["module", "vwf/view"], function (module, view) {
         ticked: function (vwfTime) {
 
             updateAvatarPosition();
+            updateHandControllerVR('controlvr-', '#gearvrcontrol');
+            updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
+            updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
+
            
             //lerpTick ()
         }
@@ -174,6 +200,24 @@ define(["module", "vwf/view"], function (module, view) {
 
     });
 
+
+    function updateHandControllerVR(aName, aSelector) {
+        //let avatarName = 'avatar-' + self.kernel.moniker();
+        let avatarName = aName + self.kernel.moniker();
+        let el = document.querySelector(aSelector);
+        if (el) {
+            let position = el.getAttribute('position');
+            let rotation = el.getAttribute('rotation');
+
+            if ( position && rotation) {
+               // vwf_view.kernel.callMethod(avatarName, "updateAvatarVRControl", [postion, rotation]);
+         vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
+         vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
+         //AFRAME.utils.coordinates.stringify(position)
+            }
+        }
+
+    }
 
     function updateAvatarPosition() {
 
@@ -263,5 +307,65 @@ define(["module", "vwf/view"], function (module, view) {
         return '_' + Math.random().toString(36).substr(2, 9);
    }
     
+    function createGearVRControls() {
+
+        let sceneEl = document.querySelector('a-scene');
+        let gearvr = document.createElement('a-entity');
+        gearvr.setAttribute('id', 'gearvrcontrol');
+        gearvr.setAttribute('gearvr-controls', '');
+        gearvr.setAttribute('gearvr-controls', 'hand', 'right');
+        sceneEl.appendChild(gearvr);
+
+    }
+
+    function createWMRVRControls(hand) {
+        
+                let sceneEl = document.querySelector('a-scene');
+                let wmrvr = document.createElement('a-entity');
+                wmrvr.setAttribute('id', 'wmrvrcontrol'+hand);
+                wmrvr.setAttribute('windows-motion-controls', '');
+                wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
+                sceneEl.appendChild(wmrvr);
+            }
+
+
+
+    function createControlVR(nodeID, name) {
+        
+                let avatarID = self.kernel.moniker();
+                var nodeName = name + avatarID;
+        
+                var newNode = { 
+            "id": nodeName,
+             "uri": nodeName,
+                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                "properties": {
+                    "color": "white",
+                    "position": "0 0 0",
+                    "height": 0.1,
+                    "width": 0.1,
+                    "depth": 1,
+                },
+                children: {
+                    "gearvr":
+                    {
+                        "extends": "http://vwf.example.com/aframe/gearvrcontrol-component.vwf",
+                        "type": "component",
+                        "properties": {
+                        }
+                    }
+                    // "interpolation":
+                    // {
+                    //     "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    //     "type": "component",
+                    //     "properties": {
+                    //     }
+                    // }
+                }
+            }
+               
+            vwf_view.kernel.createChild(nodeID, nodeName, newNode);
+                // vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
+            }
 
 });

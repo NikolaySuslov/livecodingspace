@@ -370,3 +370,21 @@ AFRAME.registerComponent('sun', {
     tick: function (t) {
     }
 })
+
+AFRAME.registerComponent('gearvrcontrol', {
+    
+        init: function () {
+            this.gearel = document.querySelector('#gearvrcontrol');
+            //this.el.sceneEl.querySelector('#gearvrcontrols')
+        },
+    
+        update: function () {
+        },
+    
+        tick: function (t) {
+        //    if (this.gearel) {
+        //     let rot = this.gearel.getAttribute('rotation');
+        //     this.el.setAttribute('rotation', rot);
+        //    }
+        }
+    })
