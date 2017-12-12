@@ -374,17 +374,20 @@ AFRAME.registerComponent('sun', {
 AFRAME.registerComponent('gearvrcontrol', {
     
         init: function () {
-            this.gearel = document.querySelector('#gearvrcontrol');
-            //this.el.sceneEl.querySelector('#gearvrcontrols')
+            var self = this;
+            var controllerID = 'controlvr-' + vwf_view.kernel.moniker();
+            //this.gearel = document.querySelector('#gearvrcontrol');
+            this.el.addEventListener('triggerdown', function (event) {
+              vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+              });
+              this.el.addEventListener('triggerup', function (event) {
+               vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+              });
         },
     
         update: function () {
         },
     
         tick: function (t) {
-        //    if (this.gearel) {
-        //     let rot = this.gearel.getAttribute('rotation');
-        //     this.el.setAttribute('rotation', rot);
-        //    }
         }
     })

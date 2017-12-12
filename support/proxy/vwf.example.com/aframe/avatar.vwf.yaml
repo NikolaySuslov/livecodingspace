@@ -9,6 +9,8 @@ properties:
     displayName:
     sharing: { audio: true, video: true }
 methods:
+    initialize:
+    updateAvatar:
     showHideCursor:
         parameters:
             - bool
@@ -21,10 +23,6 @@ methods:
             - modelSrc
     getRandomColor:
     followAvatarControl:
-        parameters:
-            - position
-            - rotation
-    updateAvatarVRControl:
         parameters:
             - position
             - rotation

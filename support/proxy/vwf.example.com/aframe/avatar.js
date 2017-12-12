@@ -1,22 +1,3 @@
-this.simpleVrControllerDef = {
-    "extends": "http://vwf.example.com/aframe/abox.vwf",
-    "properties": {
-        "color": "white",
-        "position": "0.5 0 -2",
-        "height": 0.3,
-        "width": 0.3,
-        "depth": 1,
-    },
-    children: {
-        "gearvr":
-        {
-            "extends": "http://vwf.example.com/aframe/gearvrcontrol-component.vwf",
-            "type": "component",
-            "properties": {
-            }
-        }
-    }
-}
 this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
@@ -58,7 +39,7 @@ this.createAvatarBody = function (modelSrc) {
 
     let myColor = this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
-    let myHandDef = this.simpleVrControllerDef;
+    //let myHandDef = this.simpleVrControllerDef;
 
     myBodyDef.properties.color = myColor;
 
@@ -260,7 +241,7 @@ this.getRandomColor = function () {
 this.followAvatarControl = function (position, rotation) {
     // this.position = AFRAME.utils.coordinates.stringify(position);
     // this.rotation = AFRAME.utils.coordinates.stringify(rotation);
-
+//debugger;
 
     this.position = AFRAME.utils.coordinates.stringify(position);
     let myRot = AFRAME.utils.coordinates.parse(this.rotation);
@@ -282,16 +263,6 @@ this.followAvatarControl = function (position, rotation) {
 
     // this.avatarCamera.rotation = [rotation.x, myHeadRot.y, rotation.z];  
 }
-
-this.updateAvatarVRControl = function(position, rotation){
-
-    let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);
-    this.avatarNode.myHand.rotation = rotation;
-    this.avatarNode.myHand.position = position;
-    //console.log(this.avatarNode.myHand.rotation);
-
-}
-
 
 this.createSimpleAvatar = function(){
        if (this.avatarNode.myBody) {
@@ -349,3 +320,9 @@ this.setVideoTexture = function(val){
     this.avatarNode.myHead.visual.src = '#temp';
     this.avatarNode.myHead.visual.src = '#'+val;
 }
+
+this.initialize = function() {
+   // this.future(0).updateAvatar();
+};
+
+
