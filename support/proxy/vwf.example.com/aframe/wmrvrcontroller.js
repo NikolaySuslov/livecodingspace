@@ -31,7 +31,7 @@ this.simpleDef = {
 this.modelDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
-        "src": "#gearvr",
+        "src": "#wmrvr",
         "position": "0 0 0",
         "rotation": "0 180 0"
     },

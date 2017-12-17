@@ -70,27 +70,30 @@ define(["module", "vwf/view"], function (module, view) {
 
                 if (this.gearvr == true) {
                     console.log("CREATE GEARVR HERE!!");
-
                     if (AFRAME.utils.device.isGearVR()) {
-                        let nodeName = 'controlvr-' + self.kernel.moniker();
+                        let nodeName = 'gearvr-' + self.kernel.moniker();
                         createGearVRControls();
                         createGearVRController.call(this, childID, nodeName);
                     }
                 }
-                // if (this.wmrright == true) {
-                //     console.log("CREATE WMR RIGHT HERE!!");
-                //     if (AFRAME.utils.device.checkHasPositionalTracking()) {
-                //         createWMRVRControls('right');
-                //         createControlVR.call(this, childID, 'wmrvr-right-');
-                //     }
-                // }
-                // if (this.wmrright == true) {
-                //     console.log("CREATE WMR LEFT HERE!!");
-                //     if (AFRAME.utils.device.checkHasPositionalTracking()) {
-                //         createWMRVRControls('left');
-                //         createControlVR.call(this, childID, 'wmrvr-left-');
-                //     }
-                // }
+
+                if (this.wmrright == true) {
+                    console.log("CREATE WMR RIGHT HERE!!");
+                    if (AFRAME.utils.device.checkHasPositionalTracking()) {
+                        let nodeName = 'wmrvr-right-' + self.kernel.moniker();
+                        createWMRVRControls('right');
+                        createWMRVR.call(this, childID, nodeName);
+                    }
+                }
+
+                if (this.wmrright == true) {
+                    console.log("CREATE WMR LEFT HERE!!");
+                    if (AFRAME.utils.device.checkHasPositionalTracking()) {
+                        let nodeName = 'wmrvr-left-' + self.kernel.moniker();
+                        createWMRVRControls('left');
+                        createWMRVR.call(this, childID, nodeName);
+                    }
+                }
 
             }
 
@@ -114,9 +117,6 @@ define(["module", "vwf/view"], function (module, view) {
             if (!node) {
                 return;
             }
-
-
-
 
         },
 
@@ -197,9 +197,17 @@ define(["module", "vwf/view"], function (module, view) {
         ticked: function (vwfTime) {
 
             updateAvatarPosition();
-            updateHandControllerVR('controlvr-', '#gearvrcontrol');
-            // updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
-            // updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
+
+            //update vr controllers
+            if (this.gearvr == true) {
+                updateHandControllerVR('gearvr-', '#gearvrcontrol');
+            }
+            if (this.wmrright == true) {
+                updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
+            }
+            if (this.wmrleft == true) {
+                updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
+            }
 
 
             //lerpTick ()
@@ -259,15 +267,11 @@ define(["module", "vwf/view"], function (module, view) {
 
                     vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
                     vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
-
-
                 }
             }
 
         }
-
     }
-
 
 
     function createAvatarControl(aScene) {
@@ -316,6 +320,25 @@ define(["module", "vwf/view"], function (module, view) {
         // });
 
     }
+
+    function createWMRVR (nodeID, nodeName) { 
+
+        var newNode = {
+            "id": nodeName,
+            "uri": nodeName,
+            "extends": "http://vwf.example.com/aframe/wmrvrcontroller.vwf",
+            "properties": {
+            }
+        }
+
+        if (!self.state.nodes[nodeName]) {
+
+            vwf_view.kernel.createChild(nodeID, nodeName, newNode);
+            vwf_view.kernel.callMethod(nodeName, "createController", []);
+            //"/../assets/controller/wmrvr.gltf"
+        }
+    }
+
 
     function createGearVRController(nodeID, nodeName) {
 
@@ -376,57 +399,10 @@ define(["module", "vwf/view"], function (module, view) {
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
         wmrvr.setAttribute('windows-motion-controls', '');
         wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
+        wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
         sceneEl.appendChild(wmrvr);
     }
 
 
-
-    function createControlVR(nodeID, name) {
-
-        let avatarID = self.kernel.moniker();
-        var nodeName = name + avatarID;
-
-        var newNode = {
-            "id": nodeName,
-            "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/abox.vwf",
-            "properties": {
-                "color": "white",
-                "position": "0 0 0",
-                "height": 0.01,
-                "width": 0.01,
-                "depth": 1,
-            },
-            children: {
-                "cur": {
-                    "extends": "http://vwf.example.com/aframe/abox.vwf",
-                    "properties": {
-                        "color": "green",
-                        "position": "0 0 -1",
-                        "height": 0.2,
-                        "width": 0.2,
-                        "depth": 0.2
-                    }
-                },
-                "gearvr":
-                    {
-                        "extends": "http://vwf.example.com/aframe/gearvrcontrol-component.vwf",
-                        "type": "component",
-                        "properties": {
-                        }
-                    },
-                "interpolation":
-                    {
-                        "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                        "type": "component",
-                        "properties": {
-                        }
-                    }
-            }
-        }
-
-        vwf_view.kernel.createChild(nodeID, nodeName, newNode);
-        // vwf_view.kernel.callMethod(nodeName, "createAvatarBody");
-    }
 
 });

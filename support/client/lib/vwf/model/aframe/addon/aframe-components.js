@@ -375,7 +375,7 @@ AFRAME.registerComponent('gearvrcontrol', {
     
         init: function () {
             var self = this;
-            var controllerID = 'controlvr-' + vwf_view.kernel.moniker();
+            var controllerID = 'gearvr-' + vwf_view.kernel.moniker();
             //this.gearel = document.querySelector('#gearvrcontrol');
             this.el.addEventListener('triggerdown', function (event) {
               vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
@@ -391,3 +391,31 @@ AFRAME.registerComponent('gearvrcontrol', {
         tick: function (t) {
         }
     })
+
+
+    AFRAME.registerComponent('wmrvrcontrol', {
+        
+        schema: {
+            hand: { default: 'right' }
+        },
+    
+        update: function (old) {
+            this.hand = this.data.hand;
+        },
+
+            init: function () {
+                var self = this;
+                this.hand = this.data.hand;
+                var controllerID = 'wrmr-' + this.hand + '-' + vwf_view.kernel.moniker();
+                //this.gearel = document.querySelector('#gearvrcontrol');
+                this.el.addEventListener('triggerdown', function (event) {
+                  vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+                  });
+                  this.el.addEventListener('triggerup', function (event) {
+                   vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+                  });
+            },
+        
+            tick: function (t) {
+            }
+        })

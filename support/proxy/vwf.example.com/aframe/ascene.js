@@ -27,8 +27,8 @@ this.clientWatch = function () {
                     } else {
                         //console.log(node.id + " needed to delete!");
                         self.children.delete(self.children[node.id]);
-                        //'controlvr-'
-                        let controllerVR = self.children['controlvr-'+ node.id.slice(7)];
+                        //'gearvr-'
+                        let controllerVR = self.children['gearvr-'+ node.id.slice(7)];
                         if (controllerVR){
                             self.children.delete(controllerVR);
                         }
