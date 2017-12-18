@@ -2,7 +2,7 @@ this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
         "color": "white",
-        "position": "0 0.66 0.3",
+        "position": "0 0.66 0.5",
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
@@ -13,7 +13,7 @@ this.modelBodyDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
         "src": "#avatar",
-        "position": "0 0 0.5",
+        "position": "0 0 0.7",
         "rotation": "0 180 0"
     },
     "children": {
@@ -55,7 +55,7 @@ this.createAvatarBody = function (modelSrc) {
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
-                    "position": "0 1.6 0.3",
+                    "position": "0 1.6 0.5",
                     "visible": true
                 },
                 children: {

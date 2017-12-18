@@ -285,7 +285,7 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('look-controls', {});
         controlEl.setAttribute('gamepad-controls', {});
         controlEl.setAttribute('camera', 'active', true);
-        controlEl.setAttribute('camera', 'near', 0.51);
+       // controlEl.setAttribute('camera', 'near', 0.51);
 
         aScene.appendChild(controlEl);
 
