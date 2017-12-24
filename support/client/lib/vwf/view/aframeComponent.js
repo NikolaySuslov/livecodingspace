@@ -22,14 +22,20 @@
 /// @requires vwf/view
 
 define(["module", "vwf/view"], function (module, view) {
+    var self;
 
     return view.load(module, {
 
         // == Module Definition ====================================================================
 
         initialize: function (options) {
-            var self = this;
+            self = this;
             this.nodes = {};
+
+            this.tickTime = 0;
+            this.realTickDif = 50;
+            this.lastrealTickDif = 50;
+            this.lastRealTick = performance.now();
 
             this.state.appInitialized = false;
             
@@ -62,7 +68,10 @@ define(["module", "vwf/view"], function (module, view) {
                 this.nodes[childID] = {id:childID,extends:childExtendsID};
             } 
             else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
-                this.nodes[childID] = {id:childID,extends:childExtendsID};
+                this.nodes[childID] = {
+                    id:childID,
+                    extends:childExtendsID
+                };
             }
           
         },
@@ -94,8 +103,7 @@ define(["module", "vwf/view"], function (module, view) {
                             return;
                         }
 
-
-
+                        
             switch (propertyName) {
                 case "color":
                     if (propertyValue) {
@@ -113,12 +121,73 @@ define(["module", "vwf/view"], function (module, view) {
 
         ticked: function (vwfTime) {
 
-            
+            lerpTick ();
 
         }
 
     });
 
-   
+    function lerpTick () {
+        var now = performance.now();
+        self.realTickDif = now - self.lastRealTick;
+
+        self.lastRealTick = now;
+ 
+        //reset - loading can cause us to get behind and always but up against the max prediction value
+       // self.tickTime = 0;
+
+       let interNodes = Object.entries(self.nodes).filter(node => 
+        node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
+
+       interNodes.forEach(node => {
+           let nodeID = node[0];
+        if ( self.state.nodes[nodeID] ) {      
+            self.nodes[nodeID].tickTime = 0;
+            if(!self.nodes[nodeID].interpolate)
+            {
+                self.nodes[nodeID].interpolate = {
+                    'position': {},
+                    'rotation': {}
+                }
+            }
+           self.nodes[nodeID].interpolate.position.lastTick = self.nodes[nodeID].interpolate.position.selfTick;
+            self.nodes[nodeID].interpolate.position.selfTick = getPosition(nodeID);
+
+            self.nodes[nodeID].interpolate.rotation.lastTick = self.nodes[nodeID].interpolate.rotation.selfTick;
+            self.nodes[nodeID].interpolate.rotation.selfTick = getRotation(nodeID);
+            //console.log(self.nodes[nodeID].interpolate.rotation.selfTick);
+            //self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
+            //self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
+        }
+       })
+
+        // for ( var nodeID in interNodes ) {
+        //     if ( self.state.nodes[nodeID] ) {      
+        //         self.nodes[nodeID].tickTime = 0;
+        //         self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
+        //         self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
+        //     }
+        // }
+
+
+    }
+
+    function getRotation(id) {
+        let r = new THREE.Euler();
+        let rot = r.copy(self.state.nodes[id].aframeObj.el.object3D.rotation);
+        //let rot = self.state.nodes[id].aframeObj.el.getAttribute('rotation');
+        //let interp = (new THREE.Vector3()).fromArray(Object.values(rot))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
+        
+        return rot;
+    }
+
+    function getPosition(id) {
+        let p = new THREE.Vector3();
+        let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
+        //let pos = self.state.nodes[id].aframeObj.el.getAttribute('position');
+        //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
+        
+        return pos;
+    }
 
 });

@@ -32,6 +32,11 @@ define(["module", "vwf/view"], function (module, view) {
             self = this;
             this.nodes = {};
 
+            // this.tickTime = 0;
+            // this.realTickDif = 50;
+            // this.lastrealTickDif = 50;
+            // this.lastRealTick = performance.now();
+
             this.state.appInitialized = false;
 
             if (options === undefined) { options = {}; }
@@ -98,7 +103,12 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
             if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
-                this.nodes[childID] = { id: childID, extends: childExtendsID };
+                this.nodes[childID] = { 
+                    id: childID, 
+                    extends: childExtendsID,
+                    // lastTransformStep: 0,
+                    // lastAnimationStep: 0 
+                };
             }
 
             // if(this.state.nodes[childID]) {
@@ -136,6 +146,11 @@ define(["module", "vwf/view"], function (module, view) {
             if (!(node && node.aframeObj)) {
                 return;
             }
+
+            // if (propertyName == 'position') {
+            //     this.nodes[nodeId].lastTransformStep = vwf.time();
+            // }
+
 
             // var aframeObject = node.aframeObj;
             // switch (propertyName) {
@@ -209,12 +224,13 @@ define(["module", "vwf/view"], function (module, view) {
                 updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
             }
 
-
-            //lerpTick ()
+           // console.log(vwfTime);
+            //lerpTick ();
         }
 
 
     });
+
 
     function compareCoordinates(a, b) {
         return a.x !== b.x || a.y !== b.y || a.z !== b.z
@@ -233,16 +249,20 @@ define(["module", "vwf/view"], function (module, view) {
             let position = el.getAttribute('position');
             let rotation = el.getAttribute('rotation');
 
+            let lastRotation = self.nodes[avatarName].selfTickRotation;
+
             let currentPosition = node.aframeObj.getAttribute('position');
             let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && currentPosition && currentRotation) {
-                if (compareCoordinates(position, currentPosition) || rotation.y !== currentRotation.y) {
+            if (position && rotation && currentPosition && currentRotation && lastRotation) {
+            if (compareCoordinates(position, currentPosition) || rotation.y !== lastRotation.y) {
                     console.log("not equal!!")
                     vwf_view.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
                 }
             }
+            self.nodes[avatarName].selfTickRotation = Object.assign({}, el.getAttribute('rotation'));
         }
+
     }
 
 
@@ -258,17 +278,21 @@ define(["module", "vwf/view"], function (module, view) {
             let position = el.getAttribute('position');
             let rotation = el.getAttribute('rotation');
 
+            let lastRotation = self.nodes[avatarName].selfTickRotation;
+
             let currentPosition = node.aframeObj.getAttribute('position');
             let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && currentPosition && currentRotation) {
-                if (compareCoordinates(position, currentPosition) || compareCoordinates(rotation, currentRotation)) {
+            if (position && rotation && currentPosition && currentRotation && lastRotation) {
+                if (compareCoordinates(position, currentPosition) || compareCoordinates(rotation, lastRotation)) {
                     console.log("not equal!!");
 
                     vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
                     vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
                 }
             }
+
+            self.nodes[avatarName].selfTickRotation = Object.assign({}, el.getAttribute('rotation'));
 
         }
     }
@@ -283,8 +307,10 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('id', 'avatarControl');
         controlEl.setAttribute('wasd-controls', {});
         controlEl.setAttribute('look-controls', {});
+        controlEl.setAttribute('look-controls', 'userHeight', 1.6)
         controlEl.setAttribute('gamepad-controls', {});
         controlEl.setAttribute('camera', 'active', true);
+        controlEl.setAttribute('camera', 'userHeight', 1.6);
        // controlEl.setAttribute('camera', 'near', 0.51);
 
         aScene.appendChild(controlEl);

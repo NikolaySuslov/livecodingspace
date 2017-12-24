@@ -16449,7 +16449,7 @@ function getGeometry (object) {
     var position = new THREE.Vector3(),
         quaternion = new THREE.Quaternion(),
         scale = new THREE.Vector3();
-    if (meshes[0].geometry instanceof THREE.BufferGeometry) {
+    if (meshes[0].geometry.isBufferGeometry) {
       if (meshes[0].geometry.attributes.position) {
         tmp.fromBufferGeometry(meshes[0].geometry);
       }
@@ -16465,7 +16465,7 @@ function getGeometry (object) {
   // Recursively merge geometry, preserving local transforms.
   while ((mesh = meshes.pop())) {
     mesh.updateMatrixWorld();
-    if (mesh.geometry instanceof THREE.BufferGeometry) {
+    if (mesh.geometry.isBufferGeometry) {
       tmp.fromBufferGeometry(mesh.geometry);
       combined.merge(tmp, mesh.matrixWorld);
     } else {
@@ -16989,14 +16989,21 @@ module.exports = {
     if (this.checkpoint === checkpoint) return;
 
     if (this.checkpoint) {
-      el.emit('navigation-end', {checkpoint: checkpoint});
+      el.emit('navigation-end', {checkpoint: this.checkpoint});
     }
 
     this.checkpoint = checkpoint;
+    this.sync();
+
+    // Ignore new checkpoint if we're already there.
+    if (this.position.distanceTo(this.targetPosition) < EPS) {
+      this.checkpoint = null;
+      return;
+    }
+
     el.emit('navigation-start', {checkpoint: checkpoint});
 
     if (this.data.mode === 'teleport') {
-      this.sync();
       this.el.setAttribute('position', this.targetPosition);
       this.checkpoint = null;
       el.emit('navigation-end', {checkpoint: checkpoint});

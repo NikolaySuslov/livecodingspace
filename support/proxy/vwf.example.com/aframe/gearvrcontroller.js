@@ -18,13 +18,13 @@ this.simpleDef = {
                 "depth": 0.1
             }
         },
-        "interpolation":
-            {
-                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                "type": "component",
-                "properties": {
-                }
-            }
+        // "interpolation":
+        //     {
+        //         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+        //         "type": "component",
+        //         "properties": {
+        //         }
+        //     }
     }
 }
 

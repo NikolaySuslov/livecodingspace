@@ -3,3 +3,6 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-sky"
 properties:
+  color:
+  side:
+  src:

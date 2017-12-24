@@ -9,7 +9,7 @@
     },
     "plane":{
         "tag": "a-asset-item",
-        "src": "/../assets/plane.dae"
+        "src": "/../assets/test.dae"
     },
      "bg2":{
         "tag": "img",

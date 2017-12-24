@@ -131,7 +131,7 @@ AFRAME.registerComponent('cursor-listener', {
             console.log('I was clicked at: ', evt.detail.intersection.point);
             let cursorID = 'cursor-avatar-' + vwf_view.kernel.moniker();
             if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
-                vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent")
             }
 
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
@@ -157,7 +157,7 @@ AFRAME.registerComponent('raycaster-listener', {
 
                 } else {
                     console.log('I was intersected at: ', evt.detail.intersection.point);
-                    vwf_view.kernel.fireEvent(evt.detail.target.id, "intersectEvent")
+                    vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "intersectEvent")
                 }
 
                 self.casters[evt.detail.el.id] = evt.detail.el;
@@ -176,7 +176,7 @@ AFRAME.registerComponent('raycaster-listener', {
                 if (self.intersected) {
                     console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.detail.el.id] !== undefined)) {
-                        vwf_view.kernel.fireEvent(evt.detail.target.id, "clearIntersectEvent")
+                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
                     }
                     delete self.casters[evt.detail.el.id]
                 } else { }

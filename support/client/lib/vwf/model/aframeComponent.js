@@ -370,10 +370,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
                             break;
 
-                        case "duration":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
-                            break;
-
                         case "deltaPos":
                             parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
                             break;
@@ -619,10 +615,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "enabled":
                             value = parentNodeAF.getAttribute(aframeObject.compName).enabled;
-                            break;
-
-                        case "duration":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).duration;
                             break;
 
                         case "deltaPos":

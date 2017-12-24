@@ -35,7 +35,12 @@ this.createAvatarBody = function (modelSrc) {
     let avatarControl = document.querySelector('#avatarControl');
 
 
-    let userHeight = avatarControl.getAttribute('camera').userHeight;
+    //let userHeight = avatarControl.getAttribute('camera').userHeight;
+    var userHeight = avatarControl.getAttribute('look-controls').userHeight; //avatarControl.getAttribute('position').y;
+
+    // if (AFRAME.utils.device.isGearVR()) {
+    //     userHeight = 0
+    // }
 
     let myColor = this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
@@ -64,10 +69,7 @@ this.createAvatarBody = function (modelSrc) {
                         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                         "type": "component",
                         "properties": {
-                            "enabled": true,
-                            "duration": 50,
-                            "deltaPos": 0,
-                            "deltaRot": 0
+                            "enabled": true
                         }
                     },
                     "visual": {
@@ -200,10 +202,7 @@ this.createAvatarBody = function (modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
-            "enabled": true,
-            "duration": 50,
-            "deltaPos": 0,
-            "deltaRot": 0
+            "enabled": true
         }
     }
 

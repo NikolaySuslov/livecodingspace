@@ -15683,7 +15683,7 @@ function getGeometry (object) {
     var position = new THREE.Vector3(),
         quaternion = new THREE.Quaternion(),
         scale = new THREE.Vector3();
-    if (meshes[0].geometry instanceof THREE.BufferGeometry) {
+    if (meshes[0].geometry.isBufferGeometry) {
       if (meshes[0].geometry.attributes.position) {
         tmp.fromBufferGeometry(meshes[0].geometry);
       }
@@ -15699,7 +15699,7 @@ function getGeometry (object) {
   // Recursively merge geometry, preserving local transforms.
   while ((mesh = meshes.pop())) {
     mesh.updateMatrixWorld();
-    if (mesh.geometry instanceof THREE.BufferGeometry) {
+    if (mesh.geometry.isBufferGeometry) {
       tmp.fromBufferGeometry(mesh.geometry);
       combined.merge(tmp, mesh.matrixWorld);
     } else {
@@ -16550,7 +16550,9 @@ module.exports = {
 
       for (var i = 0, contact; (contact = this.system.world.contacts[i]); i++) {
         // 1. Find any collisions involving this element. Get the contact
-        // normal, and make sure it's oriented _out_ of the other object.
+        // normal, and make sure it's oriented _out_ of the other object and
+        // enabled (body.collisionReponse is true for both bodies)
+        if (!contact.enabled) { continue; }
         if (body.id === contact.bi.id) {
           contact.ni.negate(currentSurfaceNormal);
         } else if (body.id === contact.bj.id) {
@@ -16685,6 +16687,7 @@ module.exports = {
     this.collisions = [];
 
     this.handleHit = this.handleHit.bind(this);
+    this.handleHitEnd = this.handleHitEnd.bind(this);
   },
 
   remove: function () {
@@ -16760,9 +16763,7 @@ module.exports = {
       // Remove collision state from other elements.
       this.collisions.filter(function (el) {
         return !distanceMap.has(el);
-      }).forEach(function removeState (el) {
-        el.removeState(data.state);
-      });
+      }).forEach(this.handleHitEnd);
 
       // Store new collisions
       this.collisions = collisions;
@@ -16802,6 +16803,11 @@ module.exports = {
     targetEl.emit('hit');
     targetEl.addState(this.data.state);
     this.el.emit('hit', {el: targetEl});
+  },
+  handleHitEnd: function (targetEl) {
+    targetEl.emit('hitend');
+    targetEl.removeState(this.data.state);
+    this.el.emit('hitend', {el: targetEl});
   }
 };
 
