@@ -88,10 +88,10 @@ this.createAvatarBody = function (modelSrc) {
                         "id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
-                            "position": "0 0 0",
+                            "position": "0 0 -0.5",
                             "look-controls-enabled": false,
-                            "wasd-controls": false,
-                            "userHeight": 0,
+                            "wasd-controls-enabled": false,
+                            "user-height": 0
                         }
                     },
                     "myCursor":

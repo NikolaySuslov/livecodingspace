@@ -150,10 +150,10 @@ define(["module", "vwf/view"], function (module, view) {
                     'rotation': {}
                 }
             }
-           self.nodes[nodeID].interpolate.position.lastTick = self.nodes[nodeID].interpolate.position.selfTick;
+            self.nodes[nodeID].interpolate.position.lastTick = (self.nodes[nodeID].interpolate.position.selfTick);
             self.nodes[nodeID].interpolate.position.selfTick = getPosition(nodeID);
 
-            self.nodes[nodeID].interpolate.rotation.lastTick = self.nodes[nodeID].interpolate.rotation.selfTick;
+            self.nodes[nodeID].interpolate.rotation.lastTick = (self.nodes[nodeID].interpolate.rotation.selfTick);
             self.nodes[nodeID].interpolate.rotation.selfTick = getRotation(nodeID);
             //console.log(self.nodes[nodeID].interpolate.rotation.selfTick);
             //self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;

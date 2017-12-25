@@ -17,12 +17,14 @@ this.simpleDef = {
                 "width": 0.1,
                 "depth": 0.1
             }
+
         },
         "interpolation":
             {
                 "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                 "type": "component",
                 "properties": {
+                    "enabled": true
                 }
             }
     }
@@ -73,10 +75,7 @@ this.createController = function (modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
-            "enabled": true,
-            "duration": 50,
-            "deltaPos": 0,
-            "deltaRot": 0
+            "enabled": true
         }
     }
 
@@ -87,7 +86,7 @@ this.createController = function (modelSrc) {
 }
 
 
-this.updateAvatarVRControl = function(position, rotation){
+this.updateVRControl = function(position, rotation){
 
     this.rotation = rotation;
     this.position = position;

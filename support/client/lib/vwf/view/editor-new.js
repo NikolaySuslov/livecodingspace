@@ -1302,7 +1302,7 @@ define([
                                                         $text: "Active",
                                                         onclick: function (e) {
                                                             let camera = document.querySelector('#' + this._currentNode);
-                                                            camera.setAttribute('active', true);
+                                                            camera.setAttribute('camera', 'active', true);
                                                         }
 
                                                     }

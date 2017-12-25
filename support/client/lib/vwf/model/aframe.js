@@ -349,9 +349,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('material', {'side': propertyValue});
                             break;
 
-                        case "look-controls-enabled":
-                            aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
-                            break;
+                        // case "look-controls-enabled":
+                        //     aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
+                        //     break;
                         case "wasd-controls":
                             aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
                             break;
@@ -613,8 +613,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     value = propertyValue;
                     switch (propertyName) {
 
-                        case "userHeight":
-                            aframeObject.setAttribute('camera', 'userHeight', propertyValue);
+                        case "user-height":
+                            aframeObject.setAttribute('user-height', propertyValue);
+                            break;
+
+                            case "look-controls-enabled":
+                            aframeObject.setAttribute('look-controls-enabled', propertyValue);
+                            break;
+
+                            case "wasd-controls-enabled":
+                            aframeObject.setAttribute('wasd-controls-enabled', propertyValue);
                             break;
 
                         // case "active":
@@ -750,18 +758,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "repeat":
                             value = aframeObject.getAttribute('repeat');
 
-                        case "look-controls-enabled":
-                            var look = aframeObject.getAttribute('look-controls-enabled');
-                            if (look !== null && look !== undefined) {
-                                value = aframeObject.getAttribute('look-controls').enabled;
-                            }
-                            break;
-                        case "wasd-controls":
-                            var wasd = aframeObject.getAttribute('wasd-controls');
-                            if (wasd !== null && wasd !== undefined) {
-                                value = aframeObject.getAttribute('wasd-controls').enabled;
-                            }
-                            break;
+                        // case "look-controls-enabled":
+                        //     var look = aframeObject.getAttribute('look-controls-enabled');
+                        //     if (look !== null && look !== undefined) {
+                        //         value = aframeObject.getAttribute('look-controls').enabled;
+                        //     }
+                        //     break;
+                        // case "wasd-controls":
+                        //     var wasd = aframeObject.getAttribute('wasd-controls');
+                        //     if (wasd !== null && wasd !== undefined) {
+                        //         value = aframeObject.getAttribute('wasd-controls').enabled;
+                        //     }
+                        //     break;
 
                         case "visible":
                             value = aframeObject.getAttribute('visible');
@@ -918,9 +926,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                     switch (propertyName) {
-                        case "userHeight":
-                            value = aframeObject.getAttribute('camera').userHeight;
+                        case "user-height":
+                            value = aframeObject.getAttribute('user-height');
                             break;
+                        case "look-controls-enabled":
+                            value = aframeObject.getAttribute('look-controls-enabled');
+                            break;
+
+                        case "wasd-controls-enabled":
+                            value = aframeObject.getAttribute('wasd-controls-enabled');
+                            break;
+
                     }
 
                     //    switch (propertyName) {

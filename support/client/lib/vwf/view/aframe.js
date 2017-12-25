@@ -91,7 +91,7 @@ define(["module", "vwf/view"], function (module, view) {
                     }
                 }
 
-                if (this.wmrright == true) {
+                if (this.wmrleft == true) {
                     console.log("CREATE WMR LEFT HERE!!");
                     if (AFRAME.utils.device.checkHasPositionalTracking()) {
                         let nodeName = 'wmrvr-left-' + self.kernel.moniker();
@@ -279,20 +279,23 @@ define(["module", "vwf/view"], function (module, view) {
             let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
+            let lastPosition = self.nodes[avatarName].selfTickPosition;
 
-            let currentPosition = node.aframeObj.getAttribute('position');
-            let currentRotation = node.aframeObj.getAttribute('rotation');
+           // let currentPosition = node.aframeObj.getAttribute('position');
+            //let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && currentPosition && currentRotation && lastRotation) {
-                if (compareCoordinates(position, currentPosition) || compareCoordinates(rotation, lastRotation)) {
+            if (position && rotation && lastRotation && lastPosition) {
+                if (compareCoordinates(position, lastPosition) || compareCoordinates(rotation, lastRotation)) {
                     console.log("not equal!!");
 
-                    vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
-                    vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
+                    vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
+                   // vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
+                    //vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
                 }
             }
 
             self.nodes[avatarName].selfTickRotation = Object.assign({}, el.getAttribute('rotation'));
+            self.nodes[avatarName].selfTickPosition = Object.assign({}, el.getAttribute('position'));
 
         }
     }
@@ -305,12 +308,13 @@ define(["module", "vwf/view"], function (module, view) {
         let controlEl = document.createElement('a-camera');
         // controlEl.setAttribute('avatar', '');
         controlEl.setAttribute('id', 'avatarControl');
-        controlEl.setAttribute('wasd-controls', {});
-        controlEl.setAttribute('look-controls', {});
-        controlEl.setAttribute('look-controls', 'userHeight', 1.6)
+        controlEl.setAttribute('wasd-controls-enabled', true);
+        controlEl.setAttribute('look-controls-enabled', true);
+        controlEl.setAttribute('user-height', 1.6);
         controlEl.setAttribute('gamepad-controls', {});
+        //controlEl.setAttribute('gearvr-controls',{});
         controlEl.setAttribute('camera', 'active', true);
-        controlEl.setAttribute('camera', 'userHeight', 1.6);
+       // controlEl.setAttribute('camera', 'userHeight', 1.6);
        // controlEl.setAttribute('camera', 'near', 0.51);
 
         aScene.appendChild(controlEl);
@@ -425,7 +429,7 @@ define(["module", "vwf/view"], function (module, view) {
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
         wmrvr.setAttribute('windows-motion-controls', '');
         wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
-        wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
+        //wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
         sceneEl.appendChild(wmrvr);
     }
 
