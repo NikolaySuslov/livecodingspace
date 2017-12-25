@@ -311,7 +311,9 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('wasd-controls-enabled', true);
         controlEl.setAttribute('look-controls-enabled', true);
         controlEl.setAttribute('user-height', 1.6);
-        controlEl.setAttribute('gamepad-controls', {});
+       controlEl.setAttribute('gamepad-controls', {'controller': 0});
+        //controlEl.setAttribute('universal-controls', {});
+        
         //controlEl.setAttribute('gearvr-controls',{});
         controlEl.setAttribute('camera', 'active', true);
        // controlEl.setAttribute('camera', 'userHeight', 1.6);
@@ -429,7 +431,7 @@ define(["module", "vwf/view"], function (module, view) {
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
         wmrvr.setAttribute('windows-motion-controls', '');
         wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
-        //wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
+        wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
         sceneEl.appendChild(wmrvr);
     }
 

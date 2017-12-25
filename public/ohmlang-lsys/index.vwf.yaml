@@ -173,12 +173,12 @@ children:
                 parameters:
                     - step
                 body: |
-                    let pos = AFRAME.utils.coordinates.parse(this.drawNode.position);
+                    let pos = Object.assign({}, this.drawNode.position);
                     var x0 = pos.x;
                     var y0 = pos.y;
                     var xx = Math.sin(this.angleInRadians);
                     var yy = Math.cos(this.angleInRadians);
-                    let startPosition = AFRAME.utils.coordinates.parse(this.drawNode.position);
+                    let startPosition = Object.assign({}, this.drawNode.position);
                     let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos.z};
                     var drawPath = this.drawNode.linepath.path;
                     drawPath.push(startPosition);
