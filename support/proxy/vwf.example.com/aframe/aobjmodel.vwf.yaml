@@ -1,0 +1,7 @@
+#https://aframe.io/docs/master/primitives/a-obj-model.html
+--- 
+extends: http://vwf.example.com/aframe/aentity.vwf
+type: "a-obj-model"
+properties:
+  src:
+  mtl:

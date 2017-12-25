@@ -535,6 +535,25 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-OBJ-MODEL") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "src":
+                            aframeObject.setAttribute('src', propertyValue);
+                            break;
+
+                        case "mtl":
+                            aframeObject.setAttribute('mtl', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-PLANE") {
                     value = propertyValue;
 
@@ -971,6 +990,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-OBJ-MODEL") {
+
+                    switch (propertyName) {
+                        case "src":
+                            value = aframeObject.getAttribute('src');
+                            break;
+                        case "mtl":
+                            value = aframeObject.getAttribute('mtl');
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
                     
                                         switch (propertyName) {
@@ -1022,7 +1053,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-text');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acolladamodel.vwf")) {
             aframeObj = document.createElement('a-collada-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
+            aframeObj = document.createElement('a-obj-model');
+         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
             aframeObj = document.createElement('a-sphere');

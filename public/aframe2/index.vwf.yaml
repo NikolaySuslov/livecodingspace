@@ -15,10 +15,12 @@ children:
       position: "0 10 5"
       rotation: "0 0 0"
   model:
-    extends: http://vwf.example.com/aframe/acolladamodel.vwf
+    extends: http://vwf.example.com/aframe/aobjmodel.vwf
     properties:
-      src: "#plane"
-      position: "-1.0 1.7 -3"
+      src: "#plane-obj"
+      mtl: "#plane-mtl"
+      position: "-1.2 1.7 -2.5"
+      rotation: "0 -45 0"
       scale: "0.5 0.5 0.5"
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
@@ -118,8 +120,8 @@ children:
             properties:
               enabled: true
               duration: 50
-              deltaPos: 0.1
-              deltaRot: 1
+              deltaPos: 0.001
+              deltaRot: 0.1
         methods:
           run:
             body: |
