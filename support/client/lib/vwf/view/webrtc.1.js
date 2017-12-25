@@ -37,6 +37,18 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 "sharing": { audio: true, video: true } 
             };
 
+            // turns on logger debugger console messages 
+            this.debugVwf = {
+                "creation": false,
+                "initializing": false,
+                "parenting": false,
+                "deleting": false,
+                "properties": false,
+                "setting": false,
+                "getting": false,
+                "calling": false
+            };
+
             if ( options === undefined ) { options = {}; }
 
             this.stereo = options.stereo !== undefined  ? options.stereo : false;
@@ -53,6 +65,10 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
   
         createdNode: function( nodeID, childID, childExtendsID, childImplementsIDs,
             childSource, childType, childIndex, childName, callback /* ( ready ) */ ) {
+
+            if ( this.debugVwf.creation ) {
+                this.kernel.logger.infox( "createdNode", nodeID, childID, childExtendsID, childImplementsIDs, childSource, childType, childName );
+            }
 
             if ( childExtendsID === undefined )
                 return;
@@ -123,6 +139,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         initializedNode: function( nodeID, childID, childExtendsID, childImplementsIDs, 
             childSource, childType, childIndex, childName ) {
 
+            if ( this.debugVwf.initializing ) {
+                this.kernel.logger.infox( "initializedNode", nodeID, childID, childExtendsID, childImplementsIDs, childSource, childType, childName );
+            } 
 
             if ( childExtendsID === undefined )
                 return;
@@ -167,7 +186,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
         deletedNode: function( nodeID ) {
             
-
+            if ( this.debugVwf.deleting ) {
+                this.kernel.logger.infox( "deletedNode", nodeID );
+            }
             // debugger;
 
             //if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
@@ -209,19 +230,28 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
   
         createdProperty: function( nodeID, propertyName, propertyValue ) {
 
-
+            if ( this.debugVwf.properties ) {
+                this.kernel.logger.infox( "C === createdProperty ", nodeID, propertyName, propertyValue );
+            }
 
             this.satProperty( nodeID, propertyName, propertyValue );
         },        
 
         initializedProperty: function( nodeID, propertyName, propertyValue ) {
 
+            if ( this.debugVwf.properties ) {
+                this.kernel.logger.infox( "  I === initializedProperty ", nodeID, propertyName, propertyValue );
+            }
 
             this.satProperty( nodeID, propertyName, propertyValue );
         },        
 
         satProperty: function( nodeID, propertyName, propertyValue ) {
             
+            
+            if ( this.debugVwf.properties || this.debugVwf.setting ) {
+                this.kernel.logger.infox( "    S === satProperty ", nodeID, propertyName, propertyValue );
+            } 
 
             var client = this.state.clients[ nodeID ];
 
@@ -257,6 +287,12 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                         }
                         break; 
 
+                    case "color":
+                        var clr = new utility.color( propertyValue );
+                        if ( clr ) {
+                            client.color = clr.toString();
+                        }
+                        break;    
 
                     default:  
                         // propertyName is the moniker of the client that 
@@ -275,12 +311,19 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
         gotProperty: function( nodeID, propertyName, propertyValue ) {
 
+            if ( this.debugVwf.properties || this.debugVwf.getting ) {
+                this.kernel.logger.infox( "   G === gotProperty ", nodeID, propertyName, propertyValue );
+            }
             var value = undefined;
 
             return value;
         },
 
         calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+            
+            if ( this.debugVwf.calling ) {
+                this.kernel.logger.infox( "  CM === calledMethod ", nodeID, methodName, methodParameters );
+            }
 
             switch ( methodName ) {
                 case "setLocalMute":
@@ -306,12 +349,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         
           video.setAttribute('id', id);
           video.setAttribute('autoplay', true);
-          //video.setAttribute('src', '');
+          video.setAttribute('src', '');
           video.setAttribute("webkit-playsinline", true);
           video.setAttribute("controls", true);
           video.setAttribute("width", 640);
           video.setAttribute("height", 480);
-          //video.setAttribute("muted", true);
         
           var assets = document.querySelector('a-assets');
         
@@ -351,33 +393,91 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         return clientNode;
     }
 
-    function displayLocal( stream, name) {
+    function displayLocal( stream, name, color ) {
         var id = this.kernel.moniker();
-        return displayVideo.call( this, id, stream, this.local.url, name, id, true);
+        return displayVideo.call( this, id, stream, this.local.url, name, id, true, color );
     }
 
-    function displayVideo( id, stream, url, name, destMoniker, muted) {
+    function displayVideo( id, stream, url, name, destMoniker, muted, color ) {
+        
+        var divId = undefined;
+
+        if ( this.videoProperties.create ) {
+            this.videosAdded++
+            var $container;
+            divId = name + this.videosAdded;
+            var videoId = "video-" + divId;
+
+            $container = $( "#" + this.videoElementsDiv );
+            if ( muted ) {
+                $container.append(
+                    "<div id='"+ divId + "'>" +
+                        "<video class='vwf-webrtc-video' id='" + videoId +
+                            "' width='320' height='240' " +
+                            "loop='loop' autoplay muted " +
+                            "style='position: absolute; left: 0; top: 0; z-index: 40;'>" +
+                        "</video>" +
+                    "</div>"
+                );
+
+            } else {
+                $container.append(
+                    "<div id='"+ divId + "'>" +
+                        "<video class='vwf-webrtc-video' id='" + videoId +
+                            "' width='320' height='240'" +
+                            " loop='loop' autoplay " +
+                            "style='position: absolute; left: 0; top: 0; z-index: 40;'>" +
+                        "</video>" +
+                    "</div>"
+                );
+            }
+            
+            var videoE = $( '#'+ videoId )[0];
+            if ( videoE && stream ) {
+                navigator.attachMediaStream( videoE, stream );
+                if ( muted ) {
+                    videoE.muted = true;  // firefox isn't mapping the muted property correctly
+                }
+            }  
+
+            var divEle = $('#'+divId);
+            divEle && divEle.draggable && divEle.draggable();
+           
+        } 
+
+        var clr = new utility.color( color );
+        if ( clr ) { 
+            clr = clr.toArray(); 
+        }
+
+        this.kernel.callMethod( this.kernel.application(), "createVideo", [ {
+            "ID": id,
+            "url": url, 
+            "name": name, 
+            "muted": muted, 
+            "color": clr ? clr : color
+        }, destMoniker ] );       
+        
         
         let video = createVideoElementAsAsset(name);
-        //video.setAttribute('src', url);
         video.srcObject = stream;
 
-        this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
+       this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
 
-        return id;
+        return divId;
     }
 
     function removeVideo( client ) {
         
-        // if ( client.videoDivID ) {
-        //     var $videoWin = $( "#" + client.videoDivID );
-        //     if ( $videoWin ) {
-        //         $videoWin.remove();
-        //     }
-        //     client.videoDivID = undefined;
-        // }
+        if ( client.videoDivID ) {
+            var $videoWin = $( "#" + client.videoDivID );
+            if ( $videoWin ) {
+                $videoWin.remove();
+            }
+            client.videoDivID = undefined;
+        }
 
-        // this.kernel.callMethod( this.kernel.application(), "removeVideo", [ client.moniker ] );
+        this.kernel.callMethod( this.kernel.application(), "removeVideo", [ client.moniker ] );
 
     }
 
@@ -389,34 +489,31 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
         if ( this.local.stream === undefined && ( media.video || media.audio ) ) {
             var self = this;
-
-            var constraints = {
-                audio: true,
-                video: true
-              };
-
-            navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
-
-            function handleError(error) {
-                console.log('navigator.getUserMedia error: ', error);
-              }
-
-            function handleSuccess(stream) {
-                // var videoTracks = stream.getVideoTracks();
-                // console.log('Got stream with constraints:', constraints);
-                // if (videoTracks.length) {
-                //     videoTracks[0].enabled = true;
-                // }
-
-               self.local.url = "url" //URL.createObjectURL( stream );
+            var constraints = { 
+                "audio": media.audio, 
+                "video": media.video ? { "mandatory": {}, "optional": [] } : false, 
+            };
+            
+            var successCallback = function( stream ) {
+                self.local.url = URL.createObjectURL( stream );
                 self.local.stream = stream;
 
                 self.kernel.setProperty( self.local.ID, "localUrl", self.local.url );
 
                 var localNode = self.state.clients[ self.local.ID ];
-                displayLocal.call( self, stream, localNode.displayName);
+                displayLocal.call( self, stream, localNode.displayName, localNode.color );
                 sendOffers.call( self );
-              } 
+            };
+
+            var errorCallback = function( error ) { 
+                console.log("failed to get video stream error: " + error); 
+            };
+
+            try { 
+                navigator.getUserMedia( constraints, successCallback, errorCallback );
+            } catch (e) { 
+                console.log("getUserMedia: error " + e ); 
+            };
         }
     }  
 
@@ -576,9 +673,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         this.pc_config = { "iceServers": this.view.iceServers };
         this.pc_constraints = { "optional": [ { "DtlsSrtpKeyAgreement": true } ] };
         // Set up audio and video regardless of what devices are present.
-        this.sdpConstraints = {
-                                'offerToReceiveAudio':1, 
-                                'offerToReceiveVideo':1 };
+        this.sdpConstraints = { 'mandatory': {
+                                'OfferToReceiveAudio':true, 
+                                'OfferToReceiveVideo':true }};
 
         this.connect = function( stream, sendOffer ) {
             var self = this;
@@ -608,7 +705,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 // }
 
                 try {
-                    this.pc = new RTCPeerConnection( this.pc_config);
+                    this.pc = new RTCPeerConnection( this.pc_config, this.pc_constraints );
                     this.pc.onicecandidate = iceCallback;
 
                     if ( self.view.debug ) console.log("Created RTCPeerConnnection with config \"" + JSON.stringify( this.pc_config ) + "\".");
@@ -623,12 +720,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                     //console.info( "onnegotiationeeded." );
                 }
 
-                this.pc.ontrack = function( event ) {
+                this.pc.onaddstream = function( event ) {
                     if ( self.view.debug ) console.log("Remote stream added.");
                     
-                    self.stream = event.streams[0];
-
-                    self.url = "url" //URL.createObjectURL( event.streams[0] );
+                    self.stream = event.stream;
+                    self.url = URL.createObjectURL( event.stream );
                     
                     if ( self.view.debug ) console.log("Remote stream added.  url: " + self.url );
 
@@ -654,20 +750,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 }
 
                 if ( stream ) {
-                    
-                    // stream.getVideoTracks();
-                    // stream.getAudioTracks();
+                    if ( this.view.debug ) console.log("Adding local stream.");
 
-                    stream.getTracks().forEach(
-                        function(track) {
-                            self.pc.addTrack(
-                            track,
-                            stream
-                          );
-                        }
-                      );
-
-                    //this.pc.addStream( stream );
+                    this.pc.addStream( stream );
                     this.streamAdded = true;
                 }
 
@@ -708,16 +793,16 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             if ( this.view.debug ) console.log('S->C: ' +  JSON.stringify(msg) );
             if ( this.pc ) {
                 if ( msg.type === 'offer') {
-                    // if ( this.view.stereo ) {
-                    //     msg.sdp = addStereo( msg.sdp );
-                    // }
-                    this.pc.setRemoteDescription( new RTCSessionDescription( msg ) ); //msg.sdp
+                    if ( this.view.stereo ) {
+                        msg.sdp = addStereo( msg.sdp );
+                    }
+                    this.pc.setRemoteDescription( new RTCSessionDescription( msg ) );
                     this.answer();
                 } else if ( msg.type === 'answer' && this.streamAdded ) {
-                    // if ( this.view.stereo ) {
-                    //     msg.sdp = addStereo( msg.sdp );
-                    // }                    
-                    this.pc.setRemoteDescription( new RTCSessionDescription( msg ) ); //msg.sdp
+                    if ( this.view.stereo ) {
+                        msg.sdp = addStereo( msg.sdp );
+                    }                    
+                    this.pc.setRemoteDescription( new RTCSessionDescription( msg ) );
                 } else if ( msg.type === 'candidate' && this.streamAdded ) {
                     var candidate = new RTCIceCandidate( { 
                         "sdpMLineIndex": msg.label,
@@ -735,55 +820,43 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             
             var self = this;
             var answerer = function( sessionDescription ) {
-                // // Set Opus as the preferred codec in SDP if Opus is present.
-                // sessionDescription.sdp = self.preferOpus( sessionDescription.sdp );
-                // sessionDescription.sdp = self.setBandwidth( sessionDescription.sdp );
+                // Set Opus as the preferred codec in SDP if Opus is present.
+                sessionDescription.sdp = self.preferOpus( sessionDescription.sdp );
+                sessionDescription.sdp = self.setBandwidth( sessionDescription.sdp );
 
                 self.pc.setLocalDescription( sessionDescription );
+
                 self.view.kernel.setProperty( self.peerNode.ID, self.view.kernel.moniker(), sessionDescription );
             };
 
-            function onCreateSessionDescriptionError(error) {
-                console.log('Failed to create session description: ' + error.toString());
-              }
-
-            this.pc.createAnswer(
-                self.sdpConstraints
-            ).then(
-                answerer,
-                onCreateSessionDescriptionError
-              );
-            //this.pc.createAnswer( answerer, null, this.sdpConstraints);
+            this.pc.createAnswer( answerer, null, this.sdpConstraints);
         };
 
         this.call = function() {
             var self = this;
             var constraints = {
-                offerToReceiveAudio: 1,
-                offerToReceiveVideo: 1
+                "optional": [], 
+                "mandatory": {}
             };
 
+            // temporary measure to remove Moz* constraints in Chrome
+            if ( navigator.webrtcDetectedBrowser === "chrome" ) {
+                for ( var prop in constraints.mandatory ) {
+                    if ( prop.indexOf("Moz") != -1 ) {
+                        delete constraints.mandatory[ prop ];
+                    }
+                }
+            }   
+            constraints = this.mergeConstraints( constraints, this.sdpConstraints );
+
+            if ( this.view.debug ) console.log("Sending offer to peer, with constraints: \n" +  "  \"" + JSON.stringify(constraints) + "\".")
           
             var offerer = function( sessionDescription ) {
-
-                self.pc.setLocalDescription(sessionDescription).then(
-                    function() {
-                      onSetLocalSuccess(self.pc);
-                    },
-                    onSetSessionDescriptionError
-                  );
-
-                  function onSetLocalSuccess(pc) {
-                    console.log(self.pc + ' setLocalDescription complete');
-                  }
-
-                  function onSetSessionDescriptionError(error) {
-                    console.log('Failed to set session description: ' + error.toString());
-                  }
                 // Set Opus as the preferred codec in SDP if Opus is present.
-                // sessionDescription.sdp = self.preferOpus( sessionDescription.sdp );
-                // sessionDescription.sdp = self.setBandwidth( sessionDescription.sdp );
-                // self.pc.setLocalDescription( sessionDescription );
+                sessionDescription.sdp = self.preferOpus( sessionDescription.sdp );
+
+                sessionDescription.sdp = self.setBandwidth( sessionDescription.sdp );
+                self.pc.setLocalDescription( sessionDescription );
                 
                 //sendSignalMessage.call( sessionDescription, self.peerID );
                 self.view.kernel.setProperty( self.peerNode.ID, self.view.kernel.moniker(), sessionDescription );
@@ -793,13 +866,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 console.log(e)
             }
 
-            self.pc.createOffer(
-                constraints
-              ).then(
-                offerer,
-                onFailure
-              );
-            //this.pc.createOffer( offerer, onFailure, constraints );
+            this.pc.createOffer( offerer, onFailure, constraints );
         };
 
         this.setBandwidth = function( sdp ) {
