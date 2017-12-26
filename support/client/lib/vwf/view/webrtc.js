@@ -253,7 +253,8 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                         peerMoniker = appMoniker.call( this, peer.name )
                         if ( peerMoniker != this.kernel.moniker() ) {
                             peer.connection && peer.connection.disconnect();
-                          
+                            let peername = 'avatar-' + peerMoniker;
+                            deletePeerConnection.call( this, peername);
                         }
                     }
 
