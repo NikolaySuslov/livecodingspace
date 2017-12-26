@@ -31,5 +31,8 @@ methods:
     setVideoTexture:
         parameters:
             - val
+    webrtcTurnOnOff:
+        parameters:
+            - val
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

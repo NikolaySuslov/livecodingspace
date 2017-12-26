@@ -288,6 +288,13 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                         methodValue = setMute.call( this, methodParameters );
                     }
                     break;
+                
+                case "webrtcTurnOnOff":
+                    if ( this.kernel.moniker() == this.kernel.client() ) {
+                        methodValue = turnOnOffTracks.call( this, methodParameters );
+                    }
+                    break;    
+
             }
         },       
 
@@ -461,6 +468,23 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         setPause.call( this, !sharing.video );
     }
 
+    function turnOnOffTracks( mute ) {
+        let str = this.local.stream;
+        if ( str ) {
+            var audioTracks = str.getAudioTracks();
+            var videoTracks = str.getVideoTracks();
+
+            audioTracks.forEach(function(track) {
+                track.enabled = mute[0];
+              });
+
+              videoTracks.forEach(function(track) {
+                track.enabled = mute[0];
+              });
+        }
+    };
+
+   
 
     function setMute( mute ) {
         if ( this.local.stream && this.local.stream.audioTracks && this.local.stream.audioTracks.length > 0 ) {

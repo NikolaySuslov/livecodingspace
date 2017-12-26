@@ -320,6 +320,10 @@ this.setVideoTexture = function(val){
     this.avatarNode.myHead.visual.src = '#'+val;
 }
 
+this.webrtcTurnOnOff = function(val){
+    console.log('WEBRTC is ', val);
+}
+
 this.initialize = function() {
    // this.future(0).updateAvatar();
 };
