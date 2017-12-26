@@ -805,11 +805,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                         
                         case "color":
+                        if (aframeObject.getAttribute('background')) {
                             value = aframeObject.getAttribute('background').color;
+                        }
                             break;
 
                         case "transparent":
+                        if (aframeObject.getAttribute('background')) {
                             value = aframeObject.getAttribute('background').transparent;
+                        }
                             break;
                     }
                 }

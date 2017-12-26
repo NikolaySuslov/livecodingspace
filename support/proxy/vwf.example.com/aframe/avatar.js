@@ -324,6 +324,14 @@ this.webrtcTurnOnOff = function(val){
     console.log('WEBRTC is ', val);
 }
 
+this.webrtcMuteAudio = function(val){
+    console.log('WEBRTC Audio is ', val);
+}
+
+this.webrtcMuteVideo = function(val){
+    console.log('WEBRTC Video is ', val);
+}
+
 this.initialize = function() {
    // this.future(0).updateAvatar();
 };

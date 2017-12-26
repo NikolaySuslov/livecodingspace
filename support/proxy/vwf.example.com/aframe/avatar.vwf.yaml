@@ -34,5 +34,11 @@ methods:
     webrtcTurnOnOff:
         parameters:
             - val
+    webrtcMuteAudio:
+        parameters:
+            - val
+    webrtcMuteVideo:
+        parameters:
+            - val
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

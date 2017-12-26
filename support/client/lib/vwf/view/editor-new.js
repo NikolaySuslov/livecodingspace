@@ -26,8 +26,9 @@ define([
     "vwf/view",
     "vwf/utility",
     "vwf/view/lib/ace/ace",
-    "vwf/view/lib/colorpicker/colorpicker.min"
-], function (module, version, view, utility, ace, colorpicker) {
+    "vwf/view/lib/colorpicker/colorpicker.min",
+    "vwf/view/widgets"
+], function (module, version, view, utility, ace, colorpicker, widgets) {
 
     var self;
 
@@ -38,6 +39,7 @@ define([
         initialize: function () {
             self = this;
             this.ace = window.ace;
+            this.widgets = widgets;
 
             this.nodes = {};
             this.scenes = {};
@@ -346,32 +348,7 @@ define([
 
 
                                     ]
-                                },
-                                {
-                                    $cell: true,
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-                                        {
-                                        
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "GearVR controller",
-                                            onclick: function (e) {
-                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                let sceneEl = document.querySelector('a-scene');
-                                                let gearvr = document.createElement('a-entity');
-                                                gearvr.setAttribute('id','gearvrcontrols');
-                                                gearvr.setAttribute('gearvr-controls','');
-                                                gearvr.setAttribute('gearvr-controls', 'hand', 'right');
-                                                sceneEl.appendChild(gearvr);
-                                            }
-
-                                        }
-                                    ]
                                 }
-
                             ]
                         }
                     ]
@@ -1063,6 +1040,152 @@ define([
                 class: "mdc-list-divider",
             }
 
+            let webrtcGUI = {
+
+                $type: "div",
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                $components: [
+                    {
+
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "span",
+                                        $text: "ON",
+
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    widgets.switch({
+                                        'id': "webrtcswitch",
+                                        'init': function(){
+
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                            if (!driver) this.setAttribute('disabled', '');
+
+                                        },
+                                        "onchange": function(e){
+
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                            let avatarID = 'avatar-' + self.kernel.moniker();
+
+                                            let chkAttr = this.checked;
+
+                                         if (chkAttr) {
+                                             driver.startWebRTC(avatarID);
+                                             console.log("on")
+     
+                                         } else {
+                                            driver.stopWebRTC(avatarID);
+                                             console.log("off")
+                                         }
+
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "span",
+                                        $text: "Mic: ",
+
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    widgets.switch({
+                                        'id': "webrtcaudio",
+                                        'init': function(){
+
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                            if (!driver) this.setAttribute('disabled', '');
+                                        },
+                                        "onchange": function(e){
+
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                           
+                                               let chkAttr = this.checked;
+                                            if (chkAttr) {
+                                                driver.muteAudio([chkAttr]);
+                                                console.log("on")
+        
+                                            } else {
+                                                driver.muteAudio([chkAttr]);
+                                                console.log("off")
+                                            }
+                                      
+
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "span",
+                                        $text: "Cam: ",
+
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    widgets.switch({
+                                        'id': "webrtcvideo",
+                                        'init': function(){
+
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                            if (!driver) this.setAttribute('disabled', '');
+
+                                        },
+                                        "onchange": function(e){
+                                            
+                                            let driver = vwf.views["vwf/view/webrtc"];
+                                            let chkAttr = this.checked;
+                                            if (chkAttr) {
+                                                driver.muteVideo([chkAttr]);
+                                                console.log("on")
+        
+                                            } else {
+                                                driver.muteVideo([chkAttr]);
+                                                console.log("off")
+                                            }
+                                        }
+                                    })
+                                ]
+                            }
+                        ]
+                    }
+
+                ]
+            }
+
+
             let gizmoEdit = {
 
                 $type: "div",
@@ -1090,50 +1213,26 @@ define([
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                 $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "div",
-                                        class: "mdc-switch",
-                                        $components: [
-                                            {
-                                                $type: "input",
-                                                type: "checkbox",
-                                                class: "mdc-switch__native-control",
-                                                id: 'editnode',
-                                                $init: function () {
+                                    widgets.switch({
+                                    'id': 'editnode', 
+                                    'init': function(){
+                                        vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                                    },
+                                    'onchange': function(e){
 
-                                                    vwf_view.kernel.getProperty(this._currentNode, 'edit');
-
-                                                },
-                                                //id: "basic-switch",
-                                                onchange: function (e) {
-
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let chkAttr = this.getAttribute('checked');
-                                                    if (chkAttr == "") {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', false);
-
-                                                    } else {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', true);
-                                                    }
-
-                                                    vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
-
-
-                                                }
-                                            },
-                                            {
-                                                $type: "div",
-                                                class: "mdc-switch__background",
-                                                $components: [
-                                                    {
-                                                        $type: "div",
-                                                        class: "mdc-switch__knob"
-                                                    }
-                                                ]
-                                            }
-                                        ]
+                                        var nodeID = document.querySelector('#currentNode')._currentNode;
+                                        let chkAttr = this.getAttribute('checked');
+                                        if (chkAttr == "") {
+                                            self.kernel.setProperty(this._currentNode, 'edit', false);
+    
+                                        } else {
+                                            self.kernel.setProperty(this._currentNode, 'edit', true);
+                                        }
+    
+                                        vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
                                     }
+                                }
+                                )
                                 ]
                             },
                             {
@@ -2504,18 +2603,12 @@ define([
 
                                 ]
                             },
-                            {
-                                $cell: true,
-                                $type: "hr",
-                                class: "mdc-list-divider",
-                            },
-                            {
-                                $cell: true,
-                                $type: "h3",
-                                class: "userList mdc-list-group__subheader",
-                                $text: "Users online"
-                            },
-                            clientListCell
+                            widgets.divider,
+                            widgets.headerH3("h3", "Users online", "userList mdc-list-group__subheader"),
+                            clientListCell,
+                            widgets.divider,
+                            widgets.headerH3("h3", "WebRTC", "userList mdc-list-group__subheader"),
+                            webrtcGUI
                         ]
                     }
 

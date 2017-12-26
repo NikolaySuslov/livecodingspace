@@ -110,22 +110,78 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 if ( this.kernel.moniker() == node.moniker ) { 
                     this.local.ID = childID;
                     
-                    if ( this.videoElementsDiv ) {
-                        $('body').append(
-                            "<div id='"+self.videoElementsDiv+"'></div>"
-                        );                   
-                    }
+                    
                 } 
             }
 
         }, 
 
-        initializedNode: function( nodeID, childID, childExtendsID, childImplementsIDs, 
-            childSource, childType, childIndex, childName ) {
+        deleteConnection: function(nodeID){
+
+             // debugger;
+
+            //if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
+                //if ( this.kernel.find( nodeID ).length > 0 ) {
+                    var moniker = nodeID.slice(-20);//this.kernel.name( nodeID );
+                    var client = undefined;
+    
+                    if ( moniker == this.kernel.moniker() ) {
+                        
+                        // this is the client that has left the converstaion
+                        // go through the peerConnections and close the 
+                        // all current connections
+                        var peer, peerMoniker;
+                        for ( var peerID in this.state.clients ) {
+                            peer = this.state.clients[ peerID ];
+                            peerMoniker = appMoniker.call( this, peer.name )
+                            if ( peerMoniker != this.kernel.moniker() ) {
+                                peer.connection && peer.connection.disconnect();
+                                let peername = 'avatar-' + peerMoniker;
+                                deletePeerConnection.call( this, peername);
+                            }
+                        }
+    
+                    } else {
+    
+                        // this is a client who has has a peer leave the converstaion
+                        // remove that client, and the 
+                        client = findClientByMoniker.call( this, moniker );
+                        if ( client ) {
+                            client.connection && client.connection.disconnect();
+    
+                            //removeClient.call( this, client );
+                            //delete this.state.clients[ client ]
+                        }
+    
+                         
+                    }
+
+        },
 
 
-            if ( childExtendsID === undefined )
-                return;
+        stopWebRTC: function(nodeID){
+
+            if( this.local.stream ){
+
+                
+                var tracks =  this.local.stream.getTracks();
+                tracks.forEach(function(track) {
+                    track.stop();
+                  });
+                  this.local.stream = undefined;
+
+                let vidui = document.querySelector('#webrtcvideo');
+                if (vidui) vidui.removeAttribute('checked');
+
+                let micui = document.querySelector('#webrtcaudio');
+                if (micui) micui.removeAttribute('checked');
+
+                this.deleteConnection(nodeID);
+
+            }
+
+        },
+        startWebRTC: function(childID) {
 
             var client = this.state.clients[ childID ];
 
@@ -163,6 +219,17 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                     }
                 }
             }            
+
+        },
+
+        initializedNode: function( nodeID, childID, childExtendsID, childImplementsIDs, 
+            childSource, childType, childIndex, childName ) {
+
+
+            if ( childExtendsID === undefined )
+                return;
+
+            
         },
 
         deletedNode: function( nodeID ) {
@@ -184,8 +251,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                     for ( var peerID in this.state.clients ) {
                         peer = this.state.clients[ peerID ];
                         peerMoniker = appMoniker.call( this, peer.name )
-                        if ( peerMoniker != this.kernel.moniker ) {
+                        if ( peerMoniker != this.kernel.moniker() ) {
                             peer.connection && peer.connection.disconnect();
+                          
                         }
                     }
 
@@ -291,9 +359,22 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 
                 case "webrtcTurnOnOff":
                     if ( this.kernel.moniker() == this.kernel.client() ) {
+                        console.log("WEBRTC turn on/off")
                         methodValue = turnOnOffTracks.call( this, methodParameters );
                     }
                     break;    
+
+                case "webrtcMuteAudio":
+                    if ( this.kernel.moniker() == this.kernel.client() ) {
+                        methodValue = muteAudio.call( this, methodParameters );
+                    }
+                    break;  
+
+                case "webrtcMuteVideo":
+                    if ( this.kernel.moniker() == this.kernel.client() ) {
+                        methodValue = this.muteVideo.call( this, methodParameters );
+                    }
+                    break; 
 
             }
         },       
@@ -301,9 +382,38 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         firedEvent: function( nodeID, eventName, eventParameters ) {
         },
 
+        muteVideo: function ( mute ) {
+            let str = this.local.stream;
+            if ( str ) {
+              
+                var tracks = str.getVideoTracks();
+    
+                tracks.forEach(function(track) {
+                    track.enabled = mute[0];
+                  });
+            }
+        },
+
+        muteAudio: function ( mute ) {
+            let str = this.local.stream;
+            if ( str ) {
+              
+                var tracks = str.getAudioTracks();
+    
+                tracks.forEach(function(track) {
+                    track.enabled = mute[0];
+                  });
+            }
+        }
+
+        
+
+       
+
+
     } );
  
-    function createVideoElementAsAsset(id) {
+    function createVideoElementAsAsset(id, local) {
         
           var video = document.querySelector('#' + id);
         
@@ -318,7 +428,8 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
           video.setAttribute("controls", true);
           video.setAttribute("width", 640);
           video.setAttribute("height", 480);
-          //video.setAttribute("muted", true);
+
+          if (local) video.setAttribute("muted", true);
         
           var assets = document.querySelector('a-assets');
         
@@ -363,9 +474,9 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         return displayVideo.call( this, id, stream, this.local.url, name, id, true);
     }
 
-    function displayVideo( id, stream, url, name, destMoniker, muted) {
+    function displayVideo( id, stream, url, name, destMoniker, local) {
         
-        let video = createVideoElementAsAsset(name);
+        let video = createVideoElementAsAsset(name, local);
         //video.setAttribute('src', url);
         video.srcObject = stream;
 
@@ -389,7 +500,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
     }
 
     function displayRemote( id, stream, url, name, destMoniker, color ) {
-        return displayVideo.call( this, id, stream, url, name, destMoniker, false, color );
+        return displayVideo.call( this, id, stream, url, name, destMoniker, false );
     }
 
     function capture( media ) {
@@ -414,6 +525,22 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 // if (videoTracks.length) {
                 //     videoTracks[0].enabled = true;
                 // }
+
+                let webRTCGUI = document.querySelector('#webrtcswitch');
+                if (webRTCGUI) webRTCGUI.setAttribute("checked", true);
+
+                let videoTracks = stream.getVideoTracks();
+                let vstatus =  videoTracks[0].enabled;
+
+                let vidui = document.querySelector('#webrtcvideo');
+            if (vidui) vidui.setAttribute("checked", vstatus);
+
+                let audioTracks = stream.getAudioTracks();
+                let astatus =  audioTracks[0].enabled;
+
+                let micui = document.querySelector('#webrtcaudio');
+                if (micui) micui.setAttribute("checked", astatus);
+
 
                self.local.url = "url" //URL.createObjectURL( stream );
                 self.local.stream = stream;
@@ -484,7 +611,19 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         }
     };
 
+    function muteAudio( mute ) {
+        let str = this.local.stream;
+        if ( str ) {
+            var audioTracks = str.getAudioTracks();
+
+            audioTracks.forEach(function(track) {
+                track.enabled = mute[0];
+              });
+
+        }
+    };
    
+    
 
     function setMute( mute ) {
         if ( this.local.stream && this.local.stream.audioTracks && this.local.stream.audioTracks.length > 0 ) {
