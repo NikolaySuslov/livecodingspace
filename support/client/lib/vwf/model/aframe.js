@@ -554,6 +554,29 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "src":
+                            aframeObject.setAttribute('src', propertyValue);
+                            break;
+
+                        case "on":
+                            aframeObject.setAttribute('on', propertyValue);
+                            break;
+
+                        case "autoplay":
+                            aframeObject.setAttribute('autoplay', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-PLANE") {
                     value = propertyValue;
 
@@ -1006,6 +1029,21 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
+
+                    switch (propertyName) {
+                        case "src":
+                            value = aframeObject.getAttribute('src');
+                            break;
+                        case "on":
+                            value = aframeObject.getAttribute('on');
+                            break;
+                        case "autoplay":
+                            value = aframeObject.getAttribute('autoplay');
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
                     
                                         switch (propertyName) {
@@ -1061,6 +1099,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-collada-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
             aframeObj = document.createElement('a-obj-model');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asound.vwf")) {
+            aframeObj = document.createElement('a-sound');
          } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {

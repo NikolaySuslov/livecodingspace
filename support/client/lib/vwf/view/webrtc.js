@@ -138,6 +138,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                                 peer.connection && peer.connection.disconnect();
                                 let peername = 'avatar-' + peerMoniker;
                                 deletePeerConnection.call( this, peername);
+                               
                             }
                         }
     
@@ -181,7 +182,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 if (micui) micuicomp.on = false;
 
                 this.deleteConnection(nodeID);
-
+                this.kernel.callMethod(nodeID, "removeSoundWebRTC");
             }
 
         },
@@ -436,6 +437,14 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
           if (local) video.setAttribute("muted", true);
         
+          let audioID = '#audio-' + id;
+          var audio = document.querySelector(audioID);
+          if (!audio) {
+            audio = document.createElement('audio');
+          }
+          audio.setAttribute('id', audioID);
+          //<audio id="river" src="river.mp3" preload="auto"></audio>
+
           var assets = document.querySelector('a-assets');
         
         //   if (!assets) {
@@ -447,7 +456,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             assets.appendChild(video);
           }
         
-          return video;
+          if (!assets.contains(audio)) {
+            assets.appendChild(audio);
+          }
+
+          return {'video': video, 'audio': audio};
         }
 
 
@@ -481,11 +494,18 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
     function displayVideo( id, stream, url, name, destMoniker, local) {
         
-        let video = createVideoElementAsAsset(name, local);
+        let va = createVideoElementAsAsset(name, local);
         //video.setAttribute('src', url);
-        video.srcObject = stream;
+        va.video.srcObject = stream;
 
+        //var audioCtx = new AudioContext();
+        //var source = audioCtx.createMediaStreamSource(stream);
+        //va.audio.src = stream;
+
+        let audioID = 'audio-' + name;
         this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
+        this.kernel.callMethod( 'avatar-'+id, "setSoundWebRTC", [audioID]);
+        
 
         return id;
     }
@@ -505,7 +525,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
     }
 
     function displayRemote( id, stream, url, name, destMoniker, color ) {
-        return displayVideo.call( this, id, stream, url, name, destMoniker, false );
+        return displayVideo.call( this, id, stream, url, name, destMoniker, true );
     }
 
     function capture( media ) {

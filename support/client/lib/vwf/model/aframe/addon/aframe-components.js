@@ -419,3 +419,99 @@ AFRAME.registerComponent('gearvrcontrol', {
             tick: function (t) {
             }
         })
+
+        AFRAME.registerComponent('streamsound', {
+
+            schema: {
+                positional: { default: true }
+              },
+           
+            init: function () {
+                var self = this;
+
+                let driver = vwf.views["vwf/view/webrtc"];
+
+                this.listener = null;
+                this.stream = null;
+
+                if(!this.sound) {
+                    this.setupSound();
+                  }
+
+                  if (driver) {
+                    //let avatarID = 'avatar-' + vwf.moniker();
+                    let avatarID = this.el.id.slice(0, 27); //avatar-0RtnYBBTBU84OCNcAAFY
+                   let client = driver.state.clients[avatarID];
+                   if (client ){
+                       if (client.connection) {
+                    this.stream = client.connection.stream;
+                    if (this.stream){
+                        this.audioEl = new Audio();
+                        this.audioEl.srcObject = this.stream;
+            
+                    this.sound.setNodeSource(this.sound.context.createMediaStreamSource(this.stream));
+                    }
+                   }
+                }
+                  }
+                 
+
+                // console.log(this.el);
+
+                // let assets = document.querySelector('a-assets');
+                // let driver = vwf.views["vwf/view/webrtc"];
+                // if (driver) { 
+                //     let stream = driver.local.stream;
+                //     console.log(driver.local.stream);
+                //     console.log(this.el.sceneEl.audioListener)
+                //     let sound = this.el.components.sound;
+                //     console.log(self.sound);
+                   // let audioContext = sound.listener.context;
+                    //var source = audioContext.createMediaStreamSource(stream);
+                
+               // var audioCtx = new AudioContext();
+              //  var source = audioCtx.createMediaStreamSource(stream);
+
+              //  }
+
+            },
+
+            setupSound: function() {
+                var el = this.el;
+                var sceneEl = el.sceneEl;
+            
+                if (this.sound) {
+                  el.removeObject3D(this.attrName);
+                }
+            
+                if (!sceneEl.audioListener) {
+                  sceneEl.audioListener = new THREE.AudioListener();
+                  sceneEl.camera && sceneEl.camera.add(sceneEl.audioListener);
+                  sceneEl.addEventListener('camera-set-active', function(evt) {
+                    evt.detail.cameraEl.getObject3D('camera').add(sceneEl.audioListener);
+                  });
+                }
+                this.listener = sceneEl.audioListener;
+            
+                this.sound = this.data.positional
+                  ? new THREE.PositionalAudio(this.listener)
+                  : new THREE.Audio(this.listener);
+                el.setObject3D(this.attrName, this.sound);
+              },
+
+              remove: function() {
+                if (!this.sound) return;
+            
+                this.el.removeObject3D(this.attrName);
+                if (this.stream) {
+                  this.sound.disconnect();
+                }
+              },
+
+            update: function (old) {
+
+            },
+
+            tick: function (t) {
+            }
+            })

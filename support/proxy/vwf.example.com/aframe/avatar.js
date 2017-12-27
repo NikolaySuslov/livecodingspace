@@ -2,7 +2,7 @@ this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
         "color": "white",
-        "position": "0 0.66 0.5",
+        "position": "0 0.66 0.7",
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
@@ -13,7 +13,7 @@ this.modelBodyDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
         "src": "#avatar",
-        "position": "0 0 0.7",
+        "position": "0 0 0.8",
         "rotation": "0 180 0"
     },
     "children": {
@@ -60,7 +60,7 @@ this.createAvatarBody = function (modelSrc) {
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
-                    "position": "0 1.6 0.5",
+                    "position": "0 1.6 0.7",
                     "visible": true
                 },
                 children: {
@@ -88,7 +88,7 @@ this.createAvatarBody = function (modelSrc) {
                         "id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
-                            "position": "0 0 -0.5",
+                            "position": "0 0 -0.7",
                             "look-controls-enabled": false,
                             "wasd-controls-enabled": false,
                             "user-height": 0
@@ -318,6 +318,35 @@ this.setVideoTexture = function(val){
     this.avatarNode.myHead.visual.color = "white";
     this.avatarNode.myHead.visual.src = '#temp';
     this.avatarNode.myHead.visual.src = '#'+val;
+}
+
+this.removeSoundWebRTC = function(){
+
+    this.avatarNode.children.delete(this.avatarNode.audio);
+}
+
+this.setSoundWebRTC = function(val){
+    console.log(val);
+    if (this.avatarNode.audio) this.removeSoundWebRTC();
+    
+    var soundNode = {
+        "extends": "http://vwf.example.com/aframe/aentity.vwf",
+        "properties": {
+        },
+        "children":{
+            "streamsound":{
+                "extends": "http://vwf.example.com/aframe/streamSoundComponent.vwf",
+                "type": "component",
+                "properties": {
+                }
+            }
+        }
+    }
+    this.avatarNode.children.create("audio", soundNode );
+   // this.setSmallVideoHead();
+
+    //this.avatarNode.audio.src = '#tempAudio';
+    //this.avatarNode.audio.src = '#'+val;
 }
 
 this.webrtcTurnOnOff = function(val){

@@ -40,5 +40,9 @@ methods:
     webrtcMuteVideo:
         parameters:
             - val
+    setSoundWebRTC:
+         parameters:
+            - val
+    removeSoundWebRTC:
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"
