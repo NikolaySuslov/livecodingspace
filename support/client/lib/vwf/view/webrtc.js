@@ -170,11 +170,15 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                   });
                   this.local.stream = undefined;
 
+
+
                 let vidui = document.querySelector('#webrtcvideo');
-                if (vidui) vidui.removeAttribute('checked');
+                const viduicomp = new mdc.iconToggle.MDCIconToggle(vidui); //new mdc.select.MDCIconToggle
+                if (vidui) viduicomp.on = false;
 
                 let micui = document.querySelector('#webrtcaudio');
-                if (micui) micui.removeAttribute('checked');
+                const micuicomp = new mdc.iconToggle.MDCIconToggle(micui);
+                if (micui) micuicomp.on = false;
 
                 this.deleteConnection(nodeID);
 
@@ -367,13 +371,13 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
                 case "webrtcMuteAudio":
                     if ( this.kernel.moniker() == this.kernel.client() ) {
-                        methodValue = muteAudio.call( this, methodParameters );
+                        methodValue = muteAudio.call( this, methodParameters[0] );
                     }
                     break;  
 
                 case "webrtcMuteVideo":
                     if ( this.kernel.moniker() == this.kernel.client() ) {
-                        methodValue = this.muteVideo.call( this, methodParameters );
+                        methodValue = this.muteVideo.call( this, methodParameters[0] );
                     }
                     break; 
 
@@ -390,7 +394,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 var tracks = str.getVideoTracks();
     
                 tracks.forEach(function(track) {
-                    track.enabled = mute[0];
+                    track.enabled = mute;
                   });
             }
         },
@@ -402,7 +406,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 var tracks = str.getAudioTracks();
     
                 tracks.forEach(function(track) {
-                    track.enabled = mute[0];
+                    track.enabled = mute;
                   });
             }
         }
@@ -527,28 +531,34 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 //     videoTracks[0].enabled = true;
                 // }
 
+                self.local.url = "url" //URL.createObjectURL( stream );
+                self.local.stream = stream;
+                self.kernel.setProperty( self.local.ID, "localUrl", self.local.url );
+                var localNode = self.state.clients[ self.local.ID ];
+
+
+                self.muteAudio(false);
+                self.muteVideo(false);
+
                 let webRTCGUI = document.querySelector('#webrtcswitch');
-                if (webRTCGUI) webRTCGUI.setAttribute("checked", true);
+                if (webRTCGUI) webRTCGUI.setAttribute("aria-pressed", true);
 
                 let videoTracks = stream.getVideoTracks();
                 let vstatus =  videoTracks[0].enabled;
 
                 let vidui = document.querySelector('#webrtcvideo');
-            if (vidui) vidui.setAttribute("checked", vstatus);
+                const viduicomp = new mdc.iconToggle.MDCIconToggle(vidui); //new mdc.select.MDCIconToggle
+                if (vidui) viduicomp.on = vstatus;
 
                 let audioTracks = stream.getAudioTracks();
                 let astatus =  audioTracks[0].enabled;
 
                 let micui = document.querySelector('#webrtcaudio');
-                if (micui) micui.setAttribute("checked", astatus);
+                const micuicomp = new mdc.iconToggle.MDCIconToggle(micui);
+                if (micui) micuicomp.on = astatus;
 
 
-               self.local.url = "url" //URL.createObjectURL( stream );
-                self.local.stream = stream;
-
-                self.kernel.setProperty( self.local.ID, "localUrl", self.local.url );
-
-                var localNode = self.state.clients[ self.local.ID ];
+               
                 displayLocal.call( self, stream, localNode.displayName);
                 sendOffers.call( self );
               } 
@@ -618,7 +628,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             var audioTracks = str.getAudioTracks();
 
             audioTracks.forEach(function(track) {
-                track.enabled = mute[0];
+                track.enabled = mute;
               });
 
         }
@@ -737,7 +747,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         this.state = "created";
 
         // webrtc peerConnection parameters
-        this.pc_config = { "iceServers": this.view.iceServers };
+        this.pc_config =  {'iceServers': [
+            {'url': 'stun:stun.l.google.com:19302'},
+            {'url': 'stun:stun1.l.google.com:19302'}
+        ]};//{ "iceServers": this.view.iceServers };
+
         this.pc_constraints = { "optional": [ { "DtlsSrtpKeyAgreement": true } ] };
         // Set up audio and video regardless of what devices are present.
         this.sdpConstraints = {
@@ -772,7 +786,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
                 // }
 
                 try {
-                    this.pc = new RTCPeerConnection( this.pc_config);
+                    this.pc = new RTCPeerConnection( this.pc_config, this.pc_constraints);
                     this.pc.onicecandidate = iceCallback;
 
                     if ( self.view.debug ) console.log("Created RTCPeerConnnection with config \"" + JSON.stringify( this.pc_config ) + "\".");

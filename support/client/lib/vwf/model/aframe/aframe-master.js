@@ -66002,6 +66002,7 @@ module.exports.Component = registerComponent('camera', {
     far: {default: 10000},
     fov: {default: 80, min: 0},
     near: {default: 0.005, min: 0},
+    spectator: {default: false},
     zoom: {default: 1, min: 0}
   },
 
@@ -66022,10 +66023,8 @@ module.exports.Component = registerComponent('camera', {
    * Update three.js camera.
    */
   update: function (oldData) {
-    var el = this.el;
     var data = this.data;
     var camera = this.camera;
-    var system = this.system;
 
     // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
@@ -66035,8 +66034,16 @@ module.exports.Component = registerComponent('camera', {
     camera.zoom = data.zoom;
     camera.updateProjectionMatrix();
 
+    this.updateActiveCamera(oldData);
+    this.updateSpectatorCamera(oldData);
+  },
+
+  updateActiveCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
     // Active property did not change.
-    if (oldData && oldData.active === data.active) { return; }
+    if (oldData && oldData.active === data.active || data.spectator) { return; }
 
     // If `active` property changes, or first update, handle active camera with system.
     if (data.active && system.activeCameraEl !== el) {
@@ -66045,6 +66052,23 @@ module.exports.Component = registerComponent('camera', {
     } else if (!data.active && system.activeCameraEl === el) {
       // Camera disabled. Set camera to another camera.
       system.disableActiveCamera();
+    }
+  },
+
+  updateSpectatorCamera: function (oldData) {
+    var data = this.data;
+    var el = this.el;
+    var system = this.system;
+    // spectator property did not change.
+    if (oldData && oldData.spectator === data.spectator) { return; }
+
+    // If `spectator` property changes, or first update, handle spectator camera with system.
+    if (data.spectator && system.spectatorCameraEl !== el) {
+      // Camera enabled. Set camera to this camera.
+      system.setSpectatorCamera(el);
+    } else if (!data.spectator && system.spectatorCameraEl === el) {
+      // Camera disabled. Set camera to another camera.
+      system.disableSpectatorCamera();
     }
   },
 
@@ -66349,9 +66373,7 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection.
    */
   onIntersection: function (evt) {
-    var self = this;
     var cursorEl = this.el;
-    var data = this.data;
     var index;
     var intersectedEl;
     var intersection;
@@ -66373,6 +66395,24 @@ module.exports.Component = registerComponent('cursor', {
     // Unset current intersection.
     if (this.intersectedEl) { this.clearCurrentIntersection(); }
 
+    this.setIntersection(intersectedEl, intersection);
+  },
+
+  /**
+   * Handle intersection cleared.
+   */
+  onIntersectionCleared: function (evt) {
+    var clearedEls = evt.detail.clearedEls;
+
+    // Check if the current intersection has ended
+    if (clearedEls.indexOf(this.intersectedEl) === -1) { return; }
+    this.clearCurrentIntersection();
+  },
+
+  setIntersection: function (intersectedEl, intersection) {
+    var cursorEl = this.el;
+    var data = this.data;
+    var self = this;
     // Set new intersection.
     this.intersection = intersection;
     this.intersectedEl = intersectedEl;
@@ -66380,7 +66420,7 @@ module.exports.Component = registerComponent('cursor', {
     // Hovering.
     cursorEl.addState(STATES.HOVERING);
     intersectedEl.addState(STATES.HOVERED);
-    self.twoWayEmit(EVENTS.MOUSEENTER);
+    this.twoWayEmit(EVENTS.MOUSEENTER);
 
     // Begin fuse if necessary.
     if (data.fuseTimeout === 0 || !data.fuse) { return; }
@@ -66392,20 +66432,11 @@ module.exports.Component = registerComponent('cursor', {
     }, data.fuseTimeout);
   },
 
-  /**
-   * Handle intersection cleared.
-   */
-  onIntersectionCleared: function (evt) {
-    var clearedEls = evt.detail.clearedEls;
-
-    // Check if the current intersection has ended
-    if (clearedEls.indexOf(this.intersectedEl) !== -1) {
-      this.clearCurrentIntersection();
-    }
-  },
-
   clearCurrentIntersection: function () {
     var cursorEl = this.el;
+    var index;
+    var intersection;
+    var intersections;
 
     // No longer hovering (or fusing).
     this.intersectedEl.removeState(STATES.HOVERED);
@@ -66419,6 +66450,15 @@ module.exports.Component = registerComponent('cursor', {
 
     // Clear fuseTimeout.
     clearTimeout(this.fuseTimeout);
+
+    // Set intersection to another raycasted element if any.
+    intersections = this.el.components.raycaster.intersections;
+    if (intersections.length === 0) { return; }
+    // exclude the cursor.
+    index = intersections[0].object.el === cursorEl ? 1 : 0;
+    intersection = intersections[index];
+    if (!intersection) { return; }
+    this.setIntersection(intersection.object.el, intersection);
   },
 
   /**
@@ -69275,11 +69315,13 @@ module.exports.Component = registerComponent('raycaster', {
    */
   refreshObjects: function () {
     var data = this.data;
+    var els;
+
     // If objects not defined, intersect with everything.
-    var els = data.objects
+    els = data.objects
       ? this.el.sceneEl.querySelectorAll(data.objects)
       : this.el.sceneEl.children;
-    this.objects = flattenChildrenShallow(els);
+    this.objects = this.flattenChildrenShallow(els);
     this.dirty = false;
   },
 
@@ -69466,40 +69508,44 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineData.start = data.origin;
     this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
     el.setAttribute('line', this.lineData);
-  }
+  },
+
+  /**
+   * Return children of each element's object3D group. Children are flattened
+   * by one level, removing the THREE.Group wrapper, so that non-recursive
+   * raycasting remains useful.
+   *
+   * @param  {Array<Element>} els
+   * @return {Array<THREE.Object3D>}
+   */
+  flattenChildrenShallow: (function () {
+    var groups = [];
+
+    return function (els) {
+      var children;
+      var i;
+      var objects = this.objects;
+
+      // Push meshes onto list of objects to intersect.
+      groups.length = 0;
+      for (i = 0; i < els.length; i++) {
+        if (els[i].object3D) {
+          groups.push(els[i].object3D);
+        }
+      }
+
+      // Each entity's root is a THREE.Group. Return the group's chilrden.
+      objects.length = 0;
+      for (i = 0; i < groups.length; i++) {
+        children = groups[i].children;
+        if (children && children.length) {
+          objects.push.apply(objects, children);
+        }
+      }
+      return objects;
+    };
+  })()
 });
-
-/**
- * Returns children of each element's object3D group. Children are flattened
- * by one level, removing the THREE.Group wrapper, so that non-recursive
- * raycasting remains useful.
- *
- * @param  {Array<Element>} els
- * @return {Array<THREE.Object3D>}
- */
-function flattenChildrenShallow (els) {
-  var groups = [];
-  var objects = [];
-  var children;
-  var i;
-
-  // Push meshes onto list of objects to intersect.
-  for (i = 0; i < els.length; i++) {
-    if (els[i].object3D) {
-      groups.push(els[i].object3D);
-    }
-  }
-
-  // Each entity's root is a THREE.Group. Return the group's chilrden.
-  for (i = 0; i < groups.length; i++) {
-    children = groups[i].children;
-    if (children && children.length) {
-      objects.push.apply(objects, children);
-    }
-  }
-
-  return objects;
-}
 
 /**
  * Copy contents of one array to another without allocating new array.
@@ -78218,7 +78264,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-12-22, Commit #1ca6130)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-12-27, Commit #ee1e41e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78838,8 +78884,8 @@ module.exports.System = registerSystem('camera', {
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
 
-    // Camera already defined.
-    if (sceneEl.camera) {
+    // Camera already defined or the one defined it is an spectator one.
+    if (sceneEl.camera && !sceneEl.camera.el.getAttribute('camera').spectator) {
       sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
       return;
     }
@@ -78911,11 +78957,58 @@ module.exports.System = registerSystem('camera', {
     cameraEls = sceneEl.querySelectorAll('[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
-      if (!cameraEl.isEntity || newCameraEl === cameraEl) { continue; }
+      if (!cameraEl.isEntity ||
+          newCameraEl === cameraEl ||
+          cameraEl.getAttribute('camera').spectator) { continue; }
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
     sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+  },
+
+  /**
+   * Set spectator camera to render the scene on a 2D display.
+   *
+   * @param {Element} newCameraEl - Entity with camera component.
+   */
+  setSpectatorCamera: function (newCameraEl) {
+    var newCamera;
+    var previousCamera = this.spectatorCameraEl;
+    var sceneEl = this.sceneEl;
+    var spectatorCameraEl;
+
+    // Same camera.
+    newCamera = newCameraEl.getObject3D('camera');
+    if (!newCamera || newCameraEl === this.spectatorCameraEl) { return; }
+
+    // Disable current camera
+    if (previousCamera) {
+      previousCamera.setAttribute('camera', 'spectator', false);
+    }
+
+    spectatorCameraEl = this.spectatorCameraEl = newCameraEl;
+    spectatorCameraEl.setAttribute('camera', 'active', false);
+    spectatorCameraEl.play();
+
+    sceneEl.emit('camera-set-spectator', {cameraEl: newCameraEl});
+  },
+
+  /**
+   * Disables current spectator camera.
+   */
+  disableSpectatorCamera: function () {
+    this.spectatorCameraEl = undefined;
+  },
+
+  tock: function () {
+    var spectatorCamera;
+    var sceneEl = this.sceneEl;
+    var isVREnabled = sceneEl.renderer.vr.enabled;
+    if (!this.spectatorCameraEl || sceneEl.isMobile) { return; }
+    spectatorCamera = this.spectatorCameraEl.components.camera.camera;
+    sceneEl.renderer.vr.enabled = false;
+    sceneEl.renderer.render(sceneEl.object3D, spectatorCamera);
+    sceneEl.renderer.vr.enabled = isVREnabled;
   }
 });
 

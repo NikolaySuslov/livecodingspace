@@ -369,14 +369,14 @@
 
                 { library: "vwf/view/webrtc", 
              //       linkedLibraries: ["vwf/view/webrtc/adapter"],  
-                    active: false 
+                    active: true 
                 },
 
                 { library: "vwf/view/ohm", active: true },
                 { library: "vwf/view/osc", active: true },
 
                 
-                 { library: "vwf/view/aframe", active: false },
+                 { library: "vwf/view/aframe", active: true },
                 { library: "vwf/model/aframe/aframe-master", active: false },
                 { library: "vwf/model/aframe/extras/aframe-extras.loaders", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
@@ -410,7 +410,7 @@
                      { library: "vwf/model/ohm", active: true },
                      { library: "vwf/model/osc", active: true },
                   
-                     { library: "vwf/model/aframe", active: false },
+                     { library: "vwf/model/aframe", active: true },
                      { library: "vwf/model/aframeComponent", active: true },
 
                     { library: "vwf/model/object", active: true }
@@ -422,10 +422,10 @@
                      { library: "vwf/view/ohm", active: true },
                      { library: "vwf/view/osc", active: true },
                      
-                      { library: "vwf/view/aframe", active: false },
+                      { library: "vwf/view/aframe", active: true },
                       { library: "vwf/view/aframeComponent", active: true },
 
-                    { library: "vwf/view/webrtc", active: false}
+                    { library: "vwf/view/webrtc", active: true}
 
                   
                 ]

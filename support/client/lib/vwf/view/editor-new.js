@@ -1052,133 +1052,144 @@ define([
                         $components: [
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                 $components: [
                                     {
+                                    $type: "span",
+                                    $text: "Chat"
+                                }
 
-                                        $cell: true,
-                                        $type: "span",
-                                        $text: "ON",
-
-                                    }
                                 ]
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                 $components: [
-                                    widgets.switch({
+                                    widgets.icontoggle({
                                         'id': "webrtcswitch",
+                                        'label': 'visibility',
+                                        'on': JSON.stringify({"content": "visibility", "label": "Turn On Mic"}),
+                                        'off': JSON.stringify({"content": "visibility_off", "label": "Turn Off Mic"}),
+                                        'state': false,
                                         'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
 
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                            if (!driver) this.setAttribute('disabled', '');
-
-                                        },
-                                        "onchange": function(e){
-
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                            let avatarID = 'avatar-' + self.kernel.moniker();
-
-                                            let chkAttr = this.checked;
-
-                                         if (chkAttr) {
-                                             driver.startWebRTC(avatarID);
-                                             console.log("on")
-     
-                                         } else {
-                                            driver.stopWebRTC(avatarID);
-                                             console.log("off")
-                                         }
-
-                                        }
-                                    })
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                $components: [
-                                    {
-
-                                        $cell: true,
-                                        $type: "span",
-                                        $text: "Mic: ",
-
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                $components: [
-                                    widgets.switch({
-                                        'id': "webrtcaudio",
-                                        'init': function(){
-
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                            if (!driver) this.setAttribute('disabled', '');
-                                        },
-                                        "onchange": function(e){
-
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                           
-                                               let chkAttr = this.checked;
-                                            if (chkAttr) {
-                                                driver.muteAudio([chkAttr]);
-                                                console.log("on")
-        
-                                            } else {
-                                                driver.muteAudio([chkAttr]);
-                                                console.log("off")
                                             }
-                                      
 
-                                        }
-                                    })
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                $components: [
-                                    {
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
 
-                                        $cell: true,
-                                        $type: "span",
-                                        $text: "Cam: ",
+                                                let micToggle = document.querySelector('#webrtcaudio');
+                                                let camToggle = document.querySelector('#webrtcvideo');
 
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                $components: [
-                                    widgets.switch({
-                                        'id': "webrtcvideo",
-                                        'init': function(){
+                                                if (chkAttr) {
+                                                    driver.startWebRTC(avatarID);
 
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                            if (!driver) this.setAttribute('disabled', '');
+                                                    micToggle.classList.remove('mdc-icon-toggle--disabled');
+                                                    camToggle.classList.remove('mdc-icon-toggle--disabled');
 
-                                        },
-                                        "onchange": function(e){
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.stopWebRTC(avatarID);
+
+                                                    micToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    camToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
                                             
-                                            let driver = vwf.views["vwf/view/webrtc"];
-                                            let chkAttr = this.checked;
-                                            if (chkAttr) {
-                                                driver.muteVideo([chkAttr]);
-                                                console.log("on")
-        
-                                            } else {
-                                                driver.muteVideo([chkAttr]);
-                                                console.log("off")
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    widgets.icontoggle({
+                                        'id': "webrtcaudio",
+                                        'label': 'mic',
+                                        'on': JSON.stringify({"content": "mic", "label": "Turn On Mic"}),
+                                        'off': JSON.stringify({"content": "mic_off", "label": "Turn Off Mic"}),
+                                        'state': false,
+                                        'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+                                            let webrtcswitch = document.querySelector('#webrtcswitch');
+
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
                                             }
+                                            this.classList.add('mdc-icon-toggle--disabled');
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                if (chkAttr) {
+                                                    driver.muteAudio(chkAttr);
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.muteAudio(chkAttr);
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
+                                            
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    widgets.icontoggle({
+                                        'id': "webrtcvideo",
+                                        'label': 'videocam',
+                                        'on': JSON.stringify({"content": "videocam", "label": "Turn On Video"}),
+                                        'off': JSON.stringify({"content": "videocam_off", "label": "Turn Off Video"}),
+                                        'state': false,
+                                        'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
+                                            }
+
+                                            this.classList.add('mdc-icon-toggle--disabled');
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                if (chkAttr) {
+                                                    driver.muteVideo(chkAttr);
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.muteVideo(chkAttr);
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
+                                            
                                         }
                                     })
                                 ]
                             }
+                           
                         ]
                     }
 
@@ -2604,11 +2615,12 @@ define([
                                 ]
                             },
                             widgets.divider,
-                            widgets.headerH3("h3", "Users online", "userList mdc-list-group__subheader"),
-                            clientListCell,
+                            webrtcGUI,
                             widgets.divider,
-                            widgets.headerH3("h3", "WebRTC", "userList mdc-list-group__subheader"),
-                            webrtcGUI
+                            widgets.headerH3("h3", "Users online", "userList mdc-list-group__subheader"),
+                            clientListCell
+                            //widgets.headerH3("h3", "WebRTC", "userList mdc-list-group__subheader"),
+                            
                         ]
                     }
 
@@ -2688,6 +2700,13 @@ define([
 
             // let drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
             // document.querySelector('.menu').addEventListener('click', () => drawer.open = true);
+
+        var toggleNodes = document.querySelectorAll('.mdc-icon-toggle');
+        toggleNodes.forEach( el => {
+            mdc.iconToggle.MDCIconToggle.attachTo(el);
+        });
+
+
 
             var drawerEl = document.querySelector('.mdc-temporary-drawer');
             var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;

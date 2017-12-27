@@ -1034,6 +1034,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/ascene.vwf")) {
             aframeObj = document.createElement('a-scene');
+            let assetsElement = document.createElement('a-assets');
+            aframeObj.appendChild(assetsElement);
 
             self.state.scenes[node.ID] = aframeObj;
 

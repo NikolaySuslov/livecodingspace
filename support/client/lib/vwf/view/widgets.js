@@ -30,6 +30,22 @@ define(function () {
 
         }
 
+        icontoggle(obj) {
+            return {
+                $cell: true,
+                $type: "i",
+                class: "mdc-icon-toggle material-icons",
+                role: "button",
+                $text: obj.label,
+                id: obj.id,
+                'data-toggle-on': obj.on,
+                'data-toggle-off': obj.off,
+                'aria-pressed': obj.state,
+                //'aria-hidden': true,
+                $init: obj.init
+            }
+        }
+
         switch(obj) {
 
             return   {
