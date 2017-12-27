@@ -320,15 +320,23 @@ this.setVideoTexture = function(val){
     this.avatarNode.myHead.visual.src = '#'+val;
 }
 
+this.removeVideoTexture = function(){
+   // this.setSmallVideoHead();
+    this.avatarNode.myHead.visual.color = this.avatarNode.myBody.color;
+    this.avatarNode.myHead.visual.src = "";
+    // this.avatarNode.myHead.visual.src = '#'+val;
+}
+
 this.removeSoundWebRTC = function(){
 
+    if (this.avatarNode.audio)
     this.avatarNode.children.delete(this.avatarNode.audio);
 }
 
 this.setSoundWebRTC = function(val){
     console.log(val);
     if (this.avatarNode.audio) this.removeSoundWebRTC();
-    
+
     var soundNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {

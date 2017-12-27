@@ -58,30 +58,6 @@ function createApp() {
                                        
                                     }
     
-                                },
-                                {
-                                    $cell: true,
-                                    $type: "button",
-                                    class: "mdc-button mdc-button--raised",
-                                    $text: "Off",
-                                    onclick: function (e) {
-                                        let avatarID = 'avatar-'+vwf.moniker_;
-                                        vwf_view.kernel.callMethod(avatarID, "webrtcTurnOnOff", [false]);
-                                       
-                                    }
-    
-                                },
-                                {
-                                    $cell: true,
-                                    $type: "button",
-                                    class: "mdc-button mdc-button--raised",
-                                    $text: "On",
-                                    onclick: function (e) {
-                                        let avatarID = 'avatar-'+vwf.moniker_;
-                                        vwf_view.kernel.callMethod(avatarID, "webrtcTurnOnOff", [true]);
-                                       
-                                    }
-    
                                 }
     
     

@@ -454,25 +454,6 @@ AFRAME.registerComponent('gearvrcontrol', {
                    }
                 }
                   }
-                 
-
-                // console.log(this.el);
-
-                // let assets = document.querySelector('a-assets');
-                // let driver = vwf.views["vwf/view/webrtc"];
-                // if (driver) { 
-                //     let stream = driver.local.stream;
-                //     console.log(driver.local.stream);
-                //     console.log(this.el.sceneEl.audioListener)
-                //     let sound = this.el.components.sound;
-                //     console.log(self.sound);
-                   // let audioContext = sound.listener.context;
-                    //var source = audioContext.createMediaStreamSource(stream);
-                
-               // var audioCtx = new AudioContext();
-              //  var source = audioCtx.createMediaStreamSource(stream);
-
-              //  }
 
             },
 

@@ -44,5 +44,6 @@ methods:
          parameters:
             - val
     removeSoundWebRTC:
+    removeVideoTexture:
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

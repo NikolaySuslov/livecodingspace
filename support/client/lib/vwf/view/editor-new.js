@@ -348,6 +348,39 @@ define([
 
 
                                     ]
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Wide",
+                                            onclick: function (e) {
+                                                let avatarID = 'avatar-'+vwf.moniker_;
+                                                vwf_view.kernel.callMethod(avatarID, "setBigVideoHead", []);
+                                               
+                                            }
+            
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Small",
+                                            onclick: function (e) {
+                                                let avatarID = 'avatar-'+vwf.moniker_;
+                                                vwf_view.kernel.callMethod(avatarID, "setSmallVideoHead", []);
+                                               
+                                            }
+            
+                                        }
+
+                                    ]
+
                                 }
                             ]
                         }

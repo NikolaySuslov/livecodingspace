@@ -183,6 +183,8 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
                 this.deleteConnection(nodeID);
                 this.kernel.callMethod(nodeID, "removeSoundWebRTC");
+                this.kernel.callMethod(nodeID, "removeVideoTexture");
+                
             }
 
         },
@@ -437,13 +439,12 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
 
           if (local) video.setAttribute("muted", true);
         
-          let audioID = '#audio-' + id;
-          var audio = document.querySelector(audioID);
-          if (!audio) {
-            audio = document.createElement('audio');
-          }
-          audio.setAttribute('id', audioID);
-          //<audio id="river" src="river.mp3" preload="auto"></audio>
+        //   let audioID = '#audio-' + id;
+        //   var audio = document.querySelector(audioID);
+        //   if (!audio) {
+        //     audio = document.createElement('audio');
+        //   }
+        //   audio.setAttribute('id', audioID);
 
           var assets = document.querySelector('a-assets');
         
@@ -456,11 +457,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
             assets.appendChild(video);
           }
         
-          if (!assets.contains(audio)) {
-            assets.appendChild(audio);
-          }
+        //   if (!assets.contains(audio)) {
+        //     assets.appendChild(audio);
+        //   }
 
-          return {'video': video, 'audio': audio};
+          return video //{'video': video, 'audio': audio};
         }
 
 
@@ -496,17 +497,14 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
         
         let va = createVideoElementAsAsset(name, local);
         //video.setAttribute('src', url);
-        va.video.srcObject = stream;
+        va.srcObject = stream;
 
         //var audioCtx = new AudioContext();
         //var source = audioCtx.createMediaStreamSource(stream);
         //va.audio.src = stream;
 
-        let audioID = 'audio-' + name;
         this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
-        this.kernel.callMethod( 'avatar-'+id, "setSoundWebRTC", [audioID]);
         
-
         return id;
     }
 
@@ -525,6 +523,10 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color", "jquery" ], 
     }
 
     function displayRemote( id, stream, url, name, destMoniker, color ) {
+
+        let audioID = 'audio-' + name;
+        this.kernel.callMethod( 'avatar-'+id, "setSoundWebRTC", [audioID]);
+
         return displayVideo.call( this, id, stream, url, name, destMoniker, true );
     }
 
