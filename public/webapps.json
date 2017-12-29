@@ -43,5 +43,11 @@
         "imgUrl": "./gearvr/webimg.jpg",
         "text": "VR controler example",
         "featured": false
+    },
+    "multicamera":{
+        "title":"Multi-Camera",
+        "imgUrl": "./multicamera/webimg.jpg",
+        "text": "Multi-camera example",
+        "featured": false
     }
 }

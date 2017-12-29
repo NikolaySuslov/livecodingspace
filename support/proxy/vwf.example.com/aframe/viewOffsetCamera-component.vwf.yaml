@@ -1,0 +1,11 @@
+# https://threejs.org/docs/#api/cameras/PerspectiveCamera.setViewOffset
+---
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  fullWidth:
+  fullHeight:
+  xoffset:
+  yoffset:
+  width:
+  height:

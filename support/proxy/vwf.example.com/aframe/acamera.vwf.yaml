@@ -9,3 +9,9 @@ properties:
   look-controls-enabled:
   near:
   wasd-controls-enabled:
+methods:
+  setCameraToActive:
+    parameters:
+      - moniker
+    body: |
+          console.log("set to active call from - ", moniker);

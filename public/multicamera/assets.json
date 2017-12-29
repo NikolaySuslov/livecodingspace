@@ -1,0 +1,10 @@
+{
+    "bg2":{
+        "tag": "img",
+        "src": "/../assets/checker.jpg"
+    },
+    "sky":{
+        "tag": "img",
+        "src": "/../assets/skyes/sky3.jpg"
+    }
+}

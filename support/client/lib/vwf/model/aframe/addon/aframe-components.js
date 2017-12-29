@@ -496,3 +496,42 @@ AFRAME.registerComponent('gearvrcontrol', {
             tick: function (t) {
             }
             })
+
+
+            AFRAME.registerComponent('viewoffset', {
+
+                // fullWidth:
+                // fullHeight:
+                // xoffset:
+                // yoffset:
+                // width:
+                // height:
+
+                schema: {
+                    fullWidth: { default: window.innerWidth },
+                    fullHeight: { default: window.innerHeight },
+                    xoffset: { default: window.innerWidth/2 },
+                    yoffset: { default: window.innerHeight/2 },
+                    width: { default: window.innerWidth },
+                    height: { default: window.innerHeight }
+                },
+            
+    
+                init: function () {
+                    var self = this;
+            
+                },
+            
+                update: function (old) {
+                    this.fullWidth = this.data.fullWidth;
+                    this.fullHeight = this.data.fullHeight;
+                    this.xoffset = this.data.xoffset;
+                    this.yoffset = this.data.yoffset;
+                    this.width = this.data.width;
+                    this.height = this.data.height;
+                    console.log(this.data);
+                },
+            
+                tick: function (t) {
+                }
+            })

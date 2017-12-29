@@ -7,10 +7,6 @@
         "tag": "img",
         "src": "/../assets/skyes/sky3.jpg"
     },
-    "plane":{
-        "tag": "a-asset-item",
-        "src": "/../assets/test.dae"
-    },
     "plane-obj":{
         "tag": "a-asset-item",
         "src": "/../assets/models/plane/PUSHILIN_Plane.obj"
@@ -22,13 +18,5 @@
      "bg2":{
         "tag": "img",
         "src": "/../assets/checker.jpg"
-    },
-    "maleAvatar":{
-        "tag": "a-asset-item",
-        "src": "/../assets/avatars/male/avatar1.gltf"
-    },
-    "femaleAvatar":{
-        "tag": "a-asset-item",
-        "src": "/../assets/avatars/female/avatar1.gltf"
     }
 }

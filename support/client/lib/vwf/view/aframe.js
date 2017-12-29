@@ -228,6 +228,26 @@ define(["module", "vwf/view"], function (module, view) {
 
            // console.log(vwfTime);
             //lerpTick ();
+        },
+
+        calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+    
+            var node = this.state.nodes[nodeID];
+
+            if (!(node && node.aframeObj)) {
+                return;
+            }
+
+       
+            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf"){
+                if (methodName == "setCameraToActive"){
+                    if (methodParameters[0] == vwf.moniker_){
+                    console.log("set active");
+                    node.aframeObj.setAttribute('camera', 'active', true)
+                }
+            }
+        }
+            
         }
 
 

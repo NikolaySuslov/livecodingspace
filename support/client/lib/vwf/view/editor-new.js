@@ -1444,8 +1444,9 @@ define([
                                                         class: "mdc-button mdc-button--raised",
                                                         $text: "Active",
                                                         onclick: function (e) {
-                                                            let camera = document.querySelector('#' + this._currentNode);
-                                                            camera.setAttribute('camera', 'active', true);
+                                                            //let camera = document.querySelector('#' + this._currentNode);
+                                                            vwf_view.kernel.callMethod(this._currentNode, "setCameraToActive", [vwf.moniker_]);
+                                                            //camera.setAttribute('camera', 'active', true);
                                                         }
 
                                                     }
