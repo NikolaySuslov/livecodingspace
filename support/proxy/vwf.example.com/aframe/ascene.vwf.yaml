@@ -5,6 +5,8 @@ type: "a-scene"
 properties:
   fog:
   assets:
+  color:
+  transparent:
 methods:
   clientWatch:
 scripts:

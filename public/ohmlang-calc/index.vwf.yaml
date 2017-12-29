@@ -132,3 +132,4 @@ children:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
       color: "#ECECEC"
+      side: "back"

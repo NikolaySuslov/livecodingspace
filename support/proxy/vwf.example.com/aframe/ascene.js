@@ -27,6 +27,22 @@ this.clientWatch = function () {
                     } else {
                         //console.log(node.id + " needed to delete!");
                         self.children.delete(self.children[node.id]);
+                        //'gearvr-'
+                        let controllerVR = self.children['gearvr-'+ node.id.slice(7)];
+                        if (controllerVR){
+                            self.children.delete(controllerVR);
+                        }
+
+                        let wmrvR = self.children['wmrvr-right-'+ node.id.slice(7)];
+                        if (wmrvR){
+                            self.children.delete(wmrvR);
+                        }
+                        
+                        let wmrvL = self.children['wmrvr-left-'+ node.id.slice(7)];
+                        if (wmrvL){
+                            self.children.delete(wmrvL);
+                        }
+                        
                     }
                 }
             });

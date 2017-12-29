@@ -9,7 +9,15 @@
     },
     "plane":{
         "tag": "a-asset-item",
-        "src": "/../assets/plane.dae"
+        "src": "/../assets/test.dae"
+    },
+    "plane-obj":{
+        "tag": "a-asset-item",
+        "src": "/../assets/models/plane/PUSHILIN_Plane.obj"
+    },
+    "plane-mtl":{
+        "tag": "a-asset-item",
+        "src": "/../assets/models/plane/PUSHILIN_Plane.mtl"
     },
      "bg2":{
         "tag": "img",

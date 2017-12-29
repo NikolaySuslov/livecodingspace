@@ -131,7 +131,7 @@ AFRAME.registerComponent('cursor-listener', {
             console.log('I was clicked at: ', evt.detail.intersection.point);
             let cursorID = 'cursor-avatar-' + vwf_view.kernel.moniker();
             if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
-                vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent")
             }
 
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
@@ -157,7 +157,7 @@ AFRAME.registerComponent('raycaster-listener', {
 
                 } else {
                     console.log('I was intersected at: ', evt.detail.intersection.point);
-                    vwf_view.kernel.fireEvent(evt.detail.target.id, "intersectEvent")
+                    vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "intersectEvent")
                 }
 
                 self.casters[evt.detail.el.id] = evt.detail.el;
@@ -176,7 +176,7 @@ AFRAME.registerComponent('raycaster-listener', {
                 if (self.intersected) {
                     console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.detail.el.id] !== undefined)) {
-                        vwf_view.kernel.fireEvent(evt.detail.target.id, "clearIntersectEvent")
+                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
                     }
                     delete self.casters[evt.detail.el.id]
                 } else { }
@@ -370,3 +370,129 @@ AFRAME.registerComponent('sun', {
     tick: function (t) {
     }
 })
+
+AFRAME.registerComponent('gearvrcontrol', {
+    
+        init: function () {
+            var self = this;
+            var controllerID = 'gearvr-' + vwf_view.kernel.moniker();
+            //this.gearel = document.querySelector('#gearvrcontrol');
+            this.el.addEventListener('triggerdown', function (event) {
+              vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+              });
+              this.el.addEventListener('triggerup', function (event) {
+               vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+              });
+        },
+    
+        update: function () {
+        },
+    
+        tick: function (t) {
+        }
+    })
+
+
+    AFRAME.registerComponent('wmrvrcontrol', {
+        
+        schema: {
+            hand: { default: 'right' }
+        },
+    
+        update: function (old) {
+            this.hand = this.data.hand;
+        },
+
+            init: function () {
+                var self = this;
+                this.hand = this.data.hand;
+                var controllerID = 'wrmr-' + this.hand + '-' + vwf_view.kernel.moniker();
+                //this.gearel = document.querySelector('#gearvrcontrol');
+                this.el.addEventListener('triggerdown', function (event) {
+                  vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+                  });
+                  this.el.addEventListener('triggerup', function (event) {
+                   vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+                  });
+            },
+        
+            tick: function (t) {
+            }
+        })
+
+        AFRAME.registerComponent('streamsound', {
+
+            schema: {
+                positional: { default: true }
+              },
+           
+            init: function () {
+                var self = this;
+
+                let driver = vwf.views["vwf/view/webrtc"];
+
+                this.listener = null;
+                this.stream = null;
+
+                if(!this.sound) {
+                    this.setupSound();
+                  }
+
+                  if (driver) {
+                    //let avatarID = 'avatar-' + vwf.moniker();
+                    let avatarID = this.el.id.slice(0, 27); //avatar-0RtnYBBTBU84OCNcAAFY
+                   let client = driver.state.clients[avatarID];
+                   if (client ){
+                       if (client.connection) {
+                    this.stream = client.connection.stream;
+                    if (this.stream){
+                        this.audioEl = new Audio();
+                        this.audioEl.srcObject = this.stream;
+            
+                    this.sound.setNodeSource(this.sound.context.createMediaStreamSource(this.stream));
+                    }
+                   }
+                }
+                  }
+
+            },
+
+            setupSound: function() {
+                var el = this.el;
+                var sceneEl = el.sceneEl;
+            
+                if (this.sound) {
+                  el.removeObject3D(this.attrName);
+                }
+            
+                if (!sceneEl.audioListener) {
+                  sceneEl.audioListener = new THREE.AudioListener();
+                  sceneEl.camera && sceneEl.camera.add(sceneEl.audioListener);
+                  sceneEl.addEventListener('camera-set-active', function(evt) {
+                    evt.detail.cameraEl.getObject3D('camera').add(sceneEl.audioListener);
+                  });
+                }
+                this.listener = sceneEl.audioListener;
+            
+                this.sound = this.data.positional
+                  ? new THREE.PositionalAudio(this.listener)
+                  : new THREE.Audio(this.listener);
+                el.setObject3D(this.attrName, this.sound);
+              },
+
+              remove: function() {
+                if (!this.sound) return;
+            
+                this.el.removeObject3D(this.attrName);
+                if (this.stream) {
+                  this.sound.disconnect();
+                }
+              },
+
+            update: function (old) {
+
+            },
+
+            tick: function (t) {
+            }
+            })

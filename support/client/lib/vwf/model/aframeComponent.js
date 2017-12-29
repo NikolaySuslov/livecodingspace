@@ -370,10 +370,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
                             break;
 
-                        case "duration":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
-                            break;
-
                         case "deltaPos":
                             parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
                             break;
@@ -621,10 +617,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute(aframeObject.compName).enabled;
                             break;
 
-                        case "duration":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).duration;
-                            break;
-
                         case "deltaPos":
                             value = parentNodeAF.getAttribute(aframeObject.compName).deltaPos;
                             break;
@@ -654,48 +646,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
 
                 }
-
-
-                if (value === undefined && isGearVRControlsDefinition(node.prototypes)) {
-                    value = propertyValue;
-
-                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
-                    let parentNodeAF = aframeObject.el;
-
-                    switch (propertyName) {
-
-                        case "armModel":
-
-                            value = AFRAME.utils.coordinates.stringify(parentNodeAF.getAttribute(aframeObject.compName).armModel);
-                            break;
-
-                        case "buttonColor":
-                            value = AFRAME.utils.coordinates.stringify(parentNodeAF.getAttribute(aframeObject.compName).buttonColor);
-                            break;
-
-                        case "buttonTouchedColor":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).buttonTouchedColor;
-                            break;
-
-                        case "buttonHighlightColor":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).buttonHighlightColor;
-                            break;
-
-                        case "hand":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).hand;
-                            break;
-
-                        case "model":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).model;
-                            break;
-
-                        case "rotationOffset":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).rotationOffset;
-                            break;
-
-                    }
-                }
-
 
 
             }
@@ -858,6 +808,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/streamSoundComponent.vwf")) {
+            
+            
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "streamsound";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/linepath.vwf")) {
             
             
@@ -922,16 +881,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
              aframeObj.el.setAttribute(aframeObj.compName, {});
  
          }
-
-
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf")) {
-
-
-            // aframeObj.el.setAttribute(node.type, {});
-            aframeObj.compName = "gearvr-controls";
-            aframeObj.el.setAttribute(aframeObj.compName, {});
-
-        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf")) {
 

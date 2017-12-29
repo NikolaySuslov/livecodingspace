@@ -4,6 +4,7 @@
 extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
   fog: "type: linear; color: #ECECEC; far: 30; near: 0"
+  transparent: true
   assets: "assets.json"
 children:
   myLight:
@@ -14,12 +15,13 @@ children:
       position: "0 10 5"
       rotation: "0 0 0"
   model:
-    extends: http://vwf.example.com/aframe/acolladamodel.vwf
+    extends: http://vwf.example.com/aframe/aobjmodel.vwf
     properties:
-      src: "#plane"
-      position: "-1.0 1.7 -3"
+      src: "#plane-obj"
+      mtl: "#plane-mtl"
+      position: "-1.2 1.7 -2.5"
       rotation: "0 -45 0"
-      scale: "10 10 10"
+      scale: "0.5 0.5 0.5"
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
@@ -41,19 +43,6 @@ children:
       depth: 2
       height: 1
       width: 1
-    methods:
-      createGizmo:
-        body: |
-          let gizmoNode = 
-            {
-            "extends": "http://vwf.example.com/aframe/gizmoComponent.vwf",
-            "type": "component",
-            "properties":
-            {
-              "mode": "translate"
-            }
-              }
-            this.children.create("gizmo", gizmoNode);
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
@@ -131,8 +120,8 @@ children:
             properties:
               enabled: true
               duration: 50
-              deltaPos: 0.1
-              deltaRot: 1
+              deltaPos: 0.001
+              deltaRot: 0.1
         methods:
           run:
             body: |
@@ -143,8 +132,8 @@ children:
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
-      color: "#ECECEC"
       src: "#sky"
+      side: "back"
       fog: false
   groundPlane:
     extends: http://vwf.example.com/aframe/aplane.vwf

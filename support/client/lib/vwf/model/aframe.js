@@ -78,7 +78,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     return found;
                 },
                 setAFrameProperty: function (propertyName, propertyValue, aframeObject) {
-                    
+                    //console.log(propertyValue);
                             if (propertyValue.hasOwnProperty('x')) {
                                 aframeObject.setAttribute(propertyName, propertyValue)
                             } else
@@ -345,10 +345,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('repeat', propertyValue);
                             break;
 
-
-                        case "look-controls-enabled":
-                            aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
+                        case "side":
+                            aframeObject.setAttribute('material', {'side': propertyValue});
                             break;
+
+                        // case "look-controls-enabled":
+                        //     aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
+                        //     break;
                         case "wasd-controls":
                             aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
                             break;
@@ -358,6 +361,29 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                     }
 
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-SKY") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "color":
+                            aframeObject.setAttribute('color',propertyValue);
+                            break;
+
+                        case "side":
+                            aframeObject.setAttribute('side',propertyValue);
+                            break;
+
+                        case "src":
+                            aframeObject.setAttribute('src',propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-TEXT") {
@@ -387,6 +413,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     value = propertyValue;
 
                     switch (propertyName) {
+
+                        case "color":
+                        aframeObject.setAttribute('background', {'color': propertyValue} );
+                        break;
+
+                        case "transparent":
+                        aframeObject.setAttribute('background', {'transparent': propertyValue} );
+                        break;
 
                         case "fog":
                             aframeObject.setAttribute('fog', propertyValue);
@@ -501,6 +535,48 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-OBJ-MODEL") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "src":
+                            aframeObject.setAttribute('src', propertyValue);
+                            break;
+
+                        case "mtl":
+                            aframeObject.setAttribute('mtl', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "src":
+                            aframeObject.setAttribute('src', propertyValue);
+                            break;
+
+                        case "on":
+                            aframeObject.setAttribute('on', propertyValue);
+                            break;
+
+                        case "autoplay":
+                            aframeObject.setAttribute('autoplay', propertyValue);
+                            break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-PLANE") {
                     value = propertyValue;
 
@@ -579,8 +655,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     value = propertyValue;
                     switch (propertyName) {
 
-                        case "userHeight":
-                            aframeObject.setAttribute('camera', 'userHeight', propertyValue);
+                        case "user-height":
+                            aframeObject.setAttribute('user-height', propertyValue);
+                            break;
+
+                            case "look-controls-enabled":
+                            aframeObject.setAttribute('look-controls-enabled', propertyValue);
+                            break;
+
+                            case "wasd-controls-enabled":
+                            aframeObject.setAttribute('wasd-controls-enabled', propertyValue);
                             break;
 
                         // case "active":
@@ -674,6 +758,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = aframeObject.getAttribute('color');
                             break;
 
+                        case "side":
+                        if (aframeObject.getAttribute('material')) {
+                            value = aframeObject.getAttribute('material').side;
+                        }
+                            break;
+
                         case "fog":
                             if (aframeObject.getAttribute('material')) {
                                 value = aframeObject.getAttribute('material').fog;
@@ -710,18 +800,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "repeat":
                             value = aframeObject.getAttribute('repeat');
 
-                        case "look-controls-enabled":
-                            var look = aframeObject.getAttribute('look-controls-enabled');
-                            if (look !== null && look !== undefined) {
-                                value = aframeObject.getAttribute('look-controls').enabled;
-                            }
-                            break;
-                        case "wasd-controls":
-                            var wasd = aframeObject.getAttribute('wasd-controls');
-                            if (wasd !== null && wasd !== undefined) {
-                                value = aframeObject.getAttribute('wasd-controls').enabled;
-                            }
-                            break;
+                        // case "look-controls-enabled":
+                        //     var look = aframeObject.getAttribute('look-controls-enabled');
+                        //     if (look !== null && look !== undefined) {
+                        //         value = aframeObject.getAttribute('look-controls').enabled;
+                        //     }
+                        //     break;
+                        // case "wasd-controls":
+                        //     var wasd = aframeObject.getAttribute('wasd-controls');
+                        //     if (wasd !== null && wasd !== undefined) {
+                        //         value = aframeObject.getAttribute('wasd-controls').enabled;
+                        //     }
+                        //     break;
 
                         case "visible":
                             value = aframeObject.getAttribute('visible');
@@ -736,8 +826,35 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "fog":
                             value = aframeObject.getAttribute('fog');
                             break;
+                        
+                        case "color":
+                        if (aframeObject.getAttribute('background')) {
+                            value = aframeObject.getAttribute('background').color;
+                        }
+                            break;
+
+                        case "transparent":
+                        if (aframeObject.getAttribute('background')) {
+                            value = aframeObject.getAttribute('background').transparent;
+                        }
+                            break;
                     }
                 }
+
+                if (value === undefined && aframeObject.nodeName == "A-SKY") {
+                    
+                                        switch (propertyName) {
+                                            case "color":
+                                                value = aframeObject.getAttribute('color');
+                                                break;
+                                            case "side":
+                                                value = aframeObject.getAttribute('side');
+                                                break;
+                                            case "src":
+                                                value = aframeObject.getAttribute('src');
+                                                break;
+                                        }
+                                    }
 
                 if (value === undefined && aframeObject.nodeName == "A-BOX") {
 
@@ -855,9 +972,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                     switch (propertyName) {
-                        case "userHeight":
-                            value = aframeObject.getAttribute('camera').userHeight;
+                        case "user-height":
+                            value = aframeObject.getAttribute('user-height');
                             break;
+                        case "look-controls-enabled":
+                            value = aframeObject.getAttribute('look-controls-enabled');
+                            break;
+
+                        case "wasd-controls-enabled":
+                            value = aframeObject.getAttribute('wasd-controls-enabled');
+                            break;
+
                     }
 
                     //    switch (propertyName) {
@@ -892,6 +1017,33 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-OBJ-MODEL") {
+
+                    switch (propertyName) {
+                        case "src":
+                            value = aframeObject.getAttribute('src');
+                            break;
+                        case "mtl":
+                            value = aframeObject.getAttribute('mtl');
+                            break;
+                    }
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
+
+                    switch (propertyName) {
+                        case "src":
+                            value = aframeObject.getAttribute('src');
+                            break;
+                        case "on":
+                            value = aframeObject.getAttribute('on');
+                            break;
+                        case "autoplay":
+                            value = aframeObject.getAttribute('autoplay');
+                            break;
+                    }
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
                     
                                         switch (propertyName) {
@@ -920,9 +1072,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/ascene.vwf")) {
             aframeObj = document.createElement('a-scene');
+            let assetsElement = document.createElement('a-assets');
+            aframeObj.appendChild(assetsElement);
 
             self.state.scenes[node.ID] = aframeObj;
 
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
+            aframeObj = document.createElement('a-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
             aframeObj = document.createElement('a-camera');
             aframeObj.setAttribute('camera', 'active', false);
@@ -931,8 +1087,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-light');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acursor.vwf")) {
             aframeObj = document.createElement('a-cursor');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
-            aframeObj = document.createElement('a-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-sun-sky.vwf")) {
                 aframeObj = document.createElement('a-sun-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/abox.vwf")) {
@@ -943,7 +1097,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-text');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acolladamodel.vwf")) {
             aframeObj = document.createElement('a-collada-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
+            aframeObj = document.createElement('a-obj-model');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asound.vwf")) {
+            aframeObj = document.createElement('a-sound');
+         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
             aframeObj = document.createElement('a-sphere');

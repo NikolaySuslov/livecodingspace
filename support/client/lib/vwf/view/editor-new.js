@@ -26,8 +26,9 @@ define([
     "vwf/view",
     "vwf/utility",
     "vwf/view/lib/ace/ace",
-    "vwf/view/lib/colorpicker/colorpicker.min"
-], function (module, version, view, utility, ace, colorpicker) {
+    "vwf/view/lib/colorpicker/colorpicker.min",
+    "vwf/view/widgets"
+], function (module, version, view, utility, ace, colorpicker, widgets) {
 
     var self;
 
@@ -38,6 +39,7 @@ define([
         initialize: function () {
             self = this;
             this.ace = window.ace;
+            this.widgets = widgets;
 
             this.nodes = {};
             this.scenes = {};
@@ -346,8 +348,40 @@ define([
 
 
                                     ]
-                                }
+                                },
+                                {
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Wide",
+                                            onclick: function (e) {
+                                                let avatarID = 'avatar-'+vwf.moniker_;
+                                                vwf_view.kernel.callMethod(avatarID, "setBigVideoHead", []);
+                                               
+                                            }
+            
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Small",
+                                            onclick: function (e) {
+                                                let avatarID = 'avatar-'+vwf.moniker_;
+                                                vwf_view.kernel.callMethod(avatarID, "setSmallVideoHead", []);
+                                               
+                                            }
+            
+                                        }
 
+                                    ]
+
+                                }
                             ]
                         }
                     ]
@@ -1039,6 +1073,163 @@ define([
                 class: "mdc-list-divider",
             }
 
+            let webrtcGUI = {
+
+                $type: "div",
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                $components: [
+                    {
+
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    {
+                                    $type: "span",
+                                    $text: "Chat"
+                                }
+
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    widgets.icontoggle({
+                                        'id': "webrtcswitch",
+                                        'label': 'visibility',
+                                        'on': JSON.stringify({"content": "visibility", "label": "Turn On Mic"}),
+                                        'off': JSON.stringify({"content": "visibility_off", "label": "Turn Off Mic"}),
+                                        'state': false,
+                                        'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
+
+                                            }
+
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
+
+                                                let micToggle = document.querySelector('#webrtcaudio');
+                                                let camToggle = document.querySelector('#webrtcvideo');
+
+                                                if (chkAttr) {
+                                                    driver.startWebRTC(avatarID);
+
+                                                    micToggle.classList.remove('mdc-icon-toggle--disabled');
+                                                    camToggle.classList.remove('mdc-icon-toggle--disabled');
+
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.stopWebRTC(avatarID);
+
+                                                    micToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    camToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
+                                            
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    widgets.icontoggle({
+                                        'id': "webrtcaudio",
+                                        'label': 'mic',
+                                        'on': JSON.stringify({"content": "mic", "label": "Turn On Mic"}),
+                                        'off': JSON.stringify({"content": "mic_off", "label": "Turn Off Mic"}),
+                                        'state': false,
+                                        'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+                                            let webrtcswitch = document.querySelector('#webrtcswitch');
+
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
+                                            }
+                                            this.classList.add('mdc-icon-toggle--disabled');
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                if (chkAttr) {
+                                                    driver.muteAudio(chkAttr);
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.muteAudio(chkAttr);
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
+                                            
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                $components: [
+                                    widgets.icontoggle({
+                                        'id': "webrtcvideo",
+                                        'label': 'videocam',
+                                        'on': JSON.stringify({"content": "videocam", "label": "Turn On Video"}),
+                                        'off': JSON.stringify({"content": "videocam_off", "label": "Turn Off Video"}),
+                                        'state': false,
+                                        'init': function(){
+                                            this._driver = vwf.views["vwf/view/webrtc"];
+
+                                            if (!this._driver) {
+                                                this.classList.add('mdc-icon-toggle--disabled');
+                                            }
+
+                                            this.classList.add('mdc-icon-toggle--disabled');
+                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                                
+                                                let driver = e.target._driver;
+                                                let chkAttr = e.detail.isOn;
+                                                if (chkAttr) {
+                                                    driver.muteVideo(chkAttr);
+                                                    console.log("on")
+            
+                                                } else {
+                                                    driver.muteVideo(chkAttr);
+                                                    console.log("off")
+                                                }
+
+                                               //console.log(e, detail)
+                                                //status.textContent = `Icon Toggle is ${detail.isOn ? 'on' : 'off'}`;
+                                              });
+                                            
+                                        }
+                                    })
+                                ]
+                            }
+                           
+                        ]
+                    }
+
+                ]
+            }
+
+
             let gizmoEdit = {
 
                 $type: "div",
@@ -1066,50 +1257,26 @@ define([
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                 $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "div",
-                                        class: "mdc-switch",
-                                        $components: [
-                                            {
-                                                $type: "input",
-                                                type: "checkbox",
-                                                class: "mdc-switch__native-control",
-                                                id: 'editnode',
-                                                $init: function () {
+                                    widgets.switch({
+                                    'id': 'editnode', 
+                                    'init': function(){
+                                        vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                                    },
+                                    'onchange': function(e){
 
-                                                    vwf_view.kernel.getProperty(this._currentNode, 'edit');
-
-                                                },
-                                                //id: "basic-switch",
-                                                onchange: function (e) {
-
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let chkAttr = this.getAttribute('checked');
-                                                    if (chkAttr == "") {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', false);
-
-                                                    } else {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', true);
-                                                    }
-
-                                                    vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
-
-
-                                                }
-                                            },
-                                            {
-                                                $type: "div",
-                                                class: "mdc-switch__background",
-                                                $components: [
-                                                    {
-                                                        $type: "div",
-                                                        class: "mdc-switch__knob"
-                                                    }
-                                                ]
-                                            }
-                                        ]
+                                        var nodeID = document.querySelector('#currentNode')._currentNode;
+                                        let chkAttr = this.getAttribute('checked');
+                                        if (chkAttr == "") {
+                                            self.kernel.setProperty(this._currentNode, 'edit', false);
+    
+                                        } else {
+                                            self.kernel.setProperty(this._currentNode, 'edit', true);
+                                        }
+    
+                                        vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
                                     }
+                                }
+                                )
                                 ]
                             },
                             {
@@ -1278,7 +1445,7 @@ define([
                                                         $text: "Active",
                                                         onclick: function (e) {
                                                             let camera = document.querySelector('#' + this._currentNode);
-                                                            camera.setAttribute('active', true);
+                                                            camera.setAttribute('camera', 'active', true);
                                                         }
 
                                                     }
@@ -2480,18 +2647,13 @@ define([
 
                                 ]
                             },
-                            {
-                                $cell: true,
-                                $type: "hr",
-                                class: "mdc-list-divider",
-                            },
-                            {
-                                $cell: true,
-                                $type: "h3",
-                                class: "userList mdc-list-group__subheader",
-                                $text: "Users online"
-                            },
+                            widgets.divider,
+                            webrtcGUI,
+                            widgets.divider,
+                            widgets.headerH3("h3", "Users online", "userList mdc-list-group__subheader"),
                             clientListCell
+                            //widgets.headerH3("h3", "WebRTC", "userList mdc-list-group__subheader"),
+                            
                         ]
                     }
 
@@ -2571,6 +2733,13 @@ define([
 
             // let drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
             // document.querySelector('.menu').addEventListener('click', () => drawer.open = true);
+
+        var toggleNodes = document.querySelectorAll('.mdc-icon-toggle');
+        toggleNodes.forEach( el => {
+            mdc.iconToggle.MDCIconToggle.attachTo(el);
+        });
+
+
 
             var drawerEl = document.querySelector('.mdc-temporary-drawer');
             var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;

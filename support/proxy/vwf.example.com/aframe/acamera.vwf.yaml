@@ -3,4 +3,9 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-camera"
 properties:
-  userHeight:
+  user-height:
+  far:
+  fov:
+  look-controls-enabled:
+  near:
+  wasd-controls-enabled:

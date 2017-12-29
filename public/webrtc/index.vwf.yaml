@@ -29,6 +29,7 @@ children:
       color: "#ECECEC"
       src: "#sky"
       fog: false
+      side: "back"
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:

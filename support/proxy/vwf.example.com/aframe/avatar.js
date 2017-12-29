@@ -2,7 +2,7 @@ this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
         "color": "white",
-        "position": "0 0.66 0.3",
+        "position": "0 0.66 0.7",
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
@@ -13,7 +13,7 @@ this.modelBodyDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
         "src": "#avatar",
-        "position": "0 0 0.5",
+        "position": "0 0 0.8",
         "rotation": "0 180 0"
     },
     "children": {
@@ -35,10 +35,17 @@ this.createAvatarBody = function (modelSrc) {
     let avatarControl = document.querySelector('#avatarControl');
 
 
-    let userHeight = avatarControl.getAttribute('camera').userHeight;
+    //let userHeight = avatarControl.getAttribute('camera').userHeight;
+    var userHeight = avatarControl.getAttribute('look-controls').userHeight; //avatarControl.getAttribute('position').y;
+
+    // if (AFRAME.utils.device.isGearVR()) {
+    //     userHeight = 0
+    // }
 
     let myColor = this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
+    //let myHandDef = this.simpleVrControllerDef;
+
     myBodyDef.properties.color = myColor;
 
     var newNode = {
@@ -49,10 +56,11 @@ this.createAvatarBody = function (modelSrc) {
         children: {
            
             "myBody": myBodyDef,
+            //"myHand": myHandDef,
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
-                    "position": "0 1.6 0.3",
+                    "position": "0 1.6 0.7",
                     "visible": true
                 },
                 children: {
@@ -61,10 +69,7 @@ this.createAvatarBody = function (modelSrc) {
                         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                         "type": "component",
                         "properties": {
-                            "enabled": true,
-                            "duration": 50,
-                            "deltaPos": 0,
-                            "deltaRot": 0
+                            "enabled": true
                         }
                     },
                     "visual": {
@@ -83,10 +88,10 @@ this.createAvatarBody = function (modelSrc) {
                         "id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
-                            "position": "0 0 0",
+                            "position": "0 0 -0.7",
                             "look-controls-enabled": false,
-                            "wasd-controls": false,
-                            "userHeight": 0,
+                            "wasd-controls-enabled": false,
+                            "user-height": 0
                         }
                     },
                     "myCursor":
@@ -197,10 +202,7 @@ this.createAvatarBody = function (modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
-            "enabled": true,
-            "duration": 50,
-            "deltaPos": 0,
-            "deltaRot": 0
+            "enabled": true
         }
     }
 
@@ -238,7 +240,7 @@ this.getRandomColor = function () {
 this.followAvatarControl = function (position, rotation) {
     // this.position = AFRAME.utils.coordinates.stringify(position);
     // this.rotation = AFRAME.utils.coordinates.stringify(rotation);
-
+//debugger;
 
     this.position = AFRAME.utils.coordinates.stringify(position);
     let myRot = AFRAME.utils.coordinates.parse(this.rotation);
@@ -317,3 +319,58 @@ this.setVideoTexture = function(val){
     this.avatarNode.myHead.visual.src = '#temp';
     this.avatarNode.myHead.visual.src = '#'+val;
 }
+
+this.removeVideoTexture = function(){
+   // this.setSmallVideoHead();
+    this.avatarNode.myHead.visual.color = this.avatarNode.myBody.color;
+    this.avatarNode.myHead.visual.src = "";
+    // this.avatarNode.myHead.visual.src = '#'+val;
+}
+
+this.removeSoundWebRTC = function(){
+
+    if (this.avatarNode.audio)
+    this.avatarNode.children.delete(this.avatarNode.audio);
+}
+
+this.setSoundWebRTC = function(val){
+    console.log(val);
+    if (this.avatarNode.audio) this.removeSoundWebRTC();
+
+    var soundNode = {
+        "extends": "http://vwf.example.com/aframe/aentity.vwf",
+        "properties": {
+        },
+        "children":{
+            "streamsound":{
+                "extends": "http://vwf.example.com/aframe/streamSoundComponent.vwf",
+                "type": "component",
+                "properties": {
+                }
+            }
+        }
+    }
+    this.avatarNode.children.create("audio", soundNode );
+   // this.setSmallVideoHead();
+
+    //this.avatarNode.audio.src = '#tempAudio';
+    //this.avatarNode.audio.src = '#'+val;
+}
+
+this.webrtcTurnOnOff = function(val){
+    console.log('WEBRTC is ', val);
+}
+
+this.webrtcMuteAudio = function(val){
+    console.log('WEBRTC Audio is ', val);
+}
+
+this.webrtcMuteVideo = function(val){
+    console.log('WEBRTC Video is ', val);
+}
+
+this.initialize = function() {
+   // this.future(0).updateAvatar();
+};
+
+
