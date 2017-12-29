@@ -25,7 +25,7 @@ children:
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
-      value: "Virtual World Framework & A-Frame & OSC"
+      value: "Virtual World Framework & VR Controllers"
       color: "#2b5d83"
       position: [-2, 2.5, -3]
   cube:
@@ -37,14 +37,6 @@ children:
       depth: 1
       height: 1
       width: 1
-    children:
-      sphere:
-        extends: http://vwf.example.com/aframe/asphere.vwf
-        properties:
-          position: "0 2 0"
-          rotation: "0 0 0"
-          color: "#3c7249"
-          radius: 0.4
   newSky:
     extends: http://vwf.example.com/aframe/aentity.vwf
     children:

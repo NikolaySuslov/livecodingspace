@@ -40,7 +40,7 @@
     },
     "gearvr":{
         "title":"Control in VR app",
-        "imgUrl": "./gear/webimg.jpg",
+        "imgUrl": "./gearvr/webimg.jpg",
         "text": "VR controler example",
         "featured": false
     }
