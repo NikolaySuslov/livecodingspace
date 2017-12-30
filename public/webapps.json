@@ -49,5 +49,11 @@
         "imgUrl": "./multicamera/webimg.jpg",
         "text": "Multi-camera example",
         "featured": false
+    },
+    "multipixel":{
+        "title":"Multi-Pixel",
+        "imgUrl": "./multipixel/webimg.jpg",
+        "text": "Multi-Pixel example",
+        "featured": false
     }
 }

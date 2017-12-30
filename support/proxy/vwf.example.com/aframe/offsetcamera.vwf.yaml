@@ -1,0 +1,16 @@
+# avatar
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/aentity.vwf
+type: "multicamera"
+properties:
+    fullWidth:
+    fullheight:
+    xoffset:
+    yoffset:
+    width:
+    height:
+methods:
+    initialize:
+scripts:
+- source: "http://vwf.example.com/aframe/offsetcamera.js"

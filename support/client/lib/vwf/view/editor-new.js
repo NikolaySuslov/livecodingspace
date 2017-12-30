@@ -279,6 +279,23 @@ define([
                                                 //controlEl.setAttribute('visible', !vis);
                                             }
 
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Hide Avatar",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
+                                                //let cursorID = 'myCursor-' + avatarID;
+                                                let controlEl = document.querySelector("[id='" + avatarID + "']");
+                                                let vis = controlEl.getAttribute('visible');
+                                                this.$text = vis ? 'Show Avatar' : 'Show Avatar';
+                                                vwf_view.kernel.callMethod(avatarID, "showHideAvatar", [!vis]);
+                                                //controlEl.setAttribute('visible', !vis);
+                                            }
+
                                         }
 
                                     ]

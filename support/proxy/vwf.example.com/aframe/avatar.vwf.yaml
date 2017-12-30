@@ -11,6 +11,9 @@ properties:
 methods:
     initialize:
     updateAvatar:
+    showHideAvatar:
+        parameters:
+            - bool
     showHideCursor:
         parameters:
             - bool
