@@ -43,24 +43,64 @@ children:
       color: "white"
       wireframe: false
       src: "#bg2"
-  camera1:
+  multicam:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
-      position: "2 1.6 -2"
-      depth: 0.2
-      height: 0.2
-      width: 0.2
-      color: "red"
+      position: "0 1.6 -2"
+      depth: 0.5
+      height: 0.5
+      width: 0.5
+      opacity: 0.5
+      transparent: true
+      color: "green"
     children:
-      cam:
-        extends: http://vwf.example.com/aframe/acamera.vwf
+      camera1:
+        extends: http://vwf.example.com/aframe/abox.vwf
         properties:
-          look-controls-enabled: false
-          wasd-controls-enabled: false
-          user-height: 0
+          position: "0 0 0"
+          depth: 0.2
+          height: 0.2
+          width: 0.2
+          color: "red"
         children:
-          viewoffset:
-            extends: http://vwf.example.com/aframe/viewOffsetCamera-component.vwf
+          cam:
+            extends: http://vwf.example.com/aframe/acamera.vwf
             properties:
-              xoffset: 0
-              yoffset: 0
+              look-controls-enabled: false
+              wasd-controls-enabled: false
+              user-height: 0
+            children:
+              viewoffset:
+                extends: http://vwf.example.com/aframe/viewOffsetCamera-component.vwf
+                properties:
+                  fullWidth: 1000
+                  fullHeight: 1000
+                  xoffset: -250
+                  yoffset: 0
+                  width: 500
+                  height: 1000
+      camera2:
+        extends: http://vwf.example.com/aframe/abox.vwf
+        properties:
+          position: "0 0 0"
+          depth: 0.2
+          height: 0.2
+          width: 0.2
+          color: "red"
+        children:
+          cam:
+            extends: http://vwf.example.com/aframe/acamera.vwf
+            properties:
+              look-controls-enabled: false
+              wasd-controls-enabled: false
+              user-height: 0
+            children:
+              viewoffset:
+                extends: http://vwf.example.com/aframe/viewOffsetCamera-component.vwf
+                properties:
+                  fullWidth: 1000
+                  fullHeight: 1000
+                  xoffset: 250
+                  yoffset: 0
+                  width: 500
+                  height: 1000

@@ -519,7 +519,7 @@ AFRAME.registerComponent('gearvrcontrol', {
     
                 init: function () {
                     var self = this;
-            
+                    this.setNewOffset();
                 },
             
                 update: function (old) {
@@ -530,8 +530,20 @@ AFRAME.registerComponent('gearvrcontrol', {
                     this.width = this.data.width;
                     this.height = this.data.height;
                     console.log(this.data);
+                    this.setNewOffset();
                 },
             
+                setNewOffset: function(){
+                    this.el.object3DMap.camera.setViewOffset ( 
+                        this.data.fullWidth,
+                        this.data.fullHeight,
+                        this.data.xoffset,
+                        this.data.yoffset,
+                        this.data.width,
+                        this.data.height)
+                },
+
                 tick: function (t) {
+
                 }
             })
