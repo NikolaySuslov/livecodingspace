@@ -40,8 +40,8 @@ this.createCamera = function () {
                             fullHeight: fullHeight,
                             xoffset: this.xoffset,
                             yoffset: this.yoffset,
-                            width: this.width,
-                            height: this.height
+                            subcamWidth: this. subcamWidth,
+                            subcamHeight: this. subcamHeight
                         }
 
                     }

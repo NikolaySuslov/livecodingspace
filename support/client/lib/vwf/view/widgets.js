@@ -30,6 +30,135 @@ define(function () {
 
         }
 
+        sliderDiscrete(obj) {
+            return {
+                $cell: true,
+                $type: "div",
+                class: "mdc-slider mdc-slider--discrete",
+                role: "slider",
+                'aria-valuemin': obj.min,
+                'aria-valuemax': obj.max,
+                'aria-label': obj.label,
+                $init: obj.init,
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-slider__track-container",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-slider__track",
+                                
+                            }
+                        ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-slider__thumb-container",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-slider__pin",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "span",
+                                        class: "mdc-slider__pin-value-marker",
+                                    }
+                                ]
+                                
+                            },
+                            {
+                                $cell: true,
+                                $type: "svg",
+                                class: "mdc-slider__thumb",
+                                width: 21,
+                                height: 21,
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "circle",
+                                        cx: 10.5,
+                                        cy: 10.5,
+                                        r: 7.875
+                                    }
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-slider__focus-ring"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        sliderContinuous(obj) {
+            return {
+                $cell: true,
+                $type: "div",
+                class: "mdc-slider",
+                role: "slider",
+                tabindex: 0,
+                'id': obj.id,
+                'aria-valuemin': obj.min,
+                'aria-valuemax': obj.max,
+                'aria-label': obj.label,
+                'aria-valuenow': obj.value,
+                'data-step': obj.step,
+                $init: obj.init,
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-slider__track-container",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-slider__track",
+                                
+                            }
+                        ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-slider__thumb-container",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "svg",
+                                class: "mdc-slider__thumb",
+                                width: 21,
+                                height: 21,
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "circle",
+                                        cx: 10.5,
+                                        cy: 10.5,
+                                        r: 7.875
+                                    }
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-slider__focus-ring"
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
         icontoggle(obj) {
             return {
                 $cell: true,

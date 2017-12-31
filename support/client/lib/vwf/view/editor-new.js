@@ -907,7 +907,101 @@ define([
 
             let propertiesCell = function (m) {
 
-                var editComponents = [{}, {}]
+                var editComponents = [{}, {}];
+
+                // fullWidth:
+                // fullHeight:
+                // xoffset:
+                // yoffset:
+                // width:
+                // height:
+
+                let sliderPropNames = ['width', 'height', 'depth', 'fullWidth', 'fullHeight', 'xoffset', 'yoffset', 'subcamWidth', 'subcamHeight'];
+                let sliderProps = {
+                    'width': {
+                        min: 0,
+                        max: 30
+                    },
+                    'height': {
+                        min: 0,
+                        max: 30
+                    },
+                    'depth': {
+                        min: 0,
+                        max: 30
+                    },
+                    'fullWidth': {
+                        min: 0,
+                        max: 5000,
+                        setp:1
+                    },
+                    'fullHeight': {
+                        min: 0,
+                        max: 5000,
+                        setp:1
+                    },
+                    'xoffset': {
+                        min: -5000,
+                        max: 5000,
+                        setp:1
+                    },
+                    'yoffset': {
+                        min: -5000,
+                        max: 5000,
+                        setp:1
+                    },
+                    'subcamWidth': {
+                        min: 0,
+                        max: 5000,
+                        setp:1
+                    },
+                    'subcamHeight': {
+                        min: 0,
+                        max: 5000,
+                        setp:1
+                    }
+                }
+                if (sliderPropNames.includes(m.name)){
+
+                   let currenValue = JSON.parse(m.getValue());
+
+                    var sliderComponent =  widgets.sliderContinuous({
+                        'id': 'prop-slider-' + m.name,
+                        'label': 'Slider',
+                        'min': sliderProps[m.name].min,
+                        'max': sliderProps[m.name].max,
+                        'step': sliderProps[m.name].step ? sliderProps[m.name].step: 0.01,
+                        'value': currenValue,
+                        'init': function(){
+
+
+        const myEl = this;
+        var continuousSlider = new mdc.slider.MDCSlider(myEl);
+        this._comp = continuousSlider;
+        continuousSlider.listen('MDCSlider:input', function(e) {
+            console.log(continuousSlider.value)
+            let myEl = e.currentTarget;
+           // let prop = myEl._prop.body;
+            //document.querySelector('#propAceEditor').env.editor.setValue(prop);
+            self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+          //continuousValue.textContent = continuousSlider.value;
+         
+        });
+        continuousSlider.listen('MDCSlider:change', function(e) {
+          console.log(continuousSlider.value);
+          let myEl = e.currentTarget;
+         // let prop = myEl._prop.body;
+          //document.querySelector('#propAceEditor').env.editor.setValue(prop);
+          self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+
+          //continuousCommittedValue.textContent = continuousSlider.value;
+        })
+    }
+})
+
+                } else {
+                    sliderComponent = {}
+                }
 
                 if (m.name.indexOf("semantics") > -1) { }
                 else if (m.name.indexOf("grammar") > -1) { }
@@ -958,6 +1052,9 @@ define([
                             $type: "div",
                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-6",
                             $components: [
+                                
+                                   sliderComponent,
+                               
                                 {
                                     class: "mdc-textfield",
                                     $cell: true,
@@ -1631,6 +1728,28 @@ define([
 
             }
 
+            let numberSliderComponent = {
+                $cell: true,
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                $init: function () {
+                    
+                },
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        style: "padding: 0 16px;", 
+                        $components:[
+                            {}
+                        ]
+                    }
+                    
+                        
+                    
+                ]
+            }
+
             let colorPickerComponent = {
                 $cell: true,
                 $type: "div",
@@ -1744,6 +1863,7 @@ define([
                         if (this._propName == 'color') {
                             livePropertyComponent = colorPickerComponent
                         }
+                        
 
                     } else {
                         editorClass = "mdc-layout-grid__cell mdc-layout-grid__cell--span-12"
@@ -2920,10 +3040,19 @@ define([
 
 
             let propCell = document.querySelector("#currentNode #prop-" + propertyName);
+            let propSlider = document.querySelector("#currentNode #prop-slider-" + propertyName);
+            
 
             if (propCell !== null) {
                 if (propCell._currentNode == nodeID) {
                     propCell.value = node.properties[propertyName].getValue();
+                }
+            }
+
+            if (propSlider !== null) {
+                if (propSlider._currentNode == nodeID) {
+                    //const propSliderComp = new new mdc.slider.MDCSlider(propSlider);
+                    propSlider._comp.value = node.properties[propertyName].getValue();
                 }
             }
 

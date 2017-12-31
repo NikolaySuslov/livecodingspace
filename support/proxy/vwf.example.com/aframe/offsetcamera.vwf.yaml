@@ -8,8 +8,8 @@ properties:
     fullheight:
     xoffset:
     yoffset:
-    width:
-    height:
+    subcamWidth:
+    subcamHeight:
 methods:
     initialize:
 scripts:
