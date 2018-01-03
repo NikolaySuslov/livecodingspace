@@ -933,32 +933,32 @@ define([
                     'fullWidth': {
                         min: 0,
                         max: 5000,
-                        setp:1
+                        step:1
                     },
                     'fullHeight': {
                         min: 0,
                         max: 5000,
-                        setp:1
+                        step:1
                     },
                     'xoffset': {
-                        min: -5000,
-                        max: 5000,
-                        setp:1
+                        min: -10000,
+                        max: 10000,
+                        step: 100
                     },
                     'yoffset': {
-                        min: -5000,
-                        max: 5000,
-                        setp:1
+                        min: -10000,
+                        max: 10000,
+                        step: 100
                     },
                     'subcamWidth': {
                         min: 0,
-                        max: 5000,
-                        setp:1
+                        max: 6000,
+                        step:1
                     },
                     'subcamHeight': {
                         min: 0,
-                        max: 5000,
-                        setp:1
+                        max: 6000,
+                        step:1
                     }
                 }
                 if (sliderPropNames.includes(m.name)){
@@ -970,7 +970,7 @@ define([
                         'label': 'Slider',
                         'min': sliderProps[m.name].min,
                         'max': sliderProps[m.name].max,
-                        'step': sliderProps[m.name].step ? sliderProps[m.name].step: 0.01,
+                        'step': sliderProps[m.name].step ? sliderProps[m.name].step: 0.1,
                         'value': currenValue,
                         'init': function(){
 

@@ -3,6 +3,25 @@ function createApp() {
 
     let self = this
 
+  function createCameraButton(camNum) {
+
+        let label = "Camera " + camNum;
+        let camID = "/multicam/camera"+ camNum + "/cameraNode/cam";
+
+      return {
+        $cell: true,
+        $type: "button",
+        class: "mdc-button mdc-button--raised",
+        $text: label,
+        onclick: function (e) {
+            let nodeID = vwf.find("",camID)[0];
+            let avatarID = vwf.moniker_;
+            vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
+        }
+    }
+
+    }
+
 
     return {
         $cell: true,
@@ -55,7 +74,13 @@ function createApp() {
                                     vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
                                 }
 
-                            }
+                            },
+                            createCameraButton("4"),
+                            createCameraButton("5"),
+                            createCameraButton("6"),
+                            createCameraButton("7"),
+                            createCameraButton("8"),
+                            createCameraButton("9")
 
                         ]
                     }

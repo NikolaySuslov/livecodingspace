@@ -529,7 +529,7 @@ AFRAME.registerComponent('gearvrcontrol', {
                     this.yoffset = this.data.yoffset;
                     this.width = this.data.width;
                     this.height = this.data.height;
-                    console.log(this.data);
+                    //console.log(this.data);
                     this.setNewOffset();
                 },
             

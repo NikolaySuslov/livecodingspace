@@ -12,32 +12,92 @@ children:
       color: "#ECECEC"
       side: "back"
       fog: false
+  myLightSG:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      color: "white"
+      position: "6 22 6"
+      rotation: "-77 85 64"
+  myLightSB:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "spot"
+      color: "blue"
+      position: "0 5 -25"
+      rotation: "0 0 150"
+  myLightSR:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "spot"
+      color: "red"
+      position: "0 5 -25"
+      rotation: "0 -3 150"
+  model:
+    extends: http://vwf.example.com/aframe/aobjmodel.vwf
+    properties:
+      src: "#nwtree-obj"
+      mtl: "#nwtree-mtl"
+      position: "-1 6 -25"
+      rotation: "0 -45 0"
+      scale: "20 20 20"
+    children:
+      interpolation:
+        extends: http://vwf.example.com/aframe/interpolation-component.vwf
+        properties:
+          enabled: true
+    methods:
+          run:
+            body: |
+              var time = vwf.now;
+              let rot = AFRAME.utils.coordinates.parse(this.rotation);
+              this.rotation = [rot.x, Math.sin(time)*50, rot.z];
+              this.future( 0.01 ).run();  // schedule the next step
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
-      value: "Virtual World Framework & A-Frame"
-      color: "#b74217"
-      position: "-2 2.5 -2"
+      value: "Happy New Year 2018!"
+      color: "#d5ebda"
+      position: "-19 5 -30"
+      rotation: "0 0 45"
+      scale: "9 9 9"
   spaceText2:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
       value: "Project by Krestianstvo.org"
       color: "#305b32"
-      position: "1 3 -4"
+      position: "5 10 -30"
+      scale: "5 5 5"
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
-      position: "-1 0.5 -8"
+      position: "20 0.5 0"
       rotation: "0 -30 0"
       color: "#3c7249"
       depth: 2
       height: 9
       width: 2
+  sphere:
+    extends: http://vwf.example.com/aframe/asphere.vwf
+    properties:
+      position: "7 15 -25"
+      color: "#e0e014"
+      radius: 5
+      wireframe: true
+  box2:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "0 0 -35"
+      rotation: "0 0 0"
+      color: "white"
+      depth: 1
+      height: 50
+      width: 50
   groundPlane:
     extends: http://vwf.example.com/aframe/aplane.vwf
     properties:
-      height: 50
-      width: 50
+      height: 100
+      width: 100
       repeat: "10 10"
       rotation: "-90 0 0"
       color: "white"
@@ -46,7 +106,8 @@ children:
   multicam:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
-      position: "0 1.6 -2"
+      position: "0 10 -2"
+      rotation: "0 0 0"
       depth: 0.5
       height: 0.5
       width: 0.5
@@ -63,24 +124,66 @@ children:
       camera1:
         extends: http://vwf.example.com/aframe/offsetcamera.vwf
         properties:
-          xoffset: 0
-          yoffset: 0
-          subcamWidth: 1536
-          subcamHeight: 2048
+          xoffset: -500
+          yoffset: -450
+          subcamWidth: 1667
+          subcamHeight: 3958
       camera2:
         extends: http://vwf.example.com/aframe/offsetcamera.vwf
         properties:
-          xoffset: 1536
-          yoffset: 0
-          subcamWidth: 1536
-          subcamHeight: 2048
+          xoffset: 1400
+          yoffset: -500
+          subcamWidth: 1583
+          subcamHeight: 4208
       camera3:
         extends: http://vwf.example.com/aframe/offsetcamera.vwf
         properties:
-          xoffset: 0
-          yoffset: 2048
-          subcamWidth: 2048
-          subcamHeight: 1536
+          xoffset: 1330
+          yoffset: -3300
+          subcamWidth: 1750
+          subcamHeight: 2333
+      camera4:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: -500
+          yoffset: -3000
+          subcamWidth: 1417
+          subcamHeight: 1583
+      camera5:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: -500
+          yoffset: -4700
+          subcamWidth: 1417
+          subcamHeight: 1583
+      camera6:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: -500
+          yoffset: -6300
+          subcamWidth: 1417
+          subcamHeight: 1583
+      camera7:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: 1250
+          yoffset: -5000
+          subcamWidth: 1250
+          subcamHeight: 1458
+      camera8:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: 1200
+          yoffset: -6500
+          subcamWidth: 1375
+          subcamHeight: 1083
+      camera9:
+        extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        properties:
+          xoffset: 833
+          yoffset: -3000
+          subcamWidth: 625
+          subcamHeight: 916
 methods:
   initialize:
     body: |
@@ -88,3 +191,18 @@ methods:
           this.children.multicam.camera1.createCamera();
           this.children.multicam.camera2.createCamera();
           this.children.multicam.camera3.createCamera();
+          this.children.multicam.camera4.createCamera();
+          this.children.multicam.camera5.createCamera();
+          this.children.multicam.camera6.createCamera();
+          this.children.multicam.camera7.createCamera();
+          this.children.multicam.camera8.createCamera();
+          this.children.multicam.camera9.createCamera();
+
+          //var runL = vwf_view.kernel.find("", "/myLight3")[0];
+          //vwf_view.kernel.callMethod(runL, "run");
+
+          //var runL2 = vwf_view.kernel.find("", "/myLight2")[0];
+          //vwf_view.kernel.callMethod(runL2, "run");
+
+          //var runModel = vwf_view.kernel.find("", "/model")[0];
+          // vwf_view.kernel.callMethod(runModel, "run");
