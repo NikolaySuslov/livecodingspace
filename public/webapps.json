@@ -44,16 +44,10 @@
         "text": "VR controler example",
         "featured": false
     },
-    "multicamera":{
-        "title":"Multi-Camera",
-        "imgUrl": "./multicamera/webimg.jpg",
-        "text": "Multi-camera example",
-        "featured": false
-    },
     "multipixel":{
         "title":"Multi-Pixel",
         "imgUrl": "./multipixel/webimg.jpg",
-        "text": "Multi-Pixel example",
+        "text": "Multi offset view camera example",
         "featured": false
     }
 }

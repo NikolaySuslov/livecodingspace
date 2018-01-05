@@ -9,3 +9,7 @@ properties:
   yoffset:
   subcamWidth:
   subcamHeight:
+methods:
+  setParams:
+scripts:
+- source: "http://vwf.example.com/aframe/viewOffsetCamera-component.js"

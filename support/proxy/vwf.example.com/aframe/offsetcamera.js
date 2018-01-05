@@ -1,55 +1,30 @@
 this.initialize = function () {
-
 }
 
-this.createCamera = function () {
+this.createCamera = function (fw, fh, xoffset, yoffset, subcamWidth, subcamHeight) {
 
-    var fullHeight = this.parent.fullHeight;
-    if (!fullHeight) {
-        fullHeight = this.fullHeight;
-    }
-
-    var fullWidth = this.parent.fullWidth;
-    if (!fullWidth) {
-        fullWidth = this.fullWidth;
-    }
-    
-
-    var newNode = {
-        "extends": "http://vwf.example.com/aframe/abox.vwf",
+    let cameraNode = {
+        "extends": "http://vwf.example.com/aframe/acamera.vwf",
         "properties": {
-            "position": [0, 0, 0],
-            "depth": 0.2,
-            "height": 0.2,
-            "width": 0.2,
-            "color": "red"
+            "look-controls-enabled": false,
+            "wasd-controls-enabled": false,
+            "user-height": 0
         },
         children: {
-            cam: {
-                "extends": "http://vwf.example.com/aframe/acamera.vwf",
-                "properties": {
-                    "look-controls-enabled": false,
-                    "wasd-controls-enabled": false,
-                    "user-height": 0
-                },
-                children: {
-                    viewoffset: {
-                        extends: "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf",
-                        properties: {
-                            fullWidth: fullWidth,
-                            fullHeight: fullHeight,
-                            xoffset: this.xoffset,
-                            yoffset: this.yoffset,
-                            subcamWidth: this. subcamWidth,
-                            subcamHeight: this. subcamHeight
-                        }
-
-                    }
+            viewoffset: {
+                extends: "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf",
+                properties: {
+                    fullWidth: fw,
+                    fullHeight: fh,
+                    xoffset: xoffset,
+                    yoffset: yoffset,
+                    subcamWidth: subcamWidth,
+                    subcamHeight: subcamHeight
                 }
             }
         }
-    }
+}
 
-    this.children.create("cameraNode", newNode);
+    this.children.create("cam", cameraNode);
 
     }

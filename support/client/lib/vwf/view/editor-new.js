@@ -933,32 +933,32 @@ define([
                     'fullWidth': {
                         min: 0,
                         max: 5000,
-                        step:1
+                        step:10
                     },
                     'fullHeight': {
                         min: 0,
                         max: 5000,
-                        step:1
+                        step:10
                     },
                     'xoffset': {
                         min: -10000,
                         max: 10000,
-                        step: 100
+                        step: 10
                     },
                     'yoffset': {
                         min: -10000,
                         max: 10000,
-                        step: 100
+                        step: 10
                     },
                     'subcamWidth': {
                         min: 0,
-                        max: 6000,
-                        step:1
+                        max: 5000,
+                        step:10
                     },
                     'subcamHeight': {
                         min: 0,
-                        max: 6000,
-                        step:1
+                        max: 5000,
+                        step:10
                     }
                 }
                 if (sliderPropNames.includes(m.name)){

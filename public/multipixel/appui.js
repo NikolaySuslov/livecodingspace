@@ -6,7 +6,8 @@ function createApp() {
   function createCameraButton(camNum) {
 
         let label = "Camera " + camNum;
-        let camID = "/multicam/camera"+ camNum + "/cameraNode/cam";
+        let camID = "/multicam/camera"+ camNum + "/cam";
+        let camOffsetID = "/multicam/camera"+ camNum + "/cam/viewoffset";
 
       return {
         $cell: true,
@@ -15,7 +16,9 @@ function createApp() {
         $text: label,
         onclick: function (e) {
             let nodeID = vwf.find("",camID)[0];
+            let offsetCompID =  vwf.find("",camOffsetID)[0];
             let avatarID = vwf.moniker_;
+            vwf_view.kernel.callMethod(offsetCompID, "setParams", []);
             vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
         }
     }
@@ -39,48 +42,9 @@ function createApp() {
                         class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                         $components: [
                           
-                            {
-                                $cell: true,
-                                $type: "button",
-                                class: "mdc-button mdc-button--raised",
-                                $text: "Camera 1",
-                                onclick: function (e) {
-                                    let nodeID = vwf.find("","/multicam/camera1/cameraNode/cam")[0];
-                                    let avatarID = vwf.moniker_;
-                                    vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
-                                }
+                            createCameraButton("1"),
+                            createCameraButton("2")
 
-                            },
-                            {
-                                $cell: true,
-                                $type: "button",
-                                class: "mdc-button mdc-button--raised",
-                                $text: "Camera 2",
-                                onclick: function (e) {
-                                    let nodeID = vwf.find("","/multicam/camera2/cameraNode/cam")[0];
-                                    let avatarID = vwf.moniker_;
-                                    vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
-                                }
-
-                            },
-                            {
-                                $cell: true,
-                                $type: "button",
-                                class: "mdc-button mdc-button--raised",
-                                $text: "Camera 3",
-                                onclick: function (e) {
-                                    let nodeID = vwf.find("","/multicam/camera3/cameraNode/cam")[0];
-                                    let avatarID = vwf.moniker_;
-                                    vwf_view.kernel.callMethod(nodeID, "setCameraToActive", [avatarID]);
-                                }
-
-                            },
-                            createCameraButton("4"),
-                            createCameraButton("5"),
-                            createCameraButton("6"),
-                            createCameraButton("7"),
-                            createCameraButton("8"),
-                            createCameraButton("9")
 
                         ]
                     }

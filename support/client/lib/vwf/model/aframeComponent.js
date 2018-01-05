@@ -231,15 +231,32 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         value = propertyValue;
                         let parentNodeAF = aframeObject.el;
-                        let defs = ['fullWidth', 'fullHeight', 'xoffset', 'yoffset'];
+                        // let defs = ['fullWidth', 'fullHeight', 'xoffset', 'yoffset'];
 
-                        defs.forEach(element => {
-                            element == propertyName ? parentNodeAF.setAttribute('viewoffset', element, propertyValue) :
-                                value = undefined;
-                        })
+                        // defs.forEach(element => {
+                        //     element == propertyName ? parentNodeAF.setAttribute('viewoffset', element, propertyValue) :
+                        //         value = undefined;
+                        // })
 
                         switch (propertyName) {
                     
+                            case "fullWidth":
+                            parentNodeAF.setAttribute('viewoffset', 'fullWidth', propertyValue);
+                            break;
+
+                            case "fullHeight":
+                            parentNodeAF.setAttribute('viewoffset', 'fullHeight', propertyValue);
+                            break;
+
+                            case "yoffset":
+                            parentNodeAF.setAttribute('viewoffset', 'yoffset', propertyValue);
+                            break;
+
+                            case "xoffset":
+                            parentNodeAF.setAttribute('viewoffset', 'xoffset', propertyValue);
+                            break;
+
+                            
                             case "subcamWidth":
                                 parentNodeAF.setAttribute('viewoffset', 'width', propertyValue);
                                 break;
@@ -651,11 +668,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
 
                         case "subcamWidth":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).subcamWidth;
+                            value = parentNodeAF.getAttribute(aframeObject.compName).width;
                             break;
 
                         case "subcamHeight":
-                            value = parentNodeAF.getAttribute(aframeObject.compName).subcamHeight;
+                            value = parentNodeAF.getAttribute(aframeObject.compName).height;
                             break;
 
                         case "xoffset":

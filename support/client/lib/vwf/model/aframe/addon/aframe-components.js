@@ -519,9 +519,15 @@ AFRAME.registerComponent('gearvrcontrol', {
     
                 init: function () {
                     var self = this;
-                    this.setNewOffset();
+                    this.el.sceneEl.addEventListener('loaded', setOffset);
+
+                    function setOffset(){
+                        this.setNewOffset();
+                    }
+                    
                 },
             
+
                 update: function (old) {
                     this.fullWidth = this.data.fullWidth;
                     this.fullHeight = this.data.fullHeight;

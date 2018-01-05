@@ -1,16 +1,18 @@
-# avatar
+# offset camera
 # Copyright 2017 Krestianstvo.org project
 ---
 extends: http://vwf.example.com/aframe/aentity.vwf
-type: "multicamera"
+type: "offsetcamera"
 properties:
-    fullWidth:
-    fullheight:
-    xoffset:
-    yoffset:
-    subcamWidth:
-    subcamHeight:
 methods:
     initialize:
+    createCamera:
+        parameters:
+            - fw
+            - fh
+            - xoffset
+            - yoffset
+            - subcamWidth
+            - subcamHeight
 scripts:
 - source: "http://vwf.example.com/aframe/offsetcamera.js"

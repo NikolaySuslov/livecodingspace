@@ -1,5 +1,6 @@
 # A-Frame & VWF simple scene
 # Copyright 2017 Krestianstvo.org project
+# Christmas tree model by 14islands Lab Made with Blocks Public / Remixable (CC-BY) https://poly.google.com/view/2VSoAQN6JoH
 ---
 extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
@@ -71,11 +72,11 @@ children:
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
-      position: "20 0.5 0"
+      position: "10 0.5 0"
       rotation: "0 -30 0"
       color: "#3c7249"
       depth: 2
-      height: 9
+      height: 5
       width: 2
   sphere:
     extends: http://vwf.example.com/aframe/asphere.vwf
@@ -104,105 +105,28 @@ children:
       wireframe: false
       src: "#bg2"
   multicam:
-    extends: http://vwf.example.com/aframe/abox.vwf
-    properties:
-      position: "0 10 -2"
-      rotation: "0 0 0"
-      depth: 0.5
-      height: 0.5
-      width: 0.5
-      opacity: 0.5
-      transparent: true
-      color: "green"
-      fullHeight: 2048
-      fullWidth: 3072
-    children:
-      interpolation:
-        extends: http://vwf.example.com/aframe/interpolation-component.vwf
-        properties:
-          enabled: true
-      camera1:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: -500
-          yoffset: -450
-          subcamWidth: 1667
-          subcamHeight: 3958
-      camera2:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: 1400
-          yoffset: -500
-          subcamWidth: 1583
-          subcamHeight: 4208
-      camera3:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: 1330
-          yoffset: -3300
-          subcamWidth: 1750
-          subcamHeight: 2333
-      camera4:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: -500
-          yoffset: -3000
-          subcamWidth: 1417
-          subcamHeight: 1583
-      camera5:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: -500
-          yoffset: -4700
-          subcamWidth: 1417
-          subcamHeight: 1583
-      camera6:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: -500
-          yoffset: -6300
-          subcamWidth: 1417
-          subcamHeight: 1583
-      camera7:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: 1250
-          yoffset: -5000
-          subcamWidth: 1250
-          subcamHeight: 1458
-      camera8:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: 1200
-          yoffset: -6500
-          subcamWidth: 1375
-          subcamHeight: 1083
-      camera9:
-        extends: http://vwf.example.com/aframe/offsetcamera.vwf
-        properties:
-          xoffset: 833
-          yoffset: -3000
-          subcamWidth: 625
-          subcamHeight: 916
+      extends: http://vwf.example.com/aframe/abox.vwf
+      properties:
+        position: "0 4 -2"
+        rotation: "0 0 0"
+        depth: 0.5
+        height: 0.5
+        width: 0.5
+        opacity: 0.5
+        transparent: true
+        color: "green"
+      children:
+        interpolation:
+          extends: http://vwf.example.com/aframe/interpolation-component.vwf
+          properties:
+            enabled: true
+        camera1:
+          extends: http://vwf.example.com/aframe/offsetcamera.vwf
+        camera2:
+          extends: http://vwf.example.com/aframe/offsetcamera.vwf
 methods:
   initialize:
     body: |
           console.log("initializing...");
-          this.children.multicam.camera1.createCamera();
-          this.children.multicam.camera2.createCamera();
-          this.children.multicam.camera3.createCamera();
-          this.children.multicam.camera4.createCamera();
-          this.children.multicam.camera5.createCamera();
-          this.children.multicam.camera6.createCamera();
-          this.children.multicam.camera7.createCamera();
-          this.children.multicam.camera8.createCamera();
-          this.children.multicam.camera9.createCamera();
-
-          //var runL = vwf_view.kernel.find("", "/myLight3")[0];
-          //vwf_view.kernel.callMethod(runL, "run");
-
-          //var runL2 = vwf_view.kernel.find("", "/myLight2")[0];
-          //vwf_view.kernel.callMethod(runL2, "run");
-
-          //var runModel = vwf_view.kernel.find("", "/model")[0];
-          // vwf_view.kernel.callMethod(runModel, "run");
+          this.children.multicam.camera1.createCamera(3000, 2000, 0, 0, 1500, 2000);
+          this.children.multicam.camera2.createCamera(3000, 2000, 1500, 0, 1500, 2000);
