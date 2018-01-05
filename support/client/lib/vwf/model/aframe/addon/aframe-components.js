@@ -496,3 +496,60 @@ AFRAME.registerComponent('gearvrcontrol', {
             tick: function (t) {
             }
             })
+
+
+            AFRAME.registerComponent('viewoffset', {
+
+                // fullWidth:
+                // fullHeight:
+                // xoffset:
+                // yoffset:
+                // width:
+                // height:
+
+                schema: {
+                    fullWidth: { default: window.innerWidth },
+                    fullHeight: { default: window.innerHeight },
+                    xoffset: { default: window.innerWidth/2 },
+                    yoffset: { default: window.innerHeight/2 },
+                    width: { default: window.innerWidth },
+                    height: { default: window.innerHeight }
+                },
+            
+    
+                init: function () {
+                    var self = this;
+                    this.el.sceneEl.addEventListener('loaded', setOffset);
+
+                    function setOffset(){
+                        this.setNewOffset();
+                    }
+                    
+                },
+            
+
+                update: function (old) {
+                    this.fullWidth = this.data.fullWidth;
+                    this.fullHeight = this.data.fullHeight;
+                    this.xoffset = this.data.xoffset;
+                    this.yoffset = this.data.yoffset;
+                    this.width = this.data.width;
+                    this.height = this.data.height;
+                    //console.log(this.data);
+                    this.setNewOffset();
+                },
+            
+                setNewOffset: function(){
+                    this.el.object3DMap.camera.setViewOffset ( 
+                        this.data.fullWidth,
+                        this.data.fullHeight,
+                        this.data.xoffset,
+                        this.data.yoffset,
+                        this.data.width,
+                        this.data.height)
+                },
+
+                tick: function (t) {
+
+                }
+            })

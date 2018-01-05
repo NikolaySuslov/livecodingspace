@@ -1,0 +1,18 @@
+{
+    "bg2":{
+        "tag": "img",
+        "src": "/../assets/checker.jpg"
+    },
+    "sky":{
+        "tag": "img",
+        "src": "/../assets/skyes/sky3.jpg"
+    },
+    "nwtree-obj":{
+        "tag": "a-asset-item",
+        "src": "/../assets/models/nwtree/model.obj"
+    },
+    "nwtree-mtl":{
+        "tag": "a-asset-item",
+        "src": "/../assets/models/nwtree/materials.mtl"
+    }
+}

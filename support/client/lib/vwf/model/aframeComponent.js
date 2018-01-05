@@ -226,6 +226,53 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && isAViewOffsetCameraDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        // let defs = ['fullWidth', 'fullHeight', 'xoffset', 'yoffset'];
+
+                        // defs.forEach(element => {
+                        //     element == propertyName ? parentNodeAF.setAttribute('viewoffset', element, propertyValue) :
+                        //         value = undefined;
+                        // })
+
+                        switch (propertyName) {
+                    
+                            case "fullWidth":
+                            parentNodeAF.setAttribute('viewoffset', 'fullWidth', propertyValue);
+                            break;
+
+                            case "fullHeight":
+                            parentNodeAF.setAttribute('viewoffset', 'fullHeight', propertyValue);
+                            break;
+
+                            case "yoffset":
+                            parentNodeAF.setAttribute('viewoffset', 'yoffset', propertyValue);
+                            break;
+
+                            case "xoffset":
+                            parentNodeAF.setAttribute('viewoffset', 'xoffset', propertyValue);
+                            break;
+
+                            
+                            case "subcamWidth":
+                                parentNodeAF.setAttribute('viewoffset', 'width', propertyValue);
+                                break;
+    
+                            case "subcamHeight":
+                                parentNodeAF.setAttribute('viewoffset', 'height', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
+                        }
+
+
+                    }
+                }
 
                 if (value === undefined && isARayCasterDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
@@ -604,6 +651,41 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if (value === undefined && isAViewOffsetCameraDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "fullWidth":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).fullWidth;
+                            break;
+
+                        case "fullHeight":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).fullHeight;
+                            break;
+
+                        case "subcamWidth":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).width;
+                            break;
+
+                        case "subcamHeight":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).height;
+                            break;
+
+                        case "xoffset":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).xoffset;
+                            break;
+                        
+                        case "yoffset":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).yoffset;
+                            break;
+                    }
+
+                }
+
 
                 if (value === undefined && isAInterpolationDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -705,6 +787,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+    function isAViewOffsetCameraDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf");
+            }
+        }
+        return found;
+    }
+
+
     function isAGizmoDefinition(prototypes) {
         var found = false;
         if (prototypes) {
@@ -804,6 +897,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "raycaster";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf")) {
+            
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "viewoffset";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }

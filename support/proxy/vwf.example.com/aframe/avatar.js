@@ -51,7 +51,7 @@ this.createAvatarBody = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            "position": [0, -userHeight, 0]
+            "position": [0, -userHeight, 0] //-userHeight
         },
         children: {
            
@@ -298,6 +298,10 @@ this.createAvatarFromGLTF = function(modelSrc){
 
 this.showHideCursor = function(bool){
     this.avatarNode.myHead.myCursor.properties.visible = bool;
+}
+
+this.showHideAvatar = function(bool){
+    this.properties.visible = bool;
 }
 
 this.setBigVideoHead = function(val){

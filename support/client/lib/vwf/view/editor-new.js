@@ -279,6 +279,23 @@ define([
                                                 //controlEl.setAttribute('visible', !vis);
                                             }
 
+                                        },
+                                        {
+                                            $cell: true,
+                                            $type: "button",
+                                            class: "mdc-button mdc-button--raised",
+                                            $text: "Hide Avatar",
+                                            onclick: function (e) {
+                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
+                                                //let cursorID = 'myCursor-' + avatarID;
+                                                let controlEl = document.querySelector("[id='" + avatarID + "']");
+                                                let vis = controlEl.getAttribute('visible');
+                                                this.$text = vis ? 'Show Avatar' : 'Show Avatar';
+                                                vwf_view.kernel.callMethod(avatarID, "showHideAvatar", [!vis]);
+                                                //controlEl.setAttribute('visible', !vis);
+                                            }
+
                                         }
 
                                     ]
@@ -890,7 +907,101 @@ define([
 
             let propertiesCell = function (m) {
 
-                var editComponents = [{}, {}]
+                var editComponents = [{}, {}];
+
+                // fullWidth:
+                // fullHeight:
+                // xoffset:
+                // yoffset:
+                // width:
+                // height:
+
+                let sliderPropNames = ['width', 'height', 'depth', 'fullWidth', 'fullHeight', 'xoffset', 'yoffset', 'subcamWidth', 'subcamHeight'];
+                let sliderProps = {
+                    'width': {
+                        min: 0,
+                        max: 30
+                    },
+                    'height': {
+                        min: 0,
+                        max: 30
+                    },
+                    'depth': {
+                        min: 0,
+                        max: 30
+                    },
+                    'fullWidth': {
+                        min: 0,
+                        max: 5000,
+                        step:10
+                    },
+                    'fullHeight': {
+                        min: 0,
+                        max: 5000,
+                        step:10
+                    },
+                    'xoffset': {
+                        min: -10000,
+                        max: 10000,
+                        step: 10
+                    },
+                    'yoffset': {
+                        min: -10000,
+                        max: 10000,
+                        step: 10
+                    },
+                    'subcamWidth': {
+                        min: 0,
+                        max: 5000,
+                        step:10
+                    },
+                    'subcamHeight': {
+                        min: 0,
+                        max: 5000,
+                        step:10
+                    }
+                }
+                if (sliderPropNames.includes(m.name)){
+
+                   let currenValue = JSON.parse(m.getValue());
+
+                    var sliderComponent =  widgets.sliderContinuous({
+                        'id': 'prop-slider-' + m.name,
+                        'label': 'Slider',
+                        'min': sliderProps[m.name].min,
+                        'max': sliderProps[m.name].max,
+                        'step': sliderProps[m.name].step ? sliderProps[m.name].step: 0.1,
+                        'value': currenValue,
+                        'init': function(){
+
+
+        const myEl = this;
+        var continuousSlider = new mdc.slider.MDCSlider(myEl);
+        this._comp = continuousSlider;
+        continuousSlider.listen('MDCSlider:input', function(e) {
+            console.log(continuousSlider.value)
+            let myEl = e.currentTarget;
+           // let prop = myEl._prop.body;
+            //document.querySelector('#propAceEditor').env.editor.setValue(prop);
+            self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+          //continuousValue.textContent = continuousSlider.value;
+         
+        });
+        continuousSlider.listen('MDCSlider:change', function(e) {
+          console.log(continuousSlider.value);
+          let myEl = e.currentTarget;
+         // let prop = myEl._prop.body;
+          //document.querySelector('#propAceEditor').env.editor.setValue(prop);
+          self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+
+          //continuousCommittedValue.textContent = continuousSlider.value;
+        })
+    }
+})
+
+                } else {
+                    sliderComponent = {}
+                }
 
                 if (m.name.indexOf("semantics") > -1) { }
                 else if (m.name.indexOf("grammar") > -1) { }
@@ -941,6 +1052,9 @@ define([
                             $type: "div",
                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-6",
                             $components: [
+                                
+                                   sliderComponent,
+                               
                                 {
                                     class: "mdc-textfield",
                                     $cell: true,
@@ -1444,8 +1558,9 @@ define([
                                                         class: "mdc-button mdc-button--raised",
                                                         $text: "Active",
                                                         onclick: function (e) {
-                                                            let camera = document.querySelector('#' + this._currentNode);
-                                                            camera.setAttribute('camera', 'active', true);
+                                                            //let camera = document.querySelector('#' + this._currentNode);
+                                                            vwf_view.kernel.callMethod(this._currentNode, "setCameraToActive", [vwf.moniker_]);
+                                                            //camera.setAttribute('camera', 'active', true);
                                                         }
 
                                                     }
@@ -1613,6 +1728,28 @@ define([
 
             }
 
+            let numberSliderComponent = {
+                $cell: true,
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                $init: function () {
+                    
+                },
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        style: "padding: 0 16px;", 
+                        $components:[
+                            {}
+                        ]
+                    }
+                    
+                        
+                    
+                ]
+            }
+
             let colorPickerComponent = {
                 $cell: true,
                 $type: "div",
@@ -1726,6 +1863,7 @@ define([
                         if (this._propName == 'color') {
                             livePropertyComponent = colorPickerComponent
                         }
+                        
 
                     } else {
                         editorClass = "mdc-layout-grid__cell mdc-layout-grid__cell--span-12"
@@ -2902,10 +3040,19 @@ define([
 
 
             let propCell = document.querySelector("#currentNode #prop-" + propertyName);
+            let propSlider = document.querySelector("#currentNode #prop-slider-" + propertyName);
+            
 
             if (propCell !== null) {
                 if (propCell._currentNode == nodeID) {
                     propCell.value = node.properties[propertyName].getValue();
+                }
+            }
+
+            if (propSlider !== null) {
+                if (propSlider._currentNode == nodeID) {
+                    //const propSliderComp = new new mdc.slider.MDCSlider(propSlider);
+                    propSlider._comp.value = node.properties[propertyName].getValue();
                 }
             }
 

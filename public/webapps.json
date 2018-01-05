@@ -43,5 +43,11 @@
         "imgUrl": "./gearvr/webimg.jpg",
         "text": "VR controler example",
         "featured": false
+    },
+    "multipixel":{
+        "title":"Multi-Pixel",
+        "imgUrl": "./multipixel/webimg.jpg",
+        "text": "Multi offset view camera example",
+        "featured": false
     }
 }
