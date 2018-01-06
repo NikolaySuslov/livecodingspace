@@ -30,6 +30,16 @@ define(function () {
 
         }
 
+        buttonStroked(obj){
+            return {
+                $cell: true,
+                $type: "button",
+                class: "mdc-button mdc-button--stroked mdc-ripple-upgraded",
+                $text: obj.label,
+                onclick: obj.onclick
+            }
+        }
+
         sliderDiscrete(obj) {
             return {
                 $cell: true,

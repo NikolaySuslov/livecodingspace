@@ -8,6 +8,7 @@ body {
   margin: 0px;
 }
 
+ /* 
 h1, h2, h3, h4, h5, h6 {
   font-family: Verdana, Arial, Helvetica, sans-serif;
 }
@@ -23,11 +24,14 @@ form {
 label {
   font-size: 18px;
 }
+*/
 
+ /* 
 input {
-  font-size: 18px;
+  font-size: inherit;
   padding: 5px;
 }
+*/
 
 .vwf-properties {
   background-color: #DCC;

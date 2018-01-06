@@ -198,50 +198,48 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Go forward",
-                                            onclick: function (e) {
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Go forward",
+                                                "onclick": function (e) {
 
-                                                function getMovementVector(el) {
-                                                    var directionVector = new THREE.Vector3(0, 0, 0);
-                                                    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
-
-                                                    var rotation = el.getAttribute('rotation');
-                                                    var velocity = new THREE.Vector3(0, 0, -0.5);
-                                                    var xRotation;
-
-                                                    directionVector.copy(velocity);
-                                                    directionVector.multiplyScalar(1.0);
-
-                                                    // Absolute.
-                                                    if (!rotation) { return directionVector; }
-
-                                                    xRotation = 0;
-
-                                                    // Transform direction relative to heading.
-                                                    rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
-                                                    directionVector.applyEuler(rotationEuler);
-                                                    return directionVector;
-
+                                                    function getMovementVector(el) {
+                                                        var directionVector = new THREE.Vector3(0, 0, 0);
+                                                        var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    
+                                                        var rotation = el.getAttribute('rotation');
+                                                        var velocity = new THREE.Vector3(0, 0, -0.5);
+                                                        var xRotation;
+    
+                                                        directionVector.copy(velocity);
+                                                        directionVector.multiplyScalar(1.0);
+    
+                                                        // Absolute.
+                                                        if (!rotation) { return directionVector; }
+    
+                                                        xRotation = 0;
+    
+                                                        // Transform direction relative to heading.
+                                                        rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
+                                                        directionVector.applyEuler(rotationEuler);
+                                                        return directionVector;
+    
+                                                    }
+    
+                                                    let el = document.querySelector('#avatarControl');
+    
+                                                    let currentPosition = el.getAttribute('position');
+                                                    let movementVector = getMovementVector(el);
+                                                    let position = {};
+    
+                                                    position.x = currentPosition.x + movementVector.x;
+                                                    position.y = currentPosition.y + movementVector.y;
+                                                    position.z = currentPosition.z + movementVector.z;
+                                                    el.setAttribute('position', position);
+    
                                                 }
-
-                                                let el = document.querySelector('#avatarControl');
-
-                                                let currentPosition = el.getAttribute('position');
-                                                let movementVector = getMovementVector(el);
-                                                let position = {};
-
-                                                position.x = currentPosition.x + movementVector.x;
-                                                position.y = currentPosition.y + movementVector.y;
-                                                position.z = currentPosition.z + movementVector.z;
-                                                el.setAttribute('position', position);
-
-                                            }
-
-                                        },
+                                            })
+                                        
                                     ]
                                 },
                                 {
@@ -249,54 +247,47 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Reset camera view",
+                                                "onclick": function (e) {
+                                                    //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                    let controlEl = document.querySelector('#avatarControl');
+                                                    controlEl.setAttribute('camera', 'active', true);
+                                                }
+                                            }),
+                                            widgets.buttonStroked(
+                                                {
+                                                    "label": "Hide cursor",
+                                                    "onclick": function (e) {
+                                                        //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                        let avatarID = 'avatar-' + self.kernel.moniker();
+                                                        let cursorID = 'myCursor-' + avatarID;
+                                                        let controlEl = document.querySelector("[id='" + cursorID + "']");
+                                                        let vis = controlEl.getAttribute('visible');
+                                                        this.$text = vis ? 'Show cursor' : 'Hide cursor';
+        
+                                                        vwf_view.kernel.callMethod(avatarID, "showHideCursor", [!vis]);
+                                                        //controlEl.setAttribute('visible', !vis);
+                                                    }
+                                                }),
+                                                widgets.buttonStroked(
+                                                    {
+                                                        "label": "Hide Avatar",
+                                                        "onclick": function (e) {
+                                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                            let avatarID = 'avatar-' + self.kernel.moniker();
+                                                            //let cursorID = 'myCursor-' + avatarID;
+                                                            let controlEl = document.querySelector("[id='" + avatarID + "']");
+                                                            let vis = controlEl.getAttribute('visible');
+                                                            this.$text = vis ? 'Show Avatar' : 'Show Avatar';
+                                                            vwf_view.kernel.callMethod(avatarID, "showHideAvatar", [!vis]);
+                                                            //controlEl.setAttribute('visible', !vis);
+                                                        }
+                                                    }
+                                                )
                                         
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Reset camera view",
-                                            onclick: function (e) {
-                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                let controlEl = document.querySelector('#avatarControl');
-                                                controlEl.setAttribute('camera', 'active', true);
-                                            }
-
-                                        },
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Hide cursor",
-                                            onclick: function (e) {
-                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                let avatarID = 'avatar-' + self.kernel.moniker();
-                                                let cursorID = 'myCursor-' + avatarID;
-                                                let controlEl = document.querySelector("[id='" + cursorID + "']");
-                                                let vis = controlEl.getAttribute('visible');
-                                                this.$text = vis ? 'Show cursor' : 'Hide cursor';
-
-                                                vwf_view.kernel.callMethod(avatarID, "showHideCursor", [!vis]);
-                                                //controlEl.setAttribute('visible', !vis);
-                                            }
-
-                                        },
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Hide Avatar",
-                                            onclick: function (e) {
-                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                let avatarID = 'avatar-' + self.kernel.moniker();
-                                                //let cursorID = 'myCursor-' + avatarID;
-                                                let controlEl = document.querySelector("[id='" + avatarID + "']");
-                                                let vis = controlEl.getAttribute('visible');
-                                                this.$text = vis ? 'Show Avatar' : 'Show Avatar';
-                                                vwf_view.kernel.callMethod(avatarID, "showHideAvatar", [!vis]);
-                                                //controlEl.setAttribute('visible', !vis);
-                                            }
-
-                                        }
+                                        
 
                                     ]
                                 },
@@ -371,30 +362,25 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Wide",
-                                            onclick: function (e) {
-                                                let avatarID = 'avatar-'+vwf.moniker_;
-                                                vwf_view.kernel.callMethod(avatarID, "setBigVideoHead", []);
-                                               
-                                            }
-            
-                                        },
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Small",
-                                            onclick: function (e) {
-                                                let avatarID = 'avatar-'+vwf.moniker_;
-                                                vwf_view.kernel.callMethod(avatarID, "setSmallVideoHead", []);
-                                               
-                                            }
-            
-                                        }
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Wide",
+                                                "onclick": function (e) {
+                                                    let avatarID = 'avatar-'+vwf.moniker_;
+                                                    vwf_view.kernel.callMethod(avatarID, "setBigVideoHead", []);
+                                                   
+                                                }
+                                            }),
+                                            widgets.buttonStroked(
+                                                {
+                                                    "label": "Small",
+                                                    "onclick": function (e) {
+                                                        let avatarID = 'avatar-'+vwf.moniker_;
+                                                        vwf_view.kernel.callMethod(avatarID, "setSmallVideoHead", []);
+                                                       
+                                                    }
+                                                })
+                                      
 
                                     ]
 
@@ -420,19 +406,15 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "OSC Settings",
-                                            onclick: function (e) {
-                                                let sideBar = document.querySelector('#sideBar');
-                                                sideBar._sideBarComponent = oscSettings;
-                                                //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                            }
-
-                                        }
-
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "OSC Settings",
+                                                "onclick": function (e) {
+                                                    let sideBar = document.querySelector('#sideBar');
+                                                    sideBar._sideBarComponent = oscSettings;
+                                                    //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                }
+                                            })
                                     ]
                                 }
                             ]
@@ -462,6 +444,7 @@ define([
                     class: "mdc-list-item",
                     role: "option",
                     id: "",
+                    tabindex: "0",
                     applicationpath: "",
                     $components: [
                         {
@@ -490,6 +473,7 @@ define([
                         $type: "li",
                         class: "mdc-list-item",
                         role: "option",
+                        tabindex: "0",
                         id: item.savename,
                         applicationpath: item.applicationpath,
                         $components: [
@@ -505,6 +489,7 @@ define([
                         $type: "li",
                         class: "mdc-list-item",
                         role: "option",
+                        tabindex: "0",
                         id: item.savename,
                         revision: item.revision,
                         applicationpath: item.applicationpath,
@@ -592,12 +577,12 @@ define([
                                                 $text: "Host: "
                                             },
                                             {
-                                                class: "mdc-textfield",
+                                                class: "mdc-text-field",
                                                 $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
-                                                        class: "mdc-textfield__input",
+                                                        class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscHost",
                                                         $cell: true,
                                                         $type: "input",
@@ -625,12 +610,12 @@ define([
                                                 $text: "Port: "
                                             },
                                             {
-                                                class: "mdc-textfield",
+                                                class: "mdc-text-field",
                                                 $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
-                                                        class: "mdc-textfield__input",
+                                                        class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscPort",
                                                         $cell: true,
                                                         $type: "input",
@@ -653,14 +638,13 @@ define([
                                         $type: "div",
                                         class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                         $components: [
-                                            {
-                                                $cell: true,
-                                                $type: "button",
-                                                class: "mdc-button mdc-button--raised",
-                                                $text: buttonText,
-                                                onclick: buttonFunc
+                                            widgets.buttonStroked(
+                                                {
+                                                    "label": buttonText,
+                                                    "onclick": buttonFunc
+                                                })
 
-                                            }
+                                           
 
                                         ]
                                     }
@@ -672,6 +656,7 @@ define([
 
 
                 }
+
             let loadSaveSettings =
                 {
                     $cell: true,
@@ -721,12 +706,12 @@ define([
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
                                                 {
-                                                    class: "mdc-textfield",
+                                                    class: "mdc-text-field",
                                                     $cell: true,
                                                     $type: "span",
                                                     $components: [
                                                         {
-                                                            class: "mdc-textfield__input",
+                                                            class: "mdc-text-field__input prop-text-field-input",
                                                             id: "fileName",
                                                             $cell: true,
                                                             $type: "input",
@@ -746,19 +731,17 @@ define([
                                             $type: "div",
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
-                                                {
-                                                    $cell: true,
-                                                    $type: "button",
-                                                    class: "mdc-button mdc-button--raised",
-                                                    $text: "Save",
-                                                    onclick: function (e) {
-                                                        let fileName = document.querySelector('#fileName')
-                                                        saveStateAsFile.call(self, fileName.value);
-                                                        document.querySelector("#fileName").value = '';
-                                                        //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                    }
-
-                                                }
+                                                widgets.buttonStroked(
+                                                    {
+                                                        "label": "Save",
+                                                        "onclick": function (e) {
+                                                            let fileName = document.querySelector('#fileName')
+                                                            saveStateAsFile.call(self, fileName.value);
+                                                            document.querySelector("#fileName").value = '';
+                                                            //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                        }
+                                                    })
+                                                
 
                                             ]
                                         },
@@ -771,24 +754,49 @@ define([
                                                     $cell: true,
                                                     $type: "div",
                                                     class: "mdc-select",
+                                                    tabindex: "0",
+                                                    role: "listbox",
+                                                    id: "loadselect",
                                                     $init: function () {
+
+                                                        setTimeout(function() {
+                                                           
                                                         var MDCSelect = mdc.select.MDCSelect;
-                                                        const select = new MDCSelect(document.querySelector('.mdc-select'));
-                                                        select.listen('MDCSelect:change', () => {
+                                                        let selector = document.querySelector('#loadselect');
+                                                        let select = new MDCSelect(selector);
+                                                        selector.addEventListener('MDCSelect:change', () => {
                                                             //this._selectedState = select.value;
                                                             document.querySelector('#loadStateButton')._selectedState = select.selectedOptions[0];
                                                             //console.log(select.value);
                                                             //.selectedOptions[0]
                                                         });
 
+                                                          }, 300);
+
+                                                        
+
                                                     },
-                                                    role: "listbox",
                                                     $components: [
-                                                        {
-                                                            $type: "span",
-                                                            class: "mdc-select__selected-text",
-                                                            $text: "Select saved state"
+                                                        {   
+                                                            $type: "div",
+                                                            class: "mdc-select__surface mdc-ripple-upgraded",
+                                                            $components: [
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__label",
+                                                                    $text: "Select..."
+                                                                },
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__selected-text"
+                                                                },
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__bottom-line"
+                                                                }
+                                                            ]
                                                         },
+                                                       
                                                         {
                                                             $type: "div",
                                                             class: "mdc-simple-menu mdc-select__menu",
@@ -797,9 +805,6 @@ define([
                                                                     $type: "ul",
                                                                     class: "mdc-list mdc-simple-menu__items",
                                                                     $components: this._saveStates.map(stateListElement)
-
-
-
                                                                 }
                                                             ]
                                                         }
@@ -874,11 +879,11 @@ define([
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                 $components: [
                                     {
-                                        class: "mdc-textfield",
+                                        class: "mdc-text-field",
                                         $cell: true,
                                         $type: "div",
                                         $components: [{
-                                            class: "mdc-textfield__input",
+                                            class: "mdc-text-field__input prop-text-field-input",
                                             $cell: true,
                                             $type: "input",
                                             type: "text",
@@ -1056,12 +1061,12 @@ define([
                                    sliderComponent,
                                
                                 {
-                                    class: "mdc-textfield",
+                                    class: "mdc-text-field prop-mdc-text-field mdc-ripple-upgraded",
                                     $cell: true,
-                                    $type: "span",
+                                    $type: "div",
                                     $components: [
                                         {
-                                            class: "mdc-textfield__input",
+                                            class: "mdc-text-field__input prop-text-field-input",
                                             id: "prop-" + m.name,
                                             $cell: true,
                                             $type: "input",
@@ -1091,7 +1096,7 @@ define([
                                 {
                                     $cell: true,
                                     $type: "button",
-                                    class: "mdc-button",
+                                    class: "mdc-button mdc-button--compact",
                                     $text: "^", //edit grammar
                                     onclick: function (e) {
                                         var currentNode = document.querySelector('#currentNode')._currentNode;
@@ -1139,9 +1144,6 @@ define([
 
                     ]
                 }
-
-
-
             }
 
 
@@ -1552,18 +1554,16 @@ define([
                                                 $type: "div",
                                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                 $components: [
-                                                    {
-                                                        $cell: true,
-                                                        $type: "button",
-                                                        class: "mdc-button mdc-button--raised",
-                                                        $text: "Active",
-                                                        onclick: function (e) {
-                                                            //let camera = document.querySelector('#' + this._currentNode);
-                                                            vwf_view.kernel.callMethod(this._currentNode, "setCameraToActive", [vwf.moniker_]);
-                                                            //camera.setAttribute('camera', 'active', true);
-                                                        }
-
-                                                    }
+                                                    widgets.buttonStroked(
+                                                        {
+                                                            "label": "Active",
+                                                            "onclick": function (e) {
+                                                                //let camera = document.querySelector('#' + this._currentNode);
+                                                                vwf_view.kernel.callMethod(this._currentNode, "setCameraToActive", [vwf.moniker_]);
+                                                                //camera.setAttribute('camera', 'active', true);
+                                                            }
+                                                        })
+                                                   
 
                                                 ]
                                             }
@@ -1591,21 +1591,20 @@ define([
                             class: "mdc-list",
                             $components: [
 
-                                {
-                                    $cell: true,
-                                    $type: "button",
-                                    class: "mdc-list-item mdc-button mdc-button--raised",
-                                    $text: "<--",
-                                    onclick: function (e) {
-                                        let node = self.nodes[this._currentNode];
-                                        if (node.parentID !== 0) {
-                                            //self.currentNodeID = node.parentID,
-                                            document.querySelector('#currentNode')._setNode(node.parentID)
+                                widgets.buttonStroked(
+                                    {
+                                        "label": "<--",
+                                        "onclick": function (e) {
+                                            let node = self.nodes[this._currentNode];
+                                            if (node.parentID !== 0) {
+                                                //self.currentNodeID = node.parentID,
+                                                document.querySelector('#currentNode')._setNode(node.parentID)
+                                            }
+    
                                         }
 
-                                    }
-
-                                },
+                                    }),
+                               
                                 {
                                     $type: "li",
                                     class: "mdc-list-item",
@@ -1636,22 +1635,20 @@ define([
                                                     $type: "div",
                                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                     $components: [
-                                                        {
-                                                            $cell: true,
-                                                            $type: "button",
-                                                            class: "mdc-button mdc-button--raised",
-                                                            $text: "Methods browser",
-                                                            onclick: function (e) {
-                                                                var currentNode = document.querySelector('#currentNode')._currentNode;
-                                                                if (currentNode == '') {
-                                                                    currentNode = vwf_view.kernel.find("", "/")[0];
+                                                        widgets.buttonStroked(
+                                                            {
+                                                                "label": "Methods browser",
+                                                                "onclick": function (e) {
+                                                                    var currentNode = document.querySelector('#currentNode')._currentNode;
+                                                                    if (currentNode == '') {
+                                                                        currentNode = vwf_view.kernel.find("", "/")[0];
+                                                                    }
+                                                                    document.querySelector('#liveCodeEditor')._setNode(currentNode);
+                                                                    //createAceEditor(self, currentNode);
+                                                                    document.querySelector('#codeEditorWindow').style.visibility = 'visible';
                                                                 }
-                                                                document.querySelector('#liveCodeEditor')._setNode(currentNode);
-                                                                //createAceEditor(self, currentNode);
-                                                                document.querySelector('#codeEditorWindow').style.visibility = 'visible';
-                                                            }
-
-                                                        }
+                                                            })
+                                                        
                                                     ]
                                                 }
 
@@ -1882,28 +1879,26 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Update",
-                                            onclick: function (e) {
-                                                let editor = document.querySelector("#propAceEditor").env.editor;
-                                                let value = editor.getValue();
-
-                                                try {
-                                                    let propValue = (this._prop.type == 'simple') ? (JSON.parse(value)) : (value)
-                                                    //propValue = JSON.parse(value);
-                                                    self.kernel.setProperty(this._editorNode, this._propName, propValue);
-
-                                                } catch (e) {
-                                                    // restore the original value on error
-                                                    this.value = propValue;
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Update",
+                                                "onclick": function (e) {
+                                                    let editor = document.querySelector("#propAceEditor").env.editor;
+                                                    let value = editor.getValue();
+    
+                                                    try {
+                                                        let propValue = (this._prop.type == 'simple') ? (JSON.parse(value)) : (value)
+                                                        //propValue = JSON.parse(value);
+                                                        self.kernel.setProperty(this._editorNode, this._propName, propValue);
+    
+                                                    } catch (e) {
+                                                        // restore the original value on error
+                                                        this.value = propValue;
+                                                    }
+    
                                                 }
-
                                             }
-
-                                        }]
+                                        )]
                                 },
                                 {
                                     $cell: true,
@@ -2075,101 +2070,94 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Update",
-                                            onclick: function (e) {
-                                                let editor = document.querySelector("#aceEditor").env.editor;
-                                                let evalText = editor.getValue();
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Update",
+                                                "onclick": function (e) {
+                                                    let editor = document.querySelector("#aceEditor").env.editor;
+                                                    let evalText = editor.getValue();
+    
+                                                    //    if (this._method.type == 'complexProperty') {
+    
+                                                    //         let propValue = evalText;
+                                                    //         try {
+                                                    //             //propValue = JSON.parse(propValue);
+                                                    //             self.kernel.setProperty(this._editorNode, this._methodName, propValue);
+    
+                                                    //         } catch (e) {
+                                                    //             // restore the original value on error
+                                                    //             this.value = propValue;
+                                                    //         }
+                                                    //     } else {
+    
+                                                    //     }
+                                                    self.kernel.setMethod(this._editorNode, this._methodName,
+                                                        { body: evalText, type: "application/javascript", parameters: this._method.parameters });
+                                                }
 
-                                                //    if (this._method.type == 'complexProperty') {
-
-                                                //         let propValue = evalText;
-                                                //         try {
-                                                //             //propValue = JSON.parse(propValue);
-                                                //             self.kernel.setProperty(this._editorNode, this._methodName, propValue);
-
-                                                //         } catch (e) {
-                                                //             // restore the original value on error
-                                                //             this.value = propValue;
-                                                //         }
-                                                //     } else {
-
-                                                //     }
-                                                self.kernel.setMethod(this._editorNode, this._methodName,
-                                                    { body: evalText, type: "application/javascript", parameters: this._method.parameters });
                                             }
-
-                                        }]
+                                        )]
                                 },
                                 {
                                     $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Call",
-                                            onclick: function (e) {
-                                                var params = [];
-
-                                                if (this._method.parameters) {
-                                                    let paramsLength = this._method.parameters.length
-
-
-                                                    if (paramsLength >= 1) {
-                                                        let paramsVal = document.querySelector("#methodParams").value;
-                                                        try {
-                                                            params = JSON.parse(paramsVal);
-                                                            //params.push(prmtr);
-                                                        } catch (e) {
-                                                            self.logger.error('Invalid Value');
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Call",
+                                                "onclick": function (e) {
+                                                    var params = [];
+    
+                                                    if (this._method.parameters) {
+                                                        let paramsLength = this._method.parameters.length
+    
+    
+                                                        if (paramsLength >= 1) {
+                                                            let paramsVal = document.querySelector("#methodParams").value;
+                                                            try {
+                                                                params = JSON.parse(paramsVal);
+                                                                //params.push(prmtr);
+                                                            } catch (e) {
+                                                                self.logger.error('Invalid Value');
+                                                            }
                                                         }
-                                                    }
-                                                };
-                                                self.kernel.callMethod(this._editorNode, this._methodName, params);
-
-                                            }
-
-                                        }]
+                                                    };
+                                                    self.kernel.callMethod(this._editorNode, this._methodName, params);
+    
+                                                }
+                                            })
+                                        ]
                                 },
                                 {
                                     $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Do It",
-                                            onclick: function (e) {
-                                                let editor = document.querySelector("#aceEditor").env.editor;
-                                                codeEditorDoit.call(self, editor, this._editorNode);
-                                            }
-
-                                        }]
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Do It",
+                                                "onclick": function (e) {
+                                                    let editor = document.querySelector("#aceEditor").env.editor;
+                                                    codeEditorDoit.call(self, editor, this._editorNode);
+                                                }
+                                            })
+                                        ]
                                 },
                                 {
                                     $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Print It",
-                                            onclick: function (e) {
-                                                let editor = document.querySelector("#aceEditor").env.editor;
-                                                codeEditorPrintit.call(self, editor, this._editorNode);
-                                            }
-
-                                        }]
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Print It",
+                                                "onclick": function (e) {
+                                                    let editor = document.querySelector("#aceEditor").env.editor;
+                                                    codeEditorPrintit.call(self, editor, this._editorNode);
+                                                }
+                                            })
+                                       ]
                                 }
 
                             ]
@@ -2282,11 +2270,11 @@ define([
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
                                         {
-                                            class: "mdc-textfield",
+                                            class: "mdc-text-field",
                                             $cell: true,
                                             $type: "div",
                                             $components: [{
-                                                class: "mdc-textfield__input",
+                                                class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodName",
                                                 $cell: true,
                                                 $type: "input",
@@ -2313,11 +2301,11 @@ define([
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                     $components: [
                                         {
-                                            class: "mdc-textfield params-textfield-input",
+                                            class: "mdc-text-field params-text-field-input",
                                             $cell: true,
                                             $type: "div",
                                             $components: [{
-                                                class: "mdc-textfield__input",
+                                                class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodParams",
                                                 $cell: true,
                                                 $type: "input",
@@ -2342,36 +2330,31 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
-
-                                        {
-                                            $cell: true,
-                                            $type: "button",
-                                            class: "mdc-button mdc-button--raised",
-                                            $text: "Create",
-                                            onclick: function (e) {
-                                                let methodName = document.querySelector('#methodName').value;
-                                                //let methodParams = document.querySelector('#methodParams');
-                                                var params = [];
-                                                let body = '';
-                                                let paramsVal = document.querySelector("#methodParams").value;
-                                                if (paramsVal !== '') {
-                                                    try {
-                                                        params = JSON.parse(paramsVal);
-                                                        //params.push(prmtr);
-                                                    } catch (e) {
-                                                        self.logger.error('Invalid Value');
+                                        widgets.buttonStroked(
+                                            {
+                                                "label": "Create",
+                                                "onclick": function (e) {
+                                                    let methodName = document.querySelector('#methodName').value;
+                                                    //let methodParams = document.querySelector('#methodParams');
+                                                    var params = [];
+                                                    let body = '';
+                                                    let paramsVal = document.querySelector("#methodParams").value;
+                                                    if (paramsVal !== '') {
+                                                        try {
+                                                            params = JSON.parse(paramsVal);
+                                                            //params.push(prmtr);
+                                                        } catch (e) {
+                                                            self.logger.error('Invalid Value');
+                                                        }
                                                     }
+    
+    
+                                                    self.kernel.createMethod(this._editorNode, methodName, params, body);
+                                                    this._setNode(this._editorNode);
+                                                    // let editor = document.querySelector("#aceEditor").env.editor;
+                                                    // codeEditorDoit.call(self, editor, this._editorNode);
                                                 }
-
-
-                                                self.kernel.createMethod(this._editorNode, methodName, params, body);
-                                                this._setNode(this._editorNode);
-                                                // let editor = document.querySelector("#aceEditor").env.editor;
-                                                // codeEditorDoit.call(self, editor, this._editorNode);
-                                            }
-
-
-                                        }
+                                            })                           
                                     ]
                                 }
                             ]
@@ -2845,7 +2828,7 @@ define([
                     $components: [
                         {
                             $type: "button",
-                            class: "demo-menu material-icons mdc-toolbar__icon--menu",
+                            class: "demo-menu material-icons mdc-toolbar__menu-icon",
                             $text: "menu"
 
 
@@ -3172,8 +3155,9 @@ define([
                 {
                     $cell: true,
                     $type: "div",
-                    class: "handle",
-                    $components: [
+                    class: "handle"
+                },
+                  
                         {
                             $cell: true,
                             $type: "button",
@@ -3190,10 +3174,10 @@ define([
                             $type: "span",
                             class: "mdc-typography--button",
                             $text: title
-                        }
+                        },
 
-                    ]
-                },
+                    
+                
 
                 cellNode,
                 {
