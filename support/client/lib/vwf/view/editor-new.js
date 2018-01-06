@@ -3195,8 +3195,9 @@ define([
                 {
                     $cell: true,
                     $type: "div",
-                    class: "handle",
-                    $components: [
+                    class: "handle"
+                },
+                  
                         {
                             $cell: true,
                             $type: "button",
@@ -3213,10 +3214,10 @@ define([
                             $type: "span",
                             class: "mdc-typography--button",
                             $text: title
-                        }
+                        },
 
-                    ]
-                },
+                    
+                
 
                 cellNode,
                 {
