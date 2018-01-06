@@ -462,6 +462,7 @@ define([
                     class: "mdc-list-item",
                     role: "option",
                     id: "",
+                    tabindex: "0",
                     applicationpath: "",
                     $components: [
                         {
@@ -490,6 +491,7 @@ define([
                         $type: "li",
                         class: "mdc-list-item",
                         role: "option",
+                        tabindex: "0",
                         id: item.savename,
                         applicationpath: item.applicationpath,
                         $components: [
@@ -505,6 +507,7 @@ define([
                         $type: "li",
                         class: "mdc-list-item",
                         role: "option",
+                        tabindex: "0",
                         id: item.savename,
                         revision: item.revision,
                         applicationpath: item.applicationpath,
@@ -592,12 +595,12 @@ define([
                                                 $text: "Host: "
                                             },
                                             {
-                                                class: "mdc-textfield",
+                                                class: "mdc-text-field",
                                                 $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
-                                                        class: "mdc-textfield__input",
+                                                        class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscHost",
                                                         $cell: true,
                                                         $type: "input",
@@ -625,12 +628,12 @@ define([
                                                 $text: "Port: "
                                             },
                                             {
-                                                class: "mdc-textfield",
+                                                class: "mdc-text-field",
                                                 $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
-                                                        class: "mdc-textfield__input",
+                                                        class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscPort",
                                                         $cell: true,
                                                         $type: "input",
@@ -672,6 +675,7 @@ define([
 
 
                 }
+
             let loadSaveSettings =
                 {
                     $cell: true,
@@ -721,12 +725,12 @@ define([
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
                                                 {
-                                                    class: "mdc-textfield",
+                                                    class: "mdc-text-field",
                                                     $cell: true,
                                                     $type: "span",
                                                     $components: [
                                                         {
-                                                            class: "mdc-textfield__input",
+                                                            class: "mdc-text-field__input prop-text-field-input",
                                                             id: "fileName",
                                                             $cell: true,
                                                             $type: "input",
@@ -771,24 +775,49 @@ define([
                                                     $cell: true,
                                                     $type: "div",
                                                     class: "mdc-select",
+                                                    tabindex: "0",
+                                                    role: "listbox",
+                                                    id: "loadselect",
                                                     $init: function () {
+
+                                                        setTimeout(function() {
+                                                           
                                                         var MDCSelect = mdc.select.MDCSelect;
-                                                        const select = new MDCSelect(document.querySelector('.mdc-select'));
-                                                        select.listen('MDCSelect:change', () => {
+                                                        let selector = document.querySelector('#loadselect');
+                                                        let select = new MDCSelect(selector);
+                                                        selector.addEventListener('MDCSelect:change', () => {
                                                             //this._selectedState = select.value;
                                                             document.querySelector('#loadStateButton')._selectedState = select.selectedOptions[0];
                                                             //console.log(select.value);
                                                             //.selectedOptions[0]
                                                         });
 
+                                                          }, 300);
+
+                                                        
+
                                                     },
-                                                    role: "listbox",
                                                     $components: [
-                                                        {
-                                                            $type: "span",
-                                                            class: "mdc-select__selected-text",
-                                                            $text: "Select saved state"
+                                                        {   
+                                                            $type: "div",
+                                                            class: "mdc-select__surface mdc-ripple-upgraded",
+                                                            $components: [
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__label",
+                                                                    $text: "Select..."
+                                                                },
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__selected-text"
+                                                                },
+                                                                {
+                                                                    $type: "div",
+                                                                    class: "mdc-select__bottom-line"
+                                                                }
+                                                            ]
                                                         },
+                                                       
                                                         {
                                                             $type: "div",
                                                             class: "mdc-simple-menu mdc-select__menu",
@@ -797,9 +826,6 @@ define([
                                                                     $type: "ul",
                                                                     class: "mdc-list mdc-simple-menu__items",
                                                                     $components: this._saveStates.map(stateListElement)
-
-
-
                                                                 }
                                                             ]
                                                         }
@@ -874,11 +900,11 @@ define([
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                 $components: [
                                     {
-                                        class: "mdc-textfield",
+                                        class: "mdc-text-field",
                                         $cell: true,
                                         $type: "div",
                                         $components: [{
-                                            class: "mdc-textfield__input",
+                                            class: "mdc-text-field__input prop-text-field-input",
                                             $cell: true,
                                             $type: "input",
                                             type: "text",
@@ -1056,12 +1082,12 @@ define([
                                    sliderComponent,
                                
                                 {
-                                    class: "mdc-textfield",
+                                    class: "mdc-text-field prop-mdc-text-field mdc-ripple-upgraded",
                                     $cell: true,
-                                    $type: "span",
+                                    $type: "div",
                                     $components: [
                                         {
-                                            class: "mdc-textfield__input",
+                                            class: "mdc-text-field__input prop-text-field-input",
                                             id: "prop-" + m.name,
                                             $cell: true,
                                             $type: "input",
@@ -1091,7 +1117,7 @@ define([
                                 {
                                     $cell: true,
                                     $type: "button",
-                                    class: "mdc-button",
+                                    class: "mdc-button mdc-button--compact",
                                     $text: "^", //edit grammar
                                     onclick: function (e) {
                                         var currentNode = document.querySelector('#currentNode')._currentNode;
@@ -1139,9 +1165,6 @@ define([
 
                     ]
                 }
-
-
-
             }
 
 
@@ -2282,11 +2305,11 @@ define([
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
                                         {
-                                            class: "mdc-textfield",
+                                            class: "mdc-text-field",
                                             $cell: true,
                                             $type: "div",
                                             $components: [{
-                                                class: "mdc-textfield__input",
+                                                class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodName",
                                                 $cell: true,
                                                 $type: "input",
@@ -2313,11 +2336,11 @@ define([
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                     $components: [
                                         {
-                                            class: "mdc-textfield params-textfield-input",
+                                            class: "mdc-text-field params-text-field-input",
                                             $cell: true,
                                             $type: "div",
                                             $components: [{
-                                                class: "mdc-textfield__input",
+                                                class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodParams",
                                                 $cell: true,
                                                 $type: "input",
@@ -2845,7 +2868,7 @@ define([
                     $components: [
                         {
                             $type: "button",
-                            class: "demo-menu material-icons mdc-toolbar__icon--menu",
+                            class: "demo-menu material-icons mdc-toolbar__menu-icon",
                             $text: "menu"
 
 

@@ -122,10 +122,10 @@
         padding-left: 16px;
         overflow-x: hidden;
         overflow-y: auto;
-        background-color: rgba(247, 247, 247, 0.95);
+        background-color: rgba(236, 236, 236, 0.88);
         z-index: 3;
         position: fixed;
-        width: 400px;
+        width: 450px;
         height: 95%;
       }
 
@@ -159,3 +159,21 @@
       }
 
       */
+
+    /*   :root {
+        --mdc-theme-primary: #9E9E9E;
+      }
+      */
+
+      .prop-text-field-input {
+
+        font-size: inherit;
+        padding: 5px;
+
+      }
+
+      .prop-mdc-text-field {
+         /*
+        height: 56px;
+        */
+      }
