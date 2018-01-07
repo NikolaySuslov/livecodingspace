@@ -3015,7 +3015,37 @@ define([
                                     ]
                                 }
                             ]
-                        }
+                        },
+                        widgets.icontoggle({
+                            'id': "selectNodeSwitch",
+                            'label': 'select',
+                            'on': JSON.stringify({"content": "radio_button_checked", "label": "Select"}),
+                            'off': JSON.stringify({"content": "radio_button_unchecked", "label": "Unselect"}),
+                            'state': false,
+                            'init': function(){
+                        
+                                this.addEventListener('MDCIconToggle:change', (e) => {
+                                    
+                                    let avatarID = 'avatar-'+ vwf.moniker_;
+                                    let avatarNode = self.nodes['avatar-'+ vwf.moniker_];
+                                    let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
+
+                                    if (mode) {
+
+                                        console.log("unselect");
+                                        vwf_view.kernel.setProperty(avatarID, "selectMode", false);
+
+                                    } else {
+
+                                        console.log("select")
+                                        vwf_view.kernel.setProperty(avatarID, "selectMode", true);
+                                    }
+
+                                  });
+                                
+                            }
+                        })
+                       
                     ]
                 },
                 {

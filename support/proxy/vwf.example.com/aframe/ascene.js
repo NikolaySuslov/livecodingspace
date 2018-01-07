@@ -1,4 +1,4 @@
-this.initialize = function() {
+this.initialize = function () {
     this.future(0).clientWatch();
 };
 
@@ -28,54 +28,64 @@ this.clientWatch = function () {
                         //console.log(node.id + " needed to delete!");
                         self.children.delete(self.children[node.id]);
                         //'gearvr-'
-                        let controllerVR = self.children['gearvr-'+ node.id.slice(7)];
-                        if (controllerVR){
+                        let controllerVR = self.children['gearvr-' + node.id.slice(7)];
+                        if (controllerVR) {
                             self.children.delete(controllerVR);
                         }
 
-                        let wmrvR = self.children['wmrvr-right-'+ node.id.slice(7)];
-                        if (wmrvR){
+                        let wmrvR = self.children['wmrvr-right-' + node.id.slice(7)];
+                        if (wmrvR) {
                             self.children.delete(wmrvR);
                         }
-                        
-                        let wmrvL = self.children['wmrvr-left-'+ node.id.slice(7)];
-                        if (wmrvL){
+
+                        let wmrvL = self.children['wmrvr-left-' + node.id.slice(7)];
+                        if (wmrvL) {
                             self.children.delete(wmrvL);
                         }
-                        
+
                     }
                 }
             });
-     }
+        }
     }
-    this.future(5).clientWatch(); 
+    this.future(5).clientWatch();
 };
 
-this.sphereProto = function(){
+this.sphereProto = function () {
 
     let node = {
         "extends": "http://vwf.example.com/aframe/asphere.vwf",
         "properties": {
             "displayName": "sphere",
             "color": "white",
-            "radius": 1
+            "radius": 1,
+            "clickable": true
         },
         children: {
             "interpolation":
-            {
-                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                "type": "component",
-                "properties": {
-                    "enabled": true
-                }
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                },
+            "cursor-listener": {
+                "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
             }
+        },
+        events: {
+            "clickEvent": {
+                "body": ""
+            }
+        }
     }
-}
 
     return node
 }
 
-this.cubeProto = function(){
+this.cubeProto = function () {
 
     let node = {
         "extends": "http://vwf.example.com/aframe/abox.vwf",
@@ -84,37 +94,47 @@ this.cubeProto = function(){
             "color": "white",
             "height": 1,
             "width": 1,
-            "depth": 1
+            "depth": 1,
+            "clickable": true
         },
         children: {
             "interpolation":
-            {
-                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                "type": "component",
-                "properties": {
-                    "enabled": true
-                }
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                },
+            "cursor-listener": {
+                "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
             }
+        },
+        events: {
+            "clickEvent": {
+                "body": ""
+            }
+        }
     }
-}
 
     return node
 }
 
-this.createPrimitive = function(type, avatar, name, node){
+this.createPrimitive = function (type, avatar, name, node) {
 
     var position = "0 0 0";
     var nodeName = name;
-    
+
 
     let myAvatar = this.children[avatar];
     let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-    
-    if (cursorNode){
+
+    if (cursorNode) {
         position = cursorNode.worldPosition;
         //console.log(position);
     }
-   
+
     if (!name) {
         nodeName = this.GUID();
     }
@@ -124,7 +144,7 @@ this.createPrimitive = function(type, avatar, name, node){
     switch (type) {
 
         case "cube":
-             newNode = this.cubeProto();
+            newNode = this.cubeProto();
             break;
 
         case "sphere":
@@ -135,12 +155,12 @@ this.createPrimitive = function(type, avatar, name, node){
             newNode = undefined;
             break;
     }
-   
+
     if (newNode) {
-    newNode.properties.position = position;
-    this.children.create(nodeName, newNode);
+        newNode.properties.position = position;
+        this.children.create(nodeName, newNode);
     }
-    
+
 }
 
 

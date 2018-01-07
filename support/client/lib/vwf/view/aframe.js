@@ -188,7 +188,8 @@ define(["module", "vwf/view"], function (module, view) {
                         "localUrl": '',
                         "remoteUrl": '',
                         "displayName": 'Avatar '+ randId(),
-                        "sharing": { audio: true, video: true }
+                        "sharing": { audio: true, video: true },
+                        "selectMode": false
                     }
                 }
 
@@ -209,6 +210,34 @@ define(["module", "vwf/view"], function (module, view) {
             //  if (eventName == "setAvatarPosition") {
             //     vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
             // }
+
+            if (eventName == "clickEvent") {
+
+               if (self.kernel.moniker() == eventParameters[0]){
+
+                    let avatar = self.nodes[avatarName];
+                    let mode = vwf.getProperty(avatarName, 'selectMode');
+
+                    if(mode) {
+                        console.log("allow to click!!!")
+                        vwf_view.kernel.setProperty(avatarName, 'selectMode', false);
+
+                        let editorDriver = vwf.views["vwf/view/editor-new"];
+                        if (editorDriver){
+                            let selectSwitch = document.querySelector('#selectNodeSwitch');
+                            const selectSwitchComp = new mdc.iconToggle.MDCIconToggle(selectSwitch); //new mdc.select.MDCIconToggle
+                            selectSwitchComp.on = false;
+
+                            let currentNodeDIV = document.querySelector('#currentNode');
+                            if (currentNodeDIV) currentNodeDIV._setNode(nodeID);
+                            
+
+                        }
+                    }
+               }
+                
+
+            }
         },
 
         ticked: function (vwfTime) {

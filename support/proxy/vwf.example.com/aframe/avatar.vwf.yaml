@@ -10,6 +10,7 @@ properties:
     sharing: { audio: true, video: true }
 methods:
     initialize:
+    selectMode:
     updateAvatar:
     showHideAvatar:
         parameters:
