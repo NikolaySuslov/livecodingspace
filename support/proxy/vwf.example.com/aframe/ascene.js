@@ -51,27 +51,14 @@ this.clientWatch = function () {
     this.future(5).clientWatch(); 
 };
 
-this.createCube = function(name, avatar, node){
+this.sphereProto = function(){
 
-    let myAvatar = this.children[avatar];
-    let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-    var position = "0 0 0";
-
-    if (cursorNode){
-        position = cursorNode.worldPosition;
-        //console.log(position);
-    }
-   
-
-    let cube = {
-        "extends": "http://vwf.example.com/aframe/abox.vwf",
+    let node = {
+        "extends": "http://vwf.example.com/aframe/asphere.vwf",
         "properties": {
-            "displayName": "cube",
+            "displayName": "sphere",
             "color": "white",
-            "height": 1,
-            "width": 1,
-            "depth": 1,
-            "position": position
+            "radius": 1
         },
         children: {
             "interpolation":
@@ -85,6 +72,91 @@ this.createCube = function(name, avatar, node){
     }
 }
 
-        this.children.create(name, cube);
+    return node
+}
+
+this.cubeProto = function(){
+
+    let node = {
+        "extends": "http://vwf.example.com/aframe/abox.vwf",
+        "properties": {
+            "displayName": "cube",
+            "color": "white",
+            "height": 1,
+            "width": 1,
+            "depth": 1
+        },
+        children: {
+            "interpolation":
+            {
+                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                "type": "component",
+                "properties": {
+                    "enabled": true
+                }
+            }
+    }
+}
+
+    return node
+}
+
+this.createPrimitive = function(type, avatar, name, node){
+
+    var position = "0 0 0";
+    var nodeName = name;
     
+
+    let myAvatar = this.children[avatar];
+    let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+    
+    if (cursorNode){
+        position = cursorNode.worldPosition;
+        //console.log(position);
+    }
+   
+    if (!name) {
+        nodeName = this.GUID();
+    }
+
+    var newNode = {};
+
+    switch (type) {
+
+        case "cube":
+             newNode = this.cubeProto();
+            break;
+
+        case "sphere":
+            newNode = this.sphereProto();
+            break;
+
+        default:
+            newNode = undefined;
+            break;
+    }
+   
+    if (newNode) {
+    newNode.properties.position = position;
+    this.children.create(nodeName, newNode);
+    }
+    
+}
+
+
+this.GUID = function () {
+    var self = this;
+    var S4 = function () {
+        return Math.floor(
+            self.random() * 0x10000 /* 65536 */
+        ).toString(16);
+    };
+
+    return (
+        S4() + S4() + "-" +
+        S4() + "-" +
+        S4() + "-" +
+        S4() + "-" +
+        S4() + S4() + S4()
+    );
 }

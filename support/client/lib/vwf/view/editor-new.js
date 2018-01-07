@@ -206,8 +206,8 @@ define([
                                         "text": "Cube",
                                         "onclickfunc": function(){
                                             let avatarID = 'avatar-' + vwf.moniker_;
-                                            let cubeName = self.GUID();
-                                            vwf_view.kernel.callMethod(vwf.application(), "createCube", [cubeName, avatarID])
+                                            //let cubeName = self.GUID();
+                                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["cube", avatarID])
                                         }
                                     }
                                 )
@@ -223,7 +223,13 @@ define([
                                         {
                                             "imgSrc": "vwf/view/lib/images/ui/sphere_normal.png",
                                             "imgHeight": "100px",
-                                            "text": "Sphere"
+                                            "addonClass": "create-card",
+                                            "text": "Sphere",
+                                            "onclickfunc": function(){
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                //let cubeName = self.GUID();
+                                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["sphere", avatarID])
+                                            }
                                         }
                                     )
                                 ]
