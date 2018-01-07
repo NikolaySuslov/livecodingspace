@@ -182,6 +182,75 @@ define([
                 }
             }
 
+            let createSettings =
+            {
+                $cell: true,
+                $type: "div",
+                class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                                $components: [
+                                widgets.simpleCard(
+                                    {
+                                        "imgSrc": "vwf/view/lib/images/ui/cube_normal.png",
+                                        "imgHeight": "100px",
+                                        "addonClass": "create-card",
+                                        "text": "Cube",
+                                        "onclickfunc": function(){
+                                            let avatarID = 'avatar-' + vwf.moniker_;
+                                            let cubeName = self.GUID();
+                                            vwf_view.kernel.callMethod(vwf.application(), "createCube", [cubeName, avatarID])
+                                        }
+                                    }
+                                )
+                            ]
+                        },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                                $components: [
+
+                                    widgets.simpleCard(
+                                        {
+                                            "imgSrc": "vwf/view/lib/images/ui/sphere_normal.png",
+                                            "imgHeight": "100px",
+                                            "text": "Sphere"
+                                        }
+                                    )
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                                $components: [
+                            
+                                    widgets.simpleCard(
+                                        {
+                                            "imgSrc": "vwf/view/lib/images/ui/cylinder_normal.png",
+                                            "imgHeight": "100px",
+                                            "text": "Cylinder"
+                                        }
+                                    )
+                                    
+                                ]
+                            }
+                          
+                        ]
+                    }
+                ]
+            }
+
+
             let avatarSettings =
                 {
                     $cell: true,
@@ -1156,6 +1225,15 @@ define([
                 let myAvatarName = 'avatar-' + self.kernel.moniker();
                 (myAvatarName == m.name) ? (myClass = "avatarName mdc-typography--subheading2") :
                     myClass = "nodeItem"
+                
+                var nodeName = m.name;
+
+                        let displayName = vwf.getProperty(m.ID, 'displayName');
+                        if (displayName) 
+                        {
+                            nodeName = displayName
+                        } 
+                    
 
                 return {
                     $type: "li",
@@ -1167,7 +1245,7 @@ define([
                         $components: [{
                             $type: 'span',
                             class: myClass,
-                            $text: m.name
+                            $text: nodeName
                         }
                         ],
 
@@ -1614,7 +1692,23 @@ define([
                                             $type: "span",
                                             $init: function () {
                                                 let node = self.nodes[this._currentNode];
-                                                if (node) this.$text = node.name
+                                               
+
+                                                if (node) {
+                                                    let displayName = vwf.getProperty(node.ID, 'displayName');
+                                                    if (displayName) 
+                                                    {
+                                                        this.$text = displayName
+                                                    } else {
+                                                        this.$text = node.name;
+                                                    }
+                                                }
+                                                
+                                                
+                                                
+
+                                               
+                                                //console.log(node.properties.displayName)
                                             },
                                             class: "mdc-list-item__text mdc-typography--headline"
                                             //<h1 class="mdc-typography--display4">Big header</h1>
@@ -2648,6 +2742,35 @@ define([
                                         ]
 
                                     },
+
+                                    {
+                                        $cell: true,
+                                        $type: "a",
+                                        class: "mdc-list-item",
+                                        $href: "#",
+                                        onclick: function (e) {
+                                            //self.currentNodeID = m.ID;
+
+                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                            // document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                            let sideBar = document.querySelector('#sideBar');
+                                            sideBar._sideBarComponent = createSettings;
+
+                                            drawer.open = !drawer.open
+                                            document.querySelector('#sideBar').style.visibility = 'visible';
+                                        },
+                                        $components: [{
+                                            $type: "i",
+                                            class: "material-icons mdc-list-item__start-detail",
+                                            'aria-hidden': "true",
+                                            $text: "create"
+                                        },
+                                        {
+                                            $text: "Create"
+                                        }]
+
+                                    },
+
                                     {
                                         $cell: true,
                                         $type: "a",
@@ -2837,10 +2960,74 @@ define([
                             $type: "span",
                             class: "mdc-toolbar__title catalog-title",
                             $text: "LiveCoding.space"
-                        }
+                        },
 
+                        {
+                            $type: "a",
+                            href: "#",
+                            class: "material-icons mdc-toolbar__icon toggleCreate",
+                            $text: "apps",
+                            'aria-label': "More"
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-menu-anchor",
+                            $components: [
+                                {
+                                    $type: "div",
+                                    class: "mdc-simple-menu",
+                                    "tabindex": "-1",
+                                    id: "create-menu",
+                                    $init: function(){
+
+                                    //var menuEl = document.querySelector('#demo-menu');
+                                    var menu = new mdc.menu.MDCSimpleMenu(this);
+                                    var toggle = document.querySelector('.toggleCreate');
+                                    toggle.addEventListener('click', function() {
+                                        menu.open = !menu.open;
+                                    });
+                                    
+                                    },
+                                    style: "transform-origin: right top 0px; right: 0px; top: 0px; transform: scale(0, 0);",
+                                    $components: [
+                                       { 
+                                        $type: "ul",
+                                        class: "mdc-simple-menu__items mdc-list",
+                                        role: "menu",
+                                        'aria-hidden': "true",
+                                        style: "transform: scale(1, 1);",
+                                        $components: [
+                                            {
+                                                $type: "li",
+                                                class: "mdc-list-item",
+                                                role: "menuitem",
+                                                tabindex: "0",
+                                                $text: "Apps"
+                                            }
+                                        ]
+                                    }
+                                    ]
+                                }
+                            ]
+                        }
                     ]
-                }]
+                },
+                {
+                    $type: "section",
+                    class: "mdc-toolbar__section mdc-toolbar__section--align-end",
+                    $components: [
+                        {
+                            $type: "a",
+                            href: "#",
+                            class: "material-icons mdc-toolbar__icon toggle",
+                            $text: "help",
+                            'aria-label': "Help"
+
+
+                        }
+                    ]
+                }
+            ]
 
             };
 

@@ -30,6 +30,104 @@ define(function () {
 
         }
 
+        simpleCard(obj){
+            let style =  'background-image: url(' + obj.imgSrc + '); background-size: cover; background-repeat: no-repeat; height:' + obj.imgHeight + ';';
+            var addonClass = obj.addonClass;
+            if (!addonClass){
+                addonClass = ''
+            }
+
+            return  {
+                $cell: true,
+                $type: "div",
+                $components:[
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-card" +' '+ addonClass,
+                        onclick: obj.onclickfunc,
+                        $components:[
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__media",
+                                style:  style
+                            },
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__supporting-text",
+                                $text: obj.text
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        createCard(obj){
+            return {
+                $cell: true,
+                $type: "div",
+                $components:[
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-card",
+                        $components:[
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-card__horizontal-block",
+                                $components:[
+                                    {
+                                        $cell: true,
+                                        $type: "section",
+                                        class: "mdc-card__primary",
+                                        $components:[
+                                            {
+                                                $cell: true,
+                                                $type: "h1",
+                                                class: "mdc-card__title mdc-card__title--large",
+                                                $text: obj.title
+                                            },
+                                            {
+                                                $cell: true,
+                                                $type: "h2",
+                                                class: "mdc-card__subtitle",
+                                                $text: obj.subTitle
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        
+                                            $cell: true,
+                                            $type: "img",
+                                            class: "",
+                                            src: obj.imgSrc
+                                        
+                                    }
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__actions",
+                                $components:[
+                                    {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button mdc-button--compact mdc-card__action",
+                                        $text: obj.actionLabel
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
         buttonStroked(obj){
             return {
                 $cell: true,

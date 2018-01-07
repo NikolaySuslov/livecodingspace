@@ -50,3 +50,41 @@ this.clientWatch = function () {
     }
     this.future(5).clientWatch(); 
 };
+
+this.createCube = function(name, avatar, node){
+
+    let myAvatar = this.children[avatar];
+    let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+    var position = "0 0 0";
+
+    if (cursorNode){
+        position = cursorNode.worldPosition;
+        //console.log(position);
+    }
+   
+
+    let cube = {
+        "extends": "http://vwf.example.com/aframe/abox.vwf",
+        "properties": {
+            "displayName": "cube",
+            "color": "white",
+            "height": 1,
+            "width": 1,
+            "depth": 1,
+            "position": position
+        },
+        children: {
+            "interpolation":
+            {
+                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                "type": "component",
+                "properties": {
+                    "enabled": true
+                }
+            }
+    }
+}
+
+        this.children.create(name, cube);
+    
+}

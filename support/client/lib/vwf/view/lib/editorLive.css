@@ -155,6 +155,10 @@
         background-size: 100%;
       }
 
+      .create-card {
+        cursor:pointer;
+      }
+
   /*    .avatar-card .mdc-card__primary,
       .avatar-card .mdc-card__actions {
         background: rgba(0, 0, 0, .4);

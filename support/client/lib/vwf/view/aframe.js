@@ -187,7 +187,7 @@ define(["module", "vwf/view"], function (module, view) {
                     "properties": {
                         "localUrl": '',
                         "remoteUrl": '',
-                        "displayName": randId(),
+                        "displayName": 'Avatar '+ randId(),
                         "sharing": { audio: true, video: true }
                     }
                 }

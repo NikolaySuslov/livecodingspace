@@ -9,5 +9,10 @@ properties:
   transparent:
 methods:
   clientWatch:
+  createCube:
+    parameters:
+      - name
+      - avatar
+      - node
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"
