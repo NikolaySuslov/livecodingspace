@@ -271,7 +271,7 @@ define(function () {
             return {
                 $cell: true,
                 $type: "i",
-                class: "mdc-icon-toggle material-icons",
+                class: "mdc-icon-toggle material-icons "+ obj.styleClass,
                 role: "button",
                 $text: obj.label,
                 id: obj.id,

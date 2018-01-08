@@ -402,6 +402,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('side', propertyValue);
                             break;
 
+                        case "font":
+                            aframeObject.setAttribute('font', propertyValue);
+                            break;
 
                         default:
                             value = undefined;
@@ -923,6 +926,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                         case "side":
                             value = aframeObject.getAttribute('side');
+                            break;
+                        case "font":
+                            value = aframeObject.getAttribute('font');
                             break;
                     }
                 }

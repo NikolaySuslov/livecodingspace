@@ -234,22 +234,22 @@ define([
                                     )
                                 ]
                             },
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                $components: [
+                            // {
+                            //     $cell: true,
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                            //     $components: [
                             
-                                    widgets.simpleCard(
-                                        {
-                                            "imgSrc": "vwf/view/lib/images/ui/cylinder_normal.png",
-                                            "imgHeight": "100px",
-                                            "text": "Cylinder"
-                                        }
-                                    )
+                            //         widgets.simpleCard(
+                            //             {
+                            //                 "imgSrc": "vwf/view/lib/images/ui/cylinder_normal.png",
+                            //                 "imgHeight": "100px",
+                            //                 "text": "Cylinder"
+                            //             }
+                            //         )
                                     
-                                ]
-                            }
+                            //     ]
+                            // }
                           
                         ]
                     }
@@ -3017,6 +3017,7 @@ define([
                             ]
                         },
                         widgets.icontoggle({
+                            'styleClass': "mdc-toolbar__icon",
                             'id': "selectNodeSwitch",
                             'label': 'select',
                             'on': JSON.stringify({"content": "radio_button_checked", "label": "Select"}),
