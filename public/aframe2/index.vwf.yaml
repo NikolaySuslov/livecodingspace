@@ -7,6 +7,16 @@ properties:
   transparent: true
   assets: "assets.json"
 children:
+  assetPlaneObj:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-obj"
+      itemSrc: "/assets/models/plane/PUSHILIN_Plane.obj"
+  assetPlaneMtl:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-mtl"
+      itemSrc: "/assets/models/plane/PUSHILIN_Plane.mtl"
   myLight:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:

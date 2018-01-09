@@ -140,6 +140,20 @@ define(["module", "vwf/view"], function (module, view) {
             return this.satProperty(nodeId, propertyName, propertyValue);
         },
 
+        gotProperty: function (nodeId, propertyName, propertyValue) {
+            var selfs = this;
+
+            var node = this.state.nodes[nodeId];
+
+            if (!(node && node.aframeObj)) {
+                return;
+            }
+
+            
+
+
+        },
+
         satProperty: function (nodeId, propertyName, propertyValue) {
             var selfs = this;
 
@@ -148,6 +162,41 @@ define(["module", "vwf/view"], function (module, view) {
             if (!(node && node.aframeObj)) {
                 return;
             }
+
+
+            if (node.aframeObj.nodeName == "A-ASSET-ITEM" && propertyName == 'itemSrc') {
+
+                console.log("sat new item");
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                Object.entries(this.state.nodes).forEach(el => {
+                    let src = el[1].aframeObj.getAttribute('src');
+                    let mtl = el[1].aframeObj.getAttribute('mtl');
+                    if (src){
+                        console.log("my: " + src);
+                        if (src == elID)
+                        self.kernel.callMethod(el[0], "updateModelObj", [elID])
+                    }
+                    if (mtl){
+                        console.log("my: " + mtl);
+                        if (mtl == elID)
+                        self.kernel.callMethod(el[0], "updateModelMtl", [elID])
+                    }
+                })
+
+            }
+            
+            //  if (node.aframeObj.nodeName == "A-BOX" && propertyName == 'color') {
+                
+            //     console.log("sat color");
+            //     let materialName = '/' + node.name + '/material';
+            //     let materialID = vwf.find('', materialName)[0];
+            //     if (materialID) {
+
+            //         vwf.setProperty(materialID, propertyName, propertyValue);
+                    
+            //     }  
+
+            // }
 
             // if (propertyName == 'position') {
             //     this.nodes[nodeId].lastTransformStep = vwf.time();

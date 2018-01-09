@@ -5,3 +5,12 @@ type: "a-obj-model"
 properties:
   src:
   mtl:
+methods:
+  updateModelObj:
+    parameters:
+      - obj
+  updateModelMtl:
+    parameters:
+      - mtl
+scripts:
+  - source: "http://vwf.example.com/aframe/aobjmodel.js"

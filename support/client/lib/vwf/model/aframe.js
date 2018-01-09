@@ -287,17 +287,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             // }
                             break;
 
-                        case "color":
-                            aframeObject.setAttribute('color', propertyValue);
-                            break;
+                        // case "color":
+                        //     aframeObject.setAttribute('color', propertyValue);
+                        //     break;
 
-                        case "transparent":
-                            aframeObject.setAttribute('material', 'transparent', propertyValue);
-                            break;
+                        // case "transparent":
+                        //     aframeObject.setAttribute('material', 'transparent', propertyValue);
+                        //     break;
 
-                        case "opacity":
-                            aframeObject.setAttribute('material', 'opacity', propertyValue);
-                            break;
+                        // case "opacity":
+                        //     aframeObject.setAttribute('material', 'opacity', propertyValue);
+                        //     break;
 
                         case "fog":
                             aframeObject.setAttribute('material', 'fog', propertyValue);
@@ -361,6 +361,25 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                     }
 
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-ASSET-ITEM") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "itemID":
+                            aframeObject.setAttribute('id', propertyValue);
+                        break;
+
+                        case "itemSrc":
+                            aframeObject.setAttribute('src', propertyValue);
+                        break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-SKY") {
@@ -429,8 +448,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('fog', propertyValue);
                             break;
                         case "assets":
-                            var assetsElement = document.createElement('a-assets');
-                            aframeObject.appendChild(assetsElement);
+                            let assetsEl = document.querySelector('a-assets');
+                            if (!assetsEl) {
+                                let newAssetsEl = document.createElement('a-assets');
+                                aframeObject.appendChild(newAssetsEl);
+                            }
+                            var assetsElement = document.querySelector('a-assets');
                             if (propertyValue) {
 
                                 httpGetJson(propertyValue).then(function (response) {
@@ -471,6 +494,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                         case "width":
                             aframeObject.setAttribute('width', propertyValue);
+                            break;
+
+                        case "color":
+                           
+                            // let materialName = '/' + node.name + '/material';
+                            // let materialID = vwf.find('', materialName)[0];
+                            // if (materialID) {
+                            //     //self.kernel.setProperty(materialID, 'color', propertyValue)
+                            // }   else {
+                            //     aframeObject.setAttribute('color', propertyValue);
+                            // }
+                            
+                            aframeObject.setAttribute('color', propertyValue);
+
                             break;
 
 
@@ -757,9 +794,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             }
                             break;
 
-                        case "color":
-                            value = aframeObject.getAttribute('color');
-                            break;
+                       
 
                         case "side":
                         if (aframeObject.getAttribute('material')) {
@@ -773,17 +808,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             }
                             break;
 
-                        case "opacity":
-                            if (aframeObject.getAttribute('material')) {
-                                value = aframeObject.getAttribute('material').opacity;
-                            }
-                            break;
+                         // case "color":
+                        //     value = aframeObject.getAttribute('color');
+                        //     break;
 
-                        case "transparent":
-                            if (aframeObject.getAttribute('material')) {
-                                value = aframeObject.getAttribute('material').transparent;
-                            }
-                            break;
+
+                        // case "opacity":
+                        //     if (aframeObject.getAttribute('material')) {
+                        //         value = aframeObject.getAttribute('material').opacity;
+                        //     }
+                        //     break;
+
+                        // case "transparent":
+                        //     if (aframeObject.getAttribute('material')) {
+                        //         value = aframeObject.getAttribute('material').transparent;
+                        //     }
+                        //     break;
 
                         case "wireframe":
                             value = aframeObject.getAttribute('wireframe');
@@ -820,6 +860,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = aframeObject.getAttribute('visible');
                             break;
 
+                    }
+                }
+
+               
+
+                if (value === undefined && aframeObject.nodeName == "A-ASSET-ITEM") {
+
+                    switch (propertyName) {
+                        
+                        case "itemID":
+                            value = aframeObject.getAttribute('id');
+                        break;
+                    
+                        case "itemSrc":
+                            value = aframeObject.getAttribute('src');
+                        break;
+
+                      
                     }
                 }
 
@@ -870,6 +928,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                         case "width":
                             value = aframeObject.getAttribute('width');
+                            break;
+                        case "color":
+                            value = aframeObject.getAttribute('color');
+
+
+
                             break;
                     }
                 }
@@ -1080,8 +1144,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-scene');
             let assetsElement = document.createElement('a-assets');
             aframeObj.appendChild(assetsElement);
-
             self.state.scenes[node.ID] = aframeObj;
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
+
+            let assets = document.querySelector('a-assets');
+            if (assets){
+
+                aframeObj = document.createElement('a-asset-item');
+                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('src', "");
+                assets.appendChild(aframeObj);
+            }
 
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
             aframeObj = document.createElement('a-sky');
@@ -1116,7 +1189,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
             aframeObj = document.createElement('a-entity');
         }
-        aframeObj.setAttribute('id', node.ID);
+
+        if (aframeObj.nodeName !== "A-ASSET-ITEM"){
+            aframeObj.setAttribute('id', node.ID);
+        }
+
+       
         return aframeObj;
     }
 
@@ -1132,7 +1210,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                     parent.children.push(node.ID);
                     //console.info( "Adding child: " + childID + " to " + nodeID );
+                    if (node.aframeObj.nodeName !== "A-ASSET-ITEM"){
                     parent.aframeObj.appendChild(node.aframeObj);
+                    }
                 }
             }
             if (node.aframeObj.nodeName !== "A-SCENE") {
@@ -1251,7 +1331,21 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
     }
 
- 
+    function GUID() {
+        var S4 = function () {
+            return Math.floor(
+                Math.random() * 0x10000 /* 65536 */
+            ).toString(16);
+        };
+
+        return (
+            S4() + S4() + "-" +
+            S4() + "-" +
+            S4() + "-" +
+            S4() + "-" +
+            S4() + S4() + S4()
+        );
+    }
 
 
 });

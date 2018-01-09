@@ -274,6 +274,25 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && isAMaterialDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        let defs = ['color', 'transparent', 'opacity'];
+
+                        defs.forEach(element => {
+                            element == propertyName ? parentNodeAF.setAttribute('material', element, propertyValue) :
+                                value = undefined;
+                        })
+
+                    
+
+
+                    }
+                }
+
+
                 if (value === undefined && isARayCasterDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
@@ -626,6 +645,31 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if (value === undefined && isAMaterialDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "color":
+                            value = parentNodeAF.getAttribute('material').color;
+                            break;
+
+                        case "opacity":
+                            value = parentNodeAF.getAttribute('material').opacity;
+                            break;
+
+                            case "transparent":
+                            value = parentNodeAF.getAttribute('material').transparent;
+                            break;
+                        
+
+                    }
+
+                }
+
                 if (value === undefined && isALinePathDefinition(node.prototypes)) {
                     value = propertyValue;
 
@@ -787,6 +831,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+    function isAMaterialDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/aMaterialComponent.vwf");
+            }
+        }
+        return found;
+    }
+
     function isAViewOffsetCameraDefinition(prototypes) {
         var found = false;
         if (prototypes) {
@@ -926,6 +980,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         aframeObj.el.setAttribute(aframeObj.compName, {});
             
                     }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aMaterialComponent.vwf")) {
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "material";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
 

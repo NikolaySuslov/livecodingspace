@@ -3,9 +3,6 @@
 extends: http://vwf.example.com/aframe/node.vwf
 type: "a-entity"
 properties:
-  opacity:
-  transparent:
-  color:
   position:
   rotation:
   scale:

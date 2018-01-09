@@ -103,15 +103,23 @@ define(["module", "vwf/view"], function (module, view) {
                             return;
                         }
 
-                        
-            switch (propertyName) {
-                case "color":
-                    if (propertyValue) {
-                       // self.kernel.callMethod (nodeId, 'initLang');
-                      // console.log("sat color "+ propertyValue)
-                    }
-                    break;
-            }
+                    
+            // if (node.name == "material" && propertyName == 'color') {
+    
+            //     console.log("sat color on material");
+            //     // let nodeColor = vwf.getProperty(node.parentID, propertyName);
+             
+
+            // }             
+
+            // switch (propertyName) {
+            //     case "color":
+            //         if (propertyValue) {
+            //            // self.kernel.callMethod (nodeId, 'initLang');
+            //           // console.log("sat color "+ propertyValue)
+            //         }
+            //         break;
+            // }
             
 
         },
