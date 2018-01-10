@@ -4,3 +4,9 @@ extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-collada-model"
 properties:
   src:
+methods:
+  updateModel:
+    parameters:
+      - obj
+scripts:
+  - source: "http://vwf.example.com/aframe/acolladamodel.js"

@@ -6,22 +6,19 @@ properties:
   position:
   rotation:
   scale:
-  wireframe:
-  wireframe-linewidth:
   clickable:
-  src:
-  repeat:
-  fog:
   displayName:
   visible:
   edit:
   worldPosition:
-  side:
   osc:
 methods:
   setGizmoMode:
     parameters:
       - mode
   showCloseGizmo:
+  updateSrc:
+    parameters:
+      - src
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

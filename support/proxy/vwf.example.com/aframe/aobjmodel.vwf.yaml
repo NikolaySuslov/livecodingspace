@@ -6,7 +6,7 @@ properties:
   src:
   mtl:
 methods:
-  updateModelObj:
+  updateModel:
     parameters:
       - obj
   updateModelMtl:

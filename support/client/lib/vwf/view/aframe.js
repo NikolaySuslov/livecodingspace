@@ -163,21 +163,50 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
+
+                //console.log("sat new item");
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                Object.entries(this.state.nodes).forEach(el => {
+                    let src = el[1].aframeObj.getAttribute('src');
+                    if (src){
+                       // console.log("my: " + src);
+                        if (src == elID)
+                        self.kernel.callMethod(el[0], "updateSrc", [elID])
+                    }
+                })
+
+            }
+
+            if (node.aframeObj.nodeName == "IMG" && propertyName == 'itemSrc') {
+
+                //console.log("sat new item");
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                Object.entries(this.state.nodes).forEach(el => {
+                    let src = el[1].aframeObj.getAttribute('src');
+                    if (src){
+                       // console.log("my: " + src);
+                        if (src == elID)
+                        self.kernel.callMethod(el[0], "updateSrc", [elID])
+                    }
+                })
+
+            }
 
             if (node.aframeObj.nodeName == "A-ASSET-ITEM" && propertyName == 'itemSrc') {
 
-                console.log("sat new item");
+                //console.log("sat new item");
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
                     let src = el[1].aframeObj.getAttribute('src');
                     let mtl = el[1].aframeObj.getAttribute('mtl');
                     if (src){
-                        console.log("my: " + src);
+                       // console.log("my: " + src);
                         if (src == elID)
-                        self.kernel.callMethod(el[0], "updateModelObj", [elID])
+                        self.kernel.callMethod(el[0], "updateModel", [elID])
                     }
                     if (mtl){
-                        console.log("my: " + mtl);
+                       // console.log("my: " + mtl);
                         if (mtl == elID)
                         self.kernel.callMethod(el[0], "updateModelMtl", [elID])
                     }

@@ -12,3 +12,5 @@ properties:
   penumbra:
   type:
   target:
+  castShadow:
+  shadowCameraVisible:

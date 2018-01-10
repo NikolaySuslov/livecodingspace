@@ -274,6 +274,33 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && isAShadowDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+
+
+                        switch (propertyName) {
+
+                            case "cast":
+                                parentNodeAF.setAttribute('shadow', 'cast', propertyValue);
+                                break;
+    
+                            case "receive":
+                                parentNodeAF.setAttribute('shadow', 'receive', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
+                        }
+
+
+                    }
+                }
+
+
                 if (value === undefined && isAMaterialDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
@@ -285,13 +312,44 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             element == propertyName ? parentNodeAF.setAttribute('material', element, propertyValue) :
                                 value = undefined;
                         })
-
-                    
-
-
                     }
                 }
 
+                if (value === undefined && isAFogDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+                    
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        let defs = ['fogType', 'fogColor', 'density', 'near', 'far'];
+
+                        defs.forEach(element => {
+                            if (element == propertyName){
+
+                                switch (element) {
+                    
+                                    case 'fogType':
+                                    parentNodeAF.setAttribute('fog', 'type', propertyValue);
+                                        break;
+
+                                    case 'fogColor':
+                                        parentNodeAF.setAttribute('fog', 'color', propertyValue);
+                                            break;
+
+                                    default:
+                                            value = parentNodeAF.setAttribute('fog', element, propertyValue);
+                                            break;
+                                }
+
+
+                                
+                            } else {
+                                value = undefined
+                            }
+                            // element == propertyName ? parentNodeAF.setAttribute('fog', element, propertyValue) :
+                            //     value = undefined;
+                        })
+                    }
+                }
 
                 if (value === undefined && isARayCasterDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
@@ -579,6 +637,59 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     })
                 }
 
+                
+                if (value === undefined && isAFogDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    let parentNodeAF = aframeObject.el;
+                    let defs = ['fogType', 'color', 'density', 'near', 'far'];
+
+                    defs.forEach(element => {
+                        if (element == propertyName) {
+
+
+                            switch (element) {
+
+                                case 'fogType':
+        
+                                    value = parentNodeAF.getAttribute('fog').type;
+                                    break;
+                                
+                                case 'fogColor':
+        
+                                    value = parentNodeAF.getAttribute('fog').color;
+                                    break;
+                                
+                                default:
+                                    value = parentNodeAF.getAttribute('fog').element; 
+                                    break;
+
+                            }
+
+                        }
+                    })
+                }
+
+                if (value === undefined && isAShadowDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    switch (propertyName) {
+
+                        case "cast":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).cast;
+                            break;
+
+                        case "receive":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).receive;
+                            break;
+
+
+                    }
+                }
+
 
                 if (value === undefined && isALineDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -862,6 +973,26 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+    function isAFogDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/aSceneFogComponent.vwf");
+            }
+        }
+        return found;
+    }
+
+    function isAShadowDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/shadowComponent.vwf");
+            }
+        }
+        return found;
+    }
+
     function isARayCasterDefinition(prototypes) {
         var found = false;
         if (prototypes) {
@@ -919,7 +1050,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var sceneEl = document.querySelector('a-scene');
 
         aframeObj.id = node.parentID;
-        aframeObj.el = sceneEl.children[node.parentID];
+       // aframeObj.el = sceneEl.children[node.parentID];
         aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => { return item.id == aframeObj.id })[0];
 
 
@@ -946,11 +1077,36 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             
                     }
 
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aSceneFogComponent.vwf")) {
+
+            // aframeObj.el.setAttribute(node.type, {});
+
+            aframeObj = {};
+            //var sceneEl = document.querySelector('a-scene');
+    
+            aframeObj.id = node.parentID;
+            aframeObj.el = document.querySelector('a-scene');
+
+            aframeObj.compName = "fog";
+            aframeObj.el.setAttribute('fog', {});
+
+        }
+
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/raycasterComponent.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "raycaster";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/shadowComponent.vwf")) {
+            
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "shadow";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }

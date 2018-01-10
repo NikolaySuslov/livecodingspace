@@ -401,10 +401,10 @@ define([
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
-                                                                self.avatarCardDef("/../assets/avatars/ico/female.jpg", { title: "Human", subtitle: "Female" },
+                                                                self.avatarCardDef("/assets/avatars/ico/female.jpg", { title: "Human", subtitle: "Female" },
                                                                     function (e) {
                                                                         let avatarID = 'avatar-' + self.kernel.moniker();
-                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/female/avatar1.gltf"]);
+                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/assets/avatars/female/avatar1.gltf"]);
                                                                     }
                                                                 )]
                                                         },
@@ -413,10 +413,10 @@ define([
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
-                                                                self.avatarCardDef("/../assets/avatars/ico/male.jpg", { title: "Human", subtitle: "Male" },
+                                                                self.avatarCardDef("/assets/avatars/ico/male.jpg", { title: "Human", subtitle: "Male" },
                                                                     function (e) {
                                                                         let avatarID = 'avatar-' + self.kernel.moniker();
-                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/../assets/avatars/male/avatar1.gltf"]);
+                                                                        vwf_view.kernel.callMethod(avatarID, "createAvatarFromGLTF", ["/assets/avatars/male/avatar1.gltf"]);
                                                                     }
                                                                 )]
                                                         }
@@ -962,7 +962,7 @@ define([
                                             $cell: true,
                                             $type: "input",
                                             type: "text",
-                                            value: this._prop.value,
+                                            value: this._prop.getValue(),
                                             onchange: function (e) {
                                                 let propValue = this.value;
                                                 try {
@@ -1587,7 +1587,6 @@ define([
                         return (!this._displayedProperties[prop[1].prop.name]) ? (this._displayedProperties[prop[1].prop.name] = prop[1].prototype, true) : (false);
                     };
                     let props = Object.entries(getProperties.call(self, self.kernel, node.extendsID)).filter(filterFunction.bind(this));
-
                     return props
                 },
                 $update: function () {
@@ -1866,14 +1865,14 @@ define([
                                 document.getElementById('picker-indicator'),
                                 mouseSlide, mousePicker
                             );
-                            if (myEl._propName == 'color') {
-
+                            if (myEl._propName.toLowerCase().includes('color')) {
+                               
                                 // console.log(hex);    
                                 document.querySelector('#propAceEditor').env.editor.setValue(JSON.stringify(hex));
                                 self.kernel.setProperty(myEl._editorNode, myEl._propName, hex);
                             }
                         });
-                    if (myEl._propName == 'color') {
+                    if (myEl._propName.toLowerCase().includes('color')) {
                         cp.setHex(JSON.parse(myEl._prop.body));
                     }
                 },
@@ -1957,7 +1956,7 @@ define([
                     var livePropertyComponent = {}
 
                     if (this._prop.type == 'simple') {
-                        if (this._propName == 'color') {
+                        if (this._propName.toLowerCase().includes('color')) {
                             livePropertyComponent = colorPickerComponent
                         }
                         
