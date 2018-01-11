@@ -180,3 +180,36 @@ this.GUID = function () {
         S4() + S4() + S4()
     );
 }
+
+this.smallRandomId = function()  {
+    return '_' + this.random().toString(36).substr(2, 9);
+}
+
+this.assetImgProto = function () {
+
+    let node = {
+        "extends": "http://vwf.example.com/aframe/a-asset-image-item.vwf",
+        "properties": {
+        },
+    }
+    return node
+}
+
+
+
+this.createAssetItemImg = function(){
+
+    console.log("create new asset item for img");
+
+    let nodeName = "asset-item-img-" + this.smallRandomId();
+    let newNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-image-item.vwf",
+        "properties": {
+            itemID:  nodeName,
+            itemSrc: ""
+        }
+    }
+
+    this.children.create(nodeName, newNode);
+
+}

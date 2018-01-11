@@ -194,6 +194,21 @@ define([
                         class: "mdc-layout-grid__inner",
                         $components: [
                             {
+                                
+                                    $cell: true,
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $cell: true,
+                                            $type: "h3",
+                                            class: "mdc-typography--headline",
+                                            $text: "Primitives"
+                                        }
+                                    ]
+                                
+                            },
+                            {
                                 $cell: true,
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
@@ -252,7 +267,48 @@ define([
                             // }
                           
                         ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "h3",
+                                        class: "mdc-typography--headline",
+                                        $text: "Assets"
+                                    }
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
+                                $components: [
+
+                                    widgets.simpleCard(
+                                        {
+                                            "imgSrc": "vwf/view/lib/images/ui/standard.png",
+                                            "imgHeight": "100px",
+                                            "addonClass": "create-card",
+                                            "text": "2D Image",
+                                            "onclickfunc": function(){
+                                                //let cubeName = self.GUID();
+                                                vwf_view.kernel.callMethod(vwf.application(), "createAssetItemImg")
+                                            }
+                                        }
+                                    )
+                                ]
+                            }
+                        ]
                     }
+
                 ]
             }
 

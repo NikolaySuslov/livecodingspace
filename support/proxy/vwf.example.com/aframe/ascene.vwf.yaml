@@ -15,5 +15,6 @@ methods:
       - avatar
       - name
       - node
+  createAssetItemImg:
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"
