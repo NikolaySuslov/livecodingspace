@@ -1101,6 +1101,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 aframeObj = document.createElement('a-asset-item');
                 aframeObj.setAttribute('id', "item-"+GUID());
                 aframeObj.setAttribute('src', "");
+                aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
             }
         
@@ -1112,6 +1113,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 aframeObj = document.createElement('img');
                 aframeObj.setAttribute('id', "item-"+GUID());
                 aframeObj.setAttribute('src', "");
+                aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
             }
 
@@ -1123,6 +1125,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 aframeObj = document.createElement('audio');
                 aframeObj.setAttribute('id', "item-"+GUID());
                 aframeObj.setAttribute('src', "");
+                aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
             }
 
