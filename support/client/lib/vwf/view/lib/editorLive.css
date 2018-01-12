@@ -214,3 +214,36 @@
         height: 30px;
         width: 30px;
       }
+
+      .createListItem {
+        width: 30px;
+        cursor:pointer;
+      }
+
+   /*    .tooltip {
+       position: relative;
+        display: inline-block; 
+        border-bottom: 1px dotted black; 
+    }
+     */
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 100px;
+        background-color: rgba(134, 134, 134, 0.85);
+        color: rgb(255, 255, 255);
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%; 
+        margin-left: -50px; 
+    }
+    
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }

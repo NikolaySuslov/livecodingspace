@@ -195,81 +195,121 @@ define([
                             {
                                 $cell: true,
                                 $type: "h3",
-                                $text:"Create"
+                                class: "mdc-typography--subheading2",
+                                $text:"Primitives"
                             },
                             {
                                 $cell: true,
                                 $type: "div",
-                                class: "mdc-list-group",
+                                class: "mdc-grid-list",
                                 $components: [
                                     {
                                         $cell: true,
-                                        $type: "h3",
-                                        class: "mdc-list-group__subheader",
-                                        $text:"3D Primitives" 
-                                     
-                                    },
+                                        $type: "ul",
+                                        class: "mdc-grid-list__tiles",
+                                        $components: make3DPrimitiveList()
+                                    }
+                                ]
+                            },
+                            widgets.divider,
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                $text:"Lights",
+                                class: "mdc-typography--subheading2"
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
                                     {
                                         $cell: true,
                                         $type: "ul",
-                                        class: "mdc-list mdc-list--two-line",
-                                        $components: make3DPrimitiveList()  
-                                    },
-                                    self.widgets.listDivider(),
-                                    {
-                                        $cell: true,
-                                        $type: "h3",
-                                        class: "mdc-list-group__subheader",
-                                        $text:"Light" 
-                                     
-                                    },
-                                    {
-                                        $cell: true,
-                                        $type: "ul",
-                                        class: "mdc-list mdc-list--two-line",
+                                        class: "mdc-grid-list__tiles",
                                         $components: makeLightsList()
-                                    },
-                                    self.widgets.listDivider(),
-                                    {
-                                        $cell: true,
-                                        $type: "h3",
-                                        class: "mdc-list-group__subheader",
-                                        $text:"Assets" 
-                                     
-                                    },
+                                    }
+                                ]
+                            },
+                            // widgets.divider,
+                            // {
+                            //     $cell: true,
+                            //     $type: "h3",
+                            //     class: "mdc-typography--subheading2",
+                            //     $text:"Objects"
+                            // },
+                            // {
+                            //     $cell: true,
+                            //     $type: "div",
+                            //     class: "mdc-grid-list",
+                            //     $components: [
+                            //         {
+                            //             $cell: true,
+                            //             $type: "ul",
+                            //             class: "mdc-grid-list__tiles",
+                            //             $components: [  
+                            //                 self.widgets.gridListItem({
+                            //                     imgSrc: "vwf/view/lib/images/ui/icons/floor.png",
+                            //                     title: 'Floor',
+                            //                     styleClass: "createListItem",
+                            //                     onclickfunc: function(){
+                            //                         //let cubeName = self.GUID();
+                            //                        // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                            //                     }
+                            //                 })
+                                        
+                                        
+                            //             ]
+                            //         }
+                            //     ]
+                            // }, 
+                            widgets.divider,
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "mdc-typography--subheading2",
+                                $text:"Assets" 
+                             
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
                                     {
                                         $cell: true,
                                         $type: "ul",
-                                        class: "mdc-list mdc-list--two-line",
+                                        class: "mdc-grid-list__tiles",
                                         $components: [
-                                            self.widgets.createListItem({
+                                            self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/3ditem.png",
-                                                title: '3D Model'
+                                                title: '3D Model',
+                                                styleClass: "createListItem"
                                             }),
-                                            self.widgets.createListItem({
+                                            self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/image.png",
                                                 title: 'Image',
+                                                styleClass: "createListItem",
                                                 onclickfunc: function(){
                                                     //let cubeName = self.GUID();
                                                     vwf_view.kernel.callMethod(vwf.application(), "createAssetItemImg")
                                                 }
                                             }),
-                                            self.widgets.createListItem({
+                                            self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/video.png",
-                                                title: 'Video'
+                                                title: 'Video',
+                                                styleClass: "createListItem"
                                             }),
-                                            self.widgets.createListItem({
+                                            self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/sound.png",
-                                                title: 'Sound'
+                                                title: 'Sound',
+                                                styleClass: "createListItem"
                                             })
                                         
                                         ]
                                     }
-
                                 ]
-                            }
-   
-                            
+                            } 
                         ]
                     }
 
@@ -277,10 +317,11 @@ define([
             }
 
             function make3DPrimitiveList() {
-                let nodeNames = ['Plane', 'Cube', 'Sphere', 'Cylinder', 'Cone'];
+                let nodeNames = ['Plane', 'Cube', 'Sphere', 'Cylinder', 'Cone', 'Text'];
                 return nodeNames.map(el => {
-                   return  self.widgets.createListItem({
+                   return  self.widgets.gridListItem({
                         imgSrc: "vwf/view/lib/images/ui/icons/" + el.toLowerCase()+".png",
+                        styleClass: "createListItem",
                         title: el,
                         onclickfunc: function(){
                             let avatarID = 'avatar-' + vwf.moniker_;
@@ -294,7 +335,8 @@ define([
             function makeLightsList() {
                 let nodeNames = ['Ambient', 'Directional', 'Hemisphere', 'Point', 'Spot'];
                 return nodeNames.map(el => {
-                   return self.widgets.createListItem({
+                   return self.widgets.gridListItem({
+                        styleClass: "createListItem",
                         imgSrc: "vwf/view/lib/images/ui/icons/light_"+el.toLowerCase()+".png",
                         title: el,
                         onclickfunc: function(){
