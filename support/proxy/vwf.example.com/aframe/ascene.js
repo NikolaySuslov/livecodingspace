@@ -121,7 +121,81 @@ this.cubeProto = function () {
     return node
 }
 
-this.createPrimitive = function (type, avatar, name, node) {
+this.lightProto = function (lightType) {
+
+    var newLightType = lightType
+
+    if (!newLightType){
+        newLightType = "directional"
+    }
+
+    let node = {
+        "extends": "http://vwf.example.com/aframe/alight.vwf",
+        "properties": {
+            "displayName": newLightType,
+            "type": newLightType,
+            "clickable": true
+        },
+        children: {
+            "interpolation":
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                },
+            "cursor-listener": {
+                "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
+            }
+        },
+        events: {
+            "clickEvent": {
+                "body": ""
+            }
+        }
+    }
+
+    return node
+}
+
+this.planeProto = function () {
+
+    let node = {
+        "extends": "http://vwf.example.com/aframe/aplane.vwf",
+        "properties": {
+            "displayName": "plane",
+            "color": "white",
+            "height": 1,
+            "width": 1,
+            "clickable": true
+        },
+        children: {
+            "interpolation":
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                },
+            "cursor-listener": {
+                "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
+            }
+        },
+        events: {
+            "clickEvent": {
+                "body": ""
+            }
+        }
+    }
+
+    return node
+}
+
+this.createPrimitive = function (type, avatar, params, name, node) {
 
     var position = "0 0 0";
     var nodeName = name;
@@ -151,6 +225,14 @@ this.createPrimitive = function (type, avatar, name, node) {
             newNode = this.sphereProto();
             break;
 
+        case "plane":
+            newNode = this.planeProto();
+            break;
+
+        case "light":
+            newNode = this.lightProto(params);
+            break;
+            
         default:
             newNode = undefined;
             break;
@@ -211,5 +293,12 @@ this.createAssetItemImg = function(){
     }
 
     this.children.create(nodeName, newNode);
+
+}
+
+this.deleteNode = function(nodeName){
+
+      let node = this.children[nodeName];
+    if (node) this.children.delete(node);
 
 }

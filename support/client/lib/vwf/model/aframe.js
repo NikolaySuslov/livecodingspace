@@ -278,18 +278,30 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         deletingNode: function (nodeID) {
 
-            if (this.state.nodes[nodeID] !== undefined) {
+            if (nodeID) {
+                var childNode = this.state.nodes[nodeID];
+                if (!childNode) return;
 
-                var node = this.state.nodes[nodeID];
-                if (node.aframeObj !== undefined) {
+
+            if (childNode !== undefined) {
+
+                if (childNode.children) {
+
+                    for (var i = 0; i < childNode.children.length; i++) {
+                        this.deletingNode(childNode.children[i]);
+                    }
+                }
+
+                if (childNode.aframeObj !== undefined) {
                     // removes and destroys object
-                    node.aframeObj.parentNode.removeChild(node.aframeObj);
-                    node.aframeObj = undefined;
+                    childNode.aframeObj.parentNode.removeChild(childNode.aframeObj);
+                    childNode.aframeObj = undefined;
                 }
 
                 delete this.state.nodes[nodeID];
             }
 
+        }
         },
 
 

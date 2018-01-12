@@ -65,6 +65,54 @@ define(function () {
             }
         }
 
+        listDivider() {
+            return {
+                $cell: true,
+                $type: "hr",
+                class: "mdc-list-divider mdc-list-divider--inset"
+            }
+        }
+        createListItem(obj) {
+            return {
+                $cell: true,
+                $type: "li",
+                class: "mdc-list-item",
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "span",
+                        class: "mdc-list-item__graphic",
+                        $components: [
+                            {
+                            $cell: true,
+                            class: "createItems",
+                            $type: "img",
+                            src: obj.imgSrc,
+                            onclick: obj.onclickfunc
+                            }
+                        ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "span",
+                        class: "mdc-list-item__text",
+                        $text: obj.title
+                        // $components: [
+                        //     {
+                        //         $text: obj.title
+                        //     },
+                        //     {
+                        //     $cell: true,
+                        // $type: "span",
+                        // class: "mdc-list-item__secondary-text",
+                        // $text: obj.subTitle
+                        //     }
+                        // ]
+                    }
+                ]
+            }
+        }
+
         createCard(obj){
             return {
                 $cell: true,
@@ -281,6 +329,58 @@ define(function () {
                 //'aria-hidden': true,
                 $init: obj.init
             }
+        }
+
+        floatActionButton(obj) {
+            return {
+                    $cell: true,
+                    $type: "button",
+                    class: "mdc-fab material-icons " + obj.styleClass,
+                    onclick: obj.onclickfunc,
+                    $components:[
+                        {
+                            $cell: true,
+                            $type: "span",
+                            class: "mdc-fab__icon",
+                            $text: obj.label
+                        }
+                    ]
+                }
+        }
+
+        iconButton(obj) {
+            return {
+                    $cell: true,
+                    $type: "button",
+                    class: "mdc-button",
+                    onclick: obj.onclickfunc,
+                    $components:[
+                        {
+                            $cell: true,
+                            $type: "i",
+                            class: "material-icons mdc-button__icon"+ obj.styleClass,
+                            $text: obj.label
+                        }
+                    ]
+                }
+        }
+
+        imageButton(obj){
+            return {
+                $cell: true,
+                $type: "button",
+                class: "mdc-button mdc-button--compact",
+                onclick: obj.onclickfunc,
+                $components:[
+                    {
+                        $cell: true,
+                        class: obj.styleClass,
+                        $type: "img",
+                        src: obj.imgSrc
+                     }
+                ]
+            }
+            
         }
 
         switch(obj) {

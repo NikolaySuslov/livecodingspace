@@ -1,0 +1,5 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:

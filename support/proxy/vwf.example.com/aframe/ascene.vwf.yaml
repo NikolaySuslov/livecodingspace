@@ -16,5 +16,14 @@ methods:
       - name
       - node
   createAssetItemImg:
+  planeProto:
+  cubeProto:
+  sphereProto:
+  lightProto:
+     parameters:
+      - lightType
+  deleteNode:
+    parameters:
+      - nodeName
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"

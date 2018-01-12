@@ -247,6 +247,11 @@ define(["module", "vwf/view"], function (module, view) {
             // }
         },
 
+        deletedNode: function(childID)
+        {
+            delete this.nodes[childID];
+        },
+
         firedEvent: function (nodeID, eventName, eventParameters) {
             //var avatarID = vwf_view.kernel.find("", avatarName)
 

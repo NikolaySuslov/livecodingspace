@@ -190,128 +190,121 @@ define([
                 $components: [
                     {
                         $cell: true,
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
+                        $type: "section",
                         $components: [
                             {
-                                
-                                    $cell: true,
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-                                        {
-                                            $cell: true,
-                                            $type: "h3",
-                                            class: "mdc-typography--headline",
-                                            $text: "Primitives"
-                                        }
-                                    ]
-                                
+                                $cell: true,
+                                $type: "h3",
+                                $text:"Create"
                             },
                             {
                                 $cell: true,
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                $components: [
-                                widgets.simpleCard(
-                                    {
-                                        "imgSrc": "vwf/view/lib/images/ui/cube_normal.png",
-                                        "imgHeight": "100px",
-                                        "addonClass": "create-card",
-                                        "text": "Cube",
-                                        "onclickfunc": function(){
-                                            let avatarID = 'avatar-' + vwf.moniker_;
-                                            //let cubeName = self.GUID();
-                                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["cube", avatarID])
-                                        }
-                                    }
-                                )
-                            ]
-                        },
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                $components: [
-
-                                    widgets.simpleCard(
-                                        {
-                                            "imgSrc": "vwf/view/lib/images/ui/sphere_normal.png",
-                                            "imgHeight": "100px",
-                                            "addonClass": "create-card",
-                                            "text": "Sphere",
-                                            "onclickfunc": function(){
-                                                let avatarID = 'avatar-' + vwf.moniker_;
-                                                //let cubeName = self.GUID();
-                                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["sphere", avatarID])
-                                            }
-                                        }
-                                    )
-                                ]
-                            },
-                            // {
-                            //     $cell: true,
-                            //     $type: "div",
-                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                            //     $components: [
-                            
-                            //         widgets.simpleCard(
-                            //             {
-                            //                 "imgSrc": "vwf/view/lib/images/ui/cylinder_normal.png",
-                            //                 "imgHeight": "100px",
-                            //                 "text": "Cylinder"
-                            //             }
-                            //         )
-                                    
-                            //     ]
-                            // }
-                          
-                        ]
-                    },
-                    {
-                        $cell: true,
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                class: "mdc-list-group",
                                 $components: [
                                     {
                                         $cell: true,
                                         $type: "h3",
-                                        class: "mdc-typography--headline",
-                                        $text: "Assets"
+                                        class: "mdc-list-group__subheader",
+                                        $text:"3D Primitives" 
+                                     
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-list mdc-list--two-line",
+                                        $components: make3DPrimitiveList()  
+                                    },
+                                    self.widgets.listDivider(),
+                                    {
+                                        $cell: true,
+                                        $type: "h3",
+                                        class: "mdc-list-group__subheader",
+                                        $text:"Light" 
+                                     
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-list mdc-list--two-line",
+                                        $components: makeLightsList()
+                                    },
+                                    self.widgets.listDivider(),
+                                    {
+                                        $cell: true,
+                                        $type: "h3",
+                                        class: "mdc-list-group__subheader",
+                                        $text:"Assets" 
+                                     
+                                    },
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-list mdc-list--two-line",
+                                        $components: [
+                                            self.widgets.createListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/3ditem.png",
+                                                title: '3D Model'
+                                            }),
+                                            self.widgets.createListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/image.png",
+                                                title: 'Image',
+                                                onclickfunc: function(){
+                                                    //let cubeName = self.GUID();
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetItemImg")
+                                                }
+                                            }),
+                                            self.widgets.createListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/video.png",
+                                                title: 'Video'
+                                            }),
+                                            self.widgets.createListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/sound.png",
+                                                title: 'Sound'
+                                            })
+                                        
+                                        ]
                                     }
-                                ]
-                            },
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                                $components: [
 
-                                    widgets.simpleCard(
-                                        {
-                                            "imgSrc": "vwf/view/lib/images/ui/standard.png",
-                                            "imgHeight": "100px",
-                                            "addonClass": "create-card",
-                                            "text": "2D Image",
-                                            "onclickfunc": function(){
-                                                //let cubeName = self.GUID();
-                                                vwf_view.kernel.callMethod(vwf.application(), "createAssetItemImg")
-                                            }
-                                        }
-                                    )
                                 ]
                             }
+   
+                            
                         ]
                     }
 
                 ]
             }
 
+            function make3DPrimitiveList() {
+                let nodeNames = ['Plane', 'Cube', 'Sphere', 'Cylinder', 'Cone'];
+                return nodeNames.map(el => {
+                   return  self.widgets.createListItem({
+                        imgSrc: "vwf/view/lib/images/ui/icons/" + el.toLowerCase()+".png",
+                        title: el,
+                        onclickfunc: function(){
+                            let avatarID = 'avatar-' + vwf.moniker_;
+                            //let cubeName = self.GUID();
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), avatarID])
+                        }
+                })
+                })
+            }
+
+            function makeLightsList() {
+                let nodeNames = ['Ambient', 'Directional', 'Hemisphere', 'Point', 'Spot'];
+                return nodeNames.map(el => {
+                   return self.widgets.createListItem({
+                        imgSrc: "vwf/view/lib/images/ui/icons/light_"+el.toLowerCase()+".png",
+                        title: el,
+                        onclickfunc: function(){
+                            let avatarID = 'avatar-' + vwf.moniker_;
+                            //let cubeName = self.GUID();
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", avatarID, el.toLowerCase()])
+                        }
+                    })
+                })
+            }
 
             let avatarSettings =
                 {
@@ -994,21 +987,26 @@ define([
                     $update: function () {
                         this.$components = [
 
+                            // {
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-10",
+                            //     $components: [
+                            //         { $text: this._prop.name }
+                            //     ]
+                            // },
+                            // {
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                            // },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
-                                    { $text: this._prop.name }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
-                                $components: [
+                                    {   
+                                        $type: "span",
+                                        class: "mdc-typography--body2 mdc-typography--adjust-margin protoPropLabel",
+                                        $text: this._prop.name + ': '
+                                     },
                                     {
                                         class: "mdc-text-field",
                                         $cell: true,
@@ -1511,7 +1509,7 @@ define([
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                 $components: [
                                     widgets.switch({
                                     'id': 'editnode', 
@@ -1537,52 +1535,74 @@ define([
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
-                                    {
 
-                                        $cell: true,
-                                        $type: "a",
-                                        class: "gizmomode",
-                                        $text: "T",
-                                        onclick: function (e) {
-                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
-                                        }
-                                    }
+                                    self.widgets.imageButton({
+                                        imgSrc: "vwf/view/lib/images/ui/icons/translate.png",
+                                        styleClass: "editButton",
+                                        onclickfunc: function (e) {
+                                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
+                                                        }
+                                    })
                                 ]
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
-                                    {
 
-                                        $cell: true,
-                                        $type: "a",
-                                        class: "gizmomode",
-                                        $text: "R",
-                                        onclick: function (e) {
-                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
-                                        }
-                                    }
+                                    self.widgets.imageButton({
+                                        imgSrc: "vwf/view/lib/images/ui/icons/rotate.png",
+                                        styleClass: "editButton",
+                                        onclickfunc: function (e) {
+                                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
+                                                        }
+                                    })
                                 ]
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
-                                    {
 
-                                        $cell: true,
-                                        $type: "a",
-                                        class: "gizmomode",
-                                        $text: "S",
-                                        onclick: function (e) {
-                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
-                                        }
-                                    }
+                                    self.widgets.imageButton({
+                                        imgSrc: "vwf/view/lib/images/ui/icons/scale.png",
+                                        styleClass: "editButton",
+                                        onclickfunc: function (e) {
+                                                            vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
+                                                        }
+                                    })
                                 ]
-                            }
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    // self.widgets.floatActionButton({
+                                    //     label: "content_copy",
+                                    //     styleClass: "mdc-fab--mini"
+
+                                    // }),
+                                    // {
+                                    //     $type: "span",
+                                    //     $text: " "
+
+                                    // },
+                                    self.widgets.floatActionButton({
+                                        label: "delete_forever",
+                                        styleClass: "mdc-fab--mini",
+                                        onclickfunc: function(){
+                                        var nodeID = document.querySelector('#currentNode')._currentNode;
+                                        let node = self.nodes[nodeID]; 
+                                        //vwf_view.kernel.deleteChild(node.parentID, node.name);
+                                        vwf_view.kernel.deleteNode(nodeID);
+                                        //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
+                                        }
+                                    })
+                                    
+                                ]
+                            },
                         ]
                     }
 
