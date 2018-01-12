@@ -62,6 +62,49 @@ this.sphereProto = function () {
             "clickable": true
         },
         children: {
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                "type": "component"
+            },
+            "interpolation":
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                },
+            "cursor-listener": {
+                "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
+            }
+        },
+        events: {
+            "clickEvent": {
+                "body": ""
+            }
+        }
+    }
+
+    return node
+}
+
+this.textProto = function () {
+
+    let node = {
+        "extends": "http://vwf.example.com/aframe/atext.vwf",
+        "properties": {
+            "displayName": "text",
+            "color": "white",
+            "value": "Text",
+            "side": "double",
+            "clickable": true
+        },
+        children: {
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                "type": "component"
+            },
             "interpolation":
                 {
                     "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
@@ -108,6 +151,10 @@ this.cubeProto = function () {
                 },
             "cursor-listener": {
                 "extends": "http://vwf.example.com/aframe/app-cursor-listener-component.vwf",
+                "type": "component"
+            },
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
                 "type": "component"
             }
         },
@@ -172,6 +219,13 @@ this.planeProto = function () {
             "clickable": true
         },
         children: {
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                "type": "component",
+                "properties": {
+                    "side": "double"
+                }
+            },
             "interpolation":
                 {
                     "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
@@ -233,6 +287,10 @@ this.createPrimitive = function (type, avatar, params, name, node) {
             newNode = this.lightProto(params);
             break;
             
+        case "text":
+            newNode = this.textProto(params);
+            break;
+
         default:
             newNode = undefined;
             break;

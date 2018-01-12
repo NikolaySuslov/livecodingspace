@@ -306,7 +306,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         value = propertyValue;
                         let parentNodeAF = aframeObject.el;
-                        let defs = ['color', 'transparent', 'opacity'];
+                        let defs = ['color', 'transparent', 'opacity', 'side'];
 
                         defs.forEach(element => {
                             element == propertyName ? parentNodeAF.setAttribute('material', element, propertyValue) :
@@ -772,7 +772,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute('material').opacity;
                             break;
 
-                            case "transparent":
+                        case "side":
+                            value = parentNodeAF.getAttribute('material').side;
+                            break;
+
+                        case "transparent":
                             value = parentNodeAF.getAttribute('material').transparent;
                             break;
                         

@@ -383,6 +383,43 @@ define(function () {
             
         }
 
+        gridListItem(obj) {
+            return {
+                $cell: true,
+                $type: "li",
+                class: "mdc-grid-tile " + obj.styleClass,
+                $components:[
+                    {
+                        $cell: true,
+                        class: "mdc-grid-tile__primary",
+                        $type: "div",
+                        style: "background-color: transparent;",
+                        $components:[
+                            {
+                                $cell: true,
+                                class: "mdc-grid-tile__primary-content tooltip",
+                                $type: "div",
+                                'aria-label': obj.title,
+                                alt: obj.title,
+                                style: "background-image: url("+ obj.imgSrc + ");",
+                                onclick: obj.onclickfunc,
+                                $components:[
+                                    {
+                                        $cell: true,
+                                        class: "tooltiptext",
+                                        $type: "span",
+                                        $text: obj.title
+                                    }
+                                ]
+                            }
+                            
+                           
+                        ]
+                    }
+                ]
+            }
+        }
+
         switch(obj) {
 
             return   {
