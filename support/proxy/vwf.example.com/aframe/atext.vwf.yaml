@@ -3,6 +3,24 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-text"
 properties:
-  value:
+  align:
+  alpha-test:
+  anchor:
+  baseline:
   color:
+  font:
+  font-image:
+  height:
+  letter-spacing:
+  line-height:
+  opacity:
+  shader:
   side:
+  tab-size:
+  transparent:
+  value:
+  white-space:
+  width:
+  wrap-count:
+  wrap-pixels:
+  z-offset:

@@ -30,6 +30,152 @@ define(function () {
 
         }
 
+        simpleCard(obj){
+            let style =  'background-image: url(' + obj.imgSrc + '); background-size: cover; background-repeat: no-repeat; height:' + obj.imgHeight + ';';
+            var addonClass = obj.addonClass;
+            if (!addonClass){
+                addonClass = ''
+            }
+
+            return  {
+                $cell: true,
+                $type: "div",
+                $components:[
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-card" +' '+ addonClass,
+                        onclick: obj.onclickfunc,
+                        $components:[
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__media",
+                                style:  style
+                            },
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__supporting-text",
+                                $text: obj.text
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
+        listDivider() {
+            return {
+                $cell: true,
+                $type: "hr",
+                class: "mdc-list-divider mdc-list-divider--inset"
+            }
+        }
+        createListItem(obj) {
+            return {
+                $cell: true,
+                $type: "li",
+                class: "mdc-list-item",
+                $components: [
+                    {
+                        $cell: true,
+                        $type: "span",
+                        class: "mdc-list-item__graphic",
+                        $components: [
+                            {
+                            $cell: true,
+                            class: "createItems",
+                            $type: "img",
+                            src: obj.imgSrc,
+                            onclick: obj.onclickfunc
+                            }
+                        ]
+                    },
+                    {
+                        $cell: true,
+                        $type: "span",
+                        class: "mdc-list-item__text",
+                        $text: obj.title
+                        // $components: [
+                        //     {
+                        //         $text: obj.title
+                        //     },
+                        //     {
+                        //     $cell: true,
+                        // $type: "span",
+                        // class: "mdc-list-item__secondary-text",
+                        // $text: obj.subTitle
+                        //     }
+                        // ]
+                    }
+                ]
+            }
+        }
+
+        createCard(obj){
+            return {
+                $cell: true,
+                $type: "div",
+                $components:[
+                    {
+                        $cell: true,
+                        $type: "div",
+                        class: "mdc-card",
+                        $components:[
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-card__horizontal-block",
+                                $components:[
+                                    {
+                                        $cell: true,
+                                        $type: "section",
+                                        class: "mdc-card__primary",
+                                        $components:[
+                                            {
+                                                $cell: true,
+                                                $type: "h1",
+                                                class: "mdc-card__title mdc-card__title--large",
+                                                $text: obj.title
+                                            },
+                                            {
+                                                $cell: true,
+                                                $type: "h2",
+                                                class: "mdc-card__subtitle",
+                                                $text: obj.subTitle
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        
+                                            $cell: true,
+                                            $type: "img",
+                                            class: "",
+                                            src: obj.imgSrc
+                                        
+                                    }
+                                ]
+                            },
+                            {
+                                $cell: true,
+                                $type: "section",
+                                class: "mdc-card__actions",
+                                $components:[
+                                    {
+                                        $cell: true,
+                                        $type: "button",
+                                        class: "mdc-button mdc-button--compact mdc-card__action",
+                                        $text: obj.actionLabel
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
         buttonStroked(obj){
             return {
                 $cell: true,
@@ -173,7 +319,7 @@ define(function () {
             return {
                 $cell: true,
                 $type: "i",
-                class: "mdc-icon-toggle material-icons",
+                class: "mdc-icon-toggle material-icons "+ obj.styleClass,
                 role: "button",
                 $text: obj.label,
                 id: obj.id,
@@ -183,6 +329,58 @@ define(function () {
                 //'aria-hidden': true,
                 $init: obj.init
             }
+        }
+
+        floatActionButton(obj) {
+            return {
+                    $cell: true,
+                    $type: "button",
+                    class: "mdc-fab material-icons " + obj.styleClass,
+                    onclick: obj.onclickfunc,
+                    $components:[
+                        {
+                            $cell: true,
+                            $type: "span",
+                            class: "mdc-fab__icon",
+                            $text: obj.label
+                        }
+                    ]
+                }
+        }
+
+        iconButton(obj) {
+            return {
+                    $cell: true,
+                    $type: "button",
+                    class: "mdc-button",
+                    onclick: obj.onclickfunc,
+                    $components:[
+                        {
+                            $cell: true,
+                            $type: "i",
+                            class: "material-icons mdc-button__icon"+ obj.styleClass,
+                            $text: obj.label
+                        }
+                    ]
+                }
+        }
+
+        imageButton(obj){
+            return {
+                $cell: true,
+                $type: "button",
+                class: "mdc-button mdc-button--compact",
+                onclick: obj.onclickfunc,
+                $components:[
+                    {
+                        $cell: true,
+                        class: obj.styleClass,
+                        $type: "img",
+                        src: obj.imgSrc
+                     }
+                ]
+            }
+            
         }
 
         switch(obj) {

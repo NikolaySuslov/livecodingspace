@@ -3,17 +3,46 @@
 ---
 extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
-  fog: "type: linear; color: #ECECEC; far: 30; near: 0"
   transparent: true
   assets: "assets.json"
 children:
+  assetBG:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg"
+      itemSrc: "/assets/bg.jpg"
+  assetSky:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "sky"
+      itemSrc: "/assets/skyes/sky3.jpg"
+  assetBG2:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg2"
+      itemSrc: "/assets/checker.jpg"
+  assetPlaneObj:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-obj"
+      itemSrc: "/assets/models/plane/PUSHILIN_Plane.obj"
+  assetPlaneMtl:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-mtl"
+      itemSrc: "/assets/models/plane/PUSHILIN_Plane.mtl"
   myLight:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:
-      type: "point"
-      color: "white"
-      position: "0 10 5"
-      rotation: "0 0 0"
+      type: "directional"
+      intensity: 0.5
+      position: "0.5 2.0 1.0"
+      castShadow: true
+  myLight2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      intensity: 0.5
   model:
     extends: http://vwf.example.com/aframe/aobjmodel.vwf
     properties:
@@ -22,6 +51,11 @@ children:
       position: "-1.2 1.7 -2.5"
       rotation: "0 -45 0"
       scale: "0.5 0.5 0.5"
+    children:
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          cast: true
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
@@ -60,6 +94,11 @@ children:
       cursor-listener:
         extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
         type: "component"
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          cast: true
+          receive: true
     events:
       clickEvent:
       intersectEvent:
@@ -108,18 +147,25 @@ children:
       wireframe: true
     children:
       box2:
-        extends: http://vwf.example.com/aframe/abox.vwf
+        extends: http://vwf.example.com/aframe/aentity.vwf
         properties:
-          src: "#bg"
           position: "2 -0.75 0"
-          color: "#2167a5"
-          depth: 1
         children:
+          cube:
+            extends: http://vwf.example.com/aframe/abox.vwf
+            properties:
+              src: "#bg"
+              color: "#2167a5"
+              depth: 1
+            children:
+              shadow:
+                extends: http://vwf.example.com/aframe/shadowComponent.vwf
+                properties:
+                  cast: true
           interpolation:
             extends: http://vwf.example.com/aframe/interpolation-component.vwf
             properties:
               enabled: true
-              duration: 50
               deltaPos: 0.001
               deltaRot: 0.1
         methods:
@@ -143,8 +189,12 @@ children:
       repeat: "10 10"
       rotation: "-90 0 0"
       color: "white"
-      wireframe: false
       src: "#bg2"
+    children:
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          receive: true
 methods:
   initialize:
     body: |

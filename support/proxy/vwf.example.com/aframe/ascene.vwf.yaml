@@ -3,11 +3,27 @@
 extends: http://vwf.example.com/aframe/node.vwf
 type: "a-scene"
 properties:
-  fog:
   assets:
   color:
   transparent:
 methods:
   clientWatch:
+  GUID:
+  createPrimitive:
+    parameters:
+      - type
+      - avatar
+      - name
+      - node
+  createAssetItemImg:
+  planeProto:
+  cubeProto:
+  sphereProto:
+  lightProto:
+     parameters:
+      - lightType
+  deleteNode:
+    parameters:
+      - nodeName
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"

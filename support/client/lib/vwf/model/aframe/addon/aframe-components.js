@@ -131,7 +131,7 @@ AFRAME.registerComponent('cursor-listener', {
             console.log('I was clicked at: ', evt.detail.intersection.point);
             let cursorID = 'cursor-avatar-' + vwf_view.kernel.moniker();
             if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
-                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent")
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent", [vwf_view.kernel.moniker()])
             }
 
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")

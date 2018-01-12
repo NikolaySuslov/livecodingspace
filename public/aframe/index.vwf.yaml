@@ -3,9 +3,16 @@
 ---
 extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
-  fog: "type: linear; color: #ECECEC; far: 9; near: 0"
   transparent: true
 children:
+  fog:
+    extends: http://vwf.example.com/aframe/aSceneFogComponent.vwf
+    type: "component"
+    properties:
+      fogType: "linear"
+      fogColor: "#ECECEC"
+      far: 9
+      near: 0
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
