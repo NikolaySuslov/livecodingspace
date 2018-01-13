@@ -315,6 +315,27 @@ define(function () {
             }
         }
 
+        textField(obj) {
+            return {
+                class: "mdc-text-field",
+                style: "width: 100%",
+                $cell: true,
+                $type: "div",
+                $components: [
+                    {
+                        class: "mdc-text-field__input prop-text-field-input",
+                        id: obj.id,
+                        $cell: true,
+                        $type: "input",
+                        type: "text",
+                        value: obj.value,
+                        onchange: obj.funconchange
+                    }
+
+                ]
+            }
+        }
+
         icontoggle(obj) {
             return {
                 $cell: true,

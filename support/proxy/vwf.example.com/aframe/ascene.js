@@ -332,6 +332,47 @@ this.planeProto = function () {
     return node
 }
 
+this.createModelDAE = function (daeSrc, avatar) {
+
+    var self = this;
+
+    let daeTagName = 'DAE-ASSET-'+this.GUID();
+    let daeTagNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+        "properties": {
+            "itemID": daeTagName,
+            "itemSrc": daeSrc,
+        },
+    }
+
+    this.children.create(daeTagName, daeTagNode, function( child ) {
+        let daeNodeName = 'DAE-MODEL-'+self.GUID();
+
+        var position = "0 0 0";
+        let myAvatar = self.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+    
+        if (cursorNode) {
+             position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+        let daeNode = {
+            "extends": "http://vwf.example.com/aframe/acolladamodel.vwf",
+            "properties": {
+                "src": '#' + child.itemID,
+                "position": position
+            }
+        }
+
+        self.children.create(daeNodeName, daeNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+           });
+
+       });
+}
+
+
 this.createPrimitive = function (type, avatar, params, name, node) {
 
     var position = "0 0 0";
@@ -392,9 +433,7 @@ this.createPrimitive = function (type, avatar, params, name, node) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-           // self.select( self.clickedID );
-           child.lookAt(this.children[avatar].worldPosition)
-           //console.log(avatar);
+           child.lookAt(self.children[avatar].worldPosition)
           });
     }
 
@@ -457,3 +496,4 @@ this.deleteNode = function(nodeName){
     if (node) this.children.delete(node);
 
 }
+

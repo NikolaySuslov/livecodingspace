@@ -25,6 +25,10 @@ methods:
   lightProto:
      parameters:
       - lightType
+  createModelDAE:
+    parameters:
+      - src
+      - avatar
   deleteNode:
     parameters:
       - nodeName

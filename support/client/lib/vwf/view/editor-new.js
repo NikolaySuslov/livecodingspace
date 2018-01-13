@@ -195,7 +195,7 @@ define([
                             {
                                 $cell: true,
                                 $type: "h3",
-                                class: "mdc-typography--subheading2",
+                                class: "mdc-typography--title",
                                 $text:"Primitives"
                             },
                             {
@@ -211,12 +211,12 @@ define([
                                     }
                                 ]
                             },
-                            widgets.divider,
+                            //widgets.divider,
                             {
                                 $cell: true,
                                 $type: "h3",
                                 $text:"Lights",
-                                class: "mdc-typography--subheading2"
+                                class: "mdc-typography--title"
                             },
                             {
                                 $cell: true,
@@ -231,44 +231,171 @@ define([
                                     }
                                 ]
                             },
-                            // widgets.divider,
-                            // {
-                            //     $cell: true,
-                            //     $type: "h3",
-                            //     class: "mdc-typography--subheading2",
-                            //     $text:"Objects"
-                            // },
-                            // {
-                            //     $cell: true,
-                            //     $type: "div",
-                            //     class: "mdc-grid-list",
-                            //     $components: [
-                            //         {
-                            //             $cell: true,
-                            //             $type: "ul",
-                            //             class: "mdc-grid-list__tiles",
-                            //             $components: [  
-                            //                 self.widgets.gridListItem({
-                            //                     imgSrc: "vwf/view/lib/images/ui/icons/floor.png",
-                            //                     title: 'Floor',
-                            //                     styleClass: "createListItem",
-                            //                     onclickfunc: function(){
-                            //                         //let cubeName = self.GUID();
-                            //                        // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
-                            //                     }
-                            //                 })
-                                        
-                                        
-                            //             ]
-                            //         }
-                            //     ]
-                            // }, 
-                            widgets.divider,
+                            //widgets.divider,
                             {
                                 $cell: true,
                                 $type: "h3",
-                                class: "mdc-typography--subheading2",
-                                $text:"Assets" 
+                                class: "mdc-typography--title",
+                                $text:"Objects"
+                            },
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-grid-list__tiles",
+                                        $components: [  
+                                            self.widgets.gridListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/camera.png",
+                                                title: 'Camera',
+                                                styleClass: "createListItem",
+                                                onclickfunc: function(){
+                                                    //let cubeName = self.GUID();
+                                                   // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                                                }
+                                            }),
+                                            self.widgets.gridListItem({
+                                                imgSrc: "vwf/view/lib/images/ui/icons/camera_offset.png",
+                                                title: 'Camera with view offset',
+                                                styleClass: "createListItem",
+                                                onclickfunc: function(){
+                                                    //let cubeName = self.GUID();
+                                                   // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                                                }
+                                            })
+                                        
+                                        
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            //widgets.divider,
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "mdc-typography--title",
+                                $text:"3D Assets" 
+                             
+                            },
+                            widgets.textField({
+                                id:"asset3dsrc",
+                                value:"URL to asset source",
+                                funconchange: function(e){
+                                    console.log(this.value)
+                                }
+                            }),
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-grid-list__tiles",
+                                        $components: [
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "GLTF",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "DAE",
+                                                    onclick: function(e){
+                                                        let srcEl = document.querySelector('#asset3dsrc');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        if(srcEl.value.includes('.dae'))
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createModelDAE", [srcEl.value, avatarID])
+
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "OBJ",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "MTL",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                        
+                                        ]
+                                    }
+                                ]
+                            }, 
+                            //widgets.divider,
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "mdc-typography--title",
+                                $text:"2D Assets / Sound" 
+                             
+                            },
+                            widgets.textField({
+                                id:"asset2dsrc",
+                                value:"URL to asset source",
+                                funconchange: function(e){
+                                    console.log(this.value)
+                                }
+                            }),
+                            {
+                                $cell: true,
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
+                                    {
+                                        $cell: true,
+                                        $type: "ul",
+                                        class: "mdc-grid-list__tiles",
+                                        $components: [
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "Image",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "Sound",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonStroked(
+                                                {
+                                                    label: "Video",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            )
+                                           
+                                        
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                $type:"div"
+                            },
+                             //widgets.divider,
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "mdc-typography--title",
+                                $text:"Resources" 
                              
                             },
                             {
@@ -283,7 +410,7 @@ define([
                                         $components: [
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/3ditem.png",
-                                                title: '3D Model',
+                                                title: 'Asset item',
                                                 styleClass: "createListItem"
                                             }),
                                             self.widgets.gridListItem({
