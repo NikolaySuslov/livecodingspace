@@ -296,9 +296,15 @@ this.createPrimitive = function (type, avatar, params, name, node) {
             break;
     }
 
+    var self = this;
+
     if (newNode) {
         newNode.properties.position = position;
-        this.children.create(nodeName, newNode);
+        this.children.create(nodeName, newNode, function( child ) {
+           // self.select( self.clickedID );
+           child.lookAt(this.children[avatar].worldPosition)
+           //console.log(avatar);
+          });
     }
 
 }

@@ -268,6 +268,27 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         },
 
 
+        // -- callingMethod ------------------------------------------------------------------------
+
+        callingMethod: function( nodeID, methodName, methodParameters ) {
+
+            var node = this.state.nodes[nodeID];
+
+            if(!node) return;
+
+            if (node && node.aframeObj ) {
+                if (methodName == 'lookAt') {
+                    console.log('lookAt: ' +  methodParameters[0]);
+                    let target = methodParameters[0];
+                    node.aframeObj.object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+                    let newRotation = node.aframeObj.getAttribute('rotation');
+                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0});
+                }
+            }
+
+           
+        },
+
 
         // -- deletingNode -------------------------------------------------------------------------
 

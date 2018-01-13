@@ -20,5 +20,8 @@ methods:
   updateSrc:
     parameters:
       - src
+  lookAt:
+    parameters:
+      - nodeID
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"
