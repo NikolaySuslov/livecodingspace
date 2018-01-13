@@ -1,13 +1,14 @@
 # https://aframe.io/docs/0.5.0/primitives/a-sphere.html
 --- 
 extends: http://vwf.example.com/aframe/aentity.vwf
-type: "a-sphere"
+type: "a-cylinder"
 properties:
-  phi-length:
-  phi-start:
-  radius: 
-  segments-depth:
+  height:
+  radius:
+  open-ended:
+  radius-bottom:
+  radius-top:
   segments-height:
-  segments-width:
+  segments-radial:
   theta-length:
   theta-start:

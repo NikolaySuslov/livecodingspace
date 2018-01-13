@@ -19,6 +19,8 @@ methods:
   planeProto:
   cubeProto:
   sphereProto:
+  cylinderProto:
+  coneProto:
   textProto:
   lightProto:
      parameters:

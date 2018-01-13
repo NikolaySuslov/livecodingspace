@@ -16,10 +16,14 @@ children:
     properties:
       height: 50
       width: 50
-      repeat: "10 10"
       rotation: [-90, 0, 0]
-      wireframe: false
-      src: "#bg2"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          wireframe: false
+          src: "#bg2"
+          repeat: "10 10"
   calcResult:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
@@ -131,5 +135,9 @@ children:
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
-      color: "#ECECEC"
-      side: "back"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#ECECEC"
+          side: "back"

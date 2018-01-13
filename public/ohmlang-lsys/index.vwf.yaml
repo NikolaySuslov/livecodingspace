@@ -20,17 +20,19 @@ children:
         properties:
             height: 50
             width: 50
-            repeat: "10 10"
             rotation: [-90, 0, 0]
-            wireframe: false
-            src: "#bg2"
+        children:
+            material:
+                extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+                properties:
+                    wireframe: false
+                    src: "#bg2"
+                    repeat: "10 10"
     turtle:
         extends: http://vwf.example.com/aframe/asphere.vwf
         properties:
             position: [1, 1.25, -4]
-            color: "#e0e014"
             radius: 0.2
-            wireframe: true
             angleInRadians: 0
             iteration: 3
             angle: 60  
@@ -41,6 +43,11 @@ children:
             lsys: ''
             readyForDraw: true
         children:
+            material:
+                extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+                properties:
+                    wireframe: true
+                    color: "#e0e014"
             drawNode:
                 extends: http://vwf.example.com/aframe/aentity.vwf
                 children:

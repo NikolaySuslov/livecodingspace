@@ -1,11 +1,19 @@
 this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
-        "color": "white",
         "position": "0 0.66 0.7",
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
+    },
+    "children": {
+        "material": {
+            "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+            "type": "component",
+            "properties":{
+                "color": "white"
+            }
+        }
     }
 }
 
@@ -46,7 +54,7 @@ this.createAvatarBody = function (modelSrc) {
     let myBodyDef = this.simpleBodyDef;
     //let myHandDef = this.simpleVrControllerDef;
 
-    myBodyDef.properties.color = myColor;
+    myBodyDef.children.material.properties.color = myColor;
 
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
@@ -75,11 +83,19 @@ this.createAvatarBody = function (modelSrc) {
                     "visual": {
                         "extends": "http://vwf.example.com/aframe/abox.vwf",
                         "properties": {
-                            "color": myColor,
                             "height": 0.5,
                             "width": 0.5,
                             "depth": 0.1,
                             "visible": true
+                        },
+                        "children": {
+                            "material": {
+                                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                                "type": "component",
+                                "properties":{
+                                    "color": myColor
+                                }
+                            }
                         }
                     },
                     
@@ -103,13 +119,22 @@ this.createAvatarBody = function (modelSrc) {
                             "vis": {
                                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                                 "properties": {
-                                    "color": myColor,
                                     "position": "0 0 -3",
                                     "height": 0.05,
                                     "width": 0.05,
                                     "depth": 0.01,
                                     "visible": true
+                                },
+                                "children": {
+                                    "material": {
+                                        "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                                        "type": "component",
+                                        "properties":{
+                                            "color": myColor
+                                        }
+                                    }
                                 }
+                                
                             },
                             "line": {
                                 "extends": "http://vwf.example.com/aframe/lineComponent.vwf",
@@ -268,10 +293,10 @@ this.createSimpleAvatar = function(){
         this.avatarNode.children.delete(this.avatarNode.myBody);
         var myColor = this.getRandomColor();
         if (this.avatarNode.myHead){
-            myColor = this.avatarNode.myHead.visual.properties.color;
+            myColor = this.avatarNode.myHead.visual.material.color;
         }
         let myBodyDef = this.simpleBodyDef;
-        myBodyDef.properties.color = myColor;
+        myBodyDef.material.color = myColor;
 
         this.avatarNode.children.create("myBody", myBodyDef);
         this.avatarNode.myHead.visual.properties.visible = true;
@@ -319,15 +344,15 @@ this.setSmallVideoHead = function(val){
 this.setVideoTexture = function(val){
     console.log(val);
    // this.setSmallVideoHead();
-    this.avatarNode.myHead.visual.color = "white";
-    this.avatarNode.myHead.visual.src = '#temp';
-    this.avatarNode.myHead.visual.src = '#'+val;
+    this.avatarNode.myHead.visual.material.color = "white";
+    this.avatarNode.myHead.visual.material.src = '#temp';
+    this.avatarNode.myHead.visual.material.src = '#'+val;
 }
 
 this.removeVideoTexture = function(){
    // this.setSmallVideoHead();
-    this.avatarNode.myHead.visual.color = this.avatarNode.myBody.color;
-    this.avatarNode.myHead.visual.src = "";
+    this.avatarNode.myHead.visual.material.color = this.avatarNode.myBody.material.color;
+    this.avatarNode.myHead.visual.material.src = "";
     // this.avatarNode.myHead.visual.src = '#'+val;
 }
 

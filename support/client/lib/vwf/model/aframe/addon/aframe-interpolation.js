@@ -65,7 +65,9 @@ AFRAME.registerComponent('interpolation', {
   tick: function (t, dt) {
 
     if (!this.node) {
-      let interNode = Object.entries(this.driver.state.nodes).find(el => el[1].parentID == this.el.id);
+      let interNode = Object.entries(this.driver.state.nodes).find(el => 
+        el[1].parentID == this.el.id && el[1].extendsID == "http://vwf.example.com/aframe/interpolation-component.vwf"
+      );
       this.node = this.driver.nodes[interNode[0]];
       this.nodeState = interNode[1];
     }

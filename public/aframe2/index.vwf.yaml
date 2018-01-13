@@ -73,21 +73,28 @@ children:
     properties:
       position: "0 0 -3"
       rotation: "0 0 0"
-      color: "#3c7249"
       depth: 2
       height: 1
       width: 1
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
   box:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
       position: "-1 0.5 -3"
       rotation: "0 -30 0"
-      color: "#3c7249"
       depth: 2
       height: 1
       width: 1
       clickable: true
     children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
       raycaster-listener:
         extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
         type: "component"
@@ -108,7 +115,7 @@ children:
         body: |
           if (this.clickable) {
           let genColor = this.generateColor();
-          this.color = genColor 
+          this.material.color = genColor 
             }
       intersectEventMethod:
         body: |
@@ -142,26 +149,28 @@ children:
     extends: http://vwf.example.com/aframe/asphere.vwf
     properties:
       position: "1 1.25 -4"
-      color: "#e0e014"
       radius: 1
-      wireframe: true
     children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#e0e014"
+          wireframe: true
       box2:
-        extends: http://vwf.example.com/aframe/aentity.vwf
+        extends: http://vwf.example.com/aframe/abox.vwf
         properties:
           position: "2 -0.75 0"
+          depth: 1
         children:
-          cube:
-            extends: http://vwf.example.com/aframe/abox.vwf
+          material:
+            extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
             properties:
-              src: "#bg"
               color: "#2167a5"
-              depth: 1
-            children:
-              shadow:
-                extends: http://vwf.example.com/aframe/shadowComponent.vwf
-                properties:
-                  cast: true
+              src: "#bg"
+          shadow:
+            extends: http://vwf.example.com/aframe/shadowComponent.vwf
+            properties:
+              cast: true
           interpolation:
             extends: http://vwf.example.com/aframe/interpolation-component.vwf
             properties:
@@ -178,19 +187,26 @@ children:
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:
-      src: "#sky"
-      side: "back"
-      fog: false
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          src: "#sky"
+          side: "back"
+          fog: false
   groundPlane:
     extends: http://vwf.example.com/aframe/aplane.vwf
     properties:
       height: 50
       width: 50
-      repeat: "10 10"
       rotation: "-90 0 0"
-      color: "white"
-      src: "#bg2"
     children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          repeat: "10 10"
+          color: "white"
+          src: "#bg2"
       shadow:
         extends: http://vwf.example.com/aframe/shadowComponent.vwf
         properties:

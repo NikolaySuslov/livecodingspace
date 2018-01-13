@@ -83,6 +83,49 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             this.state.kernel = this.kernel.kernel.kernel;
 
+            this.aframeComponentDef = {
+                'A-MATERIAL': [
+                    "alphaTest",
+                    "depthTest",
+                    "flatShading",
+                    "npot",
+                    "offset",
+                    "opacity",
+                    "remain",
+                    "repeat",
+                    "shader",
+                    "side",
+                    "transparent",
+                    "vertexColors",
+                    "visible",
+                    "ambient-occlusion-map",
+                    "ambient-occlusion-map-intensity",
+                    "ambient-occlusion-texture-offset",
+                    "ambient-occlusion-texture-repeat",
+                    "color",
+                    "displacement-bias",
+                    "displacement-map",
+                    "displacement-scale",
+                    "displacement-texture-offset",
+                    "displacement-texture-repeat",
+                    "emissive",
+                    "emissiveIntensity",
+                    "height",
+                    "envMap",
+                    "fog",
+                    "metalness",
+                    "normal-map",
+                    "normal-scale",
+                    "normal-texture-offset",
+                    "normal-texture-repeat",
+                    "roughness",
+                    "sphericalEnvMap",
+                    "width",
+                    "wireframe",
+                    "wireframe-linewidth",
+                    "src"]
+            }
+
             //this.state.kernel = this.kernel.kernel.kernel;
 
         },
@@ -239,28 +282,28 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         // })
 
                         switch (propertyName) {
-                    
+
                             case "fullWidth":
-                            parentNodeAF.setAttribute('viewoffset', 'fullWidth', propertyValue);
-                            break;
+                                parentNodeAF.setAttribute('viewoffset', 'fullWidth', propertyValue);
+                                break;
 
                             case "fullHeight":
-                            parentNodeAF.setAttribute('viewoffset', 'fullHeight', propertyValue);
-                            break;
+                                parentNodeAF.setAttribute('viewoffset', 'fullHeight', propertyValue);
+                                break;
 
                             case "yoffset":
-                            parentNodeAF.setAttribute('viewoffset', 'yoffset', propertyValue);
-                            break;
+                                parentNodeAF.setAttribute('viewoffset', 'yoffset', propertyValue);
+                                break;
 
                             case "xoffset":
-                            parentNodeAF.setAttribute('viewoffset', 'xoffset', propertyValue);
-                            break;
+                                parentNodeAF.setAttribute('viewoffset', 'xoffset', propertyValue);
+                                break;
 
-                            
+
                             case "subcamWidth":
                                 parentNodeAF.setAttribute('viewoffset', 'width', propertyValue);
                                 break;
-    
+
                             case "subcamHeight":
                                 parentNodeAF.setAttribute('viewoffset', 'height', propertyValue);
                                 break;
@@ -286,7 +329,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             case "cast":
                                 parentNodeAF.setAttribute('shadow', 'cast', propertyValue);
                                 break;
-    
+
                             case "receive":
                                 parentNodeAF.setAttribute('shadow', 'receive', propertyValue);
                                 break;
@@ -306,9 +349,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         value = propertyValue;
                         let parentNodeAF = aframeObject.el;
-                        let defs = ['color', 'transparent', 'opacity', 'side'];
+                        //let defs = ['color', 'transparent', 'opacity', 'side'];
 
-                        defs.forEach(element => {
+                        self.aframeComponentDef['A-MATERIAL'].forEach(element => {
                             element == propertyName ? parentNodeAF.setAttribute('material', element, propertyValue) :
                                 value = undefined;
                         })
@@ -317,31 +360,31 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 if (value === undefined && isAFogDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
+
                         value = propertyValue;
                         let parentNodeAF = aframeObject.el;
                         let defs = ['fogType', 'fogColor', 'density', 'near', 'far'];
 
                         defs.forEach(element => {
-                            if (element == propertyName){
+                            if (element == propertyName) {
 
                                 switch (element) {
-                    
+
                                     case 'fogType':
-                                    parentNodeAF.setAttribute('fog', 'type', propertyValue);
+                                        parentNodeAF.setAttribute('fog', 'type', propertyValue);
                                         break;
 
                                     case 'fogColor':
                                         parentNodeAF.setAttribute('fog', 'color', propertyValue);
-                                            break;
+                                        break;
 
                                     default:
-                                            value = parentNodeAF.setAttribute('fog', element, propertyValue);
-                                            break;
+                                        value = parentNodeAF.setAttribute('fog', element, propertyValue);
+                                        break;
                                 }
 
 
-                                
+
                             } else {
                                 value = undefined
                             }
@@ -365,36 +408,37 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
-                                        value = propertyValue;
-                    
-                    
-                                        let parentNodeAF = aframeObject.el;
-                    
-                                        switch (propertyName) {
-                    
-                                            case "color":
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'color', propertyValue);
-                                                break;
-                    
-                                            case "path":
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'path', propertyValue);
-                                                break;
-                    
-                                                case "width":
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'width', propertyValue);
-                                                break;
+                if (value === undefined && isALinePathDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
-                                            default:
-                                                value = undefined;
-                                                break;
-                    
-                    
-                                        }
-                    
-                                    }
+                        value = propertyValue;
 
+
+                        let parentNodeAF = aframeObject.el;
+
+                        switch (propertyName) {
+
+                            case "color":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'color', propertyValue);
+                                break;
+
+                            case "path":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'path', propertyValue);
+                                break;
+
+                            case "width":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'width', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
+
+
+                        }
+
+                    }
+                }
 
                 //isALineDefinition(node.prototypes)
                 //if (value === undefined && node.componentName == 'line') { //isALineDefinition( node.prototypes )
@@ -442,148 +486,101 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-
-                    value = propertyValue;
-
-
-                    let parentNodeAF = aframeObject.el;
-
-                    switch (propertyName) {
-
-                        case "clip":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'clip', propertyValue);
-                            break;
-
-                        case "duration":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
-                            break;
-
-                        case "crossFadeDuration":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'crossFadeDuration', propertyValue);
-                            break;
-
-                        case "loop":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'loop', propertyValue);
-                            break;
-
-                        case "repetitions":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'repetitions', propertyValue);
-                            break;
-
-                        default:
-                            value = undefined;
-                            break;
+                if (value === undefined && isAAnimMixerDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+                        value = propertyValue;
 
 
-                    }
+                        let parentNodeAF = aframeObject.el;
 
-                }
+                        switch (propertyName) {
+
+                            case "clip":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'clip', propertyValue);
+                                break;
+
+                            case "duration":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'duration', propertyValue);
+                                break;
+
+                            case "crossFadeDuration":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'crossFadeDuration', propertyValue);
+                                break;
+
+                            case "loop":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'loop', propertyValue);
+                                break;
+
+                            case "repetitions":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'repetitions', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
 
 
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-
-                    value = propertyValue;
-
-
-                    let parentNodeAF = aframeObject.el;
-
-                    switch (propertyName) {
-
-                        case "enabled":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
-                            break;
-
-                        case "deltaPos":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
-                            break;
-
-                        case "deltaRot":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'deltaRot', propertyValue);
-                            break;
-
-                        default:
-                            value = undefined;
-                            break;
-
+                        }
 
                     }
-
                 }
 
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
-                    
-                                        value = propertyValue;
-                    
-                    
-                                        let parentNodeAF = aframeObject.el;
-                    
-                                        switch (propertyName) {
-                    
-                                            case "mode":
-                                                parentNodeAF.setAttribute(aframeObject.compName, 'mode', propertyValue);
-                                                break;
-                    
-                                            default:
-                                                value = undefined;
-                                                break;
-                    
-                    
-                                        }
-                    
-                                    }
+                if (value === undefined && isAInterpolationDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
-                if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
+                        value = propertyValue;
 
-                    value = propertyValue;
 
-                    //let parentNodeAF = self.state.kernel.find(node.parentID);
+                        let parentNodeAF = aframeObject.el;
 
-                    // aframeObject.el.setAttribute('line', 'color')
-                    let parentNodeAF = aframeObject.el;
+                        switch (propertyName) {
 
-                    switch (propertyName) {
+                            case "enabled":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'enabled', propertyValue);
+                                break;
 
-                        case "armModel":
+                            case "deltaPos":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'deltaPos', propertyValue);
+                                break;
 
-                            parentNodeAF.setAttribute(aframeObject.compName, { armModel: propertyValue });
-                            break;
+                            case "deltaRot":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'deltaRot', propertyValue);
+                                break;
 
-                        case "buttonColor":
+                            default:
+                                value = undefined;
+                                break;
 
-                            parentNodeAF.setAttribute(aframeObject.compName, { buttonColor: propertyValue });
-                            break;
 
-                        case "buttonTouchedColor":
+                        }
 
-                            parentNodeAF.setAttribute(aframeObject.compName, 'buttonTouchedColor', propertyValue);
-                            break;
-
-                        case "buttonHighlightColor":
-                            parentNodeAF.setAttribute(aframeObject.compName, 'buttonHighlightColor', propertyValue);
-                            break;
-
-                        case "hand":
-
-                            parentNodeAF.setAttribute(aframeObject.compName, 'hand', propertyValue);
-                            break;
-
-                        case "model":
-
-                            parentNodeAF.setAttribute(aframeObject.compName, 'model', propertyValue);
-                            break;
-
-                        case "rotationOffset":
-
-                            parentNodeAF.setAttribute(aframeObject.compName, 'rotationOffset', propertyValue);
-                            break;
-
-                        default:
-                            value = undefined;
-                            break;
                     }
-
                 }
+
+                if (value === undefined && isAGizmoDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+
+
+                        let parentNodeAF = aframeObject.el;
+
+                        switch (propertyName) {
+
+                            case "mode":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'mode', propertyValue);
+                                break;
+
+                            default:
+                                value = undefined;
+                                break;
+
+
+                        }
+
+                    }
+                }
+
 
 
 
@@ -637,7 +634,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     })
                 }
 
-                
+
                 if (value === undefined && isAFogDefinition(node.prototypes)) {
                     value = propertyValue;
 
@@ -651,17 +648,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             switch (element) {
 
                                 case 'fogType':
-        
+
                                     value = parentNodeAF.getAttribute('fog').type;
                                     break;
-                                
+
                                 case 'fogColor':
-        
+
                                     value = parentNodeAF.getAttribute('fog').color;
                                     break;
-                                
+
                                 default:
-                                    value = parentNodeAF.getAttribute('fog').element; 
+                                    value = parentNodeAF.getAttribute('fog').element;
                                     break;
 
                             }
@@ -762,26 +759,33 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
                     let parentNodeAF = aframeObject.el;
 
-                    switch (propertyName) {
+                    self.aframeComponentDef['A-MATERIAL'].forEach(element => {
+                        if (element == propertyName) {
+                            value = parentNodeAF.getAttribute('material').element;
+                        }
 
-                        case "color":
-                            value = parentNodeAF.getAttribute('material').color;
-                            break;
+                    })
 
-                        case "opacity":
-                            value = parentNodeAF.getAttribute('material').opacity;
-                            break;
+                    // switch (propertyName) {
 
-                        case "side":
-                            value = parentNodeAF.getAttribute('material').side;
-                            break;
+                    //     case "color":
+                    //         value = parentNodeAF.getAttribute('material').color;
+                    //         break;
 
-                        case "transparent":
-                            value = parentNodeAF.getAttribute('material').transparent;
-                            break;
-                        
+                    //     case "opacity":
+                    //         value = parentNodeAF.getAttribute('material').opacity;
+                    //         break;
 
-                    }
+                    //     case "side":
+                    //         value = parentNodeAF.getAttribute('material').side;
+                    //         break;
+
+                    //     case "transparent":
+                    //         value = parentNodeAF.getAttribute('material').transparent;
+                    //         break;
+
+
+                    // }
 
                 }
 
@@ -801,10 +805,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute(aframeObject.compName).path;
                             break;
 
-                            case "width":
+                        case "width":
                             value = parentNodeAF.getAttribute(aframeObject.compName).width;
                             break;
-                        
+
 
                     }
 
@@ -837,14 +841,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "xoffset":
                             value = parentNodeAF.getAttribute(aframeObject.compName).xoffset;
                             break;
-                        
+
                         case "yoffset":
                             value = parentNodeAF.getAttribute(aframeObject.compName).yoffset;
                             break;
                     }
 
                 }
-
 
                 if (value === undefined && isAInterpolationDefinition(node.prototypes)) {
                     value = propertyValue;
@@ -882,7 +885,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = parentNodeAF.getAttribute(aframeObject.compName).mode;
                             break;
 
-                       
+
 
                     }
 
@@ -1054,7 +1057,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var sceneEl = document.querySelector('a-scene');
 
         aframeObj.id = node.parentID;
-       // aframeObj.el = sceneEl.children[node.parentID];
+        // aframeObj.el = sceneEl.children[node.parentID];
         aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => { return item.id == aframeObj.id })[0];
 
 
@@ -1073,13 +1076,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gizmoComponent.vwf")) {
-            
-            
-                        // aframeObj.el.setAttribute(node.type, {});
-                        aframeObj.compName = "gizmo";
-                        aframeObj.el.setAttribute(aframeObj.compName, {});
-            
-                    }
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "gizmo";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aSceneFogComponent.vwf")) {
 
@@ -1087,7 +1090,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             aframeObj = {};
             //var sceneEl = document.querySelector('a-scene');
-    
+
             aframeObj.id = node.parentID;
             aframeObj.el = document.querySelector('a-scene');
 
@@ -1105,10 +1108,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        
+
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/shadowComponent.vwf")) {
-            
+
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "shadow";
             aframeObj.el.setAttribute(aframeObj.compName, {});
@@ -1116,7 +1119,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf")) {
-            
+
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "viewoffset";
             aframeObj.el.setAttribute(aframeObj.compName, {});
@@ -1124,8 +1127,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/streamSoundComponent.vwf")) {
-            
-            
+
+
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "streamsound";
             aframeObj.el.setAttribute(aframeObj.compName, {});
@@ -1133,13 +1136,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/linepath.vwf")) {
-            
-            
-                        // aframeObj.el.setAttribute(node.type, {});
-                        aframeObj.compName = "linepath";
-                        aframeObj.el.setAttribute(aframeObj.compName, {});
-            
-                    }
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "linepath";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aMaterialComponent.vwf")) {
 
@@ -1187,23 +1190,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-sun-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "sun";
-             aframeObj.el.setAttribute('id', "sun");
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
 
-         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
-            
- 
-                // aframeObj.el.setAttribute(node.type, {});
-             aframeObj.compName = "skyshader";
-             aframeObj.el.setAttribute(aframeObj.compName, {});
- 
-         }
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "sun";
+            aframeObj.el.setAttribute('id', "sun");
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "skyshader";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
 
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf")) {
 

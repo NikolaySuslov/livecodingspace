@@ -1,13 +1,13 @@
 # https://aframe.io/docs/0.5.0/primitives/a-sphere.html
 --- 
 extends: http://vwf.example.com/aframe/aentity.vwf
-type: "a-sphere"
+type: "a-cone"
 properties:
-  phi-length:
-  phi-start:
-  radius: 
-  segments-depth:
+  height:
+  open-ended:
+  radius-bottom:
+  radius-top:
   segments-height:
-  segments-width:
+  segments-radial: 
   theta-length:
   theta-start:
