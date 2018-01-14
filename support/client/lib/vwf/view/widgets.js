@@ -186,6 +186,16 @@ define(function () {
             }
         }
 
+        buttonSimple(obj){
+            return {
+                $cell: true,
+                $type: "button",
+                class: "mdc-button mdc-ripple-upgraded",
+                $text: obj.label,
+                onclick: obj.onclick
+            }
+        }
+
         sliderDiscrete(obj) {
             return {
                 $cell: true,

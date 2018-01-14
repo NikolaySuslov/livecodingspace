@@ -277,12 +277,12 @@ define([
                                 $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
-                                $text:"3D Assets" 
+                                $text:"Assets" 
                              
                             },
                             widgets.textField({
                                 id:"asset3dsrc",
-                                value:"URL to asset source",
+                                value:"Enter URL to asset source",
                                 funconchange: function(e){
                                     console.log(this.value)
                                 }
@@ -297,14 +297,42 @@ define([
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: [
-                                            widgets.buttonStroked(
+                                            widgets.buttonSimple(
+                                                {
+                                                    label: "Image",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonSimple(
+                                                {
+                                                    label: "Sound",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonSimple(
+                                                {
+                                                    label: "Video",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonSimple(
+                                                {
+                                                    label: "MTL",
+                                                    onclick: function(e){
+                                                    }
+                                                }
+                                            ),
+                                            widgets.buttonSimple(
                                                 {
                                                     label: "GLTF",
                                                     onclick: function(e){
                                                     }
                                                 }
                                             ),
-                                            widgets.buttonStroked(
+                                            widgets.buttonSimple(
                                                 {
                                                     label: "DAE",
                                                     onclick: function(e){
@@ -316,80 +344,21 @@ define([
                                                     }
                                                 }
                                             ),
-                                            widgets.buttonStroked(
+                                            widgets.buttonSimple(
                                                 {
                                                     label: "OBJ",
                                                     onclick: function(e){
                                                     }
                                                 }
-                                            ),
-                                            widgets.buttonStroked(
-                                                {
-                                                    label: "MTL",
-                                                    onclick: function(e){
-                                                    }
-                                                }
-                                            ),
+                                            )
+                                           
+                                            
                                         
                                         ]
                                     }
                                 ]
                             }, 
-                            //widgets.divider,
-                            {
-                                $cell: true,
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text:"2D Assets / Sound" 
-                             
-                            },
-                            widgets.textField({
-                                id:"asset2dsrc",
-                                value:"URL to asset source",
-                                funconchange: function(e){
-                                    console.log(this.value)
-                                }
-                            }),
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-grid-list",
-                                $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: [
-                                            widgets.buttonStroked(
-                                                {
-                                                    label: "Image",
-                                                    onclick: function(e){
-                                                    }
-                                                }
-                                            ),
-                                            widgets.buttonStroked(
-                                                {
-                                                    label: "Sound",
-                                                    onclick: function(e){
-                                                    }
-                                                }
-                                            ),
-                                            widgets.buttonStroked(
-                                                {
-                                                    label: "Video",
-                                                    onclick: function(e){
-                                                    }
-                                                }
-                                            )
-                                           
-                                        
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                $type:"div"
-                            },
+
                              //widgets.divider,
                             {
                                 $cell: true,
