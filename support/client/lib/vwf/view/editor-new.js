@@ -27,8 +27,9 @@ define([
     "vwf/utility",
     "vwf/view/lib/ace/ace",
     "vwf/view/lib/colorpicker/colorpicker.min",
+    "vwf/view/polyglot-editor",
     "vwf/view/widgets"
-], function (module, version, view, utility, ace, colorpicker, widgets) {
+], function (module, version, view, utility, ace, colorpicker, lang, widgets) {
 
     var self;
 
@@ -40,12 +41,13 @@ define([
             self = this;
             this.ace = window.ace;
             this.widgets = widgets;
+            this.lang = lang.language;
 
             this.nodes = {};
             this.scenes = {};
             this.allScripts = {};
 
-
+         
 
             //$(document.head).append('<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>');
             document.querySelector('head').innerHTML += '<style type="text/css" media="screen"> #editorlive { height: 500px; width: 800px; } </style>';
@@ -124,6 +126,7 @@ define([
 
                 return root
             };
+
 
             this.getRandomInt = function (min, max) {
                 min = Math.ceil(min);
@@ -2881,7 +2884,7 @@ define([
                                 $cell: true,
                                 $type: "div",
                                 class: "mdc-temporary-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
-                                $text: "Home"
+                                $text: self.lang.t("home")
                             }
                         ]
                     },
@@ -2921,7 +2924,7 @@ define([
                                             $text: "play_arrow"
                                         },
                                         {
-                                            $text: "App"
+                                            $text: self.lang.t("App")
                                         }]
 
                                     },
@@ -3269,12 +3272,35 @@ define([
                         {
                             $type: "a",
                             href: "#",
+                            class: "mdc-toolbar__icon",
+                            $text: "EN",
+                            onclick: function(){
+                                //self.lang.changeLanguageTo('en')
+                                localStorage.setItem('locale', 'en');
+                                window.location.reload(true);
+                        }
+                        },
+                        {
+                            $type: "a",
+                            href: "#",
+                            class: "mdc-toolbar__icon",
+                            $text: "RU",
+                            onclick: function(){
+                                //self.lang.changeLanguageTo('ru')
+                                localStorage.setItem('locale', 'ru');
+                                window.location.reload(true);
+                        }
+                        },
+                        {
+                            $type: "a",
+                            href: "#",
                             class: "material-icons mdc-toolbar__icon toggle",
                             $text: "help",
                             'aria-label': "Help"
 
 
                         }
+                        
                     ]
                 }
             ]
