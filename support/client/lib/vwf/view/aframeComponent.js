@@ -103,7 +103,13 @@ define(["module", "vwf/view"], function (module, view) {
                             return;
                         }
 
-                    
+                        if (node.name == "material" && propertyName == 'repeat') {
+
+                           let srcID = node.aframeObj.el.getAttribute('material').src.id;
+                           let elID = '#'+ srcID;
+                           if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
+
+                        }
             // if (node.name == "material" && propertyName == 'color') {
     
             //     console.log("sat color on material");

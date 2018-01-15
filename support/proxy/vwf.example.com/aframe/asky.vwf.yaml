@@ -3,19 +3,10 @@
 extends: http://vwf.example.com/aframe/aentity.vwf
 type: "a-sky"
 properties:
-  color:
-  metalness:
-  opacity:
   phi-length:
   phi-start:
   radius:
-  repeat:
-  roughness:
   segments-height:
   segments-width:
-  shader:
-  side:
-  src:
   theta-length:
   theta-start:
-  transparent:

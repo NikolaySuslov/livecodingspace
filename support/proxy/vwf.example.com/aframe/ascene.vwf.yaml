@@ -19,10 +19,16 @@ methods:
   planeProto:
   cubeProto:
   sphereProto:
+  cylinderProto:
+  coneProto:
   textProto:
   lightProto:
      parameters:
       - lightType
+  createModelDAE:
+    parameters:
+      - src
+      - avatar
   deleteNode:
     parameters:
       - nodeName

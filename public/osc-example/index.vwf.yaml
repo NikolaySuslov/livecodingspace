@@ -3,9 +3,16 @@
 ---
 extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
-  fog: "type: linear; color: #ECECEC; far: 20; near: 0"
   assets: "assets.json"
 children:
+  fog:
+    extends: http://vwf.example.com/aframe/aSceneFogComponent.vwf
+    type: "component"
+    properties:
+      fogType: "linear"
+      fogColor: "#ECECEC"
+      far: 20
+      near: 0
   myLight:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:
@@ -18,10 +25,14 @@ children:
     properties:
         height: 50
         width: 50
-        repeat: "10 10"
         rotation: [-90, 0, 0]
-        wireframe: false
-        src: "#bg2"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          wireframe: false
+          src: "#bg2"
+          repeat: "10 10"
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
@@ -33,18 +44,25 @@ children:
     properties:
       position: "0 1 -3"
       rotation: "0 0 0"
-      color: "#3c7249"
       depth: 1
       height: 1
       width: 1
     children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
       sphere:
         extends: http://vwf.example.com/aframe/asphere.vwf
         properties:
           position: "0 2 0"
           rotation: "0 0 0"
-          color: "#3c7249"
           radius: 0.4
+        children:
+          material:
+            extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+            properties:
+              color: "#3c7249"
   newSky:
     extends: http://vwf.example.com/aframe/aentity.vwf
     children:

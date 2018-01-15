@@ -12,7 +12,8 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <script src="./web/lib/socketio/socket.io.js"></script>
   <link rel="stylesheet" href="./web/lib/app.css">
-  <script src="./web/lib/app.js"></script>
+  <!--<script src="./web/lib/polyglot-lang.js" type="module"></script> -->
+ <!-- <script src="./web/lib/app.js" type="module"></script> -->
 
   <!-- Global Site Tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-11815598-9"></script>
@@ -24,48 +25,143 @@
     gtag('config', 'UA-11815598-9');
 
   </script>
-
+  <!-- <script src="./web/lib/polyglot/polyglot.min.js"></script> -->
+  <script type="module">
+    import {getAppDetails} from '/web/lib/app.js';
+    //var socket = initWebSocket();
+    window.onload = getAppDetails('webapps.json');
+  </script>
 
 </head>
 
 <body class="mdc-typography">
 
-  <a href="https://github.com/NikolaySuslov/livecodingspace"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+  <a href="https://github.com/NikolaySuslov/livecodingspace">
+    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
+      alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
+  </a>
 
   <div id="header" class="mdc-layout-grid mdc-layout-grid--align-left">
     <div class="mdc-layout-grid__inner">
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
         <h1 class="mdc-typography--display3 mdc-theme--text-secondary-on-background mdc-typography">
-          <strong>LiveCoding</strong>.space
+            <a class="mdc-typography link-in-text" style="cursor: pointer;" onclick="window.location.reload(true)"><strong>LiveCoding</strong>.space</a>
+          <!--<strong>LiveCoding</strong>.space -->
         </h1>
       </div>
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+          <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
+              <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="#">RU</a>
+            <!--<strong>LiveCoding</strong>.space -->
+          </span>
+          <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
+              <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="#">EN</a>
+            <!--<strong>LiveCoding</strong>.space -->
+          </span>
+        </div>
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
         <h1 class="mdc-typography mdc-typography--headline mdc-typography--adjust-margin mdc-theme--text-hint-on-background">
-          Collaborative Live Coding Space with support of user-defined languages and WebVR ready 3D graphics. <br> Based on: <strong>Virtual World Framework | A-Frame | Ohm language | OSC.js | and more... </strong> by Krestianstvo.org
+          Collaborative Live Coding Space with support of user-defined languages and WebVR ready 3D graphics.
+          <br> Based on:
+          <strong>Virtual World Framework | A-Frame | Ohm language | OSC.js | and more... </strong> by
+          <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background"
+            href="https://www.krestianstvo.org"><strong>Krestianstvo.org</strong></a>
         </h1>
       </div>
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-        <iframe src="https://player.vimeo.com/video/239924195?title=0&byline=0&portrait=0" width="600" height="338" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    </div>
+  </div>
+  <div id="about" class="mdc-layout-grid">
+    <div class="mdc-layout-grid__inner">
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+        <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Features</h1>
+
+        <ul class="featureList mdc-typography mdc-typography--title mdc-theme--text-hint-on-background">
+          <li>
+            <strong>Decentralized network model</strong> for
+            <strong>A-Frame</strong> components and entities based on
+            <strong>VWF</strong> replicated computation architecture</li>
+          <li>
+            <strong>Ohm</strong> language driver for sharing user-defined grammars, parsers, tokenisers inside virtual space</li>
+          <li>In browser
+            <strong>Code and Properties editor</strong> based on Cell.js</li>
+          <li>
+            <strong>OSC </strong>messaging through
+            <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="https://github.com/NikolaySuslov/osc-relay-lcs">OSC relay</a> on the client</li>
+          <li>
+            <strong>Avatars</strong> (Simple and GLTF models with animation)</li>
+          <li>
+            <strong>Multi-window</strong> or multi-monitor/multi-machine setups with view
+            <strong>offset cameras</strong>
+          </li>
+          <li>
+            <strong>WebRTC</strong> for video/audio streaming,
+            <strong>3D positional audio</strong> support</li>
+          <li>
+            <strong>GearVR, Windows MixedReality</strong> motion controllers</li>
+        </ul>
       </div>
-      <hr class="mdc-list-divider"/>
+
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell">
+        <iframe src="https://player.vimeo.com/video/239924195?title=0&byline=0&portrait=0" width="600" height="338" frameborder="0"
+          webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+      </div>
+
+    </div>
+  </div>
+  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" />
+
+  <div id="info" class="mdc-layout-grid">
+    <div class="mdc-layout-grid__inner">
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+        <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Virtual Worlds</h1>
         <h1 class="mdc-typography mdc-typography--headline mdc-theme--text-hint-on-background">
-          To begin collaborative coding in virtual space, just start one of the listed prototypes and connect to it from another browser window using the generated link. The link will apper near the <strong>Start new</strong> button.
+          To begin collaborative coding in virtual space, just start one of the listed prototypes and connect to it from another browser
+          window using the generated link. The link will apper near the
+          <strong>Start new</strong> button.
         </h1>
       </div>
     </div>
   </div>
 
-  
-
   <div id="main">
   </div>
+  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" />
+
+  <div id="videoList">
+    <div id="about" class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+          <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Demo videos</h1>
+
+          <iframe src="https://player.vimeo.com/video/243291223?title=0&byline=0&portrait=0" width="600" height="337" frameborder="0"
+            webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 
-  <script>
-    //var socket = initWebSocket();
-    window.onload = getAppDetails('webapps.json');
-  </script>
+          <iframe src="https://player.vimeo.com/video/251057056?title=0&byline=0&portrait=0" width="600" height="338" frameborder="0"
+            webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" /> 
+
+  <div id="footer">
+<div id="about" class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
+
+            </div>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+          <h3 class="mdc-typography--subheading2 mdc-theme--text-hint-on-background"><a class="mdc-typography link-in-text mdc-theme--text-hint-on-background"
+            href="https://www.krestianstvo.org">Krestianstvo.org</a> 2018</h3>
+        </div>
+      </div>
+    </div>
+   
+  </div>
+ 
+  
 
   <script>
     mdc.autoInit()

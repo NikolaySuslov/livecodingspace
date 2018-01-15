@@ -186,6 +186,16 @@ define(function () {
             }
         }
 
+        buttonSimple(obj){
+            return {
+                $cell: true,
+                $type: "button",
+                class: "mdc-button mdc-ripple-upgraded",
+                $text: obj.label,
+                onclick: obj.onclick
+            }
+        }
+
         sliderDiscrete(obj) {
             return {
                 $cell: true,
@@ -311,6 +321,27 @@ define(function () {
                             }
                         ]
                     }
+                ]
+            }
+        }
+
+        textField(obj) {
+            return {
+                class: "mdc-text-field",
+                style: "width: 100%",
+                $cell: true,
+                $type: "div",
+                $components: [
+                    {
+                        class: "mdc-text-field__input prop-text-field-input",
+                        id: obj.id,
+                        $cell: true,
+                        $type: "input",
+                        type: "text",
+                        value: obj.value,
+                        onchange: obj.funconchange
+                    }
+
                 ]
             }
         }

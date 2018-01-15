@@ -183,12 +183,20 @@ define(["module", "vwf/view"], function (module, view) {
                 //console.log("sat new item");
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
-                    let src = el[1].aframeObj.getAttribute('src');
-                    if (src){
+                    let material = el[1].aframeObj.getAttribute('material');
+                    if(material) {
+                   
+                    if (material.src !== ""){
                        // console.log("my: " + src);
-                        if (src == elID)
-                        self.kernel.callMethod(el[0], "updateSrc", [elID])
+                        let src = '#' + material.src.id;
+                        if (src == elID){
+                            let materialID = vwf.find(el[0], 'material');
+                            self.kernel.callMethod(materialID, "updateSrc", [elID])
+                        }
+                        
                     }
+                }
+
                 })
 
             }

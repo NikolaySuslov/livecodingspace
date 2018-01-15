@@ -1,3 +1,5 @@
+import { Lang } from '/web/lib/polyglot-lang.js';
+
 var options = {
     
         query: 'pathname=' + window.location.pathname.slice(1,
@@ -64,6 +66,38 @@ var options = {
             });
     }
     
+    function getSiteHeader(){
+        return  {
+            $type: "div",
+            class: "mdc-layout-grid",
+            $components: [
+                {
+                    $type: "div",
+                    class: "mdc-layout-grid__inner",
+                    $components: [
+                        {
+                            $cell: true,
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                                
+                        {
+                            $cell: true,
+                            $type: "h1",
+                            class: "mdc-typography--display1 mdc-theme--text-hint-on-background",
+                            $text: "Virtual Worlds"
+                        }
+                    ]
+                }
+                    ]
+                }
+            ]
+
+        }
+        
+        
+    }
+
     function parseWebAppDataForCell(data) {
     
         document.querySelector("#main").$cell({
@@ -93,7 +127,7 @@ var options = {
             },
             $update: function () {
                 this.$components = [
-                    // siteHeader,
+                   //getSiteHeader(),// siteHeader,
                     {
                         $type: "div",
                         class: "mdc-layout-grid",
@@ -148,7 +182,7 @@ var options = {
                             $components: [
                                 {
                                     $type: "a",
-                                    class: "mdc-button mdc-button--compact mdc-card__action mdc-button--raised",
+                                    class: "mdc-button mdc-button--compact mdc-card__action mdc-button--stroked",
                                     $text: "Start new",
                                     target: "_blank",
                                     href: "/" + desc[0],
@@ -289,5 +323,4 @@ var options = {
         }
     }
     
-    
-    
+    export {getAppDetails};

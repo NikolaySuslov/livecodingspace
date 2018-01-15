@@ -95,49 +95,33 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             this.aframeDef = {
                 'A-BOX':    [
-                    'ambient-occlusion-map', 'ambient-occlusion-map-intensity',
-                    'ambient-occlusion-texture-offset', 'ambient-occlusion-texture-repeat',
-                    'color',  'depth', 'displacement-bias', 'displacement-map',
-                    'displacement-scale', 'displacement-texture-offset',
-                    'displacement-texture-repeat', 'env-map',
-                    'fog', 'height', 'metalness',
-                    'normal-map', 'normal-scale',
-                    'normal-texture-offset', 'normal-texture-repeat',
-                    'repeat', 'roughness', 'segments-depth',
+                    'depth', 'height', 'segments-depth',
                     'segments-height', 'segments-width',
-                    'spherical-env-map', 'src', 'width',
-                    'wireframe', 'wireframe-linewidth'],
+                    'width'],
 
                 'A-SPHERE': [
-                    'ambient-occlusion-map', 'ambient-occlusion-map-intensity',
-                    'ambient-occlusion-texture-offset', 'ambient-occlusion-texture-repeat',
-                    'color', 'displacement-bias', 'displacement-map',
-                    'displacement-scale', 'displacement-texture-offset',
-                    'displacement-texture-repeat', 'env-map',
-                    'fog', 'height', 'metalness',
-                    'normal-map', 'normal-scale',
-                    'normal-texture-offset', 'normal-texture-repeat',
                     'phi-length', 'phi-start', 'radius', 
-                    'repeat', 'roughness', 'segments-depth',
+                    'segments-depth',
                     'segments-height', 'segments-width',
-                    'spherical-env-map', 'src', 
-                    'theta-length', 'theta-start',
-                    'width',  'wireframe', 'wireframe-linewidth'
+                    'theta-length', 'theta-start'
+                ],
+
+                'A-CYLINDER': [
+                   'height', 'radius',
+                    'open-ended', 'radius-bottom', 'radius-top',
+                    'segments-height', 'segments-radial',
+                    'theta-length', 'theta-start'
+                ],
+
+                'A-CONE': [
+                    'height',
+                    'open-ended', 'radius-bottom', 'radius-top',
+                    'segments-height', 'segments-radial',
+                    'theta-length', 'theta-start'
                 ],
 
                 'A-PLANE': [
-                    'ambient-occlusion-map', 'ambient-occlusion-map-intensity',
-                    'ambient-occlusion-texture-offset', 'ambient-occlusion-texture-repeat',
-                    'color', 'displacement-bias', 'displacement-map',
-                    'displacement-scale', 'displacement-texture-offset',
-                    'displacement-texture-repeat', 'env-map',
-                    'fog', 'height', 'metalness',
-                    'normal-map', 'normal-scale',
-                    'normal-texture-offset', 'normal-texture-repeat',
-                    'repeat', 'roughness',
-                    'segments-height', 'segments-width',
-                    'spherical-env-map', 'src', 'width',
-                    'wireframe', 'wireframe-linewidth'
+                    'height', 'segments-height', 'segments-width','width'
                 ],
 
                 'A-TEXT': [
@@ -154,13 +138,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     ],
 
                 'A-SKY': [
-                    'color', 'metalness', 'opacity',
-                    'phi-length', 'phi-start', 'radius',
-                    'repeat', 'roughness', 'segments-height',
-                    'segments-width', 'shader',
-                    'side', 'src',
+                    'phi-length', 'phi-start', 'radius','segments-height',
+                    'segments-width',
                     'theta-length', 'theta-start',
-                    'transparent'
                     ],
 
                 'A-LIGHT': [
@@ -267,6 +247,27 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             return this.initializingProperty(nodeID, propertyName, propertyValue);
         },
 
+
+        // -- callingMethod ------------------------------------------------------------------------
+
+        callingMethod: function( nodeID, methodName, methodParameters ) {
+
+            var node = this.state.nodes[nodeID];
+
+            if(!node) return;
+
+            if (node && node.aframeObj ) {
+                if (methodName == 'lookAt') {
+                    console.log('lookAt: ' +  methodParameters[0]);
+                    let target = methodParameters[0];
+                    node.aframeObj.object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+                    let newRotation = node.aframeObj.getAttribute('rotation');
+                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0});
+                }
+            }
+
+           
+        },
 
 
         // -- deletingNode -------------------------------------------------------------------------
@@ -656,6 +657,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     })
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-CYLINDER") {
+                    value = propertyValue;
+
+                    self.aframeDef['A-CYLINDER'].forEach(element => {
+                        element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
+                            value = undefined;
+                    })
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-CONE") {
+                    value = propertyValue;
+
+                    self.aframeDef['A-CONE'].forEach(element => {
+                        element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
+                            value = undefined;
+                    })
+                }
+
 
                 if (value === undefined && aframeObject.nodeName == "A-ANIMATION") {
                     value = propertyValue;
@@ -948,6 +967,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     })
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-CYLINDER") {
+
+                    self.aframeDef['A-CYLINDER'].forEach(element => {
+                        if (element == propertyName) {
+                            value = aframeObject.getAttribute(element);
+                        }
+                    })
+                }
+
+                if (value === undefined && aframeObject.nodeName == "A-CONE") {
+
+                    self.aframeDef['A-CONE'].forEach(element => {
+                        if (element == propertyName) {
+                            value = aframeObject.getAttribute(element);
+                        }
+                    })
+                }
+
                 if (value === undefined && aframeObject.nodeName == "A-TEXT") {
 
                     self.aframeDef['A-TEXT'].forEach(element => {
@@ -1158,6 +1195,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-box');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aplane.vwf")) {
             aframeObj = document.createElement('a-plane');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acylinder.vwf")) {
+            aframeObj = document.createElement('a-cylinder');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acone.vwf")) {
+            aframeObj = document.createElement('a-cone');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/atext.vwf")) {
             aframeObj = document.createElement('a-text');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acolladamodel.vwf")) {

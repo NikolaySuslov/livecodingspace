@@ -1,0 +1,17 @@
+--- 
+extends: http://vwf.example.com/aframe/node.vwf
+type: "a-image"
+properties:
+  color:
+  height:
+  metalness:
+  opacity:
+  repeat:
+  roughness:
+  segments-height:
+  segments-width:
+  shader:
+  side:
+  src:
+  transparent:
+  width:
