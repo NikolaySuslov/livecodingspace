@@ -11,11 +11,11 @@ define([
             console.log("lang constructor");
             this.polyglot = polyglot;
 
-            if (localStorage.getItem('locale')) {
+            if (localStorage.getItem('krestianstvo_locale')) {
             } else {
-                localStorage.setItem('locale', 'en');
+                localStorage.setItem('krestianstvo_locale', 'en');
             }
-            this.locale = localStorage.getItem('locale');
+            this.locale = localStorage.getItem('krestianstvo_locale');
             this.setLanguage(this.locale);
 
         }
@@ -33,7 +33,7 @@ define([
         }
 
         setLocale(langID){
-            localStorage.setItem('locale', langID);
+            localStorage.setItem('krestianstvo_locale', langID);
             this.locale = langID;
         }
 

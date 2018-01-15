@@ -3276,7 +3276,7 @@ define([
                             $text: "EN",
                             onclick: function(){
                                 //self.lang.changeLanguageTo('en')
-                                localStorage.setItem('locale', 'en');
+                                localStorage.setItem('krestianstvo_locale', 'en');
                                 window.location.reload(true);
                         }
                         },
@@ -3287,7 +3287,7 @@ define([
                             $text: "RU",
                             onclick: function(){
                                 //self.lang.changeLanguageTo('ru')
-                                localStorage.setItem('locale', 'ru');
+                                localStorage.setItem('krestianstvo_locale', 'ru');
                                 window.location.reload(true);
                         }
                         },
