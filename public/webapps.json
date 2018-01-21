@@ -1,51 +1,100 @@
 {
-    "aframe":{
-        "title":"Simple VWF & A-Frame app",
-        "imgUrl": "./aframe/webimg.jpg",
-        "text": "Example application showing Virtual World Framework & A-Frame integration",
-        "featured": false
+    "aframe": {
+        "en": {
+            "title": "Simple VWF & A-Frame app",
+            "imgUrl": "./aframe/webimg.jpg",
+            "text": "Example application showing Virtual World Framework & A-Frame integration",
+            "featured": false
+        },
+        "ru": {
+            "title": " Мир VWF & A-Frame",
+            "imgUrl": "./aframe/webimg.jpg",
+            "text": "Пример распределенного приложения, показывающего возможности интеграции Virtual World Framework & A-Frame",
+            "featured": false
+        }
+    },
+    "aframe2": {
+        "en": {
+            "title": "Textures and Models in VWF & A-Frame",
+            "imgUrl": "./aframe2/webimg.jpg",
+            "text": "Example app with loaded textures and models",
+            "featured": true
+        },
+        "ru": {
+            "title": "Текстуры и модели в VWF & A-Frame",
+            "imgUrl": "./aframe2/webimg.jpg",
+            "text": "Пример мира с текстурами и моделями",
+            "featured": true
+        }
+    },
+    "ohmlang-calc": {
+        "en": {
+            "title": "Calculator in Ohm & VWF",
+            "imgUrl": "./ohmlang-calc/webimg.jpg",
+            "text": "Example calc app with simple Ohm grammar",
+            "featured": true
+        },
+        "ru": {
+            "title": "Калькулятор на Ohm & VWF",
+            "imgUrl": "./ohmlang-calc/webimg.jpg",
+            "text": "Пример создания децентрализованной грамматики калькулятора",
+            "featured": true
+        }
+    },
+    "ohmlang-lsys": {
+        "en": {
+            "title": "L-System parser example in Ohm & VWF",
+            "imgUrl": "./ohmlang-lsys/webimg.jpg",
+            "text": "Example app with L-System grammar",
+            "featured": true
+        },
+        "ru": {
+            "title": "L-система и черепашка в Ohm & VWF",
+            "imgUrl": "./ohmlang-lsys/webimg.jpg",
+            "text": "Пример грамматики/парсера для генератора L-систем и языка черепашки",
+            "featured": true
+        }
+       
     },
 
-    "aframe2":{
-        "title":"Textures and Models in VWF & A-Frame",
-        "imgUrl": "./aframe2/webimg.jpg",
-        "text": "Example app with loaded textures and models",
-        "featured": true
+    "osc-example": {
+        "en":{
+            "title": "Simple app with Ohm & OSC control",
+            "imgUrl": "./osc-example/webimg.jpg",
+            "text": "Example app with OSC control",
+            "featured": false
+        },
+        "ru":{
+            "title": "Протокол OSC сообщений и Ohm",
+            "imgUrl": "./osc-example/webimg.jpg",
+            "text": "Пример приложения, демонстрирующего работу с сообщениями OSC",
+            "featured": false
+        }
+       
     },
-      "ohmlang-calc":{
-        "title":"Calculator in Ohm and VWF",
-        "imgUrl": "./ohmlang-calc/webimg.jpg",
-        "text": "Example calc app with simple Ohm grammar",
-        "featured": true
+    "webrtc": {
+        "en":{
+            "title": " WebRTC app",
+            "imgUrl": "./webrtc/webimg.jpg",
+            "text": "Audio and video streaming for Avatars",
+            "featured": false
+        }, 
+          "ru":{
+            "title": " WebRTC приложение",
+            "imgUrl": "./webrtc/webimg.jpg",
+            "text": "Пример приложения с использованием WebRTC потокового аудио и видео",
+            "featured": false
+           
+        }     
     },
-     "ohmlang-lsys":{
-        "title":"L-System parser example in Ohm and VWF",
-        "imgUrl": "./ohmlang-lsys/webimg.jpg",
-        "text": "Example app with L-System grammar",
-        "featured": true
-    },
-
-    "osc-example":{
-        "title":"Simple app with Ohm & OSC control",
-        "imgUrl": "./osc-example/webimg.jpg",
-        "text": "Example app with OSC control",
-        "featured": false
-    },
-
-    "webrtc":{
-        "title":" WebRTC app",
-        "imgUrl": "./webrtc/webimg.jpg",
-        "text": "Audio and video streaming for Avatars",
-        "featured": false
-    },
-    "gearvr":{
-        "title":"Control in VR app",
+    "gearvr": {
+        "title": "Control in VR app",
         "imgUrl": "./gearvr/webimg.jpg",
         "text": "VR controler example",
         "featured": false
     },
-    "multipixel":{
-        "title":"Multi-Pixel",
+    "multipixel": {
+        "title": "Multi-Pixel",
         "imgUrl": "./multipixel/webimg.jpg",
         "text": "Multi offset view camera example",
         "featured": false
