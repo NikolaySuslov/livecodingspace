@@ -28,12 +28,12 @@
   </script>
  <script src="./web/lib/polyglot/polyglot.min.js"></script>
   <script type="module">
-    //import {getAppDetails} from '/web/lib/app.js';
-    import * as app from "/web/lib/app.js";
+    import {WebApp} from '/web/lib/app.js';
+    //import * as app from "/web/lib/app.js";
 
     const initApp = () => {
+      let app = new WebApp;      
       app.getAppDetails('webapps.json');
-      app.initLocale();
       app.generateFrontPage();
 
       document.querySelector('#ruLang').addEventListener('click', function(e){
