@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
+  <meta charset="utf-8">
   <title>Live Coding Space</title>
   <script type="text/javascript" src="./web/lib/cell.js"></script>
   <script type="text/javascript" src="./web/lib/he.js"></script>
@@ -25,11 +26,30 @@
     gtag('config', 'UA-11815598-9');
 
   </script>
-  <!-- <script src="./web/lib/polyglot/polyglot.min.js"></script> -->
+ <script src="./web/lib/polyglot/polyglot.min.js"></script>
   <script type="module">
-    import {getAppDetails} from '/web/lib/app.js';
+    import {WebApp} from '/web/lib/app.js';
+    //import * as app from "/web/lib/app.js";
+
+    const initApp = () => {
+      let app = new WebApp;      
+      app.getAppDetails('webapps.json');
+      app.generateFrontPage();
+
+      document.querySelector('#ruLang').addEventListener('click', function(e){
+        app.setLanguage('ru');
+        window.location.reload(true);
+      });
+
+      document.querySelector('#enLang').addEventListener('click', function(e){
+        app.setLanguage('en');
+        window.location.reload(true);
+      });
+
+    }
+
     //var socket = initWebSocket();
-    window.onload = getAppDetails('webapps.json');
+    window.onload = initApp();
   </script>
 
 </head>
@@ -43,62 +63,33 @@
 
   <div id="header" class="mdc-layout-grid mdc-layout-grid--align-left">
     <div class="mdc-layout-grid__inner">
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
-        <h1 class="mdc-typography--display3 mdc-theme--text-secondary-on-background mdc-typography">
-            <a class="mdc-typography link-in-text" style="cursor: pointer;" onclick="window.location.reload(true)"><strong>LiveCoding</strong>.space</a>
-          <!--<strong>LiveCoding</strong>.space -->
-        </h1>
-      </div>
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-          <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
-              <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="#">RU</a>
-            <!--<strong>LiveCoding</strong>.space -->
-          </span>
-          <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
-              <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="#">EN</a>
-            <!--<strong>LiveCoding</strong>.space -->
-          </span>
-        </div>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+            <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
+                <a id="ruLang" class="mdc-typography link-in-text mdc-theme--text-hint-on-background" style="cursor:pointer">RU</a>
+              <!--<strong>LiveCoding</strong>.space -->
+            </span>
+            <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
+                <a id="enLang" class="mdc-typography link-in-text mdc-theme--text-hint-on-background" style="cursor:pointer">EN</a>
+              <!--<strong>LiveCoding</strong>.space -->
+            </span>
+          </div>
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-        <h1 class="mdc-typography mdc-typography--headline mdc-typography--adjust-margin mdc-theme--text-hint-on-background">
-          Collaborative Live Coding Space with support of user-defined languages and WebVR ready 3D graphics.
-          <br> Based on:
-          <strong>Virtual World Framework | A-Frame | Ohm language | OSC.js | and more... </strong> by
-          <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background"
-            href="https://www.krestianstvo.org"><strong>Krestianstvo.org</strong></a>
-        </h1>
+          <div id="titleText">
+            </div>
+        
+      </div>
+      
+      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
+        <div id="headerText">
+      </div>
       </div>
     </div>
   </div>
   <div id="about" class="mdc-layout-grid">
     <div class="mdc-layout-grid__inner">
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-        <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Features</h1>
-
-        <ul class="featureList mdc-typography mdc-typography--title mdc-theme--text-hint-on-background">
-          <li>
-            <strong>Decentralized network model</strong> for
-            <strong>A-Frame</strong> components and entities based on
-            <strong>VWF</strong> replicated computation architecture</li>
-          <li>
-            <strong>Ohm</strong> language driver for sharing user-defined grammars, parsers, tokenisers inside virtual space</li>
-          <li>In browser
-            <strong>Code and Properties editor</strong> based on Cell.js</li>
-          <li>
-            <strong>OSC </strong>messaging through
-            <a class="mdc-typography link-in-text mdc-theme--text-hint-on-background" href="https://github.com/NikolaySuslov/osc-relay-lcs">OSC relay</a> on the client</li>
-          <li>
-            <strong>Avatars</strong> (Simple and GLTF models with animation)</li>
-          <li>
-            <strong>Multi-window</strong> or multi-monitor/multi-machine setups with view
-            <strong>offset cameras</strong>
-          </li>
-          <li>
-            <strong>WebRTC</strong> for video/audio streaming,
-            <strong>3D positional audio</strong> support</li>
-          <li>
-            <strong>GearVR, Windows MixedReality</strong> motion controllers</li>
-        </ul>
+          <div id="featuresText">
+            </div>
       </div>
 
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell">
@@ -114,12 +105,8 @@
   <div id="info" class="mdc-layout-grid">
     <div class="mdc-layout-grid__inner">
       <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-        <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Virtual Worlds</h1>
-        <h1 class="mdc-typography mdc-typography--headline mdc-theme--text-hint-on-background">
-          To begin collaborative coding in virtual space, just start one of the listed prototypes and connect to it from another browser
-          window using the generated link. The link will apper near the
-          <strong>Start new</strong> button.
-        </h1>
+          <div id="worldInfo">
+            </div>
       </div>
     </div>
   </div>
@@ -132,7 +119,10 @@
     <div id="about" class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-          <h1 class="mdc-typography--display1 mdc-theme--text-hint-on-background">Demo videos</h1>
+            <div id="demoText">
+              </div>
+
+         
 
           <iframe src="https://player.vimeo.com/video/243291223?title=0&byline=0&portrait=0" width="600" height="337" frameborder="0"
             webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>

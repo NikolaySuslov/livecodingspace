@@ -1,27 +1,55 @@
 import { Lang } from '/web/lib/polyglot-lang.js';
 
-var options = {
-    
-        query: 'pathname=' + window.location.pathname.slice(1,
-            window.location.pathname.lastIndexOf("/")),
-        secure: window.location.protocol === "https:",
-        reconnection: false,
-        transports: ['websocket']
-    
-    };
-    
-    var socket = io.connect(window.location.protocol + "//" + window.location.host, options);
-    
-    socket.on('getWebAppUpdate', function (msg) {
-        parseAppInstancesData(msg)
-        //console.log(msg);
-    });
-    
-    
-    function parseAppInstancesData(data) {
-    
+class WebApp {
+    constructor() {
+        console.log("app constructor");
+
+        this.options = {
+
+            query: 'pathname=' + window.location.pathname.slice(1,
+                window.location.pathname.lastIndexOf("/")),
+            secure: window.location.protocol === "https:",
+            reconnection: false,
+            transports: ['websocket']
+        }
+
+        this.lang = new Lang;
+        this.language = this.prepareLang();
+
+        var socket = io.connect(window.location.protocol + "//" + window.location.host, this.options);
+
+        var self = this;
+
+        socket.on('getWebAppUpdate', function (msg) {
+            self.parseAppInstancesData(msg)
+            //console.log(msg);
+        });
+    }
+
+    prepareLang() {
+        let phrases = this.lang.langPhrases;
+        return new this.lang.polyglot({ phrases });
+    }
+
+    setLanguage(langID) {
+        this.lang.setLocale(langID);
+        this.generateFrontPage();
+    }
+
+    generateFrontPage() {
+
+        this.lang.initLocale();
+        let allTextEl = ["titleText", "headerText", "featuresText", "worldInfo", "demoText"];
+        allTextEl.forEach(el => {
+            let textEl = document.querySelector("#" + el);
+            textEl.innerHTML = this.lang.getTranslationFor(el);
+        })
+    }
+
+    parseAppInstancesData(data) {
+
         var needToUpdate = true;
-    
+
         if (data == "{}") {
             var el = document.querySelector(".instance");
             if (el) {
@@ -30,7 +58,7 @@ var options = {
             }
             // let removeElements = elms => Array.from(elms).forEach(el => el.remove()); 
         }
-    
+
         let jsonObj = JSON.parse(data);
         var parsed = {};
         for (var prop in jsonObj) {
@@ -41,12 +69,12 @@ var options = {
                 parsed[name] = {};
                 parsed[name][prop] = jsonObj[prop];
             }
-    
+
         }
         //console.log(parsed);
-    
+
         document.querySelector("#main")._emptyLists();
-    
+
         for (var prop in parsed) {
             var name = prop;
             let element = document.getElementById(name + 'List');
@@ -57,49 +85,19 @@ var options = {
         }
         // console.log(data)
     }
-    
-    function getAllAppInstances() {
-    
-        let allInatances = httpGetJson('allinstances.json')
+
+    getAllAppInstances() {
+
+        let allInatances = this.httpGetJson('allinstances.json')
             .then(res => {
-                parseAppInstancesData(res);
+                this.parseAppInstancesData(res);
             });
     }
-    
-    function getSiteHeader(){
-        return  {
-            $type: "div",
-            class: "mdc-layout-grid",
-            $components: [
-                {
-                    $type: "div",
-                    class: "mdc-layout-grid__inner",
-                    $components: [
-                        {
-                            $cell: true,
-                            $type: "div",
-                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                            $components: [
-                                
-                        {
-                            $cell: true,
-                            $type: "h1",
-                            class: "mdc-typography--display1 mdc-theme--text-hint-on-background",
-                            $text: "Virtual Worlds"
-                        }
-                    ]
-                }
-                    ]
-                }
-            ]
 
-        }
-        
-        
-    }
+    parseWebAppDataForCell(data) {
 
-    function parseWebAppDataForCell(data) {
-    
+        var self = this;
+
         document.querySelector("#main").$cell({
             $cell: true,
             $type: "div",
@@ -115,19 +113,26 @@ var options = {
                 this._jsonData = JSON.parse(data);
             },
             _makeWorldCard: function (m) {
+                let langID = localStorage.getItem('krestianstvo_locale');
+                var appInfo = m
+                if (langID) {
+                    if (m[1][langID]) {
+                        appInfo = [m[0], m[1][langID]]
+                    }
+                }
                 return {
                     $cell: true,
                     $type: "div",
                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                     $components: [
-                        this._worldCardDef(m)
+                        this._worldCardDef(appInfo)
                     ]
                 }
-    
+
             },
             $update: function () {
                 this.$components = [
-                   //getSiteHeader(),// siteHeader,
+                    //getSiteHeader(),// siteHeader,
                     {
                         $type: "div",
                         class: "mdc-layout-grid",
@@ -138,14 +143,14 @@ var options = {
                                 $components: Object.entries(this._jsonData).map(this._makeWorldCard)
                             }
                         ]
-    
+
                     },
-    
-    
+
+
                 ]
             },
             _worldCardDef: function (desc) {
-    
+
                 return {
                     $cell: true,
                     $type: "div",
@@ -183,23 +188,23 @@ var options = {
                                 {
                                     $type: "a",
                                     class: "mdc-button mdc-button--compact mdc-card__action mdc-button--stroked",
-                                    $text: "Start new",
+                                    $text: self.language.t('start'),//"Start new",
                                     target: "_blank",
                                     href: "/" + desc[0],
                                     onclick: function (e) {
-                                        refresh();
+                                        self.refresh();
                                     }
                                 }
-    
-    
+
+
                             ]
                         },
-    
+
                         {
                             $type: "section",
                             class: "mdc-card__actions",
                             $components: [
-    
+
                                 {
                                     $type: "ul",
                                     _listData: {},
@@ -210,7 +215,7 @@ var options = {
                                     id: desc[0] + 'List',
                                     $update: function () {
                                         var connectText = {}
-    
+
                                         if (Object.entries(this._listData).length !== 0) {
                                             connectText = {
                                                 // $type: "span",
@@ -226,8 +231,8 @@ var options = {
                                         ].concat(Object.entries(this._listData).map(this._worldListItem))
                                         //     [connectText]
                                         // }].concat(Object.entries(this._listData).map(this._worldListItem))
-    
-    
+
+
                                     },
                                     _worldListItem: function (m) {
                                         return {
@@ -244,21 +249,21 @@ var options = {
                                                             target: "_blank",
                                                             href: window.location.protocol + "//" + m[1].instance,
                                                             onclick: function (e) {
-                                                                refresh();
+                                                                self.refresh();
                                                             }
                                                         },
                                                         {
                                                             $type: "span",
                                                             class: "mdc-list-item__text__secondary",
-                                                            $text: "Users online: " + m[1].clients
+                                                            $text: self.language.t('users') + m[1].clients
                                                         }
                                                     ]
                                                 }
-    
-    
-    
+
+
+
                                             ]
-    
+
                                         }
                                     }
                                 }
@@ -267,35 +272,33 @@ var options = {
                     ]
                 }
             }
-    
-    
+
+
         })
-    
-    
-    
+
     }
-    
-    function getAppDetails(val) {
-    
-        let appDetails = httpGetJson(val)
+
+    getAppDetails(val) {
+
+        let appDetails = this.httpGetJson(val)
             .then(res => {
-                parseWebAppDataForCell(res)
+                this.parseWebAppDataForCell(res)
             })
-            .then(res => refresh());
+            .then(res => this.refresh());
     }
-    
-    
-    function refresh() {
+
+
+    refresh() {
         // socket.emit('getWebAppUpdate', "");
     }
-    
-    
-    function httpGet(url) {
+
+
+    httpGet(url) {
         return new Promise(function (resolve, reject) {
             // do the usual Http request
             let request = new XMLHttpRequest();
             request.open('GET', url);
-    
+
             request.onload = function () {
                 if (request.status == 200) {
                     resolve(request.response);
@@ -303,24 +306,27 @@ var options = {
                     reject(Error(request.statusText));
                 }
             };
-    
+
             request.onerror = function () {
                 reject(Error('Network Error'));
             };
-    
+
             request.send();
         });
     }
-    async function httpGetJson(url) {
+    
+    async httpGetJson(url) {
         // check if the URL looks like a JSON file and call httpGet.
         let regex = /\.(json)$/i;
-    
+
         if (regex.test(url)) {
             // call the async function, wait for the result
-            return await httpGet(url);
+            return await this.httpGet(url);
         } else {
             throw Error('Bad Url Format');
         }
     }
-    
-    export {getAppDetails};
+
+}
+export { WebApp }
+    //export {getAppDetails, generateFrontPage, setLanguage, initLocale};
