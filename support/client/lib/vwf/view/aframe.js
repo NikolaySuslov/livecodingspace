@@ -163,20 +163,43 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
+
+            //     //console.log("sat new item");
+            //     let elID = '#' + node.aframeObj.getAttribute('id');
+            //     Object.entries(this.state.nodes).forEach(el => {
+            //         let src = el[1].aframeObj.getAttribute('src');
+            //         if (src){
+            //            // console.log("my: " + src);
+            //             if (src == elID)
+            //             self.kernel.callMethod(el[0], "updateSrc", [elID])
+            //         }
+            //     })
+
+            // }
+
             if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
                 //console.log("sat new item");
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
-                    let src = el[1].aframeObj.getAttribute('src');
-                    if (src){
+                    let sound = el[1].aframeObj.getAttribute('sound');
+                    if(sound) {
+                   
+                    if (sound.src !== ""){
                        // console.log("my: " + src);
-                        if (src == elID)
-                        self.kernel.callMethod(el[0], "updateSrc", [elID])
+                        let src = '#' + sound.src.id;
+                        if (src == elID){
+                            let soundID = vwf.find(el[0], 'sound');
+                            self.kernel.callMethod(soundID, "updateSrc", [elID])
+                        }
+                        
                     }
-                })
+                }
 
+                })
             }
+
 
             if (node.aframeObj.nodeName == "IMG" && propertyName == 'itemSrc') {
 
@@ -198,7 +221,27 @@ define(["module", "vwf/view"], function (module, view) {
                 }
 
                 })
+            }
 
+            if (node.aframeObj.nodeName == "VIDEO" && propertyName == 'itemSrc') {
+
+                //console.log("sat new item");
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                Object.entries(this.state.nodes).forEach(el => {
+                    let material = el[1].aframeObj.getAttribute('material');
+                    if(material) {
+                   
+                    if (material.src !== ""){
+                       // console.log("my: " + src);
+                        let src = '#' + material.src.id;
+                        if (src == elID){
+                            let materialID = vwf.find(el[0], 'material');
+                            self.kernel.callMethod(materialID, "updateSrc", [elID])
+                        }
+                        
+                    }
+                }
+                })
             }
 
             if (node.aframeObj.nodeName == "A-ASSET-ITEM" && propertyName == 'itemSrc') {

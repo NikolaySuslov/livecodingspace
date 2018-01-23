@@ -1,9 +1,9 @@
 # https://aframe.io/docs/0.5.0/primitives/a-cursor.html
 ---
 extends: http://vwf.example.com/aframe/node.vwf
-type: "image"
+type: "video"
 properties:
   itemID:
   itemSrc:
-  width:
-  height:
+  videoWidth:
+  videoHeight:

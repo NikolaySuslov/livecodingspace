@@ -284,7 +284,7 @@ define([
                              
                             },
                             widgets.textField({
-                                id:"asset3dsrc",
+                                id:"assetsrc",
                                 value:"Enter URL to asset source",
                                 funconchange: function(e){
                                     console.log(this.value)
@@ -304,6 +304,10 @@ define([
                                                 {
                                                     label: "Image",
                                                     onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                            let avatarID = 'avatar-' + vwf.moniker_;
+                                                            vwf_view.kernel.callMethod(vwf.application(), "createImage", [srcEl.value, null, null, avatarID])
+                                                        
                                                     }
                                                 }
                                             ),
@@ -311,6 +315,9 @@ define([
                                                 {
                                                     label: "Sound",
                                                     onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createAudio", [srcEl.value, null, null, avatarID])
                                                     }
                                                 }
                                             ),
@@ -318,20 +325,21 @@ define([
                                                 {
                                                     label: "Video",
                                                     onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createVideo", [srcEl.value, null, null, avatarID])
                                                     }
                                                 }
                                             ),
-                                            widgets.buttonSimple(
-                                                {
-                                                    label: "MTL",
-                                                    onclick: function(e){
-                                                    }
-                                                }
-                                            ),
+                                           
                                             widgets.buttonSimple(
                                                 {
                                                     label: "GLTF",
                                                     onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        if(srcEl.value.includes('.gltf'))
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createModel", ['GLTF', srcEl.value, avatarID])
                                                     }
                                                 }
                                             ),
@@ -339,11 +347,10 @@ define([
                                                 {
                                                     label: "DAE",
                                                     onclick: function(e){
-                                                        let srcEl = document.querySelector('#asset3dsrc');
+                                                        let srcEl = document.querySelector('#assetsrc');
                                                         let avatarID = 'avatar-' + vwf.moniker_;
                                                         if(srcEl.value.includes('.dae'))
-                                                        vwf_view.kernel.callMethod(vwf.application(), "createModelDAE", [srcEl.value, avatarID])
-
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createModel", ['DAE', srcEl.value, avatarID])
                                                     }
                                                 }
                                             ),
@@ -351,6 +358,10 @@ define([
                                                 {
                                                     label: "OBJ",
                                                     onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        if(srcEl.value.includes('.obj'))
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createModel", ['OBJ', srcEl.value, avatarID])
                                                     }
                                                 }
                                             )
@@ -383,7 +394,11 @@ define([
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/3ditem.png",
                                                 title: 'Asset item',
-                                                styleClass: "createListItem"
+                                                styleClass: "createListItem",
+                                                onclickfunc: function(){
+                                                    let srcEl = document.querySelector('#assetsrc');
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
+                                                }
                                             }),
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/image.png",
@@ -391,19 +406,38 @@ define([
                                                 styleClass: "createListItem",
                                                 onclickfunc: function(){
                                                     //let cubeName = self.GUID();
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetItemImg")
+                                                    let srcEl = document.querySelector('#assetsrc');
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['IMG', srcEl.value])
                                                 }
                                             }),
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/video.png",
                                                 title: 'Video',
-                                                styleClass: "createListItem"
+                                                styleClass: "createListItem",
+                                                onclickfunc: function(){
+                                                    let srcEl = document.querySelector('#assetsrc');
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['VIDEO', srcEl.value])
+                                                }
                                             }),
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/sound.png",
                                                 title: 'Sound',
-                                                styleClass: "createListItem"
-                                            })
+                                                styleClass: "createListItem",
+                                                onclickfunc: function(){
+                                                    let srcEl = document.querySelector('#assetsrc');
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['AUDIO', srcEl.value])
+                                                }
+                                            }),
+                                            self.widgets.buttonSimple(
+                                                {
+                                                    label: "MTL",
+                                                    onclick: function(e){
+                                                        let srcEl = document.querySelector('#assetsrc');
+                                                        if(srcEl.value.includes('.mtl'))
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
+                                                    }
+                                                }
+                                            )
                                         
                                         ]
                                     }
@@ -425,7 +459,7 @@ define([
                         onclickfunc: function(){
                             let avatarID = 'avatar-' + vwf.moniker_;
                             //let cubeName = self.GUID();
-                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), avatarID])
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), null, null, null, avatarID])
                         }
                 })
                 })
@@ -441,7 +475,7 @@ define([
                         onclickfunc: function(){
                             let avatarID = 'avatar-' + vwf.moniker_;
                             //let cubeName = self.GUID();
-                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", avatarID, el.toLowerCase()])
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", el.toLowerCase(), null, null, avatarID])
                         }
                     })
                 })

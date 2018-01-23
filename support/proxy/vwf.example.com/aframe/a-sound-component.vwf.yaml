@@ -1,0 +1,21 @@
+# https://aframe.io/docs/master/primitives/a-sound.html
+--- 
+extends: http://vwf.example.com/aframe/aentityComponent.vwf
+type: "component"
+properties:
+  autoplay:
+  distanceModel:
+  loop:
+  maxDistance:
+  on:
+  poolSize:
+  refDistance:
+  rolloffFactor:
+  src:
+  volume:
+methods:
+  updateSrc:
+    parameters:
+      - srcID
+scripts:
+  - source: "http://vwf.example.com/aframe/a-sound-component.js"

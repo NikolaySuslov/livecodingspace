@@ -123,8 +123,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     "width",
                     "wireframe",
                     "wireframe-linewidth",
-                    "src"]
+                    "src"],
+            
+                    'A-SOUND': [
+                        "autoplay", "distanceModel", "loop", "maxDistance", "on", "poolSize", "refDistance",
+                        "rolloffFactor", "src", "volume"
+                    ]
+
             }
+            
 
             //this.state.kernel = this.kernel.kernel.kernel;
 
@@ -353,6 +360,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         self.aframeComponentDef['A-MATERIAL'].forEach(element => {
                             element == propertyName ? parentNodeAF.setAttribute('material', element, propertyValue) :
+                                value = undefined;
+                        })
+                    }
+                }
+
+                if (value === undefined && isASoundDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        //let defs = ['color', 'transparent', 'opacity', 'side'];
+
+                        self.aframeComponentDef['A-SOUND'].forEach(element => {
+                            element == propertyName ? parentNodeAF.setAttribute('sound', element, propertyValue) :
                                 value = undefined;
                         })
                     }
@@ -765,28 +786,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         }
 
                     })
+                }
 
-                    // switch (propertyName) {
+                if (value === undefined && isASoundDefinition(node.prototypes)) {
+                    value = propertyValue;
 
-                    //     case "color":
-                    //         value = parentNodeAF.getAttribute('material').color;
-                    //         break;
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
 
-                    //     case "opacity":
-                    //         value = parentNodeAF.getAttribute('material').opacity;
-                    //         break;
+                    self.aframeComponentDef['A-SOUND'].forEach(element => {
+                        if (element == propertyName) {
+                            value = parentNodeAF.getAttribute('sound').element;
+                        }
 
-                    //     case "side":
-                    //         value = parentNodeAF.getAttribute('material').side;
-                    //         break;
-
-                    //     case "transparent":
-                    //         value = parentNodeAF.getAttribute('material').transparent;
-                    //         break;
-
-
-                    // }
-
+                    })
                 }
 
                 if (value === undefined && isALinePathDefinition(node.prototypes)) {
@@ -958,6 +971,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
         return found;
     }
+
+    function isASoundDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/a-sound-component.vwf");
+            }
+        }
+        return found;
+    }
+
 
     function isAViewOffsetCameraDefinition(prototypes) {
         var found = false;
@@ -1148,6 +1172,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "material";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/a-sound-component.vwf")) {
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "sound";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }
