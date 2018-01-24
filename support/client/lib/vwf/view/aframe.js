@@ -186,15 +186,18 @@ define(["module", "vwf/view"], function (module, view) {
                     let sound = el[1].aframeObj.getAttribute('sound');
                     if(sound) {
                    
-                    if (sound.src !== ""){
-                       // console.log("my: " + src);
-                        let src = '#' + sound.src.id;
-                        if (src == elID){
-                            let soundID = vwf.find(el[0], 'sound');
-                            self.kernel.callMethod(soundID, "updateSrc", [elID])
-                        }
+                        let soundID = vwf.find(el[0], 'sound');
+                        self.kernel.callMethod(soundID, "refreshSrc", [elID])
+
+                    // if (sound.src !== ""){
+                    //     let src = '#' + sound.src.id;
+                    //     if (src == elID){
+                    //         let soundID = vwf.find(el[0], 'sound');
+                    //         self.kernel.callMethod(soundID, "updateSrc", [elID])
+                    //     }
                         
-                    }
+                    // }
+
                 }
 
                 })

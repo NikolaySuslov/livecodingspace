@@ -549,6 +549,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
         }
  
         let newNode = self.planeProto();
+        newNode.properties.displayName = "image";
         newNode.children.material.properties.src = '#' + child.itemID;
         newNode.properties.position = position;
         newNode.properties.width = child.width;
@@ -601,10 +602,10 @@ this.createVideo = function (vidSrc, name, node, avatar) {
     this.children.create(tagName, tagNode, function( child ) {
 
 
-        // let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
-        // let imgAssetNode = allNodes[child.id];
+        let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+        let imgAssetNode = allNodes[child.id];
 
-        // imgAssetNode.aframeObj.onloadeddata = function(){
+        imgAssetNode.aframeObj.onloadeddata = function(){
 
        //console.log(imgAssetNode);
 
@@ -623,19 +624,20 @@ this.createVideo = function (vidSrc, name, node, avatar) {
         }
  
         let newNode = self.planeProto();
+        newNode.properties.displayName = "video";
         newNode.children.material.properties.src = '#' + child.itemID;
         newNode.properties.position = position;
-        newNode.properties.width = 3;
-        newNode.properties.height = 1.75;
-        // newNode.properties.width = child.videoWidth;
-        // newNode.properties.height = child.videoHeight;
-        // newNode.properties.scale = [0.003, 0.003, 0.003];
+        // newNode.properties.width = 3;
+        // newNode.properties.height = 1.75;
+        newNode.properties.width = child.videoWidth;
+        newNode.properties.height = child.videoHeight;
+        newNode.properties.scale = [0.003, 0.003, 0.003];
 
         self.children.create(nodeName, newNode, function( child ) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition)
            });
 
-        //}
+        }
         
        });
 
@@ -698,6 +700,7 @@ this.createAudio = function (itemSrc, name, node, avatar) {
         }
  
         let newNode = self.cubeProto();
+        newNode.properties.displayName = "audio";
         newNode.properties.position = position;
         newNode.children.sound = {
             

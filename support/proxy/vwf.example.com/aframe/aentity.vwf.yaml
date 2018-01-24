@@ -17,9 +17,6 @@ methods:
     parameters:
       - mode
   showCloseGizmo:
-  updateSrc:
-    parameters:
-      - src
   lookAt:
     parameters:
       - nodeID

@@ -22,13 +22,3 @@ this.showCloseGizmo = function () {
         }
     }
 }
-
-this.updateSrc = function(srcID){
-
-    if (srcID) {
-        debugger;
-        this.src = "";
-        this.src = srcID;
-    }
-    
-}
