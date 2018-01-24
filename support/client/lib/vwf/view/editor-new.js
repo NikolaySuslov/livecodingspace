@@ -256,15 +256,24 @@ define([
                                                 title: 'Camera',
                                                 styleClass: "createListItem",
                                                 onclickfunc: function(){
+                                                    let avatarID = 'avatar-' + vwf.moniker_;
                                                     //let cubeName = self.GUID();
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createCamera", [null, null, avatarID])
+                                                     //let cubeName = self.GUID();
                                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
                                                 }
+                                               
+                                                   
+                                                
                                             }),
                                             self.widgets.gridListItem({
                                                 imgSrc: "vwf/view/lib/images/ui/icons/camera_offset.png",
                                                 title: 'Camera with view offset',
                                                 styleClass: "createListItem",
                                                 onclickfunc: function(){
+                                                    let avatarID = 'avatar-' + vwf.moniker_;
+                                                    //let cubeName = self.GUID();
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createCameraWithOffset", [null, null, avatarID])
                                                     //let cubeName = self.GUID();
                                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
                                                 }
@@ -1312,7 +1321,7 @@ define([
         var continuousSlider = new mdc.slider.MDCSlider(myEl);
         this._comp = continuousSlider;
         continuousSlider.listen('MDCSlider:input', function(e) {
-            console.log(continuousSlider.value)
+           // console.log(continuousSlider.value)
             let myEl = e.currentTarget;
            // let prop = myEl._prop.body;
             //document.querySelector('#propAceEditor').env.editor.setValue(prop);
@@ -1321,7 +1330,7 @@ define([
          
         });
         continuousSlider.listen('MDCSlider:change', function(e) {
-          console.log(continuousSlider.value);
+          //console.log(continuousSlider.value);
           let myEl = e.currentTarget;
          // let prop = myEl._prop.body;
           //document.querySelector('#propAceEditor').env.editor.setValue(prop);

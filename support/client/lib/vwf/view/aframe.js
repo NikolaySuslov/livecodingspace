@@ -409,7 +409,12 @@ define(["module", "vwf/view"], function (module, view) {
                 if (methodName == "setCameraToActive"){
                     if (methodParameters[0] == vwf.moniker_){
                     console.log("set active");
-                    node.aframeObj.setAttribute('camera', 'active', true)
+                    let offsetComp = node.aframeObj.getAttribute('viewoffset');
+                    if (offsetComp) {
+                        let offsetCompID = vwf.find(nodeID, 'viewoffset');
+                        self.kernel.callMethod(offsetCompID, "setParams", []);
+                    }
+                    node.aframeObj.setAttribute('camera', 'active', true);
                 }
             }
         }

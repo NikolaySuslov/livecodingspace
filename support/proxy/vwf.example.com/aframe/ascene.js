@@ -290,6 +290,56 @@ this.lightProto = function (lightType) {
     return node
 }
 
+this.cameraProto = function () {
+
+    let newNode = this.cubeProto();
+    newNode.properties.width = 0.3;
+    newNode.properties.height = 0.3;
+    newNode.properties.depth= 0.5;
+    newNode.children.material.properties.opacity = 0.5;
+    newNode.children.material.properties.color = "red";
+
+    newNode.children.camera = {
+        "extends": "http://vwf.example.com/aframe/acamera.vwf",
+        "properties": {
+            "look-controls-enabled": false,
+            "wasd-controls-enabled": false,
+            "user-height": 0
+        }
+    }
+
+    return newNode
+}
+
+this.cameraProtoWithOffset = function () {
+
+    let newNode = this.cubeProto();
+    newNode.properties.width = 0.3;
+    newNode.properties.height = 0.3;
+    newNode.properties.depth= 0.5;
+    newNode.children.material.properties.opacity = 0.5;
+    newNode.children.material.properties.color = "red";
+
+    newNode.children.camera = {
+        "extends": "http://vwf.example.com/aframe/acamera.vwf",
+        "properties": {
+            "look-controls-enabled": false,
+            "wasd-controls-enabled": false,
+            "user-height": 0
+        },
+        children: {
+            viewoffset: {
+                extends: "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf",
+                properties: {
+                }
+            }
+           
+        }
+}
+
+    return newNode
+}
+
 this.planeProto = function () {
 
     let node = {
@@ -537,11 +587,82 @@ this.createPrimitive = function (type, params, name, node, avatar) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar)child.lookAt(self.children[avatar].worldPosition)
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
           });
     }
 
 }
+
+this.createCamera = function (name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    var newNode = this.cameraProto();
+    newNode.properties.displayName = "camera";
+
+    var self = this;
+
+    if (newNode) {
+        newNode.properties.position = position;
+        this.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+          });
+    }
+
+}
+
+this.createCameraWithOffset = function (name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    var newNode = this.cameraProtoWithOffset();
+    newNode.properties.displayName = "cameraWithOffset";
+
+    var self = this;
+
+    if (newNode) {
+        newNode.properties.position = position;
+        this.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+          });
+    }
+
+}
+
 
 this.createImage = function (imgSrc, name, node, avatar) {
 

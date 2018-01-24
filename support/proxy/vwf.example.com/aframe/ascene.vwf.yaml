@@ -65,6 +65,16 @@ methods:
       - name
       - node
       - avatar
+  createCamera:
+    parameters:
+      - name
+      - node
+      - avatar
+  createCameraWithOffset:
+    parameters:
+      - name
+      - node
+      - avatar
   deleteNode:
     parameters:
       - nodeName

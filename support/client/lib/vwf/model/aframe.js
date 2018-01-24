@@ -262,7 +262,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     let target = methodParameters[0];
                     node.aframeObj.object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
                     let newRotation = node.aframeObj.getAttribute('rotation');
-                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0});
+                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0}); 
                 }
             }
 
