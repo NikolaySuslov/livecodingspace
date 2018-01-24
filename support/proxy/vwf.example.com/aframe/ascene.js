@@ -699,14 +699,8 @@ this.createImage = function (imgSrc, name, node, avatar) {
     this.children.create(tagName, tagNode, function( child ) {
 
 
-        let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
-        let imgAssetNode = allNodes[child.id];
+        var nodeName = 'IMAGE-'+self.GUID();
 
-        imgAssetNode.aframeObj.onload = function(){
-
-       // console.log(imgAssetNode);
-
-        let nodeName = 'IMAGE-'+self.GUID();
         var position = "0 0 0";
         if (avatar) {
             
@@ -724,15 +718,39 @@ this.createImage = function (imgSrc, name, node, avatar) {
         newNode.properties.displayName = "image";
         newNode.children.material.properties.src = '#' + child.itemID;
         newNode.properties.position = position;
+        newNode.properties.scale = [0.003, 0.003, 0.003];
+        
+        if(child.width && child.height){
+
+            newNode.properties.width = child.width;
+            newNode.properties.height = child.height;
+
+            self.children.create(nodeName, newNode, function( child ) {
+                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+               });
+    
+        } else {
+
+            let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+            let imgAssetNode = allNodes[child.id];
+    
+            imgAssetNode.aframeObj.onload = function(){
+    
+           // console.log(imgAssetNode);
+
         newNode.properties.width = child.width;
         newNode.properties.height = child.height;
-        newNode.properties.scale = [0.003, 0.003, 0.003];
+    
+            self.children.create(nodeName, newNode, function( child ) {
+                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+               });
+    
+            }
 
-        self.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition)
-           });
 
-        }
+        } 
+
+     
         
 
        });
@@ -774,13 +792,6 @@ this.createVideo = function (vidSrc, name, node, avatar) {
     this.children.create(tagName, tagNode, function( child ) {
 
 
-        let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
-        let imgAssetNode = allNodes[child.id];
-
-        imgAssetNode.aframeObj.onloadeddata = function(){
-
-       //console.log(imgAssetNode);
-
         let nodeName = 'VIDEO-'+self.GUID();
         var position = "0 0 0";
         if (avatar) {
@@ -801,15 +812,35 @@ this.createVideo = function (vidSrc, name, node, avatar) {
         newNode.properties.position = position;
         // newNode.properties.width = 3;
         // newNode.properties.height = 1.75;
-        newNode.properties.width = child.videoWidth;
-        newNode.properties.height = child.videoHeight;
         newNode.properties.scale = [0.003, 0.003, 0.003];
 
-        self.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition)
-           });
+        if (child.videoWidth && child.videoHeight) {
 
+            newNode.properties.width = child.videoWidth;
+            newNode.properties.height = child.videoHeight;
+
+            self.children.create(nodeName, newNode, function( child ) {
+                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+               });
+
+        } else {
+
+            let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+            let imgAssetNode = allNodes[child.id];
+    
+            imgAssetNode.aframeObj.onloadeddata = function(){
+
+                newNode.properties.width = child.videoWidth;
+                newNode.properties.height = child.videoHeight;
+
+                self.children.create(nodeName, newNode, function( child ) {
+                    if (avatar) child.lookAt(self.children[avatar].worldPosition)
+                   });
+
+            }
+    
         }
+
         
        });
 
