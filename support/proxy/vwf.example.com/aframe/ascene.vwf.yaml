@@ -12,9 +12,10 @@ methods:
   createPrimitive:
     parameters:
       - type
-      - avatar
+      - params
       - name
       - node
+      - avatar
   createAssetItemImg:
   planeProto:
   cubeProto:
@@ -23,11 +24,56 @@ methods:
   coneProto:
   textProto:
   lightProto:
-     parameters:
-      - lightType
-  createModelDAE:
     parameters:
-      - src
+      - lightType
+  createImage:
+    parameters:
+      - imgSrc
+      - name
+      - node
+      - avatar
+  createAudio:
+    parameters:
+      - itemSrc
+      - name
+      - node
+      - avatar
+  createVideo:
+    parameters:
+      - vidSrc
+      - name
+      - node
+      - avatar
+  createAssetResource:
+    parameters:
+      - resType
+      - resSrc
+  createModel:
+    parameters:
+      - modelType
+      - modelSrc
+      - avatar
+  createModelObj:
+    parameters:
+      - mtlSrc
+      - objSrc
+      - name
+      - avatar
+  createGooglePoly:
+    parameters:
+      - polyID
+      - name
+      - node
+      - avatar
+  createCamera:
+    parameters:
+      - name
+      - node
+      - avatar
+  createCameraWithOffset:
+    parameters:
+      - name
+      - node
       - avatar
   deleteNode:
     parameters:

@@ -290,6 +290,56 @@ this.lightProto = function (lightType) {
     return node
 }
 
+this.cameraProto = function () {
+
+    let newNode = this.cubeProto();
+    newNode.properties.width = 0.3;
+    newNode.properties.height = 0.3;
+    newNode.properties.depth= 0.5;
+    newNode.children.material.properties.opacity = 0.5;
+    newNode.children.material.properties.color = "red";
+
+    newNode.children.camera = {
+        "extends": "http://vwf.example.com/aframe/acamera.vwf",
+        "properties": {
+            "look-controls-enabled": false,
+            "wasd-controls-enabled": false,
+            "user-height": 0
+        }
+    }
+
+    return newNode
+}
+
+this.cameraProtoWithOffset = function () {
+
+    let newNode = this.cubeProto();
+    newNode.properties.width = 0.3;
+    newNode.properties.height = 0.3;
+    newNode.properties.depth= 0.5;
+    newNode.children.material.properties.opacity = 0.5;
+    newNode.children.material.properties.color = "red";
+
+    newNode.children.camera = {
+        "extends": "http://vwf.example.com/aframe/acamera.vwf",
+        "properties": {
+            "look-controls-enabled": false,
+            "wasd-controls-enabled": false,
+            "user-height": 0
+        },
+        children: {
+            viewoffset: {
+                extends: "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf",
+                properties: {
+                }
+            }
+           
+        }
+}
+
+    return newNode
+}
+
 this.planeProto = function () {
 
     let node = {
@@ -332,40 +382,114 @@ this.planeProto = function () {
     return node
 }
 
-this.createModelDAE = function (daeSrc, avatar) {
+
+this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
 
     var self = this;
 
-    let daeTagName = 'DAE-ASSET-'+this.GUID();
-    let daeTagNode = {
-        "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
-        "properties": {
-            "itemID": daeTagName,
-            "itemSrc": daeSrc,
-        },
-    }
 
-    this.children.create(daeTagName, daeTagNode, function( child ) {
-        let daeNodeName = 'DAE-MODEL-'+self.GUID();
+    var position = "0 0 0";
 
-        var position = "0 0 0";
-        let myAvatar = self.children[avatar];
+    var nodeName = this.GUID();
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-    
+
         if (cursorNode) {
-             position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition;
             //console.log(position);
         }
 
-        let daeNode = {
-            "extends": "http://vwf.example.com/aframe/acolladamodel.vwf",
+    }
+
+    let modelNode = {
+        "extends": "http://vwf.example.com/aframe/aobjmodel.vwf",
+        "properties": {
+            "src": '#' + objSrc,
+            "mtl": '#' + mtlSrc,
+            "position": position
+        },
+        children:{
+            "interpolation":
+            {
+                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                "type": "component",
+                "properties": {
+                    "enabled": true
+                }
+            }
+        }
+    }
+
+    if (name) {
+        modelNode.properties.displayName = name;
+    }
+
+    self.children.create(nodeName, modelNode, function( child ) {
+        if (avatar) child.lookAt(self.children[avatar].worldPosition)
+       });
+
+}
+
+this.createModel = function (modelType, modelSrc, avatar) {
+
+    var self = this;
+
+    let tagName = modelType + '-ASSET-'+ this.GUID();
+    let tagNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+        "properties": {
+            "itemID": tagName,
+            "itemSrc": modelSrc
+        }
+    }
+
+    this.children.create(tagName, tagNode, function( child ) {
+
+        let nodeName = modelType + '-MODEL-'+self.GUID();
+        var position = "0 0 0";
+        if (avatar) {
+            
+            let myAvatar = self.children[avatar];
+            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+        
+            if (cursorNode) {
+                 position = cursorNode.worldPosition;
+                //console.log(position);
+            }
+    
+        }
+       
+        const protos = {
+            DAE: "http://vwf.example.com/aframe/acolladamodel.vwf",
+            OBJ: "http://vwf.example.com/aframe/aobjmodel.vwf",
+            GLTF: "http://vwf.example.com/aframe/agltfmodel.vwf"
+        }
+
+
+        let extendsName = Object.entries(protos).filter(el => el[0] == modelType)[0];
+ 
+        let modelNode = {
+            "extends": extendsName[1],
             "properties": {
                 "src": '#' + child.itemID,
                 "position": position
+            },
+            children:{
+                "interpolation":
+                {
+                    "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        "enabled": true
+                    }
+                }
             }
         }
 
-        self.children.create(daeNodeName, daeNode, function( child ) {
+        self.children.create(nodeName, modelNode, function( child ) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition)
            });
 
@@ -373,22 +497,52 @@ this.createModelDAE = function (daeSrc, avatar) {
 }
 
 
-this.createPrimitive = function (type, avatar, params, name, node) {
+this.createAssetResource = function(resType, resSrc){
 
-    var position = "0 0 0";
-    var nodeName = name;
+    var self = this;
 
+    const protos = {
+        IMG: "http://vwf.example.com/aframe/a-asset-image-item.vwf",
+        AUDIO: "http://vwf.example.com/aframe/a-asset-audio-item.vwf",
+        VIDEO:  "http://vwf.example.com/aframe/a-asset-video-item.vwf",
+        ITEM:  "http://vwf.example.com/aframe/a-asset-item.vwf" 
+    };
 
-    let myAvatar = this.children[avatar];
-    let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+    let extendsName = Object.entries(protos).filter(el => el[0] == resType)[0];
 
-    if (cursorNode) {
-        position = cursorNode.worldPosition;
-        //console.log(position);
+    let tagName = resType + '-ASSET-'+ this.GUID();
+    let tagNode = {
+        "extends": extendsName[1],
+        "properties": {
+            "itemID": tagName,
+            "itemSrc": resSrc
+        }
     }
 
-    if (!name) {
+    this.children.create(tagName, tagNode);
+
+}
+
+
+this.createPrimitive = function (type, params, name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
         nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
     }
 
     var newNode = {};
@@ -433,12 +587,394 @@ this.createPrimitive = function (type, avatar, params, name, node) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-           child.lookAt(self.children[avatar].worldPosition)
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
           });
     }
 
 }
 
+this.createCamera = function (name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    var newNode = this.cameraProto();
+    newNode.properties.displayName = "camera";
+
+    var self = this;
+
+    if (newNode) {
+        newNode.properties.position = position;
+        this.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+          });
+    }
+
+}
+
+this.createCameraWithOffset = function (name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    var newNode = this.cameraProtoWithOffset();
+    newNode.properties.displayName = "cameraWithOffset";
+
+    var self = this;
+
+    if (newNode) {
+        newNode.properties.position = position;
+        this.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+          });
+    }
+
+}
+
+
+this.createImage = function (imgSrc, name, node, avatar) {
+
+    var self = this;
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    let tagName = 'IMG-ASSET-'+ this.GUID();
+    let tagNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-image-item.vwf",
+        "properties": {
+            "itemID": tagName,
+            "itemSrc": imgSrc
+        }
+    }
+
+    this.children.create(tagName, tagNode, function( child ) {
+
+
+        let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+        let imgAssetNode = allNodes[child.id];
+
+        imgAssetNode.aframeObj.onload = function(){
+
+       // console.log(imgAssetNode);
+
+        let nodeName = 'IMAGE-'+self.GUID();
+        var position = "0 0 0";
+        if (avatar) {
+            
+            let myAvatar = self.children[avatar];
+            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+        
+            if (cursorNode) {
+                 position = cursorNode.worldPosition;
+                //console.log(position);
+            }
+    
+        }
+ 
+        let newNode = self.planeProto();
+        newNode.properties.displayName = "image";
+        newNode.children.material.properties.src = '#' + child.itemID;
+        newNode.properties.position = position;
+        newNode.properties.width = child.width;
+        newNode.properties.height = child.height;
+        newNode.properties.scale = [0.003, 0.003, 0.003];
+
+        self.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+           });
+
+        }
+        
+
+       });
+
+}
+
+this.createVideo = function (vidSrc, name, node, avatar) {
+
+    var self = this;
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    let tagName = 'VIDEO-ASSET-'+ this.GUID();
+    let tagNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-video-item.vwf",
+        "properties": {
+            "itemID": tagName,
+            "itemSrc": vidSrc
+        }
+    }
+
+    this.children.create(tagName, tagNode, function( child ) {
+
+
+        let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+        let imgAssetNode = allNodes[child.id];
+
+        imgAssetNode.aframeObj.onloadeddata = function(){
+
+       //console.log(imgAssetNode);
+
+        let nodeName = 'VIDEO-'+self.GUID();
+        var position = "0 0 0";
+        if (avatar) {
+            
+            let myAvatar = self.children[avatar];
+            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+        
+            if (cursorNode) {
+                 position = cursorNode.worldPosition;
+                //console.log(position);
+            }
+    
+        }
+ 
+        let newNode = self.planeProto();
+        newNode.properties.displayName = "video";
+        newNode.children.material.properties.src = '#' + child.itemID;
+        newNode.properties.position = position;
+        // newNode.properties.width = 3;
+        // newNode.properties.height = 1.75;
+        newNode.properties.width = child.videoWidth;
+        newNode.properties.height = child.videoHeight;
+        newNode.properties.scale = [0.003, 0.003, 0.003];
+
+        self.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+           });
+
+        }
+        
+       });
+
+}
+
+this.createAudio = function (itemSrc, name, node, avatar) {
+
+    var self = this;
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    let tagName = 'AUDIO-ASSET-'+ this.GUID();
+    let tagNode = {
+        "extends": "http://vwf.example.com/aframe/a-asset-audio-item.vwf",
+        "properties": {
+            "itemID": tagName,
+            "itemSrc": itemSrc
+        }
+    }
+
+    this.children.create(tagName, tagNode, function( child ) {
+
+
+        // let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+        // let itemAssetNode = allNodes[child.id];
+
+    //     itemAssetNode.aframeObj.onload = function(){
+
+    //    console.log(itemAssetNode);
+
+        let nodeName = 'AUDIO-'+self.GUID();
+        var position = "0 0 0";
+        if (avatar) {
+            
+            let myAvatar = self.children[avatar];
+            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+        
+            if (cursorNode) {
+                 position = cursorNode.worldPosition;
+                //console.log(position);
+            }
+    
+        }
+ 
+        let newNode = self.cubeProto();
+        newNode.properties.displayName = "audio";
+        newNode.properties.position = position;
+        newNode.properties.width = 0.3;
+        newNode.properties.height = 0.3;
+        newNode.properties.depth= 0.3;
+        newNode.children.material.properties.opacity = 0.5;
+        newNode.children.material.properties.color = "yellow";
+
+        newNode.children.sound = {
+            
+                "extends": "http://vwf.example.com/aframe/a-sound-component.vwf",
+                "type": "component",
+                "properties": {
+                    "autoplay": true,
+                    "loop": true,
+                    "src": '#' + child.itemID
+                }
+            
+        };
+
+        self.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+           });
+
+       // }
+        
+
+       });
+
+}
+
+this.createGooglePoly = function(polyID, name, node, avatar){
+
+    // all done in aframe view driver
+    let params = [polyID, name, node, avatar];
+    this.loadGooglePolyAsset(params)
+  
+}
+
+this.loadGooglePolyAsset = function( params ) {
+
+    var self = this;
+
+    const API_KEY = "AIzaSyCGx2_idlUJ88yW5GBkOllIkyxJyKbEgDk";
+    const id = params[0];
+    const avatarID = params[3];
+
+
+    var url = `https://poly.googleapis.com/v1/assets/${id}/?key=${API_KEY}`;
+
+    var request = new XMLHttpRequest();
+    request.open( 'GET', url, true );
+    request.addEventListener( 'load', function ( event ) {
+
+        var asset = JSON.parse( event.target.response );
+
+        // asset_name.textContent = asset.displayName;
+        // asset_author.textContent = asset.authorName;
+
+        var format = asset.formats.find( format => { return format.formatType === 'OBJ'; } );
+
+        if ( format !== undefined ) {
+
+            var obj = format.root;
+            var mtl = format.resources.find( resource => { return resource.url.endsWith( 'mtl' ) } );
+
+            var path = obj.url.slice( 0, obj.url.indexOf( obj.relativePath ) );
+            
+            //const createOnNodeID = vwf.application();
+
+            let mtlName = 'MTL-ASSET-'+ self.GUID();
+            let mtlNode = {
+                "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+                "properties": {
+                    "itemID": mtlName,
+                    "itemSrc": mtl.url
+                }
+            }
+        
+            self.children.create(mtlName, mtlNode, function( mtlChild ) {
+
+                let objName = 'OBJ-ASSET-'+ self.GUID();
+                let objNode = {
+                    "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+                    "properties": {
+                        "itemID": objName,
+                        "itemSrc": obj.url
+                    }
+                }
+
+                self.children.create(objName, objNode, function( objChild ) {
+
+                        self.createModelObj(mtlChild.itemID, objChild.itemID, asset.displayName, avatarID);
+
+                })
+
+
+            })
+        }
+
+    } );
+    request.send( null );
+}
 
 this.GUID = function () {
     var self = this;

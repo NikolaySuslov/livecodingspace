@@ -262,7 +262,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     let target = methodParameters[0];
                     node.aframeObj.object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
                     let newRotation = node.aframeObj.getAttribute('rotation');
-                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0});
+                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0}); 
                 }
             }
 
@@ -431,6 +431,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('src', propertyValue);
                         break;
 
+                        // case "width":
+                        //     aframeObject.width = propertyValue;
+                        // break;
+
+                        // case "height":
+                        //     aframeObject.height = propertyValue;
+                        // break;
+
                         default:
                             value = undefined;
                             break;
@@ -438,6 +446,25 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
                 if (value === undefined && aframeObject.nodeName == "AUDIO") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+
+                        case "itemID":
+                            aframeObject.setAttribute('id', propertyValue);
+                        break;
+
+                        case "itemSrc":
+                            aframeObject.setAttribute('src', propertyValue);
+                        break;
+
+                        default:
+                            value = undefined;
+                            break;
+                    }
+                }
+
+                if (value === undefined && aframeObject.nodeName == "VIDEO") {
                     value = propertyValue;
 
                     switch (propertyName) {
@@ -607,29 +634,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "mtl":
                             aframeObject.setAttribute('mtl', propertyValue);
-                            break;
-
-                        default:
-                            value = undefined;
-                            break;
-                    }
-                }
-
-                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
-                    value = propertyValue;
-
-                    switch (propertyName) {
-
-                        case "src":
-                            aframeObject.setAttribute('src', propertyValue);
-                            break;
-
-                        case "on":
-                            aframeObject.setAttribute('on', propertyValue);
-                            break;
-
-                        case "autoplay":
-                            aframeObject.setAttribute('autoplay', propertyValue);
                             break;
 
                         default:
@@ -866,6 +870,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = aframeObject.getAttribute('src');
                         break;
 
+                        case "width":
+                            value = aframeObject.width;
+                        break;
+
+                        case "height":
+                            value = aframeObject.height;
+                        break;
                       
                     }
                 }
@@ -882,6 +893,29 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = aframeObject.getAttribute('src');
                         break;
 
+                      
+                    }
+                }
+
+                if (value === undefined && aframeObject.nodeName == "VIDEO") {
+
+                    switch (propertyName) {
+                        
+                        case "itemID":
+                            value = aframeObject.getAttribute('id');
+                        break;
+                    
+                        case "itemSrc":
+                            value = aframeObject.getAttribute('src');
+                        break;
+
+                        case "videoWidth":
+                        value = aframeObject.videoWidth;
+                        break;
+
+                        case "videoHeight":
+                            value = aframeObject.videoHeight;
+                        break;
                       
                     }
                 }
@@ -1096,20 +1130,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
-                if (value === undefined && aframeObject.nodeName == "A-SOUND") {
-
-                    switch (propertyName) {
-                        case "src":
-                            value = aframeObject.getAttribute('src');
-                            break;
-                        case "on":
-                            value = aframeObject.getAttribute('on');
-                            break;
-                        case "autoplay":
-                            value = aframeObject.getAttribute('autoplay');
-                            break;
-                    }
-                }
 
                 if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
                     
@@ -1179,6 +1199,21 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             }
 
 
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-video-item.vwf")) {
+
+            let assets = document.querySelector('a-assets');
+            if (assets){
+
+                aframeObj = document.createElement('video');
+                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('src', "");
+                aframeObj.setAttribute('crossorigin', "anonymous");
+                aframeObj.setAttribute('autoplay', "");
+                aframeObj.setAttribute('loop', true);
+
+                assets.appendChild(aframeObj);
+            }
+
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
             aframeObj = document.createElement('a-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
@@ -1205,8 +1240,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-collada-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
             aframeObj = document.createElement('a-obj-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asound.vwf")) {
-            aframeObj = document.createElement('a-sound');
          } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
@@ -1217,7 +1250,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-entity');
         }
 
-        if (aframeObj.nodeName !== "A-ASSET-ITEM" && aframeObj.nodeName !== "IMG" && aframeObj.nodeName !== "AUIDO"){
+        if (aframeObj.nodeName !== "A-ASSET-ITEM" && 
+            aframeObj.nodeName !== "IMG" && 
+            aframeObj.nodeName !== "AUDIO" &&
+            aframeObj.nodeName !== "VIDEO"
+        ){
             aframeObj.setAttribute('id', node.ID);
         }
 
@@ -1237,7 +1274,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                     parent.children.push(node.ID);
                     //console.info( "Adding child: " + childID + " to " + nodeID );
-                    if (node.aframeObj.nodeName !== "A-ASSET-ITEM" && node.aframeObj.nodeName !== "IMG" && node.aframeObj.nodeName !== "AUIDO"){
+                    if (node.aframeObj.nodeName !== "A-ASSET-ITEM" &&
+                        node.aframeObj.nodeName !== "IMG" &&
+                      node.aframeObj.nodeName !== "AUDIO" &&
+                      node.aframeObj.nodeName !== "VIDEO"
+                    ){
                     parent.aframeObj.appendChild(node.aframeObj);
                     }
                 }

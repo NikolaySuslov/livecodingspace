@@ -163,20 +163,46 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
+
+            //     //console.log("sat new item");
+            //     let elID = '#' + node.aframeObj.getAttribute('id');
+            //     Object.entries(this.state.nodes).forEach(el => {
+            //         let src = el[1].aframeObj.getAttribute('src');
+            //         if (src){
+            //            // console.log("my: " + src);
+            //             if (src == elID)
+            //             self.kernel.callMethod(el[0], "updateSrc", [elID])
+            //         }
+            //     })
+
+            // }
+
             if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
                 //console.log("sat new item");
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
-                    let src = el[1].aframeObj.getAttribute('src');
-                    if (src){
-                       // console.log("my: " + src);
-                        if (src == elID)
-                        self.kernel.callMethod(el[0], "updateSrc", [elID])
-                    }
-                })
+                    let sound = el[1].aframeObj.getAttribute('sound');
+                    if(sound) {
+                   
+                        let soundID = vwf.find(el[0], 'sound');
+                        self.kernel.callMethod(soundID, "refreshSrc", [elID])
 
+                    // if (sound.src !== ""){
+                    //     let src = '#' + sound.src.id;
+                    //     if (src == elID){
+                    //         let soundID = vwf.find(el[0], 'sound');
+                    //         self.kernel.callMethod(soundID, "updateSrc", [elID])
+                    //     }
+                        
+                    // }
+
+                }
+
+                })
             }
+
 
             if (node.aframeObj.nodeName == "IMG" && propertyName == 'itemSrc') {
 
@@ -198,7 +224,27 @@ define(["module", "vwf/view"], function (module, view) {
                 }
 
                 })
+            }
 
+            if (node.aframeObj.nodeName == "VIDEO" && propertyName == 'itemSrc') {
+
+                //console.log("sat new item");
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                Object.entries(this.state.nodes).forEach(el => {
+                    let material = el[1].aframeObj.getAttribute('material');
+                    if(material) {
+                   
+                    if (material.src !== ""){
+                       // console.log("my: " + src);
+                        let src = '#' + material.src.id;
+                        if (src == elID){
+                            let materialID = vwf.find(el[0], 'material');
+                            self.kernel.callMethod(materialID, "updateSrc", [elID])
+                        }
+                        
+                    }
+                }
+                })
             }
 
             if (node.aframeObj.nodeName == "A-ASSET-ITEM" && propertyName == 'itemSrc') {
@@ -363,10 +409,21 @@ define(["module", "vwf/view"], function (module, view) {
                 if (methodName == "setCameraToActive"){
                     if (methodParameters[0] == vwf.moniker_){
                     console.log("set active");
-                    node.aframeObj.setAttribute('camera', 'active', true)
+                    let offsetComp = node.aframeObj.getAttribute('viewoffset');
+                    if (offsetComp) {
+                        let offsetCompID = vwf.find(nodeID, 'viewoffset');
+                        self.kernel.callMethod(offsetCompID, "setParams", []);
+                    }
+                    node.aframeObj.setAttribute('camera', 'active', true);
                 }
             }
         }
+
+            if(methodName == "createGooglePoly"){
+
+
+            }
+
             
         }
 
