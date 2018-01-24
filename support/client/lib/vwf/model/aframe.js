@@ -892,8 +892,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "itemSrc":
                             value = aframeObject.getAttribute('src');
                         break;
-
-                      
                     }
                 }
 
