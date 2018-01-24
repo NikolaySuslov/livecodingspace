@@ -332,6 +332,57 @@ this.planeProto = function () {
     return node
 }
 
+
+this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
+
+    var self = this;
+
+
+    var position = "0 0 0";
+
+    var nodeName = this.GUID();
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition;
+            //console.log(position);
+        }
+
+    }
+
+    let modelNode = {
+        "extends": "http://vwf.example.com/aframe/aobjmodel.vwf",
+        "properties": {
+            "src": '#' + objSrc,
+            "mtl": '#' + mtlSrc,
+            "position": position
+        },
+        children:{
+            "interpolation":
+            {
+                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+                "type": "component",
+                "properties": {
+                    "enabled": true
+                }
+            }
+        }
+    }
+
+    if (name) {
+        modelNode.properties.displayName = name;
+    }
+
+    self.children.create(nodeName, modelNode, function( child ) {
+        if (avatar) child.lookAt(self.children[avatar].worldPosition)
+       });
+
+}
+
 this.createModel = function (modelType, modelSrc, avatar) {
 
     var self = this;
@@ -702,6 +753,12 @@ this.createAudio = function (itemSrc, name, node, avatar) {
         let newNode = self.cubeProto();
         newNode.properties.displayName = "audio";
         newNode.properties.position = position;
+        newNode.properties.width = 0.3;
+        newNode.properties.height = 0.3;
+        newNode.properties.depth= 0.3;
+        newNode.children.material.properties.opacity = 0.5;
+        newNode.children.material.properties.color = "yellow";
+
         newNode.children.sound = {
             
                 "extends": "http://vwf.example.com/aframe/a-sound-component.vwf",
@@ -725,6 +782,78 @@ this.createAudio = function (itemSrc, name, node, avatar) {
 
 }
 
+this.createGooglePoly = function(polyID, name, node, avatar){
+
+    // all done in aframe view driver
+    let params = [polyID, name, node, avatar];
+    this.loadGooglePolyAsset(params)
+  
+}
+
+this.loadGooglePolyAsset = function( params ) {
+
+    var self = this;
+
+    const API_KEY = "AIzaSyCGx2_idlUJ88yW5GBkOllIkyxJyKbEgDk";
+    const id = params[0];
+    const avatarID = params[3];
+
+
+    var url = `https://poly.googleapis.com/v1/assets/${id}/?key=${API_KEY}`;
+
+    var request = new XMLHttpRequest();
+    request.open( 'GET', url, true );
+    request.addEventListener( 'load', function ( event ) {
+
+        var asset = JSON.parse( event.target.response );
+
+        // asset_name.textContent = asset.displayName;
+        // asset_author.textContent = asset.authorName;
+
+        var format = asset.formats.find( format => { return format.formatType === 'OBJ'; } );
+
+        if ( format !== undefined ) {
+
+            var obj = format.root;
+            var mtl = format.resources.find( resource => { return resource.url.endsWith( 'mtl' ) } );
+
+            var path = obj.url.slice( 0, obj.url.indexOf( obj.relativePath ) );
+            
+            //const createOnNodeID = vwf.application();
+
+            let mtlName = 'MTL-ASSET-'+ self.GUID();
+            let mtlNode = {
+                "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+                "properties": {
+                    "itemID": mtlName,
+                    "itemSrc": mtl.url
+                }
+            }
+        
+            self.children.create(mtlName, mtlNode, function( mtlChild ) {
+
+                let objName = 'OBJ-ASSET-'+ self.GUID();
+                let objNode = {
+                    "extends": "http://vwf.example.com/aframe/a-asset-item.vwf",
+                    "properties": {
+                        "itemID": objName,
+                        "itemSrc": obj.url
+                    }
+                }
+
+                self.children.create(objName, objNode, function( objChild ) {
+
+                        self.createModelObj(mtlChild.itemID, objChild.itemID, asset.displayName, avatarID);
+
+                })
+
+
+            })
+        }
+
+    } );
+    request.send( null );
+}
 
 this.GUID = function () {
     var self = this;

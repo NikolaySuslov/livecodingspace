@@ -53,6 +53,18 @@ methods:
       - modelType
       - modelSrc
       - avatar
+  createModelObj:
+    parameters:
+      - mtlSrc
+      - objSrc
+      - name
+      - avatar
+  createGooglePoly:
+    parameters:
+      - polyID
+      - name
+      - node
+      - avatar
   deleteNode:
     parameters:
       - nodeName

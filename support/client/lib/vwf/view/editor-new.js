@@ -442,7 +442,31 @@ define([
                                         ]
                                     }
                                 ]
-                            } 
+                            },
+                            {
+                                $cell: true,
+                                $type: "h3",
+                                class: "mdc-typography--title",
+                                $text:"Google Poly" 
+                             
+                            },
+                            widgets.textField({
+                                id:"googlepolyid",
+                                value:"Enter Google Poly model ID",
+                                funconchange: function(e){
+                                    console.log(this.value)
+                                }
+                            }),
+                            widgets.buttonSimple(
+                                {
+                                    label: "Load Model from Poly",
+                                    onclick: function(e){
+                                        let srcEl = document.querySelector('#googlepolyid');
+                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                        vwf_view.kernel.callMethod(vwf.application(), "createGooglePoly", [srcEl.value, null, null, avatarID])
+                                    }
+                                }
+                            )
                         ]
                     }
 
