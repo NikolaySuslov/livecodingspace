@@ -83,6 +83,12 @@ define(["module", "vwf/view"], function (module, view) {
                         if (!node) {
                             return;
                         }
+
+                        if (this.nodes[childID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
+                            console.log(vwf.getProperty(childID, 'isPlaying'));
+                            self.kernel.callMethod(childID, "playSound");
+                    }
+
                     },
 
         createdProperty: function (nodeId, propertyName, propertyValue) {
@@ -173,6 +179,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                     console.log("stop sound");
                     node.aframeObj.el.components.sound.stopSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", false);
                     //node.aframeObj.stopSound();
                 }
 
@@ -180,6 +187,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                     console.log("play sound");
                     node.aframeObj.el.components.sound.playSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", true);
                     //node.aframeObj.stopSound();
                 }
 
@@ -187,6 +195,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                     console.log("pause sound");
                     node.aframeObj.el.components.sound.pauseSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", false);
                     //node.aframeObj.stopSound();
                 }
             }

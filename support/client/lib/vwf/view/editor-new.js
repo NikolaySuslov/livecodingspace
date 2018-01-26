@@ -1691,6 +1691,127 @@ define([
                 ]
             }
 
+            let audioGUI = {
+                $type: "div",
+                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                $components: [
+                    {
+
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    {
+
+                                        $cell: true,
+                                        $type: "span",
+                                        $text: "Sound: "
+
+                                    }
+                                ]
+                            },
+                            {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    $components: [
+                                        widgets.icontoggle({
+                                            'id': "soundStopStartSwitch",
+                                            'label': 'play',
+                                            'on': JSON.stringify({"content": "pause", "label": "stop"}),
+                                            'off': JSON.stringify({"content": "play_arrow", "label": "play"}),
+                                            'state': false,
+                                            'init': function(){
+                                                var nodeID = this._currentNode;
+
+                                                this._comp = new mdc.iconToggle.MDCIconToggle(this); 
+
+                                                this.setAttribute('id', "soundStopStartSwitch-" + nodeID );
+                                                let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
+                                                mdc.iconToggle.MDCIconToggle.attachTo(this);
+                                                this._comp.on = isPlaying;
+
+
+                                                this.addEventListener('MDCIconToggle:change', (e) => {
+                                                    
+                                                    // let avatarID = 'avatar-'+ vwf.moniker_;
+                                                    // let avatarNode = self.nodes['avatar-'+ vwf.moniker_];
+                                                    // let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
+            
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
+                
+                                                    if (isPlaying) {
+                
+                                                        console.log("stop");
+                                                        vwf_view.kernel.callMethod(nodeID, "pauseSound");
+                
+                                                    } else {
+                
+                                                        console.log("play")
+                                                        vwf_view.kernel.callMethod(nodeID, "playSound");
+                                                    }
+                
+                                                  });
+                                                
+                                            }
+                                        })
+                                    ]
+                                },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                $components: [
+                                    {
+                                        $type: "div",
+                                        style: "padding: 12px",
+                                        $components: [
+                                            widgets.iconButton({
+                                                'label': 'stop',
+                                                onclickfunc: function () {
+                                                    var nodeID = this._currentNode;
+                                                    vwf_view.kernel.callMethod(nodeID, "stopSound");
+                                                }
+
+                                            })
+                                        ]
+                                    }
+                                ]
+                            }
+
+                            
+                            // {
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                            //     $components: [
+                            //         widgets.switch({
+                            //         'id': 'editnode', 
+                            //         'init': function(){
+                            //             vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                            //         },
+                            //         'onchange': function(e){
+
+                            //             var nodeID = document.querySelector('#currentNode')._currentNode;
+                            //             let chkAttr = this.getAttribute('checked');
+                            //             if (chkAttr == "") {
+                            //                 self.kernel.setProperty(this._currentNode, 'edit', false);
+    
+                            //             } else {
+                            //                 self.kernel.setProperty(this._currentNode, 'edit', true);
+                            //             }
+    
+                            //             vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+                            //         }
+                            //     }
+                            //     )
+                            //     ]
+                            // }
+                        ]
+                    }
+                ]
+            }
 
             let gizmoEdit = {
 
@@ -1886,6 +2007,12 @@ define([
                     if (this._currentNode !== self.kernel.application()) {
                         if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
                             //gizmoCell = {};
+                                if (nodeProtos.includes('http://vwf.example.com/aframe/a-sound-component.vwf'))
+                                {
+                                    //console.log("sound gui")
+                                    gizmoCell = audioGUI
+                                }
+
                         } else {
                             gizmoCell = gizmoEdit
                         }
@@ -3543,6 +3670,21 @@ define([
 
 
             let nodeCell = document.querySelector('#currentNode');
+
+            if (nodeCell !== null) {
+                if (nodeCell._currentNode == nodeID && propertyName == 'isPlaying') {
+                    console.log('SET PLAY !!!');
+                    let compID = 'soundStopStartSwitch-' + nodeID;
+                    let playSwitch = document.querySelector("[id='" + compID + "']");
+
+                    if (playSwitch){
+                       // const mycomp = new mdc.iconToggle.MDCIconToggle(playSwitch); //new mdc.select.MDCIconToggle
+                       playSwitch._comp.on = propertyValue;
+                    }
+                }
+
+            }
+
 
             if (nodeCell !== null) {
                 if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
