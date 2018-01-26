@@ -13,7 +13,11 @@ properties:
   rolloffFactor:
   src:
   volume:
+  isPlaying:
 methods:
+  stopSound:
+  playSound:
+  pauseSound:
   refreshSrc:
     parameters:
       - srcID

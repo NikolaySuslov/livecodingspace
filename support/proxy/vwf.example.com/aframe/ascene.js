@@ -916,8 +916,9 @@ this.createAudio = function (itemSrc, name, node, avatar) {
                 "extends": "http://vwf.example.com/aframe/a-sound-component.vwf",
                 "type": "component",
                 "properties": {
-                    "autoplay": true,
+                    "autoplay": false,
                     "loop": true,
+                    "isPlaying": false,
                     "src": '#' + child.itemID
                 }
             

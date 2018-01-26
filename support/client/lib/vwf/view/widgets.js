@@ -347,10 +347,16 @@ define(function () {
         }
 
         icontoggle(obj) {
+
+            var addClass = "";
+            if (obj.styleClass){
+                addClass = obj.styleClass;
+            }
+
             return {
                 $cell: true,
                 $type: "i",
-                class: "mdc-icon-toggle material-icons "+ obj.styleClass,
+                class: "mdc-icon-toggle material-icons "+ addClass,
                 role: "button",
                 $text: obj.label,
                 id: obj.id,
@@ -363,10 +369,15 @@ define(function () {
         }
 
         floatActionButton(obj) {
+            var addClass = "";
+            if (obj.styleClass){
+                addClass = obj.styleClass;
+            }
+
             return {
                     $cell: true,
                     $type: "button",
-                    class: "mdc-fab material-icons " + obj.styleClass,
+                    class: "mdc-fab material-icons " + addClass,
                     onclick: obj.onclickfunc,
                     $components:[
                         {
@@ -380,16 +391,22 @@ define(function () {
         }
 
         iconButton(obj) {
+
+            var addClass = "";
+            if (obj.styleClass){
+                addClass = obj.styleClass;
+            }
+
             return {
                     $cell: true,
                     $type: "button",
-                    class: "mdc-button",
+                    class: "mdc-button" + addClass,
                     onclick: obj.onclickfunc,
                     $components:[
                         {
                             $cell: true,
                             $type: "i",
-                            class: "material-icons mdc-button__icon"+ obj.styleClass,
+                            class: "material-icons mdc-button__icon",
                             $text: obj.label
                         }
                     ]

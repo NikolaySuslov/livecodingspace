@@ -83,6 +83,12 @@ define(["module", "vwf/view"], function (module, view) {
                         if (!node) {
                             return;
                         }
+
+                        if (this.nodes[childID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
+                            console.log(vwf.getProperty(childID, 'isPlaying'));
+                            self.kernel.callMethod(childID, "playSound");
+                    }
+
                     },
 
         createdProperty: function (nodeId, propertyName, propertyValue) {
@@ -138,7 +144,64 @@ define(["module", "vwf/view"], function (module, view) {
 
             lerpTick ();
 
+        },
+
+
+        gotProperty: function (nodeId, propertyName, propertyValue) {
+            var selfs = this;
+
+            var node = this.state.nodes[nodeId];
+
+            if (!(node && node.aframeObj)) {
+                return;
+            }
+
+
+            // if (this.nodes[nodeId].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
+            //     if (propertyName == "currentTime"){
+            //         console.log(node.aframeObj.el.components.sound.listener.context.currentTime);
+            //     }
+            // }
+
+        },
+
+        calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+
+            var node = this.state.nodes[nodeID];
+
+            if (!(node && node.aframeObj)) {
+                return;
+            }
+
+       
+            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
+                if (methodName == "stopSound"){
+
+                    console.log("stop sound");
+                    node.aframeObj.el.components.sound.stopSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", false);
+                    //node.aframeObj.stopSound();
+                }
+
+                if (methodName == "playSound"){
+
+                    console.log("play sound");
+                    node.aframeObj.el.components.sound.playSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", true);
+                    //node.aframeObj.stopSound();
+                }
+
+                if (methodName == "pauseSound"){
+
+                    console.log("pause sound");
+                    node.aframeObj.el.components.sound.pauseSound();
+                    self.kernel.setProperty(nodeID, "isPlaying", false);
+                    //node.aframeObj.stopSound();
+                }
+            }
+
         }
+
 
     });
 
