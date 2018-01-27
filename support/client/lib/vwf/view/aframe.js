@@ -504,12 +504,22 @@ define(["module", "vwf/view"], function (module, view) {
 
         let avatarName = 'avatar-' + self.kernel.moniker();
 
+        let avatarEl = document.createElement('a-entity');
+        avatarEl.setAttribute('id', 'avatarControlParent');
+        avatarEl.setAttribute('position', '0 1.6 0');
+
+        if (AFRAME.utils.device.isGearVR()) {
+           // avatarEl.setAttribute('position', '0 3.2 0');
+        }
+
         let controlEl = document.createElement('a-camera');
         // controlEl.setAttribute('avatar', '');
         controlEl.setAttribute('id', 'avatarControl');
-        controlEl.setAttribute('wasd-controls-enabled', true);
-        controlEl.setAttribute('look-controls-enabled', true);
-        controlEl.setAttribute('user-height', 1.6);
+        // controlEl.setAttribute('wasd-controls-enabled', true);
+        // controlEl.setAttribute('look-controls-enabled', true);
+        controlEl.setAttribute('wasd-controls', {});
+        controlEl.setAttribute('look-controls', {});
+        //controlEl.setAttribute('user-height', 1.6);
        controlEl.setAttribute('gamepad-controls', {'controller': 0});
         //controlEl.setAttribute('universal-controls', {});
         
@@ -518,7 +528,8 @@ define(["module", "vwf/view"], function (module, view) {
        // controlEl.setAttribute('camera', 'userHeight', 1.6);
        // controlEl.setAttribute('camera', 'near', 0.51);
 
-        aScene.appendChild(controlEl);
+       avatarEl.appendChild(controlEl);
+       aScene.appendChild(avatarEl);
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
