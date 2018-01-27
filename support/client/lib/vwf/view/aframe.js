@@ -130,6 +130,11 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            if (node.extendsID == "http://vwf.example.com/aframe/gearvrcontroller.vwf"){
+                    console.log("gearVR controller initialized")
+            }
+
+
         },
 
         createdProperty: function (nodeId, propertyName, propertyValue) {
@@ -445,7 +450,7 @@ define(["module", "vwf/view"], function (module, view) {
 
         let el = document.querySelector('#avatarControl');
         if (el) {
-            let position = el.getAttribute('position');
+            let position = el.getAttribute('position');//el.object3D.getWorldPosition()//
             let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -474,7 +479,7 @@ define(["module", "vwf/view"], function (module, view) {
 
         let el = document.querySelector(aSelector);
         if (el) {
-            let position = el.getAttribute('position');
+            let position = el.object3D.getWorldPosition() //el.getAttribute('position');
             let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -486,10 +491,7 @@ define(["module", "vwf/view"], function (module, view) {
             if (position && rotation && lastRotation && lastPosition) {
                 if (compareCoordinates(position, lastPosition) || compareCoordinates(rotation, lastRotation)) {
                     console.log("not equal!!");
-
                     vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
-                   // vwf_view.kernel.setProperty(avatarName, "position", AFRAME.utils.coordinates.stringify(position));
-                    //vwf_view.kernel.setProperty(avatarName, "rotation", AFRAME.utils.coordinates.stringify(rotation));
                 }
             }
 
@@ -509,27 +511,19 @@ define(["module", "vwf/view"], function (module, view) {
         avatarEl.setAttribute('position', '0 1.6 0');
 
         if (AFRAME.utils.device.isGearVR()) {
-           // avatarEl.setAttribute('position', '0 3.2 0');
+            avatarEl.setAttribute('position', '0 0 0');
         }
 
         let controlEl = document.createElement('a-camera');
-        // controlEl.setAttribute('avatar', '');
+
         controlEl.setAttribute('id', 'avatarControl');
-        // controlEl.setAttribute('wasd-controls-enabled', true);
-        // controlEl.setAttribute('look-controls-enabled', true);
         controlEl.setAttribute('wasd-controls', {});
-        controlEl.setAttribute('look-controls', {});
-        //controlEl.setAttribute('user-height', 1.6);
+        controlEl.setAttribute('look-controls', {pointerLockEnabled: false});
        controlEl.setAttribute('gamepad-controls', {'controller': 0});
-        //controlEl.setAttribute('universal-controls', {});
         
         //controlEl.setAttribute('gearvr-controls',{});
         controlEl.setAttribute('camera', 'active', true);
-       // controlEl.setAttribute('camera', 'userHeight', 1.6);
        // controlEl.setAttribute('camera', 'near', 0.51);
-
-       avatarEl.appendChild(controlEl);
-       aScene.appendChild(avatarEl);
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
@@ -537,9 +531,14 @@ define(["module", "vwf/view"], function (module, view) {
         cursorEl.setAttribute('raycaster', 'objects', '.intersectable');
         cursorEl.setAttribute('raycaster', 'showLine', false);
 
+        if (AFRAME.utils.device.isGearVR()) {}
+
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
         // cursorEl.setAttribute('raycaster', 'showLine', true);
         controlEl.appendChild(cursorEl);
+
+        avatarEl.appendChild(controlEl);
+        aScene.appendChild(avatarEl);
 
         // let gearVRControlsEl = document.createElement('a-entity');
         // gearVRControlsEl.setAttribute('id', 'gearvr-'+avatarName);
@@ -625,6 +624,9 @@ define(["module", "vwf/view"], function (module, view) {
     function createGearVRControls() {
 
         let sceneEl = document.querySelector('a-scene');
+
+        //let avatarControl = document.querySelector('#avatarControlParent');
+
         let gearvr = document.createElement('a-entity');
         gearvr.setAttribute('id', 'gearvrcontrol');
         gearvr.setAttribute('gearvr-controls', '');
@@ -644,7 +646,6 @@ define(["module", "vwf/view"], function (module, view) {
         wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
         sceneEl.appendChild(wmrvr);
     }
-
 
 
 });

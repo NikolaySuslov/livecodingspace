@@ -78,5 +78,7 @@ methods:
   deleteNode:
     parameters:
       - nodeName
+  enterVR:
+  exitVR:
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"

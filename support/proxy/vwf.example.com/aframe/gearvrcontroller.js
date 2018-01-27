@@ -1,31 +1,39 @@
 this.simpleDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
+    children: {
+        "material": {
+            "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+            "type": "component",
+            "properties":{
+                "color": "white"
+            }
+        }
+    },
     "properties": {
-        "color": "white",
         "position": "0 0 0",
         "height": 0.01,
         "width": 0.01,
-        "depth": 1,
+        "depth": 1
     },
     children: {
         "pointer": {
             "extends": "http://vwf.example.com/aframe/abox.vwf",
             "properties": {
-                "color": "green",
                 "position": "0 0 -0.8",
                 "height": 0.1,
                 "width": 0.1,
                 "depth": 0.1
-            }
-        },
-        "interpolation":
-            {
-                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                "type": "component",
-                "properties": {
-                    "enabled": true
+            },
+            children: {
+                "material": {
+                    "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                    "type": "component",
+                    "properties":{
+                        "color": "green"
+                    }
                 }
             }
+        }
     }
 }
 
@@ -74,6 +82,7 @@ this.createController = function (modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
+            "enabled": true
    }
     }
 
@@ -121,9 +130,9 @@ this.initialize = function() {
 }
 
 this.triggerdown = function() {
-    this.handVRNode.controller.pointer.color = 'red'
+    this.handVRNode.controller.pointer.material.color = 'red'
  }
 
  this.triggerup = function() {
-    this.handVRNode.controller.pointer.color = 'green'
+    this.handVRNode.controller.pointer.material.color = 'green'
  }
