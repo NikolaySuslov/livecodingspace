@@ -398,7 +398,7 @@
 
                 //{ library: "vwf/view/webrtc/adapterWebRTC", active: false },
 
-                { library: "vwf/admin", active: true }
+                // { library: "vwf/admin", active: false }
 
                
             ];
@@ -2800,8 +2800,14 @@ if ( ! childComponent.source ) {
 
                                 // Dismiss the loading spinner
                                 if ( childID === vwf.application() ) {
-                                    var spinner = document.getElementById( "vwf-loading-spinner" );
-                                    spinner && spinner.classList.remove( "pace-active" );
+                                    var progressbar= document.getElementById( "load-progressbar" );
+                                    if (progressbar) {
+                                        //document.querySelector('body').removeChild(progressbar);
+                                        progressbar.classList.remove( "visible" );
+                                        progressbar.classList.add( "not-visible" );
+                                    }   
+                                    // var spinner = document.getElementById( "vwf-loading-spinner" );
+                                    // spinner && spinner.classList.remove( "pace-active" );
                                 }
 
                                 series_callback_async( err, undefined );

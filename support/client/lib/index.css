@@ -374,3 +374,17 @@ text-shadow: 0px 0px 0 rgba(0, 0, 0, 0.3);
   -webkit-transition: background-color .05s ease;
   z-index: 9999;
  }
+
+ .loader {
+  z-index: 10;
+  position: absolute;
+  top: 0px;
+ }
+
+ .visible {
+  visibility: visible;
+}
+
+.not-visible {
+  visibility: hidden;
+}
