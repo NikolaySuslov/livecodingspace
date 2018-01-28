@@ -3549,9 +3549,9 @@ define([
         createdNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
             childSource, childType, childIndex, childName, callback /* ( ready ) */) {
 
-            var nodeIDAttribute = $.encoder.encodeForHTMLAttribute("id", nodeID, true);
-            var childIDAttribute = $.encoder.encodeForHTMLAttribute("id", childID, true);
-            var childIDAlpha = $.encoder.encodeForAlphaNumeric(childID);
+            // var nodeIDAttribute = $.encoder.encodeForHTMLAttribute("id", nodeID, true);
+            // var childIDAttribute = $.encoder.encodeForHTMLAttribute("id", childID, true);
+            // var childIDAlpha = $.encoder.encodeForAlphaNumeric(childID);
 
             var kernel = this.kernel;
             var self = this;
@@ -4122,7 +4122,8 @@ define([
                 )
             );
 
-            json = $.encoder.encodeForURL(json);
+            //json = $.encoder.encodeForURL(json);
+
 
             var path = window.location.pathname;
             var pathSplit = path.split('/');
@@ -4186,7 +4187,8 @@ define([
                 }
             });
 
-            var jsonConfig = $.encoder.encodeForURL(JSON.stringify(config));
+            //var jsonConfig = $.encoder.encodeForURL(JSON.stringify(config));
+            var jsonConfig = JSON.stringify(config);
 
             // Save config file to server
             var xhrConfig = new XMLHttpRequest();

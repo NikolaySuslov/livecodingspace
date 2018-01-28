@@ -30,7 +30,7 @@
 /// @module vwf/view/document
 /// @requires vwf/view
 
-define( [ "module", "vwf/view", "vwf/utility", "jquery" ], function( module, view, utility, jQuery ) {
+define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility) {
 
     return view.load( module, {
 
@@ -58,11 +58,24 @@ define( [ "module", "vwf/view", "vwf/utility", "jquery" ], function( module, vie
 
                 // Load the file and insert it into the main page.
 
-                var container = jQuery( "body" ).append( "<div />" ).children( ":last" );
+               // var container = jQuery( "body" ).append( "<div />" ).children( ":last" );
+               let container = document.createElement("div");
+               document.querySelector("body").appendChild(container);
+               //var container = document.querySelector("body").append( "<div />" ).children( ":last" );
 
-                container.load( "admin/chrome", function( responseText, textStatus ) {
+            fetch("admin/chrome", {
+                method: 'get'
+            }).then(function(response) {
+                return response.text();
+            }).catch(function(err) {
+                
+                container.remove();
+                // Resume the queue.
+                callback( true );
 
-                    // If the overlay attached a `createdNode` handler, forward this first call
+            }).then(function(responseText) {
+                
+                // If the overlay attached a `createdNode` handler, forward this first call
                     // since the overlay will have missed it.
 
                     if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
@@ -74,7 +87,7 @@ define( [ "module", "vwf/view", "vwf/utility", "jquery" ], function( module, vie
                     // result. The server sends an empty document when the application doesn't
                     // provide a chrome file.
 
-                    if ( ! ( textStatus == "success" || textStatus == "notmodified" ) || responseText == "" ) {
+                    if (  responseText == "" ) {
                         container.remove();
                     }
 
@@ -82,7 +95,30 @@ define( [ "module", "vwf/view", "vwf/utility", "jquery" ], function( module, vie
 
                     callback( true );
 
-                } );
+            });
+                // container.load( "admin/chrome", function( responseText, textStatus ) {
+
+                //     // If the overlay attached a `createdNode` handler, forward this first call
+                //     // since the overlay will have missed it.
+
+                //     if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
+                //         self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
+                //             childSource, childType, childURI, childName );
+                //     }
+
+                //     // Remove the container div if an error occurred or if we received an empty
+                //     // result. The server sends an empty document when the application doesn't
+                //     // provide a chrome file.
+
+                //     if ( ! ( textStatus == "success" || textStatus == "notmodified" ) || responseText == "" ) {
+                //         container.remove();
+                //     }
+
+                //     // Resume the queue.
+
+                //     callback( true );
+
+                // } );
 
             }
 
