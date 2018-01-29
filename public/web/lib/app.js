@@ -32,7 +32,7 @@ class WebApp {
     initReflectorServer() {
         this.currentReflector = localStorage.getItem('lcs_reflector');
         if (!this.currentReflector) {
-            localStorage.setItem('lcs_reflector', 'livecoding.space');
+            localStorage.setItem('lcs_reflector', window.location.host);
             this.currentReflector = localStorage.getItem('lcs_reflector');
         }
     }
