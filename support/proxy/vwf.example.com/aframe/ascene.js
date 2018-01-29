@@ -1065,3 +1065,10 @@ this.deleteNode = function(nodeName){
 
 }
 
+this.enterVR = function(){
+    console.log("ENTER VR");
+}
+
+this.exitVR = function(){
+    console.log("EXIT VR");
+}

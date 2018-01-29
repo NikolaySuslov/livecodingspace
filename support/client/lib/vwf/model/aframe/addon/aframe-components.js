@@ -2,6 +2,36 @@ if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+AFRAME.registerComponent('scene-utils', {
+
+
+    init: function () {
+
+
+        const sceneEnterVR = (e) => {
+
+            //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
+
+        }
+
+        const sceneExitVR = (e) => {
+
+            //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
+        }
+
+        this.el.sceneEl.addEventListener('enter-vr', sceneEnterVR);
+        this.el.sceneEl.addEventListener('exit-vr', sceneExitVR);
+
+    },
+
+    update: function () {
+    },
+
+    tick: function (t) {
+    }
+})
+
+
 AFRAME.registerComponent('linepath', {
     schema: {
         color: { default: '#000' },
@@ -372,184 +402,187 @@ AFRAME.registerComponent('sun', {
 })
 
 AFRAME.registerComponent('gearvrcontrol', {
-    
-        init: function () {
-            var self = this;
-            var controllerID = 'gearvr-' + vwf_view.kernel.moniker();
-            //this.gearel = document.querySelector('#gearvrcontrol');
-            this.el.addEventListener('triggerdown', function (event) {
-              vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
-              });
-              this.el.addEventListener('triggerup', function (event) {
-               vwf_view.kernel.callMethod(controllerID, "triggerup", []);
-              });
-        },
-    
-        update: function () {
-        },
-    
-        tick: function (t) {
+
+    init: function () {
+        var self = this;
+        var controllerID = 'gearvr-' + vwf_view.kernel.moniker();
+
+        this.el.addEventListener('triggerdown', function (event) {
+            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+        });
+
+        this.el.addEventListener('triggerup', function (event) {
+            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+        });
+
+
+    },
+
+    update: function () {
+    },
+
+    tick: function (t) {
+    }
+})
+
+
+AFRAME.registerComponent('wmrvrcontrol', {
+
+    schema: {
+        hand: { default: 'right' }
+    },
+
+    update: function (old) {
+        this.hand = this.data.hand;
+    },
+
+    init: function () {
+        var self = this;
+        this.hand = this.data.hand;
+        var controllerID = 'wrmr-' + this.hand + '-' + vwf_view.kernel.moniker();
+        //this.gearel = document.querySelector('#gearvrcontrol');
+        this.el.addEventListener('triggerdown', function (event) {
+            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+        });
+        this.el.addEventListener('triggerup', function (event) {
+            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+        });
+    },
+
+    tick: function (t) {
+    }
+})
+
+AFRAME.registerComponent('streamsound', {
+
+    schema: {
+        positional: { default: true }
+    },
+
+    init: function () {
+        var self = this;
+
+        let driver = vwf.views["vwf/view/webrtc"];
+
+        this.listener = null;
+        this.stream = null;
+
+        if (!this.sound) {
+            this.setupSound();
         }
-    })
 
-
-    AFRAME.registerComponent('wmrvrcontrol', {
-        
-        schema: {
-            hand: { default: 'right' }
-        },
-    
-        update: function (old) {
-            this.hand = this.data.hand;
-        },
-
-            init: function () {
-                var self = this;
-                this.hand = this.data.hand;
-                var controllerID = 'wrmr-' + this.hand + '-' + vwf_view.kernel.moniker();
-                //this.gearel = document.querySelector('#gearvrcontrol');
-                this.el.addEventListener('triggerdown', function (event) {
-                  vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
-                  });
-                  this.el.addEventListener('triggerup', function (event) {
-                   vwf_view.kernel.callMethod(controllerID, "triggerup", []);
-                  });
-            },
-        
-            tick: function (t) {
-            }
-        })
-
-        AFRAME.registerComponent('streamsound', {
-
-            schema: {
-                positional: { default: true }
-              },
-           
-            init: function () {
-                var self = this;
-
-                let driver = vwf.views["vwf/view/webrtc"];
-
-                this.listener = null;
-                this.stream = null;
-
-                if(!this.sound) {
-                    this.setupSound();
-                  }
-
-                  if (driver) {
-                    //let avatarID = 'avatar-' + vwf.moniker();
-                    let avatarID = this.el.id.slice(0, 27); //avatar-0RtnYBBTBU84OCNcAAFY
-                   let client = driver.state.clients[avatarID];
-                   if (client ){
-                       if (client.connection) {
+        if (driver) {
+            //let avatarID = 'avatar-' + vwf.moniker();
+            let avatarID = this.el.id.slice(0, 27); //avatar-0RtnYBBTBU84OCNcAAFY
+            let client = driver.state.clients[avatarID];
+            if (client) {
+                if (client.connection) {
                     this.stream = client.connection.stream;
-                    if (this.stream){
+                    if (this.stream) {
                         this.audioEl = new Audio();
                         this.audioEl.srcObject = this.stream;
-            
-                    this.sound.setNodeSource(this.sound.context.createMediaStreamSource(this.stream));
+
+                        this.sound.setNodeSource(this.sound.context.createMediaStreamSource(this.stream));
                     }
-                   }
                 }
-                  }
-
-            },
-
-            setupSound: function() {
-                var el = this.el;
-                var sceneEl = el.sceneEl;
-            
-                if (this.sound) {
-                  el.removeObject3D(this.attrName);
-                }
-            
-                if (!sceneEl.audioListener) {
-                  sceneEl.audioListener = new THREE.AudioListener();
-                  sceneEl.camera && sceneEl.camera.add(sceneEl.audioListener);
-                  sceneEl.addEventListener('camera-set-active', function(evt) {
-                    evt.detail.cameraEl.getObject3D('camera').add(sceneEl.audioListener);
-                  });
-                }
-                this.listener = sceneEl.audioListener;
-            
-                this.sound = this.data.positional
-                  ? new THREE.PositionalAudio(this.listener)
-                  : new THREE.Audio(this.listener);
-                el.setObject3D(this.attrName, this.sound);
-              },
-
-              remove: function() {
-                if (!this.sound) return;
-            
-                this.el.removeObject3D(this.attrName);
-                if (this.stream) {
-                  this.sound.disconnect();
-                }
-              },
-
-            update: function (old) {
-
-            },
-
-            tick: function (t) {
             }
-            })
+        }
+
+    },
+
+    setupSound: function () {
+        var el = this.el;
+        var sceneEl = el.sceneEl;
+
+        if (this.sound) {
+            el.removeObject3D(this.attrName);
+        }
+
+        if (!sceneEl.audioListener) {
+            sceneEl.audioListener = new THREE.AudioListener();
+            sceneEl.camera && sceneEl.camera.add(sceneEl.audioListener);
+            sceneEl.addEventListener('camera-set-active', function (evt) {
+                evt.detail.cameraEl.getObject3D('camera').add(sceneEl.audioListener);
+            });
+        }
+        this.listener = sceneEl.audioListener;
+
+        this.sound = this.data.positional
+            ? new THREE.PositionalAudio(this.listener)
+            : new THREE.Audio(this.listener);
+        el.setObject3D(this.attrName, this.sound);
+    },
+
+    remove: function () {
+        if (!this.sound) return;
+
+        this.el.removeObject3D(this.attrName);
+        if (this.stream) {
+            this.sound.disconnect();
+        }
+    },
+
+    update: function (old) {
+
+    },
+
+    tick: function (t) {
+    }
+})
 
 
-            AFRAME.registerComponent('viewoffset', {
+AFRAME.registerComponent('viewoffset', {
 
-                // fullWidth:
-                // fullHeight:
-                // xoffset:
-                // yoffset:
-                // width:
-                // height:
+    // fullWidth:
+    // fullHeight:
+    // xoffset:
+    // yoffset:
+    // width:
+    // height:
 
-                schema: {
-                    fullWidth: { default: window.innerWidth },
-                    fullHeight: { default: window.innerHeight },
-                    xoffset: { default: window.innerWidth/2 },
-                    yoffset: { default: window.innerHeight/2 },
-                    width: { default: window.innerWidth },
-                    height: { default: window.innerHeight }
-                },
-            
-    
-                init: function () {
-                    var self = this;
-                    this.el.sceneEl.addEventListener('loaded', setOffset);
+    schema: {
+        fullWidth: { default: window.innerWidth },
+        fullHeight: { default: window.innerHeight },
+        xoffset: { default: window.innerWidth / 2 },
+        yoffset: { default: window.innerHeight / 2 },
+        width: { default: window.innerWidth },
+        height: { default: window.innerHeight }
+    },
 
-                    function setOffset(){
-                        this.setNewOffset();
-                    }
-                    
-                },
-            
 
-                update: function (old) {
-                    this.fullWidth = this.data.fullWidth;
-                    this.fullHeight = this.data.fullHeight;
-                    this.xoffset = this.data.xoffset;
-                    this.yoffset = this.data.yoffset;
-                    this.width = this.data.width;
-                    this.height = this.data.height;
-                    //console.log(this.data);
-                    this.setNewOffset();
-                },
-            
-                setNewOffset: function(){
-                    this.el.object3DMap.camera.setViewOffset ( 
-                        this.data.fullWidth,
-                        this.data.fullHeight,
-                        this.data.xoffset,
-                        this.data.yoffset,
-                        this.data.width,
-                        this.data.height)
-                },
+    init: function () {
+        var self = this;
+        this.el.sceneEl.addEventListener('loaded', setOffset);
 
-                tick: function (t) {
+        function setOffset() {
+            this.setNewOffset();
+        }
 
-                }
-            })
+    },
+
+
+    update: function (old) {
+        this.fullWidth = this.data.fullWidth;
+        this.fullHeight = this.data.fullHeight;
+        this.xoffset = this.data.xoffset;
+        this.yoffset = this.data.yoffset;
+        this.width = this.data.width;
+        this.height = this.data.height;
+        //console.log(this.data);
+        this.setNewOffset();
+    },
+
+    setNewOffset: function () {
+        this.el.object3DMap.camera.setViewOffset(
+            this.data.fullWidth,
+            this.data.fullHeight,
+            this.data.xoffset,
+            this.data.yoffset,
+            this.data.width,
+            this.data.height)
+    },
+
+    tick: function (t) {
+
+    }
+})

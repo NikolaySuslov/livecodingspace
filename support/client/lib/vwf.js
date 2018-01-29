@@ -247,7 +247,7 @@
         var vwf = this;
 
         // Store the jQuery module for reuse
-        var jQuery;
+        //var jQuery;
 
         // == Public functions =====================================================================
 
@@ -324,7 +324,7 @@
                 }
             };
 
-            jQuery = require("jquery");
+            //jQuery = require("jquery");
 
             var requireArray = [
                 { library: "domReady", active: true },
@@ -398,7 +398,7 @@
 
                 //{ library: "vwf/view/webrtc/adapterWebRTC", active: false },
 
-                { library: "vwf/admin", active: true }
+                // { library: "vwf/admin", active: false }
 
                
             ];
@@ -457,7 +457,14 @@
                 return activeLibraryList;
             }
 
-            jQuery.getJSON("admin/config", function(configLibraries) {
+
+            fetch('admin/config', {
+                method: 'get'
+            }).then(function(response) {
+                return response.json();
+            }).catch(function(err) {
+                // Error :(
+            }).then(function(configLibraries) {
                 if(configLibraries && typeof configLibraries == "object") {
                     if (typeof configLibraries.configuration == "object") {
                         applicationConfig = configLibraries.configuration;
@@ -465,7 +472,8 @@
                     Object.keys(configLibraries).forEach(function(libraryType) {
                         if(libraryType == 'info' && configLibraries[libraryType]["title"])
                         {
-                            jQuery('title').html(configLibraries[libraryType]["title"]);
+                            //jQuery('title').html(configLibraries[libraryType]["title"]);
+                            document.querySelector('title').innerHTML = configLibraries[libraryType]["title"]
                         }
                         if(!userLibraries[libraryType]) {
                             userLibraries[libraryType] = {};
@@ -490,14 +498,14 @@
                                     userLibraries[libraryType][libraryName] = configLibraries[libraryType][libraryName];
                                 }
                                 else if(typeof userLibraries[libraryType][libraryName] == "object" && typeof configLibraries[libraryType][libraryName] == "object") {
-                                    userLibraries[libraryType][libraryName] = jQuery.extend({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
+                                    userLibraries[libraryType][libraryName] = Object.assign({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
+                                    // userLibraries[libraryType][libraryName] = jQuery.extend({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
                                 }
                             }
                         });
                     });
                 }
-            }).always(function(jqXHR, textStatus) { 
-
+            }).then(function(){
                 Object.keys(userLibraries).forEach(function(libraryType) {
                     if(initializers[libraryType]) {
                         Object.keys(userLibraries[libraryType]).forEach(function(libraryName) {
@@ -506,8 +514,10 @@
                                 initializers[libraryType][libraryName].active = true;
                                 if(userLibraries[libraryType][libraryName] && userLibraries[libraryType][libraryName] != "") {
                                     if(typeof initializers[libraryType][libraryName].parameters == "object") {
-                                        initializers[libraryType][libraryName].parameters = jQuery.extend({}, initializers[libraryType][libraryName].parameters,
-                                            userLibraries[libraryType][libraryName]);
+                                        
+                                        initializers[libraryType][libraryName].parameters = Object.assign({}, initializers[libraryType][libraryName].parameters, userLibraries[libraryType][libraryName]);
+                                        // initializers[libraryType][libraryName].parameters = jQuery.extend({}, initializers[libraryType][libraryName].parameters,
+                                        //     userLibraries[libraryType][libraryName]);
                                     }
                                     else {
                                         initializers[libraryType][libraryName].parameters = userLibraries[libraryType][libraryName];
@@ -559,7 +569,12 @@
                     } );
 
                 } );
-            });
+            })
+
+            // jQuery.getJSON("admin/config", function(configLibraries) {
+            // }).always(function(jqXHR, textStatus) { 
+            // });
+
         }
 
         // -- initialize ---------------------------------------------------------------------------
@@ -616,7 +631,7 @@
             // Get the jQuery reference. This also happens in `loadConfiguration`, but the tests
             // initialize using `initialize` and don't call `loadConfiguration` first.
 
-            jQuery = require("jquery");
+          //  jQuery = require("jquery");
 
             // Parse the function parameters. If the first parameter is not an array, then treat it
             // as the application specification. Otherwise, fall back to the "application" parameter
@@ -685,7 +700,8 @@
                         if(model.model.compatibilityStatus) {
                             if(!model.model.compatibilityStatus.compatible) {
                                 compatibilityStatus.compatible = false;
-                                jQuery.extend(compatibilityStatus.errors, model.model.compatibilityStatus.errors);
+                                Object.assign(compatibilityStatus.errors, model.model.compatibilityStatus.errors);
+                                //jQuery.extend(compatibilityStatus.errors, model.model.compatibilityStatus.errors);
                             }
                         }
                     }
@@ -733,7 +749,8 @@
                             if(view.compatibilityStatus) {
                                 if(!view.compatibilityStatus.compatible) {
                                     compatibilityStatus.compatible = false;
-                                    jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
+                                    Object.assign(compatibilityStatus.errors, view.compatibilityStatus.errors);
+                                   // jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
                                 }
                             }
                         }
@@ -756,7 +773,8 @@
                             if(view.compatibilityStatus) {
                                 if(!view.compatibilityStatus.compatible) {
                                     compatibilityStatus.compatible = false;
-                                    jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
+                                    Object.assign(compatibilityStatus.errors, view.compatibilityStatus.errors);
+                                   // jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
                                 }
                             }
                         }
@@ -770,7 +788,8 @@
             // Test for ECMAScript 5
             if(!(function() { return !this })()) {
                 compatibilityStatus.compatible = false;
-                jQuery.extend(compatibilityStatus.errors, {"ES5": "This browser is not compatible. VWF requires ECMAScript 5."});
+                Object.assign(compatibilityStatus.errors, {"ES5": "This browser is not compatible. VWF requires ECMAScript 5."});
+                //jQuery.extend(compatibilityStatus.errors, {"ES5": "This browser is not compatible. VWF requires ECMAScript 5."});
             }
 
             // Test for WebSockets
@@ -954,7 +973,8 @@
                 socket.on( "error", function() { 
 
                     //Overcome by compatibility.js websockets check
-                    jQuery('body').html("<div class='vwf-err'>WebSockets connections are currently being blocked. Please check your proxy server settings.</div>"); 
+                    document.querySelector('body').innerHTML = "<div class='vwf-err'>WebSockets connections are currently being blocked. Please check your proxy server settings.</div>";
+                    // jQuery('body').html("<div class='vwf-err'>WebSockets connections are currently being blocked. Please check your proxy server settings.</div>"); 
 
                 } );
 
@@ -2780,8 +2800,14 @@ if ( ! childComponent.source ) {
 
                                 // Dismiss the loading spinner
                                 if ( childID === vwf.application() ) {
-                                    var spinner = document.getElementById( "vwf-loading-spinner" );
-                                    spinner && spinner.classList.remove( "pace-active" );
+                                    var progressbar= document.getElementById( "load-progressbar" );
+                                    if (progressbar) {
+                                        //document.querySelector('body').removeChild(progressbar);
+                                        progressbar.classList.remove( "visible" );
+                                        progressbar.classList.add( "not-visible" );
+                                    }   
+                                    // var spinner = document.getElementById( "vwf-loading-spinner" );
+                                    // spinner && spinner.classList.remove( "pace-active" );
                                 }
 
                                 series_callback_async( err, undefined );
@@ -4738,24 +4764,43 @@ if ( ! childComponent.source ) {
 
                 queue.suspend( "while loading " + nodeURI ); // suspend the queue
 
-                jQuery.ajax( {
+                let fetchUrl =  remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) );
 
-                    url: remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) ),
-                    dataType: "jsonp",
-                    timeout: vwf.configuration["load-timeout"] * 1000,
+                fetch(fetchUrl, {
+                    method: 'get'
+                }).then(function(response) {
+                    return response.json();
+                }).catch(function(err) {
+                    // Error :(
+                }).then(function(nodeDescriptor) {
+                    callback_async( nodeDescriptor );
+                    queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
 
-                    success: function( nodeDescriptor ) /* async */ {
-                        callback_async( nodeDescriptor );
-                        queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
-                    },
-
-                    error: function( xhr, status, error ) /* async */ {
+                }).catch(function(error) {
                         vwf.logger.warnx( "loadComponent", "error loading", nodeURI + ":", error );
                         errback_async( error );
                         queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
-                    },
+                })
 
-                } );
+
+                // jQuery.ajax( {
+
+                //     url: remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) ),
+                //     dataType: "json",
+                //     timeout: vwf.configuration["load-timeout"] * 1000,
+
+                //     success: function( nodeDescriptor ) /* async */ {
+                //         callback_async( nodeDescriptor );
+                //         queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
+                //     },
+
+                //     error: function( xhr, status, error ) /* async */ {
+                //         vwf.logger.warnx( "loadComponent", "error loading", nodeURI + ":", error );
+                //         errback_async( error );
+                //         queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
+                //     },
+
+                // } );
 
             }
 
@@ -4779,24 +4824,42 @@ if ( ! childComponent.source ) {
 
                 queue.suspend( "while loading " + scriptURI ); // suspend the queue
 
-                jQuery.ajax( {
+                let fetchUrl = remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) );
 
-                    url: remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) ),
-                    dataType: "text",
-                    timeout: vwf.configuration["load-timeout"] * 1000,
-
-                    success: function( scriptText ) /* async */ {
-                        callback_async( scriptText );
-                        queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
-                    },
-
-                    error: function( xhr, status, error ) /* async */ {
-                        vwf.logger.warnx( "loadScript", "error loading", scriptURI + ":", error );
+                fetch(fetchUrl, {
+                    method: 'get'
+                }).then(function(response) {
+                    return response.text();
+                }).catch(function(err) {
+                    // Error :(
+                }).then(function(scriptText) {
+                    callback_async( scriptText );
+                    queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
+                }).catch(function(error) {
+                    vwf.logger.warnx( "loadScript", "error loading", scriptURI + ":", error );
                         errback_async( error );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
-                    },
+                })
 
-                } );
+
+                // jQuery.ajax( {
+
+                //     url: remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) ),
+                //     dataType: "text",
+                //     timeout: vwf.configuration["load-timeout"] * 1000,
+
+                //     success: function( scriptText ) /* async */ {
+                //         callback_async( scriptText );
+                //         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
+                //     },
+
+                //     error: function( xhr, status, error ) /* async */ {
+                //         vwf.logger.warnx( "loadScript", "error loading", scriptURI + ":", error );
+                //         errback_async( error );
+                //         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
+                //     },
+
+                // } );
 
             }
 

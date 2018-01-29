@@ -1,5 +1,29 @@
 <!DOCTYPE html>
 
+<!-- 
+The MIT License (MIT)
+Copyright (c) 2017 Nikolai Suslov
+LiveCoding.space
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
 <!-- Copyright 2012 United States Government, as represented by the Secretary of Defense, Under  -->
 <!-- Secretary of Defense (Personnel & Readiness).                                               -->
 <!--                                                                                             -->
@@ -31,33 +55,29 @@
 
     <script type="text/javascript" src="socket.io/socket.io.js"></script>
     <!-- <script type="text/javascript" src="socket.io-sessionid-patch.js"></script> -->
-    <script src="vwf/view/webrtc/dist/adapter-latest.js"></script>
+    <script src="vwf/view/webrtc/adapter-latest.js"></script>
 
 
     <script type="text/javascript" src="vwf/view/lib/cell.js"></script>
     <script type="text/javascript" src="vwf/view/lib/he.js"></script>
     <script type="text/javascript" src="vwf/view/lib/draggabilly.pkgd.js"></script>
     <script type="text/javascript" src="js/screenfull.min.js"></script>
-   <!-- <script type="text/javascript" src="vwf/view/lib/polyglot/polyglot.min.js"></script> -->
-    
+    <!-- <script type="text/javascript" src="vwf/view/lib/polyglot/polyglot.min.js"></script> -->
+
 
     <link rel="stylesheet" href="vwf/view/lib/mdc/dist/material-components-web.css">
     <script src="vwf/view/lib/mdc/dist/material-components-web.js"></script>
 
+    <script type="text/javascript" src="async/async.min.js"></script>
     <script type="text/javascript" src="require.js"></script>
-
-    <script type="text/javascript" src="async.js"></script>
-
-
     <script type="text/javascript" src="crypto.js"></script>
     <script type="text/javascript" src="md5.js"></script>
-
     <script type="text/javascript" src="alea.js"></script>
     <script type="text/javascript" src="mash.js"></script>
 
-    <script type="text/javascript" src="Class.create.js"></script>
-    <script type="text/javascript" src="rAF.js"></script>
-    <script type="text/javascript" src="performance.now-polyfill.js"></script>
+    <!--  <script type="text/javascript" src="Class.create.js"></script>
+   <script type="text/javascript" src="rAF.js"></script> 
+    <script type="text/javascript" src="performance.now-polyfill.js"></script> -->
 
     <!-- This is the main client library. vwf.js creates a framework manager and attaches it to  -->
     <!-- the global window object as window.vwf. All access to the framework is through that     -->
@@ -76,66 +96,10 @@
     <script type="text/javascript">
         // Users can specify which libraries the application will load by adding parameters to the URL.
         // Model libraries are specified as a query parameter and view libraries as a hash fragment.
-        var queryString = window.location.search.substring(1);
-        var hashString = window.location.hash.substring(2);
+
         var userLibraries = { model: {}, view: {} };
-        var googleEarth = false;
-        var match;
         var application;
-        var regex = /([^&=]+)=?([^&]*)/g;
-
-
-
-        var requireConfig = {
-            paths: {
-                jquery: "jquery-1.10.2.min",
-                "jquery-ui": "jquery-ui-1.10.3.custom.min"
-            },
-            shim: {
-                "jquery-ui": {
-                    deps: ["jquery"],
-                    exports: "$"
-                },
-                "jquery-encoder-0.1.0": ["jquery"]
-            }
-        };
-        require(requireConfig, ["jquery", "jquery-encoder-0.1.0"], function ($) {
-            while (match = regex.exec(queryString)) {
-                var key = $.encoder.canonicalize(match[1]);
-                var parameters = $.encoder.canonicalize(match[2]);
-                if (key == "application") {
-                    // Get the application specification if one is provided in the query string.
-                    application = parameters;
-                }
-                else {
-                    try {
-                        parameters = JSON.parse(parameters);
-                    }
-                    catch (e) {
-                    }
-                    userLibraries["model"]["vwf/model/" + key] = (parameters && parameters != "") ? parameters : undefined;
-                }
-            }
-
-            while (match = regex.exec(hashString)) {
-                var key = $.encoder.canonicalize(match[1]);
-                var parameters = $.encoder.canonicalize(match[2]);
-                try {
-                    parameters = JSON.parse(parameters);
-                }
-                catch (e) {
-                }
-                userLibraries["view"]["vwf/view/" + key] = (parameters && parameters != "") ? parameters : undefined;
-                if (key == "google-earth") {
-                    googleEarth = true;
-                }
-            }
-
-            googleEarth && document.write("<scr" + "ipt type='text/javascript' src='http://www.google.com/jsapi?hl=en&amp;key=ABQIAAAAwbkbZLyhsmTCWXbTcjbgbRSzHs7K5SvaUdm8ua-Xxy_-2dYwMxQMhnagaawTo7L1FE1-amhuQxIlXw'></scr" + "ipt>");
-
-            vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
-
-        });
+        vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
     </script>
 
     <!-- This is the common view implementation and an example view that summarizes the          -->
@@ -162,34 +126,45 @@
 
     <!-- The main content renders to "#vwf-root", the item with the id "vwf-root".               -->
 
-    <!-- The loading spinner -->
+    <!-- The loading spinner 
     <div id="vwf-loading-spinner" class="pace pace-active">
         <div class="pace-activity"></div>
+    </div> -->
+
+
+    <div id="load-progressbar" role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate loader visible">
+        <div class="mdc-linear-progress__buffering-dots"></div>
+        <div class="mdc-linear-progress__buffer"></div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+            <span class="mdc-linear-progress__bar-inner"></span>
+        </div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+            <span class="mdc-linear-progress__bar-inner"></span>
+        </div>
     </div>
+
 
     <div id="incompatibleBrowser">
         <div>
             <span style="color:#3090C7;">
                 <br/>
-                <br/>Your browser does not support Virtual World Framework. Please review our
-                <a href='https://virtual.wf/requirements.html'>requirements</a> for supported browser versions.</span>
+                <br/>Your browser does not support this app</span>
         </div>
     </div>
     <div id="vwf-root"></div>
 
     <div id="ui-controls" class="guiwindow">
         <i id="hideui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar" tabindex="0"
-        data-toggle-on='{"label": "Hide", "content": "grid_on"}' data-toggle-off='{"label": "Show", "content": "grid_off"}'>
-        grid_on
+            data-toggle-on='{"label": "Hide", "content": "grid_on"}' data-toggle-off='{"label": "Show", "content": "grid_off"}'>
+            grid_on
         </i>
 
-        <i id="fullscreenui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar" tabindex="0"
-        data-toggle-on='{"label": "Hide", "content": "fullscreen"}' data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
-        fullscreen
-    </i>
+        <i id="fullscreenui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar"
+            tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}' data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
+            fullscreen
+        </i>
 
     </div>
-
 
     <script>
         mdc.autoInit();
@@ -205,17 +180,15 @@
             let ui = document.querySelector('.mdc-toolbar');
             if (ui) {
 
-            let chkAttr = e.detail.isOn;
-            if (chkAttr) {
-                ui.style.visibility = 'visible'
-            } else {
-                ui.style.visibility = 'hidden'
+                let chkAttr = e.detail.isOn;
+                if (chkAttr) {
+                    ui.style.visibility = 'visible'
+                } else {
+                    ui.style.visibility = 'hidden'
+                }
             }
-        }
 
         });
-
-       
 
         const fullScreenToggle = document.querySelector('#fullscreenui');
         fullScreenToggle.addEventListener('MDCIconToggle:change', (e) => {
@@ -228,7 +201,5 @@
         });
 
     </script>
-
 </body>
-
 </html>

@@ -39,12 +39,7 @@ this.modelBodyDef = {
 
 this.createAvatarBody = function (modelSrc) {
 
-
-    let avatarControl = document.querySelector('#avatarControl');
-
-
-    //let userHeight = avatarControl.getAttribute('camera').userHeight;
-    var userHeight = avatarControl.getAttribute('look-controls').userHeight; //avatarControl.getAttribute('position').y;
+    var userHeight = 0;
 
     // if (AFRAME.utils.device.isGearVR()) {
     //     userHeight = 0
@@ -59,7 +54,7 @@ this.createAvatarBody = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            "position": [0, -userHeight, 0] //-userHeight
+            "position": [0, userHeight, 0] //-userHeight
         },
         children: {
            
