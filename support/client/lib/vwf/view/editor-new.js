@@ -2940,7 +2940,8 @@ define([
                     }, 1000);
                 },
                 _updateMe: function () {
-                    this._watchNodes = self.nodes["http://vwf.example.com/clients.vwf"].children.slice()
+                    let clientNodes = self.nodes["http://vwf.example.com/clients.vwf"];
+                    if (clientNodes) this._watchNodes = self.nodes["http://vwf.example.com/clients.vwf"].children.slice();
                 },
                 $update: function () {
                     //this._clientNodes

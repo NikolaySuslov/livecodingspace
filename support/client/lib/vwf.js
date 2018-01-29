@@ -909,6 +909,14 @@
 
             if ( socket ) {
 
+                socket.on('connect_error', function(err) {
+                    console.log(err);
+                    var errDiv = document.createElement("div");
+                    errDiv.innerHTML = "<div class='vwf-err' style='z-index: 10; position: absolute; top: 80px; right: 50px'>Connection error!</div>";
+                    document.querySelector('body').appendChild(errDiv);
+                    
+                });
+
                 socket.on( "connect", function() {
 
                     vwf.logger.infox( "-socket", "connected" );
