@@ -827,11 +827,16 @@
                     // resource: window.location.pathname.slice( 1,
                     //      window.location.pathname.lastIndexOf("/") ),
 
-                    query: 'pathname=' + window.location.pathname.slice( 1,
-                        window.location.pathname.lastIndexOf("/") ),
+                    query: {
+                        pathname: window.location.pathname.slice( 1,
+                            window.location.pathname.lastIndexOf("/") ),
+                        appRoot: "./public"
+                      },
+                    // query: 'pathname=' + window.location.pathname.slice( 1,
+                    //     window.location.pathname.lastIndexOf("/") ),
 
                     // Use a secure connection when the application comes from https.
-
+                    
                     secure: window.location.protocol === "https:",
 
                     // Don't attempt to reestablish lost connections. The client reloads after a
@@ -845,7 +850,10 @@
 
                 if ( isSocketIO07() ) {
 
-            socket = io.connect( window.location.protocol + "//" + window.location.host,options );
+                    //window.location.host
+            var host = localStorage.getItem('lcs_reflector'); 
+            if(!host) host = window.location.host;       
+            socket = io.connect( window.location.protocol + "//" + host, options );
                     
 
                 } else {  // Ruby Server -- only supports socket.io 0.6

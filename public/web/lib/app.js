@@ -15,8 +15,10 @@ class WebApp {
 
         this.lang = new Lang;
         this.language = this.prepareLang();
+        this.initReflectorServer();
 
-        var socket = io.connect(window.location.protocol + "//" + window.location.host, this.options);
+        //window.location.host
+        var socket = io.connect(window.location.protocol + "//" + this.currentReflector, this.options);
 
         var self = this;
 
@@ -24,6 +26,15 @@ class WebApp {
             self.parseAppInstancesData(msg)
             //console.log(msg);
         });
+    }
+
+
+    initReflectorServer() {
+        this.currentReflector = localStorage.getItem('lcs_reflector');
+        if (!this.currentReflector) {
+            localStorage.setItem('lcs_reflector', 'livecoding.space');
+            this.currentReflector = localStorage.getItem('lcs_reflector');
+        }
     }
 
     prepareLang() {
@@ -44,6 +55,26 @@ class WebApp {
             let textEl = document.querySelector("#" + el);
             textEl.innerHTML = this.lang.getTranslationFor(el);
         })
+
+        this.initReflectorSelector();
+    }
+
+
+    initReflectorSelector() {
+
+        const ref = document.querySelector('#currentReflector'); 
+        ref.value = this.currentReflector;
+        //let currentItem = Array.from(items).filter(el => el.textContent == this.currentReflector);
+
+        const reflectorSelect = document.querySelector('#reflectorSelect');
+        mdc.textField.MDCTextField.attachTo(reflectorSelect);
+        reflectorSelect.addEventListener('change', function(e) {
+            console.log(e.target.value); 
+            localStorage.setItem('lcs_reflector', e.target.value);  
+           window.location.reload(true);
+
+            });
+
     }
 
     parseAppInstancesData(data) {
@@ -245,9 +276,9 @@ class WebApp {
                                                     $components: [
                                                         {
                                                             $type: "a",
-                                                            $text: m[1].instance,
+                                                            $text: m[0],
                                                             target: "_blank",
-                                                            href: window.location.protocol + "//" + m[1].instance,
+                                                            href: window.location.protocol + "//" + window.location.host + m[0],
                                                             onclick: function (e) {
                                                                 self.refresh();
                                                             }
