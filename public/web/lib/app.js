@@ -10,6 +10,7 @@ class WebApp {
                 window.location.pathname.lastIndexOf("/")),
             secure: window.location.protocol === "https:",
             reconnection: false,
+            path:'',
             transports: ['websocket']
         }
 

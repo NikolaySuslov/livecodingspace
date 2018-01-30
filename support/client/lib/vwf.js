@@ -805,7 +805,24 @@
 
             // Load the application.
 
-            this.ready( application );
+            var url = window.location.origin + '/parseurl';
+            let path = window.location.pathname.slice( 1, window.location.pathname.lastIndexOf("/") );
+            var data = {url: path};
+
+            fetch(url, {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(data), 
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+            }).then(res => res.json())
+            .catch(error => console.error('Error:', error))
+            .then(response => {
+                console.log('Success:', response);
+                this.ready( application, response);
+            });
+
+            
 
         };
 
@@ -813,7 +830,7 @@
 
         /// @name module:vwf.ready
 
-        this.ready = function( component_uri_or_json_or_object ) {
+        this.ready = function( component_uri_or_json_or_object, path ) {
 
             // Connect to the reflector. This implementation uses the socket.io library, which
             // communicates using a channel back to the server that provided the client documents.
@@ -830,7 +847,8 @@
                     query: {
                         pathname: window.location.pathname.slice( 1,
                             window.location.pathname.lastIndexOf("/") ),
-                        appRoot: "./public"
+                        appRoot: "./public",
+                        path: JSON.stringify(path)
                       },
                     // query: 'pathname=' + window.location.pathname.slice( 1,
                     //     window.location.pathname.lastIndexOf("/") ),
