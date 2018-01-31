@@ -19,7 +19,7 @@ class WebApp {
         this.initReflectorServer();
 
         //window.location.host
-        var socket = io.connect(window.location.protocol + "//" + this.currentReflector, this.options);
+        var socket = io.connect(this.currentReflector, this.options);
 
         var self = this;
 

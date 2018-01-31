@@ -870,8 +870,8 @@
 
                     //window.location.host
             var host = localStorage.getItem('lcs_reflector'); 
-            if(!host) host = window.location.host;       
-            socket = io.connect( window.location.protocol + "//" + host, options );
+            if(!host) host = window.location.origin;       
+            socket = io.connect( host, options );
                     
 
                 } else {  // Ruby Server -- only supports socket.io 0.6
