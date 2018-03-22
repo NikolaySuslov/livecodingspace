@@ -19,7 +19,11 @@ class Lang {
     }
 
    async setLanguage(langID) {
-       let phrases = await this.getLang(langID);
+       var currentLang = localStorage.getItem('krestianstvo_locale');
+      if (langID) {
+        currentLang = langID
+      }
+       let phrases = await this.getLang(currentLang);
        this.language = new Polyglot({ phrases });
 
         // this.getLang(langID).then(phrases => {

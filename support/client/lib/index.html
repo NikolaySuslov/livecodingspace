@@ -102,7 +102,7 @@ SOFTWARE.
         var application;
 
         window._LangManager = new Lang;
-        _LangManager.setLanguage(_LangManager.getLocale()).then(res => {
+        _LangManager.setLanguage().then(res => {
 
             vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
 
