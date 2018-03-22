@@ -27,9 +27,8 @@ define([
     "vwf/utility",
     "vwf/view/lib/ace/ace",
     "vwf/view/lib/colorpicker/colorpicker.min",
-    "vwf/view/polyglot-editor",
     "vwf/view/widgets"
-], function (module, version, view, utility, ace, colorpicker, lang, widgets) {
+], function (module, version, view, utility, ace, colorpicker, widgets) {
 
     var self;
 
@@ -41,7 +40,7 @@ define([
             self = this;
             this.ace = window.ace;
             this.widgets = widgets;
-            this.lang = lang.language;
+            this.lang = _LangManager.language;
 
             this.nodes = {};
             this.scenes = {};

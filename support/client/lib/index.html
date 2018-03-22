@@ -62,8 +62,9 @@ SOFTWARE.
     <script type="text/javascript" src="vwf/view/lib/he.js"></script>
     <script type="text/javascript" src="vwf/view/lib/draggabilly.pkgd.js"></script>
     <script type="text/javascript" src="js/screenfull.min.js"></script>
-    <!-- <script type="text/javascript" src="vwf/view/lib/polyglot/polyglot.min.js"></script> -->
 
+    <script type="text/javascript" src="vwf/view/lib/polyglot/polyglot.min.js"></script>
+    <script type="text/javascript" src="vwf/view/lib/polyglot/language.js"></script>
 
     <link rel="stylesheet" href="vwf/view/lib/mdc/dist/material-components-web.css">
     <script src="vwf/view/lib/mdc/dist/material-components-web.js"></script>
@@ -99,7 +100,14 @@ SOFTWARE.
 
         var userLibraries = { model: {}, view: {} };
         var application;
-        vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+
+        window._LangManager = new Lang;
+        _LangManager.setLanguage(_LangManager.getLocale()).then(res => {
+
+            vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+
+        })
+ 
     </script>
 
     <!-- This is the common view implementation and an example view that summarizes the          -->
