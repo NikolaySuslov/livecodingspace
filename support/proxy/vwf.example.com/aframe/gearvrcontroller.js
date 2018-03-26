@@ -32,8 +32,16 @@ this.simpleDef = {
                         "color": "green"
                     }
                 }
+                // "rotationText": {
+                //     "extends": "http://vwf.example.com/aframe/atext.vwf",
+                //     "properties":{
+                //         "value": "rot",
+                //             "side": "double",
+                //     }
+                // }
             }
         }
+       
     }
 }
 
@@ -95,8 +103,10 @@ this.createController = function (modelSrc) {
 
 this.updateVRControl = function(position, rotation){
 
-    this.rotation = rotation;
+    
     this.position = position;
+    this.rotation = rotation;
+   // this.handVRNode.controller.pointer.rotationText.value = rotation.x.toString() + rotation.y.toString() + rotation.z.toString();
 
 }
 

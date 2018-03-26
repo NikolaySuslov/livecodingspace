@@ -415,7 +415,6 @@ AFRAME.registerComponent('gearvrcontrol', {
             vwf_view.kernel.callMethod(controllerID, "triggerup", []);
         });
 
-
     },
 
     update: function () {

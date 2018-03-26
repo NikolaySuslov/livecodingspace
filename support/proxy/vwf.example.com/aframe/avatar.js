@@ -39,7 +39,7 @@ this.modelBodyDef = {
 
 this.createAvatarBody = function (modelSrc) {
 
-    var userHeight = 0;
+    var userHeight = -1.6;
 
     // if (AFRAME.utils.device.isGearVR()) {
     //     userHeight = 0

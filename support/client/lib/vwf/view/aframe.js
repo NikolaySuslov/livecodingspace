@@ -436,12 +436,14 @@ define(["module", "vwf/view"], function (module, view) {
     });
 
 
-    function compareCoordinates(a, b) {
-        return a.x !== b.x || a.y !== b.y || a.z !== b.z
+    function compareCoordinates(a, b, delta) {
+        return Math.abs(a.x - b.x) > delta || Math.abs(a.y - b.y) > delta || Math.abs(a.z - b.z) > delta
 
     }
 
     function updateAvatarPosition() {
+
+        let delta = 0.0001;
 
         let avatarName = 'avatar-' + self.kernel.moniker();
         var node = self.state.nodes[avatarName];
@@ -450,21 +452,31 @@ define(["module", "vwf/view"], function (module, view) {
 
         let el = document.querySelector('#avatarControl');
         if (el) {
-            let position = el.getAttribute('position');//el.object3D.getWorldPosition()//
-            let rotation = el.getAttribute('rotation');
+            let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
+
+            let worldQuat = el.object3D.getWorldQuaternion(); 
+            //console.log(worldQuat);
+            let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+            var rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
+            THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+
+           // console.log(rotation);
+            //let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
+            let lastPosition = self.nodes[avatarName].selfTickPosition;
 
-            let currentPosition = node.aframeObj.getAttribute('position');
-            let currentRotation = node.aframeObj.getAttribute('rotation');
+            // let currentPosition = node.aframeObj.getAttribute('position');
+            // let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && currentPosition && currentRotation && lastRotation) {
-            if (compareCoordinates(position, currentPosition) || rotation.y !== lastRotation.y) {
+            if (position && rotation && lastPosition  && lastRotation) {
+            if (compareCoordinates(position, lastPosition, delta) || Math.abs(rotation.y - lastRotation.y) > delta) {
                     console.log("not equal!!")
                     vwf_view.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
                 }
             }
-            self.nodes[avatarName].selfTickRotation = Object.assign({}, el.getAttribute('rotation'));
+            self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
+            self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
         }
 
     }
@@ -472,6 +484,9 @@ define(["module", "vwf/view"], function (module, view) {
 
     function updateHandControllerVR(aName, aSelector) {
         //let avatarName = 'avatar-' + self.kernel.moniker();
+
+        let delta = 0.0001
+
         let avatarName = aName + self.kernel.moniker();
         var node = self.state.nodes[avatarName];
         if (!node) return;
@@ -480,7 +495,14 @@ define(["module", "vwf/view"], function (module, view) {
         let el = document.querySelector(aSelector);
         if (el) {
             let position = el.object3D.getWorldPosition() //el.getAttribute('position');
-            let rotation = el.getAttribute('rotation');
+
+            let worldQuat = el.object3D.getWorldQuaternion(); 
+            //console.log(worldQuat);
+            let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+            var rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
+            THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+
+            //let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
             let lastPosition = self.nodes[avatarName].selfTickPosition;
@@ -489,14 +511,17 @@ define(["module", "vwf/view"], function (module, view) {
             //let currentRotation = node.aframeObj.getAttribute('rotation');
 
             if (position && rotation && lastRotation && lastPosition) {
-                if (compareCoordinates(position, lastPosition) || compareCoordinates(rotation, lastRotation)) {
+                if (compareCoordinates(position, lastPosition, delta) || compareCoordinates(rotation, lastRotation, delta)) {
                     console.log("not equal!!");
                     vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
                 }
             }
 
-            self.nodes[avatarName].selfTickRotation = Object.assign({}, el.getAttribute('rotation'));
-            self.nodes[avatarName].selfTickPosition = Object.assign({}, el.getAttribute('position'));
+          
+            //vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
+
+            self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
+            self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
 
         }
     }
@@ -508,22 +533,29 @@ define(["module", "vwf/view"], function (module, view) {
 
         let avatarEl = document.createElement('a-entity');
         avatarEl.setAttribute('id', 'avatarControlParent');
-        avatarEl.setAttribute('position', '0 1.6 0');
+        
 
         if (AFRAME.utils.device.isGearVR()) {
-            avatarEl.setAttribute('position', '0 0 0');
+            avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
+            //avatarEl.setAttribute('position', '0 0 0');
         }
+       
 
         let controlEl = document.createElement('a-camera');
 
         controlEl.setAttribute('id', 'avatarControl');
-        controlEl.setAttribute('wasd-controls', {});
+        //controlEl.setAttribute('wasd-controls', {});
         controlEl.setAttribute('look-controls', {pointerLockEnabled: false});
-       controlEl.setAttribute('gamepad-controls', {'controller': 0});
+       //controlEl.setAttribute('gamepad-controls', {'controller': 0});
         
+
         //controlEl.setAttribute('gearvr-controls',{});
-        controlEl.setAttribute('camera', 'active', true);
+        
        // controlEl.setAttribute('camera', 'near', 0.51);
+
+       
+    //controlEl.setAttribute('position', '0 0 0');
+    controlEl.setAttribute('camera', 'active', true);
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
@@ -625,26 +657,32 @@ define(["module", "vwf/view"], function (module, view) {
 
         let sceneEl = document.querySelector('a-scene');
 
-        //let avatarControl = document.querySelector('#avatarControlParent');
+        let avatarControl = document.querySelector('#avatarControlParent');
 
         let gearvr = document.createElement('a-entity');
         gearvr.setAttribute('id', 'gearvrcontrol');
-        gearvr.setAttribute('gearvr-controls', '');
-        gearvr.setAttribute('gearvr-controls', 'hand', 'right');
-        gearvr.setAttribute('gearvrcontrol', '');
-        sceneEl.appendChild(gearvr);
+        gearvr.setAttribute('gearvr-controls', {
+            'hand': 'right',
+        'model': true        });
+       // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
+
+        gearvr.setAttribute('gearvrcontrol', {});
+        avatarControl.appendChild(gearvr);
 
     }
 
     function createWMRVRControls(hand) {
 
         let sceneEl = document.querySelector('a-scene');
+
+        let avatarControl = document.querySelector('#avatarControlParent');
+
         let wmrvr = document.createElement('a-entity');
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
         wmrvr.setAttribute('windows-motion-controls', '');
         wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
         wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
-        sceneEl.appendChild(wmrvr);
+        avatarControl.appendChild(wmrvr);
     }
 
 
