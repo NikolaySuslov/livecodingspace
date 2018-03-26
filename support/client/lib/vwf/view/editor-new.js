@@ -1110,7 +1110,7 @@ define([
                                                     $components: [
                                                         {   
                                                             $type: "div",
-                                                            class: "mdc-select__surface mdc-ripple-upgraded",
+                                                            class: "mdc-select__surface",
                                                             $components: [
                                                                 {
                                                                     $type: "div",
@@ -1130,11 +1130,11 @@ define([
                                                        
                                                         {
                                                             $type: "div",
-                                                            class: "mdc-simple-menu mdc-select__menu",
+                                                            class: "mdc-menu mdc-select__menu",
                                                             $components: [
                                                                 {
                                                                     $type: "ul",
-                                                                    class: "mdc-list mdc-simple-menu__items",
+                                                                    class: "mdc-list mdc--menu__items",
                                                                     $components: this._saveStates.map(stateListElement)
                                                                 }
                                                             ]
@@ -1397,7 +1397,7 @@ define([
                                    sliderComponent,
                                
                                 {
-                                    class: "mdc-text-field prop-mdc-text-field mdc-ripple-upgraded",
+                                    class: "mdc-text-field prop-mdc-text-field",
                                     $cell: true,
                                     $type: "div",
                                     $components: [
@@ -1603,6 +1603,8 @@ define([
                                             
                                         }
                                     })
+
+                                    
                                 ]
                             },
                             {
@@ -3066,18 +3068,18 @@ define([
             let drawerCell = {
                 $cell: true,
                 $type: "nav",
-                class: "mdc-temporary-drawer__drawer",
+                class: "mdc-drawer__drawer",
 
                 $components: [
                     {
                         $cell: true,
                         $type: "header",
-                        class: "mdc-temporary-drawer__header",
+                        class: "mdc-drawer__header",
                         $components: [
                             {
                                 $cell: true,
                                 $type: "div",
-                                class: "mdc-temporary-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
+                                class: "mdc-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
                                 $text: self.lang.t("home")
                             }
                         ]
@@ -3086,7 +3088,7 @@ define([
                     {
                         $cell: true,
                         $type: "nav",
-                        class: "mdc-temporary-drawer__content mdc-list-group",
+                        class: "mdc-drawer__content mdc-list-group",
                         $components: [
                             {
                                 $cell: true,
@@ -3113,7 +3115,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "play_arrow"
                                         },
@@ -3149,7 +3151,7 @@ define([
                                         $components: [{
                                             $cell: true,
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             $text: "description"
                                         },
                                         {
@@ -3177,7 +3179,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "create"
                                         },
@@ -3203,7 +3205,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "code"
                                         },
@@ -3231,7 +3233,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "account_circle"
                                         },
@@ -3260,7 +3262,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "settings"
                                         },
@@ -3293,7 +3295,7 @@ define([
                                         },
                                         $components: [{
                                             $type: "i",
-                                            class: "material-icons mdc-list-item__start-detail",
+                                            class: "material-icons mdc-list-item__graphic",
                                             'aria-hidden': "true",
                                             $text: "save"
                                         },
@@ -3351,7 +3353,7 @@ define([
             document.querySelector("#drawer").$cell({
                 $cell: true,
                 $type: "aside",
-                class: "mdc-temporary-drawer",
+                class: "mdc-drawer--temporary",
                 $components: [drawerCell]
             }
             );
@@ -3366,7 +3368,7 @@ define([
                     class: "mdc-toolbar__section mdc-toolbar__section--align-start",
                     $components: [
                         {
-                            $type: "button",
+                            $type: "i",
                             class: "demo-menu material-icons mdc-toolbar__menu-icon",
                             $text: "menu"
 
@@ -3391,13 +3393,13 @@ define([
                             $components: [
                                 {
                                     $type: "div",
-                                    class: "mdc-simple-menu",
+                                    class: "mdc-menu",
                                     "tabindex": "-1",
                                     id: "create-menu",
                                     $init: function(){
 
                                     //var menuEl = document.querySelector('#demo-menu');
-                                    var menu = new mdc.menu.MDCSimpleMenu(this);
+                                    var menu = new mdc.menu.MDCMenu(this);
                                     var toggle = document.querySelector('.toggleCreate');
                                     toggle.addEventListener('click', function() {
                                         menu.open = !menu.open;
@@ -3408,7 +3410,7 @@ define([
                                     $components: [
                                        { 
                                         $type: "ul",
-                                        class: "mdc-simple-menu__items mdc-list",
+                                        class: "mdc-menu__items mdc-list",
                                         role: "menu",
                                         'aria-hidden': "true",
                                         style: "transform: scale(1, 1);",
@@ -3426,6 +3428,7 @@ define([
                                 }
                             ]
                         },
+                        
                         widgets.icontoggle({
                             'styleClass': "mdc-toolbar__icon",
                             'id': "selectNodeSwitch",
@@ -3434,7 +3437,7 @@ define([
                             'off': JSON.stringify({"content": "radio_button_unchecked", "label": "Unselect"}),
                             'state': false,
                             'init': function(){
-                        
+
                                 this.addEventListener('MDCIconToggle:change', (e) => {
                                     
                                     let avatarID = 'avatar-'+ vwf.moniker_;
@@ -3504,7 +3507,7 @@ define([
             document.querySelector("#toolbar").$cell({
                 $cell: true,
                 $type: "div",
-                class: "mdc-toolbar mdc-toolbar--fixed",
+                class: "mdc-toolbar mdc-toolbar--fixed mdc-toolbar--flexible-space-maximized",
                 $components: [toolbar]
             }
             );
@@ -3519,7 +3522,7 @@ define([
 
 
 
-            var drawerEl = document.querySelector('.mdc-temporary-drawer');
+            var drawerEl = document.querySelector('.mdc-drawer--temporary');
             var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
             var drawer = new MDCTemporaryDrawer(drawerEl);
             document.querySelector('.demo-menu').addEventListener('click', function () {
