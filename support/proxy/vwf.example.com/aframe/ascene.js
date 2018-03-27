@@ -398,7 +398,7 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -428,7 +428,7 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
     }
 
     self.children.create(nodeName, modelNode, function( child ) {
-        if (avatar) child.lookAt(self.children[avatar].worldPosition)
+        if (avatar) child.lookAt(self.children[avatar].worldPosition())
        });
 
 }
@@ -456,7 +456,7 @@ this.createModel = function (modelType, modelSrc, avatar) {
             let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
         
             if (cursorNode) {
-                 position = cursorNode.worldPosition;
+                 position = cursorNode.worldPosition();
                 //console.log(position);
             }
     
@@ -490,7 +490,7 @@ this.createModel = function (modelType, modelSrc, avatar) {
         }
 
         self.children.create(nodeName, modelNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+            if (avatar) child.lookAt(self.children[avatar].worldPosition())
            });
 
        });
@@ -539,7 +539,7 @@ this.createPrimitive = function (type, params, name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -587,7 +587,7 @@ this.createPrimitive = function (type, params, name, node, avatar) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+            if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });
     }
 
@@ -608,7 +608,7 @@ this.createCamera = function (name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -622,7 +622,7 @@ this.createCamera = function (name, node, avatar) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+            if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });
     }
 
@@ -643,7 +643,7 @@ this.createCameraWithOffset = function (name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -657,7 +657,7 @@ this.createCameraWithOffset = function (name, node, avatar) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition);
+            if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });
     }
 
@@ -681,7 +681,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -708,7 +708,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
             let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
         
             if (cursorNode) {
-                 position = cursorNode.worldPosition;
+                 position = cursorNode.worldPosition();
                 //console.log(position);
             }
     
@@ -726,7 +726,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
             newNode.properties.height = child.height;
 
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+                if (avatar) child.lookAt(self.children[avatar].worldPosition())
                });
     
         } else {
@@ -742,7 +742,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
         newNode.properties.height = child.height;
     
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+                if (avatar) child.lookAt(self.children[avatar].worldPosition())
                });
     
             }
@@ -774,7 +774,7 @@ this.createVideo = function (vidSrc, name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -800,7 +800,7 @@ this.createVideo = function (vidSrc, name, node, avatar) {
             let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
         
             if (cursorNode) {
-                 position = cursorNode.worldPosition;
+                 position = cursorNode.worldPosition();
                 //console.log(position);
             }
     
@@ -820,7 +820,7 @@ this.createVideo = function (vidSrc, name, node, avatar) {
             newNode.properties.height = child.videoHeight;
 
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition)
+                if (avatar) child.lookAt(self.children[avatar].worldPosition())
                });
 
         } else {
@@ -834,7 +834,7 @@ this.createVideo = function (vidSrc, name, node, avatar) {
                 newNode.properties.height = child.videoHeight;
 
                 self.children.create(nodeName, newNode, function( child ) {
-                    if (avatar) child.lookAt(self.children[avatar].worldPosition)
+                    if (avatar) child.lookAt(self.children[avatar].worldPosition())
                    });
 
             }
@@ -863,7 +863,7 @@ this.createAudio = function (itemSrc, name, node, avatar) {
         let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
         if (cursorNode) {
-            position = cursorNode.worldPosition;
+            position = cursorNode.worldPosition();
             //console.log(position);
         }
 
@@ -896,7 +896,7 @@ this.createAudio = function (itemSrc, name, node, avatar) {
             let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
         
             if (cursorNode) {
-                 position = cursorNode.worldPosition;
+                 position = cursorNode.worldPosition();
                 //console.log(position);
             }
     
@@ -925,7 +925,7 @@ this.createAudio = function (itemSrc, name, node, avatar) {
         };
 
         self.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition)
+            if (avatar) child.lookAt(self.children[avatar].worldPosition())
            });
 
        // }

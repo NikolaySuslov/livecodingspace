@@ -12,7 +12,7 @@ function createApp() {
     function getNewPosition() {
         //let allChild = vwf.find("","/*")
         let cursorVisID = vwf.find("myCursor-avatar-" + vwf.moniker_, "./vis")[0]
-        let avPos = AFRAME.utils.coordinates.parse(vwf.getProperty(cursorVisID, 'worldPosition'));
+        let avPos = AFRAME.utils.coordinates.parse(vwf.callMethod(cursorVisID, 'worldPosition'));
         let newPos = [avPos.x, avPos.y, avPos.z]
         return newPos
     }
@@ -59,6 +59,7 @@ function createApp() {
 
                                     let randomName = "turtle-new-" + self.GUID();
                                     vwf_view.kernel.createChild(sceneID, randomName, newTurtle);
+
                                 }
 
                             }
