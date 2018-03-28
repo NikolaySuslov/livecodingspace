@@ -180,7 +180,7 @@ define(function () {
             return {
                 $cell: true,
                 $type: "button",
-                class: "mdc-button mdc-button--stroked mdc-ripple-upgraded",
+                class: "mdc-button mdc-button--stroked",
                 $text: obj.label,
                 onclick: obj.onclick
             }
@@ -190,7 +190,7 @@ define(function () {
             return {
                 $cell: true,
                 $type: "button",
-                class: "mdc-button mdc-ripple-upgraded",
+                class: "mdc-button",
                 $text: obj.label,
                 onclick: obj.onclick
             }
@@ -354,16 +354,15 @@ define(function () {
             }
 
             return {
-                $cell: true,
                 $type: "i",
-                class: "mdc-icon-toggle material-icons "+ addClass,
+                class: addClass + " mdc-icon-toggle material-icons",
                 role: "button",
                 $text: obj.label,
                 id: obj.id,
                 'data-toggle-on': obj.on,
                 'data-toggle-off': obj.off,
                 'aria-pressed': obj.state,
-                //'aria-hidden': true,
+                'aria-hidden': true,
                 $init: obj.init
             }
         }

@@ -33,15 +33,15 @@ this.simpleDef = {
                     }
                 }
             }
-        },
-        "interpolation":
-            {
-                "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-                "type": "component",
-                "properties": {
-                    "enabled": true
-                }
-            }
+        }
+        // "interpolation":
+        //     {
+        //         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
+        //         "type": "component",
+        //         "properties": {
+        //             "enabled": true
+        //         }
+        //     }
     }
 }
 

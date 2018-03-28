@@ -10,7 +10,6 @@ properties:
   displayName:
   visible:
   edit:
-  worldPosition:
   osc:
 methods:
   setGizmoMode:
@@ -20,5 +19,7 @@ methods:
   lookAt:
     parameters:
       - nodeID
+  worldRotation:
+  worldPosition:
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

@@ -293,7 +293,7 @@
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
 
-                    "vwf/model/aframe/addon/aframe-gamepad-controls.min": {
+                    "vwf/model/aframe/extras/aframe-extras.controls.min": {
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
                     "vwf/model/aframe/addon/SkyShader": {
@@ -351,7 +351,7 @@
                     "vwf/model/aframe/addon/aframe-sun-sky",
                     "vwf/model/aframe/addon/aframe-components",
                     "vwf/model/aframe/addon/SkyShader",
-                    "vwf/model/aframe/addon/aframe-gamepad-controls.min",
+                    "vwf/model/aframe/extras/aframe-extras.controls.min",
                     "vwf/model/aframe/addon/BVHLoader",
                     "vwf/model/aframe/addon/TransformControls",
                     "vwf/model/aframe/addon/THREE.MeshLine"
@@ -388,7 +388,7 @@
                 
                 
                 { library: "vwf/model/aframe/addon/SkyShader", active: false },
-                { library: "vwf/model/aframe/addon/aframe-gamepad-controls.min", active: false },
+                { library: "vwf/model/aframe/extras/aframe-extras.controls.min", active: false },
 
                 { library: "vwf/view/aframeComponent", active: true },
 
@@ -2839,6 +2839,8 @@ if ( ! childComponent.source ) {
                                         //document.querySelector('body').removeChild(progressbar);
                                         progressbar.classList.remove( "visible" );
                                         progressbar.classList.add( "not-visible" );
+                                        progressbar.classList.add( "mdc-linear-progress--closed" );
+                                        
                                     }   
                                     // var spinner = document.getElementById( "vwf-loading-spinner" );
                                     // spinner && spinner.classList.remove( "pace-active" );

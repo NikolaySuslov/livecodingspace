@@ -257,6 +257,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             if(!node) return;
 
             if (node && node.aframeObj ) {
+
                 if (methodName == 'lookAt') {
                     console.log('lookAt: ' +  methodParameters[0]);
                     let target = methodParameters[0];
@@ -264,6 +265,24 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     let newRotation = node.aframeObj.getAttribute('rotation');
                     self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0}); 
                 }
+
+                if (methodName == 'worldRotation') {
+
+                    let worldQuat = node.aframeObj.object3D.getWorldQuaternion(); 
+                    let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+                    let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
+                    THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+                    return rotation
+
+                }
+
+                if (methodName == 'worldPosition') {
+
+                    let position = node.aframeObj.object3D.getWorldPosition();
+                    return position
+
+                }
+
             }
 
            
@@ -341,9 +360,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     value = propertyValue;
 
                     switch (propertyName) {
-
-                        case "worldPosition":
-                            break;
 
                         case "position":
                             this.state.setAFrameProperty('position', propertyValue, aframeObject);
@@ -788,13 +804,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 if (value === undefined && isAEntityDefinition(node.prototypes)) {
 
                     switch (propertyName) {
-
-                        case "worldPosition":
-                        var pos = aframeObject.object3D.getWorldPosition();
-                        if (pos !== undefined) {
-                            value = pos;
-                        }
-                        break;
 
                         case "position":
                             var pos = aframeObject.getAttribute('position');
