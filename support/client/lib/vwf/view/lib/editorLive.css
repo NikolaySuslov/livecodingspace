@@ -60,6 +60,12 @@
 
 }
 
+:root {
+  --mdc-theme-primary: #3f51b5;
+  --mdc-theme-secondary: #c62828;
+}
+
+
 .draggable {
   top: 200px;
   left: 400px;

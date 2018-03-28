@@ -2839,6 +2839,8 @@ if ( ! childComponent.source ) {
                                         //document.querySelector('body').removeChild(progressbar);
                                         progressbar.classList.remove( "visible" );
                                         progressbar.classList.add( "not-visible" );
+                                        progressbar.classList.add( "mdc-linear-progress--closed" );
+                                        
                                     }   
                                     // var spinner = document.getElementById( "vwf-loading-spinner" );
                                     // spinner && spinner.classList.remove( "pace-active" );

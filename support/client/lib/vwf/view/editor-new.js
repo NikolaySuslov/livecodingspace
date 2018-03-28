@@ -155,15 +155,16 @@ define([
                         {
                             $type: "section",
                             class: "mdc-card__primary",
+                            style: "padding: 1rem;",
                             $components: [
                                 {
                                     $type: "h1",
-                                    class: "mdc-card__title mdc-card__title--large",
+                                    class: "mdc-card__title mdc-typography--title",
                                     $text: desc.subtitle
                                 },
                                 {
                                     $type: "h2",
-                                    class: "mdc-card__subtitle",
+                                    class: "mdc-typography--subheading1",
                                     $text: desc.title
                                 }
                             ]
@@ -191,22 +192,18 @@ define([
                 class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                 $components: [
                     {
-                        $cell: true,
                         $type: "section",
                         $components: [
                             {
-                                $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
                                 $text:"Primitives"
                             },
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-grid-list",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: make3DPrimitiveList()
@@ -215,18 +212,15 @@ define([
                             },
                             //widgets.divider,
                             {
-                                $cell: true,
                                 $type: "h3",
                                 $text:"Lights",
                                 class: "mdc-typography--title"
                             },
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-grid-list",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: makeLightsList()
@@ -235,18 +229,15 @@ define([
                             },
                             //widgets.divider,
                             {
-                                $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
                                 $text:"Objects"
                             },
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-grid-list",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: [  
@@ -285,7 +276,6 @@ define([
                             }, 
                             //widgets.divider,
                             {
-                                $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
                                 $text:"Assets" 
@@ -299,12 +289,10 @@ define([
                                 }
                             }),
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-grid-list",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: [
@@ -383,19 +371,16 @@ define([
 
                              //widgets.divider,
                             {
-                                $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
                                 $text:"Resources" 
                              
                             },
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-grid-list",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "ul",
                                         class: "mdc-grid-list__tiles",
                                         $components: [
@@ -452,7 +437,6 @@ define([
                                 ]
                             },
                             {
-                                $cell: true,
                                 $type: "h3",
                                 class: "mdc-typography--title",
                                 $text:"Google Poly" 
@@ -520,12 +504,10 @@ define([
                     class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                     $components: [
                         {
-                            $cell: true,
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -574,7 +556,6 @@ define([
                                     ]
                                 },
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -623,7 +604,6 @@ define([
                                     ]
                                 },
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -638,7 +618,6 @@ define([
                                                     $components: [
 
                                                         {
-                                                            $cell: true,
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
@@ -653,7 +632,6 @@ define([
                                                             ]
                                                         },
                                                         {
-                                                            $cell: true,
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
@@ -665,7 +643,6 @@ define([
                                                                 )]
                                                         },
                                                         {
-                                                            $cell: true,
                                                             $type: "div",
                                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                             $components: [
@@ -689,7 +666,6 @@ define([
                                     ]
                                 },
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -728,12 +704,10 @@ define([
                     class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                     $components: [
                         {
-                            $cell: true,
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -894,12 +868,10 @@ define([
 
                         this.$components = [
                             {
-                                $cell: true,
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
                                 $components: [
                                     {
-                                        $cell: true,
                                         $type: "div",
                                         class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                         $components: [
@@ -909,13 +881,11 @@ define([
                                             },
                                             {
                                                 class: "mdc-text-field",
-                                                $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
                                                         class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscHost",
-                                                        $cell: true,
                                                         $type: "input",
                                                         type: "text",
                                                         value: this._oscHost,
@@ -932,7 +902,6 @@ define([
                                         ]
                                     },
                                     {
-                                        $cell: true,
                                         $type: "div",
                                         class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                         $components: [
@@ -942,13 +911,11 @@ define([
                                             },
                                             {
                                                 class: "mdc-text-field",
-                                                $cell: true,
                                                 $type: "span",
                                                 $components: [
                                                     {
                                                         class: "mdc-text-field__input prop-text-field-input",
                                                         id: "oscPort",
-                                                        $cell: true,
                                                         $type: "input",
                                                         type: "text",
                                                         value: this._oscPort,
@@ -965,7 +932,6 @@ define([
                                         ]
                                     },
                                     {
-                                        $cell: true,
                                         $type: "div",
                                         class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                         $components: [
@@ -996,6 +962,7 @@ define([
                     class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                     _saveStates: [],
                     _getStates: async function () {
+                        var states;
                         let response = await fetch("/" + self.getRoot() + "/listallsaves");
                         let data = await response.json();
                         //this._saveStates = data;
@@ -1003,10 +970,10 @@ define([
                         //console.log(data.filter(item => item.applicationpath.split("/")[1] == appName));
                         let filterData = data.filter(item => item.applicationpath.split("/")[1] == self.getRoot());
                         if (filterData.length !== 0) {
-                            this._saveStates = filterData
+                            states = filterData
                             //return filterData
                         } else {
-                            this._saveStates = [{
+                            states = [{
                                 savename: "",
                                 latestsave: "",
                                 revision: "",
@@ -1017,34 +984,32 @@ define([
                         // this._saveStates.filter(item => item.applicationpath.split("/")[1] == self.getRoot()).map(stateListElement)
                         //return data
                         //console.log(data);
-                        return this._saveStates
+                        return states
                     },
                     $init: function () {
-                        this._getStates();
+                        this._getStates().then(res => {
+                            this._saveStates = res;
+                        })
 
                     },
                     $update: function () {
                         this.$components =
                             [
                                 {
-                                    $cell: true,
                                     $type: "div",
                                     class: "mdc-layout-grid__inner",
                                     $components: [
                                         {
-                                            $cell: true,
                                             $type: "div",
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
                                                 {
                                                     class: "mdc-text-field",
-                                                    $cell: true,
                                                     $type: "span",
                                                     $components: [
                                                         {
                                                             class: "mdc-text-field__input prop-text-field-input",
                                                             id: "fileName",
-                                                            $cell: true,
                                                             $type: "input",
                                                             type: "text",
                                                             value: self.getRoot()
@@ -1058,7 +1023,7 @@ define([
                                         },
 
                                         {
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
@@ -1077,12 +1042,12 @@ define([
                                             ]
                                         },
                                         {
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
                                                 {
-                                                    $cell: true,
+                                                    
                                                     $type: "div",
                                                     class: "mdc-select",
                                                     tabindex: "0",
@@ -1090,19 +1055,19 @@ define([
                                                     id: "loadselect",
                                                     $init: function () {
 
-                                                        setTimeout(function() {
+                                                      //  setTimeout(function() {
                                                            
-                                                        var MDCSelect = mdc.select.MDCSelect;
-                                                        let selector = document.querySelector('#loadselect');
-                                                        let select = new MDCSelect(selector);
-                                                        selector.addEventListener('MDCSelect:change', () => {
+                                                      // var MDCSelect = mdc.select.MDCSelect;
+                                                      let selector = document.querySelector('#loadselect');
+                                                        let select = new mdc.select.MDCSelect(document.querySelector('#loadselect'));
+                                                        this.addEventListener('MDCSelect:change', () => {
                                                             //this._selectedState = select.value;
                                                             document.querySelector('#loadStateButton')._selectedState = select.selectedOptions[0];
                                                             //console.log(select.value);
                                                             //.selectedOptions[0]
                                                         });
 
-                                                          }, 300);
+                                                        //  }, 500);
 
                                                         
 
@@ -1134,7 +1099,7 @@ define([
                                                             $components: [
                                                                 {
                                                                     $type: "ul",
-                                                                    class: "mdc-list mdc--menu__items",
+                                                                    class: "mdc-list mdc-menu__items",
                                                                     $components: this._saveStates.map(stateListElement)
                                                                 }
                                                             ]
@@ -1146,12 +1111,12 @@ define([
                                             ]
                                         },
                                         {
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                             $components: [
                                                 {
-                                                    $cell: true,
+                                                    
                                                     $type: "button",
                                                     _selectedState: {},
                                                     id: "loadStateButton",
@@ -1216,11 +1181,11 @@ define([
                                      },
                                     {
                                         class: "mdc-text-field",
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         $components: [{
                                             class: "mdc-text-field__input prop-text-field-input",
-                                            $cell: true,
+                                            
                                             $type: "input",
                                             type: "text",
                                             value: this._prop.getValue(),
@@ -1352,11 +1317,11 @@ define([
 
                         {
                             $type: "div",
-                            $cell: true,
+                            
                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-6",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "button",
                                     class: "mdc-button",
                                     $text: "Edit", //edit grammar
@@ -1379,7 +1344,7 @@ define([
                         },
                         {
                             $type: "div",
-                            $cell: true,
+                            
                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
                             $components: []
                         }
@@ -1398,13 +1363,13 @@ define([
                                
                                 {
                                     class: "mdc-text-field prop-mdc-text-field",
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     $components: [
                                         {
                                             class: "mdc-text-field__input prop-text-field-input",
                                             id: "prop-" + m.name,
-                                            $cell: true,
+                                            
                                             $type: "input",
                                             type: "text",
                                             value: m.getValue(),
@@ -1430,7 +1395,7 @@ define([
                             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "button",
                                     class: "mdc-button mdc-button--compact",
                                     $text: "^", //edit grammar
@@ -1529,7 +1494,7 @@ define([
             };
 
             let listDivider = {
-                $cell: true,
+                
                 $type: "hr",
                 class: "mdc-list-divider",
             }
@@ -1707,7 +1672,7 @@ define([
                                 $components: [
                                     {
 
-                                        $cell: true,
+                                        
                                         $type: "span",
                                         $text: "Sound: "
 
@@ -1830,7 +1795,7 @@ define([
                                 $components: [
                                     {
 
-                                        $cell: true,
+                                        
                                         $type: "span",
                                         $text: "Edit: ",
 
@@ -2040,12 +2005,12 @@ define([
                                 class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                 $components: [
                                     {
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         class: "mdc-layout-grid__inner",
                                         $components: [
                                             {
-                                                $cell: true,
+                                                
                                                 $type: "div",
                                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                                 $components: [
@@ -2081,7 +2046,7 @@ define([
 
                     this.$components = [
                         {
-                            $cell: true,
+                            
                             $type: "ul",
                             class: "mdc-list",
                             $components: [
@@ -2181,7 +2146,7 @@ define([
                                         }]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "ul",
                                     class: "mdc-list",
                                     $components: this._getChildNodes().map(nodeLink)
@@ -2217,7 +2182,7 @@ define([
                                         }]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                     $components: this._getNodeProtoProperties().map(protoPropertiesCell)
@@ -2245,7 +2210,7 @@ define([
                 },
                 $components: [
                     {
-                        $cell: true,
+                        
                         $type: "div",
                         style: "padding: 0 16px;", 
                         $components:[
@@ -2290,25 +2255,25 @@ define([
                 },
                 $components: [
                     {
-                        $cell: true,
+                        
                         $type: "div",
                         id: "color-picker",
                         class: "cp-default",
                         $components: [
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "picker-wrapper",
                                 $components: [
                                     {
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         id: "picker",
                                         class: "picker",
                                         style: "width: 130px; height: 130px"
                                     },
                                     {
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         id: "picker-indicator",
                                         class: "picker-indicator"
@@ -2316,19 +2281,19 @@ define([
                                 ]
                             },
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "slide-wrapper",
                                 $components: [
                                     {
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         id: "slide",
                                         class: "slide",
                                         style: "width: 30px; height: 130px"
                                     },
                                     {
-                                        $cell: true,
+                                        
                                         $type: "div",
                                         id: "slide-indicator",
                                         class: "slide-indicator"
@@ -2380,13 +2345,13 @@ define([
 
                     this.$components = [
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
 
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
@@ -2412,7 +2377,7 @@ define([
                                         )]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-5",
                                     $components: [
@@ -2425,7 +2390,7 @@ define([
                                     ]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-5",
                                     $components: [
@@ -2443,17 +2408,17 @@ define([
                             ]
                         },
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: editorClass,
                                     $components: [
                                         {
-                                            $cell: true,
+                                            
                                             class: "aceEditor",
                                             id: "propAceEditor",
                                             $type: "div",
@@ -2557,12 +2522,12 @@ define([
                 $update: function () {
                     this.$components = [
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
@@ -2577,7 +2542,7 @@ define([
 
 
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
@@ -2610,7 +2575,7 @@ define([
                                         )]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
@@ -2641,7 +2606,7 @@ define([
                                         ]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
@@ -2656,7 +2621,7 @@ define([
                                         ]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
@@ -2674,18 +2639,18 @@ define([
                             ]
                         },
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     style: "overflow-y: scroll; max-height: 400px;",
                                     $components: [
                                         {
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             class: "mdc-list-group",
 
@@ -2697,7 +2662,7 @@ define([
                                                     $text: "Node methods"
                                                 },
                                                 {
-                                                    $cell: true,
+                                                    
                                                     $type: "ul",
                                                     class: "mdc-list",
                                                     $components: Object.entries(this._getNodeMethods()).map(this._listElement)
@@ -2708,7 +2673,7 @@ define([
                                                     $text: "Proto methods"
                                                 },
                                                 {
-                                                    $cell: true,
+                                                    
                                                     $type: "ul",
                                                     class: "mdc-list",
                                                     $components: Object.entries(this._getProtoNodeMethods()).map(this._listElement)
@@ -2719,7 +2684,7 @@ define([
                                                     $text: "Events"
                                                 }
                                                 // {
-                                                //     $cell: true,
+                                                //     
                                                 //     $type: "ul",
                                                 //     class: "mdc-list",
                                                 //     $components: Object.entries(this._getComplexProps()).map(this._listPropertyElement)
@@ -2733,12 +2698,12 @@ define([
                                 },
 
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-9",
                                     $components: [
                                         {
-                                            $cell: true,
+                                            
                                             class: "aceEditor",
                                             id: "aceEditor",
                                             $type: "div",
@@ -2753,12 +2718,12 @@ define([
                             ]
                         },
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
@@ -2771,23 +2736,23 @@ define([
                             ]
                         },
                         { //params input
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
                                         {
                                             class: "mdc-text-field",
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             $components: [{
                                                 class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodName",
-                                                $cell: true,
+                                                
                                                 $type: "input",
                                                 type: "text",
                                                 value: "newMethodName",
@@ -2807,18 +2772,18 @@ define([
                                 },
 
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                     $components: [
                                         {
                                             class: "mdc-text-field params-text-field-input",
-                                            $cell: true,
+                                            
                                             $type: "div",
                                             $components: [{
                                                 class: "mdc-text-field__input prop-text-field-input",
                                                 id: "methodParams",
-                                                $cell: true,
+                                                
                                                 $type: "input",
                                                 type: "text",
                                                 value: JSON.stringify(this._method.parameters),
@@ -2837,7 +2802,7 @@ define([
                                     ]
                                 },
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                     $components: [
@@ -2888,7 +2853,7 @@ define([
                         class: "mdc-layout-grid__inner",
                         $components: [
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
@@ -2969,7 +2934,7 @@ define([
                         class: "mdc-layout-grid__inner",
                         $components: [
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
@@ -3015,7 +2980,7 @@ define([
                 $update: function () {
                     this.$components = [
                         {
-                            $cell: true,
+                            
                             $type: "button",
                             class: "mdc-button mdc-button--compact",
                             $text: "X",
@@ -3039,17 +3004,17 @@ define([
                     class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                     $components: [
                         {
-                            $cell: true,
+                            
                             $type: "div",
                             class: "mdc-layout-grid__inner",
                             $components: [
                                 {
-                                    $cell: true,
+                                    
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
                                         {
-                                            $cell: true,
+                                            
                                             $type: "h3",
                                             class: "mdc-typography--headline",
                                             $text: "Application",
@@ -3072,12 +3037,12 @@ define([
 
                 $components: [
                     {
-                        $cell: true,
+                        
                         $type: "header",
                         class: "mdc-drawer__header",
                         $components: [
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "mdc-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
                                 $text: self.lang.t("home")
@@ -3086,17 +3051,17 @@ define([
                     },
 
                     {
-                        $cell: true,
+                        
                         $type: "nav",
                         class: "mdc-drawer__content mdc-list-group",
                         $components: [
                             {
-                                $cell: true,
+                                
                                 $type: "div",
                                 class: "mdc-list",
                                 $components: [
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3125,7 +3090,7 @@ define([
 
                                     },
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3149,7 +3114,7 @@ define([
 
                                         },
                                         $components: [{
-                                            $cell: true,
+                                            
                                             $type: "i",
                                             class: "material-icons mdc-list-item__graphic",
                                             $text: "description"
@@ -3162,7 +3127,7 @@ define([
                                     },
 
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3190,7 +3155,7 @@ define([
                                     },
 
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3216,7 +3181,7 @@ define([
                                     },
 
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3245,7 +3210,7 @@ define([
 
 
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3272,7 +3237,7 @@ define([
 
                                     },
                                     {
-                                        $cell: true,
+                                        
                                         $type: "a",
                                         class: "mdc-list-item",
                                         $href: "#",
@@ -3286,12 +3251,14 @@ define([
                                             sideBar._sideBarComponent = loadSaveSettings;
 
                                             if (document.querySelector('#loadSaveSettings')) {
-                                                document.querySelector('#loadSaveSettings')._getStates();
+                                                //document.querySelector('#loadSaveSettings')._getStates();
                                             }
                                             //sideBar._sideBarComponent._getStates();
-
                                             drawer.open = !drawer.open
                                             document.querySelector('#sideBar').style.visibility = 'visible';
+                                         
+
+                                           
                                         },
                                         $components: [{
                                             $type: "i",
@@ -3380,17 +3347,18 @@ define([
                             $text: "LiveCoding.space"
                         },
 
-                        {
-                            $type: "a",
-                            href: "#",
-                            class: "material-icons mdc-toolbar__icon toggleCreate",
-                            $text: "apps",
-                            'aria-label': "More"
-                        },
+                       
                         {
                             $type: "div",
                             class: "mdc-menu-anchor",
                             $components: [
+                                {
+                                    $type: "a",
+                                    class: "material-icons mdc-toolbar__icon",
+                                    id: "toggleCreate",
+                                    $text: "apps",
+                                    'aria-label': "More"
+                                },
                                 {
                                     $type: "div",
                                     class: "mdc-menu",
@@ -3400,20 +3368,20 @@ define([
 
                                     //var menuEl = document.querySelector('#demo-menu');
                                     var menu = new mdc.menu.MDCMenu(this);
-                                    var toggle = document.querySelector('.toggleCreate');
+                                    var toggle = document.querySelector('#toggleCreate');
                                     toggle.addEventListener('click', function() {
                                         menu.open = !menu.open;
                                     });
                                     
                                     },
-                                    style: "transform-origin: right top 0px; right: 0px; top: 0px; transform: scale(0, 0);",
+                                    style: "transform-origin: right top 0px; right: 0px; top: 0px;",
                                     $components: [
                                        { 
                                         $type: "ul",
                                         class: "mdc-menu__items mdc-list",
                                         role: "menu",
                                         'aria-hidden': "true",
-                                        style: "transform: scale(1, 1);",
+                                       // style: "transform: scale(1, 1);",
                                         $components: [
                                             {
                                                 $type: "li",
@@ -3828,13 +3796,13 @@ define([
             $components: [
 
                 {
-                    $cell: true,
+                    
                     $type: "div",
                     class: "handle"
                 },
                   
                         {
-                            $cell: true,
+                            
                             $type: "button",
                             class: "mdc-button mdc-button--compact",
                             $text: "X",
@@ -3845,7 +3813,7 @@ define([
 
                         },
                         {
-                            $cell: true,
+                            
                             $type: "span",
                             class: "mdc-typography--button",
                             $text: title
@@ -3856,7 +3824,7 @@ define([
 
                 cellNode,
                 {
-                    $cell: true,
+                    
                     $type: "div",
                     class: "handle",
                     style: "height: 10px; width: inherit;",

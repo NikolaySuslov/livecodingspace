@@ -331,7 +331,8 @@ define(["module", "vwf/view"], function (module, view) {
                         "remoteUrl": '',
                         "displayName": 'Avatar '+ randId(),
                         "sharing": { audio: true, video: true },
-                        "selectMode": false
+                        "selectMode": false,
+                        "position": "0 1.6 0"
                     }
                 }
 
@@ -441,6 +442,17 @@ define(["module", "vwf/view"], function (module, view) {
 
     }
 
+    function getWorldRotation(el) {
+
+        let worldQuat = el.object3D.getWorldQuaternion(); 
+        //console.log(worldQuat);
+        let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+        let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
+        THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+
+        return rotation
+    }
+
     function updateAvatarPosition() {
 
         let delta = 0.0001;
@@ -453,13 +465,8 @@ define(["module", "vwf/view"], function (module, view) {
         let el = document.querySelector('#avatarControl');
         if (el) {
             let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
-
-            let worldQuat = el.object3D.getWorldQuaternion(); 
-            //console.log(worldQuat);
-            let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
-            var rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
-            THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
-
+            let rotation = getWorldRotation(el);
+           
            // console.log(rotation);
             //let rotation = el.getAttribute('rotation');
 
@@ -495,12 +502,7 @@ define(["module", "vwf/view"], function (module, view) {
         let el = document.querySelector(aSelector);
         if (el) {
             let position = el.object3D.getWorldPosition() //el.getAttribute('position');
-
-            let worldQuat = el.object3D.getWorldQuaternion(); 
-            //console.log(worldQuat);
-            let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
-            var rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
-            THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+            let rotation = getWorldRotation(el);
 
             //let rotation = el.getAttribute('rotation');
 
