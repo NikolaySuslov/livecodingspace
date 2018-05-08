@@ -268,7 +268,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 if (methodName == 'worldRotation') {
 
-                    let worldQuat = node.aframeObj.object3D.getWorldQuaternion(); 
+                    var worldQuat =  new THREE.Quaternion();
+                    node.aframeObj.object3D.getWorldQuaternion(worldQuat); 
+
                     let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
                     let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
                     THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
@@ -278,7 +280,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 if (methodName == 'worldPosition') {
 
-                    let position = node.aframeObj.object3D.getWorldPosition();
+                    var position = new THREE.Vector3();
+
+                    node.aframeObj.object3D.getWorldPosition(position);
                     return position
 
                 }

@@ -444,7 +444,10 @@ define(["module", "vwf/view"], function (module, view) {
 
     function getWorldRotation(el) {
 
-        let worldQuat = el.object3D.getWorldQuaternion(); 
+
+        var worldQuat =  new THREE.Quaternion();
+        el.object3D.getWorldQuaternion(worldQuat);
+         
         //console.log(worldQuat);
         let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
         let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
@@ -464,7 +467,11 @@ define(["module", "vwf/view"], function (module, view) {
 
         let el = document.querySelector('#avatarControl');
         if (el) {
-            let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
+            //let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
+
+            let position = new THREE.Vector3();
+            el.object3D.getWorldPosition(position);
+
             let rotation = getWorldRotation(el);
            
            // console.log(rotation);
@@ -501,7 +508,11 @@ define(["module", "vwf/view"], function (module, view) {
 
         let el = document.querySelector(aSelector);
         if (el) {
-            let position = el.object3D.getWorldPosition() //el.getAttribute('position');
+            //let position = el.object3D.getWorldPosition() //el.getAttribute('position');
+            
+            let position = new THREE.Vector3();
+            el.object3D.getWorldPosition(position);
+
             let rotation = getWorldRotation(el);
 
             //let rotation = el.getAttribute('rotation');
