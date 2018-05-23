@@ -745,12 +745,10 @@ define([
             let stateListElement = function (item) {
 
                 let liEl = {
-                    $type: "li",
-                    class: "mdc-list-item",
-                    role: "option",
+                    $type: "option",
                     id: "",
-                    tabindex: "0",
                     applicationpath: "",
+                    value: "no_saves",
                     $components: [
                         {
                             $text: "no saves"
@@ -775,11 +773,9 @@ define([
 
                 if (item.latestsave) {
                     liEl = {
-                        $type: "li",
-                        class: "mdc-list-item",
-                        role: "option",
-                        tabindex: "0",
+                        $type: "option",
                         id: item.savename,
+                        value: item.savename,
                         applicationpath: item.applicationpath,
                         $components: [
                             {
@@ -791,11 +787,9 @@ define([
                 }
                 else {
                     liEl = {
-                        $type: "li",
-                        class: "mdc-list-item",
-                        role: "option",
-                        tabindex: "0",
+                        $type: "option",
                         id: item.savename,
+                        value: item.savename,
                         revision: item.revision,
                         applicationpath: item.applicationpath,
                         $components: [
@@ -1050,8 +1044,6 @@ define([
                                                     
                                                     $type: "div",
                                                     class: "mdc-select",
-                                                    tabindex: "0",
-                                                    role: "listbox",
                                                     id: "loadselect",
                                                     $init: function () {
 
@@ -1060,9 +1052,9 @@ define([
                                                       // var MDCSelect = mdc.select.MDCSelect;
                                                       let selector = document.querySelector('#loadselect');
                                                         let select = new mdc.select.MDCSelect(document.querySelector('#loadselect'));
-                                                        this.addEventListener('MDCSelect:change', () => {
+                                                        select.listen('change', () => {
                                                             //this._selectedState = select.value;
-                                                            document.querySelector('#loadStateButton')._selectedState = select.selectedOptions[0];
+                                                            document.querySelector('#loadStateButton')._selectedState = select.nativeControl_[select.selectedIndex];
                                                             //console.log(select.value);
                                                             //.selectedOptions[0]
                                                         });
@@ -1073,37 +1065,27 @@ define([
 
                                                     },
                                                     $components: [
+                                                        {
+                                                            $type: "select",
+                                                            class: "mdc-select__native-control",
+                                                            $components: this._saveStates.map(stateListElement)
+                                                        },
+
                                                         {   
-                                                            $type: "div",
-                                                            class: "mdc-select__surface",
+                                                            $type: "label",
+                                                            class: "mdc-floating-label",
                                                             $components: [
                                                                 {
-                                                                    $type: "div",
-                                                                    class: "mdc-select__label",
                                                                     $text: "Select..."
-                                                                },
-                                                                {
-                                                                    $type: "div",
-                                                                    class: "mdc-select__selected-text"
-                                                                },
-                                                                {
-                                                                    $type: "div",
-                                                                    class: "mdc-select__bottom-line"
                                                                 }
                                                             ]
                                                         },
-                                                       
                                                         {
                                                             $type: "div",
-                                                            class: "mdc-menu mdc-select__menu",
-                                                            $components: [
-                                                                {
-                                                                    $type: "ul",
-                                                                    class: "mdc-list mdc-menu__items",
-                                                                    $components: this._saveStates.map(stateListElement)
-                                                                }
-                                                            ]
+                                                            class: "mdc-line-ripple"
                                                         }
+                                                       
+                                                       
 
                                                     ]
                                                 }
