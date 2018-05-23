@@ -7684,6 +7684,7 @@ var MDCDialogFoundation = function (_MDCFoundation) {
     key: 'close',
     value: function close() {
       this.isOpen_ = false;
+      this.enableScroll_();
       this.adapter_.deregisterSurfaceInteractionHandler('click', this.dialogClickHandler_);
       this.adapter_.deregisterDocumentKeydownHandler(this.documentKeydownHandler_);
       this.adapter_.deregisterInteractionHandler('click', this.componentClickHandler_);
@@ -7734,8 +7735,6 @@ var MDCDialogFoundation = function (_MDCFoundation) {
         this.adapter_.removeClass(MDCDialogFoundation.cssClasses.ANIMATING);
         if (this.isOpen_) {
           this.adapter_.trapFocusOnSurface();
-        } else {
-          this.enableScroll_();
         };
       };
     }
@@ -7843,12 +7842,9 @@ var listeningFocusTrap = null;
 
 function focusTrap(element, userOptions) {
   var tabbableNodes = [];
-  var firstTabbableNode = null;
-  var lastTabbableNode = null;
   var nodeFocusedBeforeActivation = null;
   var active = false;
   var paused = false;
-  var tabEvent = null;
 
   var container = (typeof element === 'string')
     ? document.querySelector(element)
@@ -8026,10 +8022,6 @@ function focusTrap(element, userOptions) {
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
     if (typeof e.target.blur === 'function') e.target.blur();
-
-    if (tabEvent) {
-      readjustFocus(tabEvent);
-    }
   }
 
   function checkKey(e) {
@@ -8043,14 +8035,11 @@ function focusTrap(element, userOptions) {
   }
 
   function handleTab(e) {
-    updateTabbableNodes();
-
-    if (e.target.hasAttribute('tabindex') && Number(e.target.getAttribute('tabindex')) < 0) {
-      return tabEvent = e;
-    }
-
     e.preventDefault();
+    updateTabbableNodes();
     var currentFocusIndex = tabbableNodes.indexOf(e.target);
+    var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
+    var firstTabbableNode = tabbableNodes[0];
 
     if (e.shiftKey) {
       if (e.target === firstTabbableNode || tabbableNodes.indexOf(e.target) === -1) {
@@ -8066,14 +8055,6 @@ function focusTrap(element, userOptions) {
 
   function updateTabbableNodes() {
     tabbableNodes = tabbable(container);
-    firstTabbableNode = tabbableNodes[0];
-    lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
-  }
-
-  function readjustFocus(e) {
-    if (e.shiftKey) return tryFocus(lastTabbableNode);
-
-    tryFocus(firstTabbableNode);
   }
 }
 
@@ -8083,8 +8064,6 @@ function isEscapeEvent(e) {
 
 function tryFocus(node) {
   if (!node || !node.focus) return;
-  if (node === document.activeElement)  return;
-
   node.focus();
   if (node.tagName.toLowerCase() === 'input') {
     node.select();
@@ -8098,16 +8077,13 @@ module.exports = focusTrap;
 /* 55 */
 /***/ (function(module, exports) {
 
-module.exports = function(el, options) {
-  options = options || {};
-
-  var elementDocument = el.ownerDocument || el;
+module.exports = function(el) {
   var basicTabbables = [];
   var orderedTabbables = [];
 
   // A node is "available" if
   // - it's computed style
-  var isUnavailable = createIsUnavailable(elementDocument);
+  var isUnavailable = createIsUnavailable();
 
   var candidateSelectors = [
     'input',
@@ -8118,32 +8094,18 @@ module.exports = function(el, options) {
     '[tabindex]',
   ];
 
-  var candidates = el.querySelectorAll(candidateSelectors.join(','));
+  var candidates = el.querySelectorAll(candidateSelectors);
 
-  if (options.includeContainer) {
-    var matches = Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-
-    if (
-      candidateSelectors.some(function(candidateSelector) {
-        return matches.call(el, candidateSelector);
-      })
-    ) {
-      candidates = Array.prototype.slice.apply(candidates);
-      candidates.unshift(el);
-    }
-  }
-
-  var candidate, candidateIndexAttr, candidateIndex;
+  var candidate, candidateIndex;
   for (var i = 0, l = candidates.length; i < l; i++) {
     candidate = candidates[i];
-    candidateIndexAttr = parseInt(candidate.getAttribute('tabindex'), 10)
-    candidateIndex = isNaN(candidateIndexAttr) ? candidate.tabIndex : candidateIndexAttr;
+    candidateIndex = parseInt(candidate.getAttribute('tabindex'), 10) || candidate.tabIndex;
 
     if (
       candidateIndex < 0
       || (candidate.tagName === 'INPUT' && candidate.type === 'hidden')
       || candidate.disabled
-      || isUnavailable(candidate, elementDocument)
+      || isUnavailable(candidate)
     ) {
       continue;
     }
@@ -8152,7 +8114,6 @@ module.exports = function(el, options) {
       basicTabbables.push(candidate);
     } else {
       orderedTabbables.push({
-        index: i,
         tabIndex: candidateIndex,
         node: candidate,
       });
@@ -8161,7 +8122,7 @@ module.exports = function(el, options) {
 
   var tabbableNodes = orderedTabbables
     .sort(function(a, b) {
-      return a.tabIndex === b.tabIndex ? a.index - b.index : a.tabIndex - b.tabIndex;
+      return a.tabIndex - b.tabIndex;
     })
     .map(function(a) {
       return a.node
@@ -8172,7 +8133,7 @@ module.exports = function(el, options) {
   return tabbableNodes;
 }
 
-function createIsUnavailable(elementDocument) {
+function createIsUnavailable() {
   // Node cache must be refreshed on every check, in case
   // the content of the element has changed
   var isOffCache = [];
@@ -8183,14 +8144,14 @@ function createIsUnavailable(elementDocument) {
   // "off" state, so we need to recursively check parents.
 
   function isOff(node, nodeComputedStyle) {
-    if (node === elementDocument.documentElement) return false;
+    if (node === document.documentElement) return false;
 
     // Find the cached node (Array.prototype.find not available in IE9)
     for (var i = 0, length = isOffCache.length; i < length; i++) {
       if (isOffCache[i][0] === node) return isOffCache[i][1];
     }
 
-    nodeComputedStyle = nodeComputedStyle || elementDocument.defaultView.getComputedStyle(node);
+    nodeComputedStyle = nodeComputedStyle || window.getComputedStyle(node);
 
     var result = false;
 
@@ -8206,9 +8167,9 @@ function createIsUnavailable(elementDocument) {
   }
 
   return function isUnavailable(node) {
-    if (node === elementDocument.documentElement) return false;
+    if (node === document.documentElement) return false;
 
-    var computedStyle = elementDocument.defaultView.getComputedStyle(node);
+    var computedStyle = window.getComputedStyle(node);
 
     if (isOff(node, computedStyle)) return true;
 
@@ -18496,7 +18457,9 @@ var MDCTopAppBar = function (_MDCComponent) {
 
       // Get all icons in the toolbar and instantiate the ripples
       var icons = [].slice.call(this.root_.querySelectorAll(__WEBPACK_IMPORTED_MODULE_3__constants__["c" /* strings */].ACTION_ITEM_SELECTOR));
-      icons.push(this.navIcon_);
+      if (this.navIcon_) {
+        icons.push(this.navIcon_);
+      }
 
       this.iconRipples_ = icons.map(function (icon) {
         var ripple = rippleFactory(icon);

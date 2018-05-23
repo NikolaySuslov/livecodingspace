@@ -65315,7 +65315,7 @@ registerComponent('laser-controls', {
     },
 
     'oculus-go-controls': {
-      cursor: {downEvents: ['trackpaddown'], upEvents: ['trackpadup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
@@ -69394,15 +69394,29 @@ var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
 // Vector from eyes to elbow (divided by user height).
 var FOREARM = {x: 0, y: 0, z: -0.175};
 
+// Due to unfortunate name collision, add empty touches array to avoid Daydream error.
+var EMPTY_DAYDREAM_TOUCHES = {touches: []};
+
+var EVENTS = {
+  AXISMOVE: 'axismove',
+  BUTTONCHANGED: 'buttonchanged',
+  BUTTONDOWN: 'buttondown',
+  BUTTONUP: 'buttonup',
+  TOUCHSTART: 'touchstart',
+  TOUCHEND: 'touchend'
+};
+
 /**
  * Tracked controls component.
  * Wrap the gamepad API for pose and button states.
  * Select the appropriate controller and apply pose to the entity.
  * Observe button states and emit appropriate events.
  *
- * @property {number} controller - Index of controller in array returned by Gamepad API. Only used if hand property is not set.
+ * @property {number} controller - Index of controller in array returned by Gamepad API.
+ *  Only used if hand property is not set.
  * @property {string} id - Selected controller among those returned by Gamepad API.
- * @property {number} hand - If multiple controllers found with id, choose the one with the given value for hand. If set, we ignore 'controller' property
+ * @property {number} hand - If multiple controllers found with id, choose the one with the
+ *  given value for hand. If set, we ignore 'controller' property
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
@@ -69428,6 +69442,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerEuler = new THREE.Euler();
 
     this.updateGamepad();
+
+    this.buttonEventDetails = {};
   },
 
   tick: function (time, delta) {
@@ -69585,6 +69601,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       if (!this.buttonStates[id]) {
         this.buttonStates[id] = {pressed: false, touched: false, value: 0};
       }
+      if (!this.buttonEventDetails[id]) {
+        this.buttonEventDetails[id] = {id: id, state: this.buttonStates[id]};
+      }
 
       buttonState = controller.buttons[id];
       this.handleButton(id, buttonState);
@@ -69601,11 +69620,12 @@ module.exports.Component = registerComponent('tracked-controls', {
    * @returns {boolean} Whether button has changed in any way.
    */
   handleButton: function (id, buttonState) {
-    var changed = this.handlePress(id, buttonState) |
-                  this.handleTouch(id, buttonState) |
-                  this.handleValue(id, buttonState);
+    var changed;
+    changed = this.handlePress(id, buttonState) |
+              this.handleTouch(id, buttonState) |
+              this.handleValue(id, buttonState);
     if (!changed) { return false; }
-    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    this.el.emit(EVENTS.BUTTONCHANGED, this.buttonEventDetails[id], false);
     return true;
   },
 
@@ -69634,7 +69654,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     for (i = 0; i < controllerAxes.length; i++) {
       this.axis.push(controllerAxes[i]);
     }
-    this.el.emit('axismove', this.axisMoveEventDetail);
+    this.el.emit(EVENTS.AXISMOVE, this.axisMoveEventDetail, false);
     return true;
   },
 
@@ -69652,8 +69672,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Not changed.
     if (buttonState.pressed === previousButtonState.pressed) { return false; }
 
-    evtName = buttonState.pressed ? 'down' : 'up';
-    this.el.emit('button' + evtName, {id: id, state: buttonState});
+    evtName = buttonState.pressed ? EVENTS.BUTTONDOWN : EVENTS.BUTTONUP;
+    this.el.emit(evtName, this.buttonEventDetails[id], false);
     previousButtonState.pressed = buttonState.pressed;
     return true;
   },
@@ -69672,9 +69692,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Not changed.
     if (buttonState.touched === previousButtonState.touched) { return false; }
 
-    evtName = buttonState.touched ? 'start' : 'end';
-    // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
-    this.el.emit('touch' + evtName, {id: id, state: buttonState}, true, {touches: []});
+    evtName = buttonState.touched ? EVENTS.TOUCHSTART : EVENTS.TOUCHEND;
+    this.el.emit(evtName, this.buttonEventDetails[id], false, EMPTY_DAYDREAM_TOUCHES);
     previousButtonState.touched = buttonState.touched;
     return true;
   },
@@ -76373,7 +76392,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-05-10, Commit #e4e40b0)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-05-21, Commit #a8b9b4a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77953,6 +77972,9 @@ var extend = _dereq_('object-assign');
 
 var warn = debug('utils:coordinates:warn');
 
+// Order of coordinates parsed by coordinates.parse.
+var COORDINATE_KEYS = ['x', 'y', 'z', 'w'];
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
@@ -77970,26 +77992,34 @@ function parse (value, defaultVec) {
   var vec;
 
   if (value && value instanceof Object) {
-    if (defaultVec) {
-      value.x = value.x === undefined ? defaultVec.x : value.x;
-      value.y = value.y === undefined ? defaultVec.y : value.y;
-      value.z = value.z === undefined ? defaultVec.z : value.z;
-      value.w = value.w === undefined ? defaultVec.w : value.w;
-    }
-    return vecParseFloat(value);
+    var x = value.x === undefined ? defaultVec && defaultVec.x : value.x;
+    var y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
+    var z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
+    var w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
+    if (x !== undefined) value.x = parseIfString(x);
+    if (y !== undefined) value.y = parseIfString(y);
+    if (z !== undefined) value.z = parseIfString(z);
+    if (w !== undefined) value.w = parseIfString(w);
+    return value;
   }
 
   if (value === null || value === undefined) {
     return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
   }
 
-  coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
+  coordinate = value.trim().split(/\s+/g);
+
   vec = {};
-  vec.x = coordinate[0] || defaultVec && defaultVec.x;
-  vec.y = coordinate[1] || defaultVec && defaultVec.y;
-  vec.z = coordinate[2] || defaultVec && defaultVec.z;
-  vec.w = coordinate[3] || defaultVec && defaultVec.w;
-  return vecParseFloat(vec);
+  COORDINATE_KEYS.forEach(function (key, i) {
+    if (coordinate[i]) {
+      vec[key] = parseFloat(coordinate[i], 10);
+    } else {
+      var defaultVal = defaultVec && defaultVec[key];
+      if (defaultVal === undefined) { return; }
+      vec[key] = parseIfString(defaultVal);
+    }
+  });
+  return vec;
 }
 module.exports.parse = parse;
 
@@ -78019,18 +78049,11 @@ module.exports.isCoordinate = function (value) {
   return isCoordinates(value);
 };
 
-function vecParseFloat (vec) {
-  var key;
-  for (key in vec) {
-    if (vec[key] === undefined) {
-      delete vec[key];
-      continue;
-    }
-    if (vec[key].constructor === String) {
-      vec[key] = parseFloat(vec[key], 10);
-    }
+function parseIfString (val) {
+  if (val.constructor === String) {
+    return parseFloat(val, 10);
   }
-  return vec;
+  return val;
 }
 
 /**
