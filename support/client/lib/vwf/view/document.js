@@ -49,6 +49,20 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
 
             // At the root node of the application, load the UI chrome if available.
 
+
+            let setInnerHtml = function(elm, html) {
+                elm.innerHTML = html;
+                Array.from(elm.querySelectorAll("script")).forEach(function(el) {
+                  let newEl = document.createElement("script");
+                  Array.from(el.attributes).forEach(function(el) { 
+                    newEl.setAttribute(el.name, el.value)
+                  });
+                  newEl.appendChild(document.createTextNode(el.innerHTML));
+                  el.parentNode.replaceChild(newEl, el);
+                })
+              }
+
+
             if ( childID == this.kernel.application() &&
                     ( window.location.protocol == "http:" || window.location.protocol == "https:" ) ) {
 
@@ -77,6 +91,8 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                 
                 // If the overlay attached a `createdNode` handler, forward this first call
                     // since the overlay will have missed it.
+
+                    setInnerHtml(container, responseText);
 
                     if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
                         self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
