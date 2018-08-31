@@ -9,7 +9,7 @@ Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.j
 
 ## Architecture
 
-**[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://en.wikipedia.org/wiki/Virtual_world_framework)** architecture towards pure-decentralized application by introducing:
+**[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://github.com/virtual-world-framework/vwf)** architecture towards pure-decentralized application by introducing:
 
 - **single page web application**
 - **client-side router** (generating **instances IDs** by client) ([about Page.js](https://visionmedia.github.io/page.js/))
@@ -29,3 +29,10 @@ alongside with the existed features from the initial version ```v0.1```:
 - GearVR, Windows MixedReality motion **controllers** ..
 
 ## [Documentation](https://krestianstvo.org/books/doc/sdk3)
+
+<img src="https://krestianstvo.org/lib/images/doc/images/codeeditor.jpg" width="400">
+<br>
+<img src="https://krestianstvo.org/lib/images/doc/images/osc.jpg" width="400">
+<br>
+<img src="https://krestianstvo.org/lib/images/doc/images/avatar.jpg" width="400">
+<br>
