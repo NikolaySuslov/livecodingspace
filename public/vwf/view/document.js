@@ -134,12 +134,10 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
 
             //        // setInnerHtml(container, responseText);
 
-                    setInnerHtml(container, responseText);
-
-                    if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
-                        self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
-                            childSource, childType, childURI, childName );
-                    }
+            //         if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
+            //             self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
+            //                 childSource, childType, childURI, childName );
+            //         }
 
             //         // Remove the container div if an error occurred or if we received an empty
             //         // result. The server sends an empty document when the application doesn't
