@@ -1,0 +1,219 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  transparent: true
+  assets: "assets.json"
+children:
+  assetBG:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg"
+      itemSrc: "/defaults/assets/bg.jpg"
+  assetSky:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "sky"
+      itemSrc: "/defaults/assets/skyes/sky3.jpg"
+  assetBG2:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg2"
+      itemSrc: "/defaults/assets/checker.jpg"
+  assetPlaneObj:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-obj"
+      itemSrc: "/defaults/assets/models/plane/PUSHILIN_Plane.obj"
+  assetPlaneMtl:
+    extends: http://vwf.example.com/aframe/a-asset-item.vwf
+    properties:
+      itemID: "plane-mtl"
+      itemSrc: "/defaults/assets/models/plane/PUSHILIN_Plane.mtl"
+  myLight:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      intensity: 0.5
+      position: "0.5 2.0 1.0"
+      castShadow: true
+  myLight2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      intensity: 0.5
+  model:
+    extends: http://vwf.example.com/aframe/aobjmodel.vwf
+    properties:
+      src: "#plane-obj"
+      mtl: "#plane-mtl"
+      position: "-1.2 1.7 -2.5"
+      rotation: "0 -45 0"
+      scale: "0.5 0.5 0.5"
+    children:
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          cast: true
+  spaceText:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "Virtual World Framework & A-Frame"
+      color: "#ddd"
+      position: "-2 2.5 -2"
+  spaceText2:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "Project by Krestianstvo.org"
+      color: "#aaa"
+      position: "1 3 -4"
+  boxAnim:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "0 0 -3"
+      rotation: "0 0 0"
+      depth: 2
+      height: 1
+      width: 1
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
+  box:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "-1 0.5 -3"
+      rotation: "0 -30 0"
+      depth: 2
+      height: 1
+      width: 1
+      clickable: true
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
+      raycaster-listener:
+        extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          cast: true
+          receive: true
+    events:
+      clickEvent:
+      intersectEvent:
+      clearIntersectEvent:
+    methods:
+      clickEventMethod:
+        body: |
+          if (this.clickable) {
+          let genColor = this.generateColor();
+          this.material.color = genColor 
+            }
+      intersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -90 0"
+            }
+      clearIntersectEventMethod:
+        body: |
+          if (this.clickable) {
+          this.rotation = "0 -30 0"
+            }
+      generateColor:
+        body: |
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(this.random() * 16)];
+          } return color 
+    scripts:
+      - |
+        this.clickEvent = function(){
+          this.clickEventMethod();
+         }
+         this.intersectEvent = function(){
+          this.intersectEventMethod();
+         }
+         this.clearIntersectEvent = function(){
+          this.clearIntersectEventMethod();
+         }
+  sphere:
+    extends: http://vwf.example.com/aframe/asphere.vwf
+    properties:
+      position: "1 1.25 -4"
+      radius: 1
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#e0e014"
+          wireframe: true
+      box2:
+        extends: http://vwf.example.com/aframe/abox.vwf
+        properties:
+          position: "2 -0.75 0"
+          depth: 1
+        children:
+          material:
+            extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+            properties:
+              color: "#2167a5"
+              src: "#bg"
+          shadow:
+            extends: http://vwf.example.com/aframe/shadowComponent.vwf
+            properties:
+              cast: true
+          interpolation:
+            extends: http://vwf.example.com/aframe/interpolation-component.vwf
+            properties:
+              enabled: true
+              deltaPos: 0.001
+              deltaRot: 0.1
+        methods:
+          run:
+            body: |
+              var time = vwf.now;
+              let pos = AFRAME.utils.coordinates.parse(this.position);
+              this.position = [pos.x, pos.y, Math.sin(time)]
+              this.future( 0.01 ).run();  // schedule the next step
+  sky:
+    extends: http://vwf.example.com/aframe/asky.vwf
+    properties:
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          src: "#sky"
+          side: "back"
+          fog: false
+  groundPlane:
+    extends: http://vwf.example.com/aframe/aplane.vwf
+    properties:
+      height: 50
+      width: 50
+      rotation: "-90 0 0"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          repeat: "10 10"
+          color: "white"
+          src: "#bg2"
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          receive: true
+methods:
+  initialize:
+    body: |
+      var runBox = vwf_view.kernel.find("", "/sphere/box2")[0];
+      console.log(runBox);
+      vwf_view.kernel.callMethod(runBox, "run");

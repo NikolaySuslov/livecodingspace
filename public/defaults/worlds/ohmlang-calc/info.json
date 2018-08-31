@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Calculator in Ohm & VWF",
+            "imgUrl": "/defaults/worlds/ohmlang-calc/webimg.jpg",
+            "text": "Example calc app with simple Ohm grammar"
+        },
+        "ru": {
+            "title": "Калькулятор на Ohm & VWF",
+            "imgUrl": "/defaults/worlds/ohmlang-calc/webimg.jpg",
+            "text": "Пример создания децентрализованной грамматики калькулятора"
+        }
+    }
+}
