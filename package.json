@@ -1,8 +1,8 @@
 {
-  "name": "lcs2",
+  "name": "livecodingspace",
+  "description": "LiveCoding.Space",
   "version": "0.0.2",
-  "description": "LiveCoding.space",
-  "homepage": "http://www.krestianstvo.org",
+  "homepage": "https://livecoding.space",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",
