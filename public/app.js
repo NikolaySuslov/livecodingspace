@@ -971,11 +971,13 @@ class App {
 
     let worldObj = {
       'owner': newOwner,
-      'parent': userName + '/' + worldName
+      'parent': userName + '/' + worldName,
+      'featured': true,
+      'published': true
     };
 
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published'));
 
     for (var el in worldFileNames) {
 
