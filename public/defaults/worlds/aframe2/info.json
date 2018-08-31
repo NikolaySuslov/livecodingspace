@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Textures and Models in VWF & A-Frame",
+            "imgUrl": "/defaults/worlds/aframe2/webimg.jpg",
+            "text": "Example app with loaded textures and models"
+        },
+        "ru": {
+            "title": "Текстуры и модели в VWF & A-Frame",
+            "imgUrl": "/defaults/worlds/aframe2/webimg.jpg",
+            "text": "Пример мира с текстурами и моделями"
+        }
+    }
+}

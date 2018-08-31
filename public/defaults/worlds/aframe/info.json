@@ -1,0 +1,14 @@
+{
+        "info": {
+            "en": {
+                "title": "Simple VWF & A-Frame app",
+                "imgUrl": "/defaults/worlds/aframe/webimg.jpg",
+                "text": "Example application showing Virtual World Framework & A-Frame integration"
+            },
+            "ru": {
+                "title": " Мир VWF & A-Frame",
+                "imgUrl": "/defaults/worlds/aframe/webimg.jpg",
+                "text": "Пример распределенного приложения, показывающего возможности интеграции Virtual World Framework & A-Frame"
+            }
+        }
+}

@@ -1,168 +1,145 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Live Coding Space</title>
-  <script type="text/javascript" src="./web/lib/cell.js"></script>
-  <script type="text/javascript" src="./web/lib/he.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
-  <link rel="stylesheet" href="./web/lib/mdc/dist/material-components-web.css">
-  <script src="./web/lib/mdc/dist/material-components-web.js"></script>
+    <title>Live Coding Space 0.2</title>
+    <script type="text/javascript" src="/lib/page.js"></script>
+    <script type="text/javascript" src="/lib/yamljs/dist/yaml.js"></script>
 
+    <script type="text/javascript" src="/lib/compatibilitycheck.js"></script>
 
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-  <script src="./web/lib/socketio/socket.io.js"></script>
-  <link rel="stylesheet" href="./web/lib/app.css">
-  <!--<script src="./web/lib/polyglot-lang.js" type="module"></script> -->
- <!-- <script src="./web/lib/app.js" type="module"></script> -->
+    <script type="text/javascript" src="/lib/socket.io/socket.io.js"></script>
+    <!-- <script type="text/javascript" src="socket.io-sessionid-patch.js"></script> -->
+    <script src="/vwf/view/webrtc/adapter-latest.js"></script>
 
-  <!-- Global Site Tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-11815598-9"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments) };
-    gtag('js', new Date());
+    <script src="/lib/gundb/gun.js"></script>
+    <script src="/lib/gundb/sea.js"></script>
+    <script src="/lib/gundb/lib/then.js"></script>
+    <script src="/lib/gundb/lib/path.js"></script>
+    <script src="/lib/gundb/lib/not.js"></script>
+    <script src="/lib/gundb/lib/open.js"></script>
+    <script src="/lib/gundb/lib/load.js"></script>
+    <!-- <script src="/gun/as.js"></script>
+  <script src="/gun/nts.js"></script> -->
 
-    gtag('config', 'UA-11815598-9');
+    <script type="text/javascript" src="/lib/cell.js"></script>
+    <script type="text/javascript" src="/lib/he.js"></script>
 
-  </script>
- <script src="./web/lib/polyglot/polyglot.min.js"></script>
-  <script type="module">
-    import {WebApp} from '/web/lib/app.js';
-    //import * as app from "/web/lib/app.js";
+    <script type="text/javascript" src="/lib/draggabilly.pkgd.js"></script>
+    <script type="text/javascript" src="/lib/screenfull/screenfull.min.js"></script>
 
-    const initApp = () => {
-      let app = new WebApp;      
-      app.getAppDetails('webapps.json');
-      app.generateFrontPage();
+    <link href="/lib/noty/noty.css" rel="stylesheet">
+    <link href="/lib/noty/themes/mint.css" rel="stylesheet">
+    <script type="text/javascript" src="/lib/noty/noty.js"></script>
 
-      document.querySelector('#ruLang').addEventListener('click', function(e){
-        app.setLanguage('ru');
-        window.location.reload(true);
-      });
+    <script type="text/javascript" src="/lib/polyglot/polyglot.min.js"></script>
+    <!-- <script type="text/javascript" src="/vwf/view/lib/polyglot/language.js"></script> -->
 
-      document.querySelector('#enLang').addEventListener('click', function(e){
-        app.setLanguage('en');
-        window.location.reload(true);
-      });
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 
-    }
+    <link rel="stylesheet" href="/lib/mdc/dist/material-components-web.css">
+    <script src="/lib/mdc/dist/material-components-web.js"></script>
 
-    //var socket = initWebSocket();
-    window.onload = initApp();
-  </script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script> -->
+
+    <script type="text/javascript" src="/lib/async/async.min.js"></script>
+    <script type="text/javascript" src="/lib/require.js"></script>
+    <script type="text/javascript" src="/lib/crypto.js"></script>
+    <script type="text/javascript" src="/lib/md5.js"></script>
+    <script type="text/javascript" src="/lib/alea.js"></script>
+    <script type="text/javascript" src="/lib/mash.js"></script>
+    <script type="text/javascript" src="/lib/ace/ace.js"></script>
+
+    <script type="text/javascript" src="/vwf.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/lib/index.css" />
+
+    <script type="module">
+        import { App } from '/app.js';
+        window.onload = new App;
+    </script>
+
 
 </head>
 
 <body class="mdc-typography">
 
-  <a href="https://github.com/NikolaySuslov/livecodingspace">
-    <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67"
-      alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png">
-  </a>
-
-  <div id="header" class="mdc-layout-grid mdc-layout-grid--align-left">
-    <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-            <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
-                <a id="ruLang" class="mdc-typography link-in-text mdc-theme--text-hint-on-background" style="cursor:pointer">RU</a>
-              <!--<strong>LiveCoding</strong>.space -->
-            </span>
-            <span class="mdc-typography--subheading2 mdc-theme--text-secondary-on-background mdc-typography">
-                <a id="enLang" class="mdc-typography link-in-text mdc-theme--text-hint-on-background" style="cursor:pointer">EN</a>
-              <!--<strong>LiveCoding</strong>.space -->
-            </span>
-          </div>
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-          <div id="titleText">
-            </div>
-        
-      </div>
-      
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-        <div id="headerText">
-      </div>
-      </div>
-    </div>
-  </div>
-  <div id="about" class="mdc-layout-grid">
-    <div class="mdc-layout-grid__inner">
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-          <div id="featuresText">
-            </div>
-      </div>
-
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell">
-        <iframe src="https://player.vimeo.com/video/239924195?title=0&byline=0&portrait=0" width="600" height="338" frameborder="0"
-          webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-      </div>
-
-    </div>
-  </div>
-  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" />
-
-  <div id="info" class="mdc-layout-grid">
-    <div class="mdc-layout-grid__inner">
-      <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-          <div id="worldInfo">
-            </div>
-            <div id="reflectorMenu">
-                <div id="reflectorSelect" class="mdc-text-field mdc-text-field--upgraded">
-                    <input id="currentReflector" type="text" class="mdc-text-field__input" id="my-text-field" aria-controls="my-text-field-helper-text" style="width:250px;">
-                    <label for="my-text-field" class="mdc-text-field__label">Reflector</label>
-                    <div class="mdc-text-field__bottom-line"></div>
-                  </div>
-            </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="main">
-  </div>
-  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" />
-
-  <div id="videoList">
-    <div id="about" class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12">
-            <div id="demoText">
-              </div>
-
-         
-
-          <iframe src="https://player.vimeo.com/video/243291223?title=0&byline=0&portrait=0" width="600" height="337" frameborder="0"
-            webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-
-          <iframe src="https://player.vimeo.com/video/251057056?title=0&byline=0&portrait=0" width="600" height="338" frameborder="0"
-            webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <div id="load-progressbar" role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate loader visible">
+        <div class="mdc-linear-progress__buffering-dots"></div>
+        <div class="mdc-linear-progress__buffer"></div>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+            <span class="mdc-linear-progress__bar-inner"></span>
         </div>
-      </div>
-    </div>
-  </div>
-  <hr class="mdc-list-divider mdc-theme--text-hint-on-background divider" /> 
-
-  <div id="footer">
-<div id="about" class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
-
-            </div>
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-          <h3 class="mdc-typography--subheading2 mdc-theme--text-hint-on-background"><a class="mdc-typography link-in-text mdc-theme--text-hint-on-background"
-            href="https://www.krestianstvo.org">Krestianstvo.org</a> 2018</h3>
+        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+            <span class="mdc-linear-progress__bar-inner"></span>
         </div>
-      </div>
     </div>
-   
-  </div>
- 
-  
 
-  <script>
-    mdc.autoInit()
-  </script>
+    <div id="incompatibleBrowser">
+        <div>
+            <span style="color:#3090C7;">
+                <br/>
+                <br/>Your browser does not support this app</span>
+        </div>
+    </div>
+    <div id="vwf-root"></div>
+
+    <div id="ui-controls" class="guiwindow">
+        <i id="hideui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar" tabindex="0"
+            data-toggle-on='{"label": "Hide", "content": "grid_on"}' data-toggle-off='{"label": "Show", "content": "grid_off"}'>
+            grid_on
+        </i>
+
+        <i id="fullscreenui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar"
+            tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}' data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
+            fullscreen
+        </i>
+
+
+
+    </div>
+
+
+
+    <script>
+        mdc.autoInit();
+        window.addEventListener("load", function (event) {
+
+            console.log("All resources finished loading!");
+
+        });
+
+        const iconEl = document.querySelector('#hideui');
+        iconEl.addEventListener('MDCIconToggle:change', (e) => {
+
+            let ui = document.querySelector('.mdc-toolbar');
+            if (ui) {
+
+                let chkAttr = e.detail.isOn;
+                if (chkAttr) {
+                    ui.style.visibility = 'visible'
+                } else {
+                    ui.style.visibility = 'hidden'
+                }
+            }
+
+        });
+
+        const fullScreenToggle = document.querySelector('#fullscreenui');
+        fullScreenToggle.addEventListener('MDCIconToggle:change', (e) => {
+
+            if (screenfull.enabled) {
+                screenfull.toggle();
+            } else {
+                // Ignore or do something else
+            }
+        });
+
+    </script>
 </body>
 
 </html>

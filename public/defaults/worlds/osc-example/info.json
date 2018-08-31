@@ -1,0 +1,15 @@
+{
+    "info": {
+        "en":{
+            "title": "Simple app with Ohm & OSC control",
+            "imgUrl": "/defaults/worlds/osc-example/webimg.jpg",
+            "text": "Example app with OSC control"
+        },
+        "ru":{
+            "title": "Протокол OSC сообщений и Ohm",
+            "imgUrl": "/defaults/worlds/osc-example/webimg.jpg",
+            "text": "Пример приложения, демонстрирующего работу с сообщениями OSC"
+        }
+       
+    }
+}

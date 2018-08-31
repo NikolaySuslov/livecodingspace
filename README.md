@@ -1,40 +1,31 @@
-# LiveCoding.space repository
+# LiveCoding.space
 
-> Collaborative Live Coding Space with support of user-defined languages and WebVR ready 3D graphics
+> Collaborative Live Coding Space with support of user-defined languages and **WebVR** ready 3D graphics
+Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.js** | **Cell.js** | **GunDB** and more...
 
-Based on:  [Virtual World Framework](https://github.com/virtual-world-framework/vwf) | [A-Frame](https://aframe.io) | [Ohm language](https://github.com/harc/ohm) | [OSC.js](https://github.com/colinbdclark/osc.js/) | [Cell.js](https://github.com/intercellular/cell) and more...  
-Online at: **https://livecoding.space**
+> Online at: **[https://livecoding.space](https://livecoding.space)**
 
-![](https://livecoding.space/aframe2/webimg.jpg)
+![logo](https://krestianstvo.org/books/doc/sdk3/_images/webimg.jpg)
 
-**To run**
+## Architecture
 
-```
-npm install
-```
-```
-npm run
-```
+**[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://en.wikipedia.org/wiki/Virtual_world_framework)** architecture towards pure-decentralized application by introducing:
 
-## Features
+- **single page web application**
+- **client-side router** (generating **instances IDs** by client) ([about Page.js](https://visionmedia.github.io/page.js/))
+- file storage independent **Reflector**
+- **GunDB storage system** for serving ```Proxy VWF components```, ```Worlds prototypes```, ```World save states```, ```User Inventories``` ect. in fully decentralized (peer-to-peer or multi-master) DB ([about GunDB](https://gun.eco/docs/Introduction))
+- **GunDB SEA** (Security, Encryption, Authorization) framework for user authorization and **P2P identities** ([about SEA](https://gun.eco/docs/Auth))
 
-- Decentralized network model for A-Frame components and entities based on VWF replicated computation architecture
-- Ohm language driver for sharing user-defined grammars, parsers, tokenisers inside virtual space
-- In browser Code and Properties editor based on Cell.js
-- OSC messaging through [OSC relay](https://github.com/NikolaySuslov/osc-relay-lcs) on the client
-- Avatars (Simple and GLTF models with animation)
-- Multi-window or multi-monitor/multi-machine setups with view offset cameras
-- WebRTC for video/audio streaming, 3D positional audio support
-- GearVR, Windows MixedReality motion controllers
-..
+alongside with the existed features from the initial version ```v0.1```:
 
-<img src="./public/doc/images/codeeditor.jpg" width="400">
-<br>
-<img src="./public/doc/images/osc.jpg" width="400">
-<br>
-<img src="./public/doc/images/avatar.jpg" width="400">
-<br>
+- **Decentralized network model for A-Frame components** and entities based on VWF replicated computation architecture
+- **Ohm language driver** for sharing user-defined grammars, parsers, tokenisers inside virtual space
+- **In browser Code and Properties editor** based on Cell.js
+- **OSC messaging** through OSC relay on the client
+- **Avatars** (Simple and GLTF models with animation)
+- Multi-window or multi-monitor/multi-machine setups with view **offset cameras**
+- **WebRTC** for video/audio streaming, 3D positional audio support
+- GearVR, Windows MixedReality motion **controllers** ..
 
-## Docs
-
-Soon..
+## [Documentation](https://krestianstvo.org/books/doc/sdk3)

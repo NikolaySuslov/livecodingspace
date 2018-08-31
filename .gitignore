@@ -1,5 +1,18 @@
-# Node.js
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
 node_modules
-/npm-debug.log
-cert
+
+# testing
+coverage
+
+# production
+build
+certs
+
+
+# misc
+.DS_Store
+.env
+npm-debug.log
 .vscode

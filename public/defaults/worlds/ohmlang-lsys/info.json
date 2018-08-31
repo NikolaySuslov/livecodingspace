@@ -1,0 +1,15 @@
+{
+"info": {
+    "en": {
+        "title": "L-System parser example in Ohm & VWF",
+        "imgUrl": "/defaults/worlds/ohmlang-lsys/webimg.jpg",
+        "text": "Example app with L-System grammar"
+    },
+    "ru": {
+        "title": "L-система и черепашка в Ohm & VWF",
+        "imgUrl": "/defaults/worlds/ohmlang-lsys/webimg.jpg",
+        "text": "Пример грамматики/парсера для генератора L-систем и языка черепашки"
+    }
+   
+}
+}
