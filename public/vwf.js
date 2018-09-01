@@ -829,6 +829,8 @@
 
             try {
 
+                let pathObj = JSON.stringify(path);
+
                 var options = {
 
                     // The socket is relative to the application path.
@@ -840,7 +842,7 @@
                         pathname: window.location.pathname.slice( 1,
                             window.location.pathname.lastIndexOf("/") ),
                         appRoot: "./public",
-                        path: JSON.stringify(path)
+                        path: pathObj
                       },
                     // query: 'pathname=' + window.location.pathname.slice( 1,
                     //     window.location.pathname.lastIndexOf("/") ),
@@ -854,6 +856,7 @@
 
                     //reconnect: false,
                     reconnection: false,
+                    upgrade: false,
                     transports: ['websocket']
 
                 };
