@@ -797,6 +797,10 @@ class App {
       saveObject: saveInfo,
       user: userAlias
     }
+
+    //dataJson.app = loadObj;
+    localStorage.setItem('lcs_app', JSON.stringify(loadObj));
+
     console.log(loadObj);
 
     //temporary solution for syncing DB replicas using Gun.load()
