@@ -276,6 +276,8 @@ class IndexApp {
             class: "mdc-layout-grid mdc-layout-grid--align-left",
             _alias: null,
             _pass: null,
+            _passField: null,
+            _aliasField: null,
             _initData: function () {
                 this._alias = '';
                 this._pass = '';
@@ -308,16 +310,15 @@ class IndexApp {
                                     {
                                         class: "mdc-text-field",
                                         $type: "span",
+                                        $init: function() {
+                                            this._aliasField = new mdc.textField.MDCTextField(this);
+                                        },
                                         $components: [
                                             {
                                                 class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                                id: "alias",
                                                 $type: "input",
                                                 type: "text",
-                                                value: this._alias,
-                                                onchange: function (e) {
-                                                    this._alias = this.value;
-                                                }
+                                                value: this._alias
                                             }
 
                                         ]
@@ -338,16 +339,15 @@ class IndexApp {
                                     {
                                         class: "mdc-text-field",
                                         $type: "span",
+                                        $init: function() {
+                                            this._passField = new mdc.textField.MDCTextField(this);
+                                        },
                                         $components: [
                                             {
                                                 class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                                id: "pass",
                                                 $type: "input",
                                                 type: "password",
-                                                value: this._pass,
-                                                onchange: function (e) {
-                                                    this._pass = this.value;
-                                                }
+                                                value: this._pass
                                             }
 
                                         ]
@@ -366,7 +366,10 @@ class IndexApp {
                                             "onclick": function (e) {
                                                 e.preventDefault();
 
-                                                if (this._pass.length < 7) {
+                                                let alias = this._aliasField.value;
+                                                let pass = this._passField.value
+
+                                                if (pass.length < 7) {
                                                     new Noty({
                                                         text: "Your passphrase needs to be longer than 7 letters",
                                                         timeout: 2000,
@@ -376,8 +379,7 @@ class IndexApp {
                                                     }).show();
                                                 } else {
                                                     //
-
-                                                    _LCSUSER.create(this._alias, this._pass,
+                                                    _LCSUSER.create(alias, pass,
                                                         (ack) => {
                                                             if (!ack.wait) { }
                                                             if (ack.err) {
@@ -385,9 +387,9 @@ class IndexApp {
                                                                 return ack.err
                                                             };
                                                             if (ack.pub) {
-                                                                _LCSUSER.auth(this._alias, this._pass);
-                                                                _LCSDB.get('users').get(this._alias).put({
-                                                                    'alias': this._alias,
+                                                                _LCSUSER.auth(alias, pass);
+                                                                _LCSDB.get('users').get(alias).put({
+                                                                    'alias': alias,
                                                                     'pub': ack.pub
                                                                 });
                                                             }
@@ -404,7 +406,7 @@ class IndexApp {
                                             "label": 'Sign IN',
                                             "onclick": function (e) {
                                                 e.preventDefault();
-                                                _LCSUSER.auth(this._alias, this._pass, ack => {
+                                                _LCSUSER.auth(this._aliasField.value, this._passField.value, ack => {
 
                                                     if (ack.err) {
                                                         new Noty({
