@@ -829,6 +829,24 @@
 
             try {
 
+                let objToRef = Object.assign({}, path);
+
+                if(path.saveObject){
+                    if ( path.saveObject[ "queue" ] ) {
+                        if ( path.saveObject[ "queue" ][ "time" ] ) {
+                            objToRef.saveObject = {
+                                "init": true,
+                                "queue":{
+                                    "time": path.saveObject[ "queue" ][ "time" ]
+                                }
+                            }
+                        }
+                    }
+                }
+
+            
+              
+
                 var options = {
 
                     // The socket is relative to the application path.
@@ -840,7 +858,7 @@
                         pathname: window.location.pathname.slice( 1,
                             window.location.pathname.lastIndexOf("/") ),
                         appRoot: "./public",
-                        path: JSON.stringify(path)
+                        path: JSON.stringify(objToRef)//JSON.stringify(path)
                       },
                     // query: 'pathname=' + window.location.pathname.slice( 1,
                     //     window.location.pathname.lastIndexOf("/") ),
@@ -854,6 +872,7 @@
 
                     //reconnect: false,
                     reconnection: false,
+                    upgrade: false,
                     transports: ['websocket']
 
                 };
@@ -1219,9 +1238,15 @@
             /// `setState` action, and if so, and if the application hasn't been created yet,
             /// returns the execution environment property.
 
-            function environment( actionName, parameters ) {
+            function environment( actionName, param ) {
 
                 if ( actionName === "setState" && ! vwf.application() ) {
+
+                    var parameters = param;
+
+                    if (parameters[0].init){
+                        parameters = [JSON.parse(localStorage.getItem('lcs_app')).saveObject]
+                    }
 
                     var applicationState = parameters && parameters[0];
 
@@ -1360,11 +1385,17 @@
         /// 
         /// @see {@link module:vwf/api/kernel.setState}
 
-        this.setState = function( applicationState, callback_async /* () */ ) {
+        this.setState = function( appState, callback_async /* () */ ) {
 
             this.logger.debuggx( "setState" );  // TODO: loggableState
 
             // Set the runtime configuration.
+
+            var applicationState = appState;
+
+            if (applicationState.init){
+                applicationState = JSON.parse(localStorage.getItem('lcs_app')).saveObject
+            }
 
             if ( applicationState.configuration ) {
                 require( "vwf/configuration" ).instance = applicationState.configuration;
