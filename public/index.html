@@ -6,7 +6,7 @@
     <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
     <title>Live Coding Space 0.2</title>
-    <script type="text/javascript" src="/lib/page.js"></script>
+    <!-- <script type="text/javascript" src="/lib/page.js"></script> -->
     <script type="text/javascript" src="/lib/yamljs/dist/yaml.js"></script>
 
     <script type="text/javascript" src="/lib/compatibilitycheck.js"></script>
@@ -116,7 +116,7 @@
         const iconEl = document.querySelector('#hideui');
         iconEl.addEventListener('MDCIconToggle:change', (e) => {
 
-            let ui = document.querySelector('.mdc-toolbar');
+            let ui = document.querySelector('.mdc-top-app-bar');
             if (ui) {
 
                 let chkAttr = e.detail.isOn;

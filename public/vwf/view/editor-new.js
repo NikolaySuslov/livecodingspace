@@ -207,13 +207,21 @@ define([
                                 $text: "Assets"
 
                             },
-                            self.widgets.textField({
-                                id: "assetsrc",
-                                value: "Enter URL to asset source",
-                                funconchange: function (e) {
+                            self.widgets.inputTextFieldOutlined({
+                                "id": 'assetsrc',
+                                "label": "Enter URL to asset source",
+                                "value": '',
+                                "change": function (e) {
                                     console.log(this.value)
                                 }
                             }),
+                            // self.widgets.textField({
+                            //     id: "assetsrc",
+                            //     value: "Enter URL to asset source",
+                            //     funconchange: function (e) {
+                            //         console.log(this.value)
+                            //     }
+                            // }),
                             {
                                 $type: "div",
                                 class: "mdc-grid-list",
@@ -368,13 +376,21 @@ define([
                                 $text: "Google Poly"
 
                             },
-                            self.widgets.textField({
-                                id: "googlepolyid",
-                                value: "Enter Google Poly model ID",
-                                funconchange: function (e) {
+                            self.widgets.inputTextFieldOutlined({
+                                "id": 'googlepolyid',
+                                "label": "Enter Google Poly model ID",
+                                "value": '',
+                                "change": function (e) {
                                     console.log(this.value)
                                 }
                             }),
+                            // self.widgets.textField({
+                            //     id: "googlepolyid",
+                            //     value: "Enter Google Poly model ID",
+                            //     funconchange: function (e) {
+                            //         console.log(this.value)
+                            //     }
+                            // }),
                             self.widgets.buttonSimple(
                                 {
                                     label: "Load Model from Poly",
@@ -823,29 +839,38 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
-                                            $type: "span",
-                                            $text: "Host: "
-                                        },
-                                        {
-                                            class: "mdc-text-field",
-                                            $type: "span",
-                                            $components: [
-                                                {
-                                                    class: "mdc-text-field__input prop-text-field-input",
-                                                    id: "oscHost",
-                                                    $type: "input",
-                                                    type: "text",
-                                                    value: this._oscHost,
-                                                    onchange: function (e) {
-                                                        this._oscHost = this.value;
-                                                        window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
-                                                    }
-                                                }
+                                        self.widgets.inputTextFieldOutlined({
+                                            "id": 'oscHostInput',
+                                            "label": "Host",
+                                            "value": this._oscHost,
+                                            "change": function (e) {
+                                                this._oscHost = this.value;
+                                                window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                            }
+                                        })
+                                        // {
+                                        //     $type: "span",
+                                        //     $text: "Host: "
+                                        // },
+                                        // {
+                                        //     class: "mdc-text-field",
+                                        //     $type: "span",
+                                        //     $components: [
+                                        //         {
+                                        //             class: "mdc-text-field__input prop-text-field-input",
+                                        //             id: "oscHost",
+                                        //             $type: "input",
+                                        //             type: "text",
+                                        //             value: this._oscHost,
+                                        //             onchange: function (e) {
+                                        //                 this._oscHost = this.value;
+                                        //                 window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                        //             }
+                                        //         }
 
-                                            ]
+                                        //     ]
 
-                                        }
+                                        // }
 
                                     ]
                                 },
@@ -853,29 +878,38 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                        {
-                                            $type: "span",
-                                            $text: "Port: "
-                                        },
-                                        {
-                                            class: "mdc-text-field",
-                                            $type: "span",
-                                            $components: [
-                                                {
-                                                    class: "mdc-text-field__input prop-text-field-input",
-                                                    id: "oscPort",
-                                                    $type: "input",
-                                                    type: "text",
-                                                    value: this._oscPort,
-                                                    onchange: function (e) {
-                                                        this._oscPort = this.value;
-                                                        window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
-                                                    }
-                                                }
+                                        self.widgets.inputTextFieldOutlined({
+                                            "id": 'oscPortInput',
+                                            "label": "Port",
+                                            "value": this._oscPort,
+                                            "change": function (e) {
+                                                this._oscPort = this.value;
+                                                window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                            }
+                                        })
+                                        // {
+                                        //     $type: "span",
+                                        //     $text: "Port: "
+                                        // },
+                                        // {
+                                        //     class: "mdc-text-field",
+                                        //     $type: "span",
+                                        //     $components: [
+                                        //         {
+                                        //             class: "mdc-text-field__input prop-text-field-input",
+                                        //             id: "oscPort",
+                                        //             $type: "input",
+                                        //             type: "text",
+                                        //             value: this._oscPort,
+                                        //             onchange: function (e) {
+                                        //                 this._oscPort = this.value;
+                                        //                 window._OSCManager.setOSCHostAndPort(this._oscHost, this._oscPort);
+                                        //             }
+                                        //         }
 
-                                            ]
+                                        //     ]
 
-                                        }
+                                        // }
 
                                     ]
                                 },
@@ -957,18 +991,25 @@ define([
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
                                     {
-                                        class: "mdc-text-field",
-                                        $type: "span",
+                                        $type: "div",
                                         $components: [
-                                            {
-                                                class: "mdc-text-field__input prop-text-field-input",
-                                                id: "fileName",
-                                                $type: "input",
-                                                type: "text",
-                                                value: 'world' + self.helpers.randId() //self.getSaveName() //self.getRoot()
+                                            self.widgets.inputTextFieldOutlined({
+                                                "id": 'fileName',
+                                                "label": "World clone name",
+                                                "value": 'world' + self.helpers.randId(), //self.getSaveName() //self.getRoot()
+                                                "change": function (e) {
+                                                }
+                                            })
+                                            // {
+                                            //     class: "mdc-text-field__input prop-text-field-input",
+                                            //     id: "fileName",
+                                            //     $type: "input",
+                                            //     type: "text",
+                                            //     value: 'world' + self.helpers.randId() //self.getSaveName() //self.getRoot()
 
 
-                                            }]
+                                            // }
+                                        ]
 
                                     }
 
@@ -1069,32 +1110,30 @@ define([
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
+                                    // {
+                                    //     $type: "span",
+                                    //     class: "mdc-typography--body2 mdc-typography--adjust-margin protoPropLabel",
+                                    //     $text: this._prop.name + ': '
+                                    // },
                                     {
-                                        $type: "span",
-                                        class: "mdc-typography--body2 mdc-typography--adjust-margin protoPropLabel",
-                                        $text: this._prop.name + ': '
-                                    },
-                                    {
-                                        class: "mdc-text-field",
-
                                         $type: "div",
-                                        $components: [{
-                                            class: "mdc-text-field__input prop-text-field-input",
-
-                                            $type: "input",
-                                            type: "text",
-                                            value: this._prop.getValue(),
-                                            onchange: function (e) {
-                                                let propValue = this.value;
-                                                try {
-                                                    propValue = JSON.parse(propValue);
-                                                    self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
-                                                } catch (e) {
-                                                    // restore the original value on error
-                                                    this.value = propValue;
+                                        $components: [
+                                            self.widgets.inputTextFieldStandart({
+                                                "id": 'proto_' + this._prop.name,
+                                                "label": this._prop.name,
+                                                "value": this._prop.getValue(),
+                                                "change": function (e) {
+                                                    let propValue = this.value;
+                                                    try {
+                                                        propValue = JSON.parse(propValue);
+                                                        self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
+                                                    } catch (e) {
+                                                        // restore the original value on error
+                                                        this.value = propValue;
+                                                    }
                                                 }
-                                            }
-                                        }]
+                                            })
+                                        ]
 
                                     }
                                 ]
@@ -1261,14 +1300,11 @@ define([
 
                                     $type: "div",
                                     $components: [
-                                        {
-                                            class: "mdc-text-field__input prop-text-field-input",
-                                            id: "prop-" + m.name,
-
-                                            $type: "input",
-                                            type: "text",
-                                            value: m.getValue(),
-                                            onchange: function (e) {
+                                        self.widgets.inputTextFieldStandart({
+                                            "id": "prop-" + m.name,
+                                            "label": m.name,
+                                            "value": m.getValue(),
+                                            "change": function (e) {
                                                 let propValue = this.value;
                                                 try {
                                                     propValue = JSON.parse(propValue);
@@ -1279,7 +1315,8 @@ define([
                                                     this.value = propValue;
                                                 }
                                             }
-                                        }
+                                        })
+
                                     ]
 
                                 }
@@ -1405,7 +1442,7 @@ define([
                         $components: [
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
                                     {
                                         $type: "span",
@@ -1416,7 +1453,7 @@ define([
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
                                     self.widgets.icontoggle({
                                         'id': "webrtcswitch",
@@ -1468,7 +1505,7 @@ define([
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
                                     self.widgets.icontoggle({
                                         'id': "webrtcaudio",
@@ -1507,7 +1544,7 @@ define([
                             },
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
                                 $components: [
                                     self.widgets.icontoggle({
                                         'id': "webrtcvideo",
@@ -1724,20 +1761,24 @@ define([
                                         'id': 'editnode',
                                         'init': function () {
                                             vwf_view.kernel.getProperty(this._currentNode, 'edit');
-                                            //new mdc.switchControl.MDCSwitch();
+                                            this._switch = new mdc.switchControl.MDCSwitch(this);
+                                            this._switch.checked = false;
                                         },
                                         'onchange': function (e) {
 
                                             var nodeID = document.querySelector('#currentNode')._currentNode;
-                                            let chkAttr = this.getAttribute('checked');
-                                            if (chkAttr == "") {
-                                                self.kernel.setProperty(this._currentNode, 'edit', false);
+                                            if (this._switch) {
+                                                let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                                                if (chkAttr) {
+                                                    self.kernel.setProperty(this._currentNode, 'edit', true);
+                                                    //this._switch.checked = false;
+                                                } else {
+                                                    self.kernel.setProperty(this._currentNode, 'edit', false);
+                                                    //this._switch.checked = true;
+                                                }
 
-                                            } else {
-                                                self.kernel.setProperty(this._currentNode, 'edit', true);
+                                                vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
                                             }
-
-                                            vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
                                         }
                                     }
                                     )
@@ -2659,29 +2700,21 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
                                     $components: [
-                                        {
-                                            class: "mdc-text-field",
+                                        self.widgets.inputTextFieldOutlined({
+                                            "id": 'methodName',
+                                            "label": "Method name",
+                                            "value": "newMethodName",
+                                            "change": function (e) {
+                                                let propValue = this.value;
+                                                try {
 
-                                            $type: "div",
-                                            $components: [{
-                                                class: "mdc-text-field__input prop-text-field-input",
-                                                id: "methodName",
+                                                } catch (e) {
+                                                    // restore the original value on error
 
-                                                $type: "input",
-                                                type: "text",
-                                                value: "newMethodName",
-                                                onchange: function (e) {
-                                                    let propValue = this.value;
-                                                    try {
-
-                                                    } catch (e) {
-                                                        // restore the original value on error
-
-                                                    }
                                                 }
-                                            }]
+                                            }
+                                        })
 
-                                        }
                                     ]
                                 },
 
@@ -2690,29 +2723,21 @@ define([
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-7",
                                     $components: [
-                                        {
-                                            class: "mdc-text-field params-text-field-input",
+                                        self.widgets.inputTextFieldOutlined({
+                                            "id": 'methodParams',
+                                            "label": "Method parameters",
+                                            "value": JSON.stringify(this._method.parameters),
+                                            "change": function (e) {
+                                                let propValue = this.value;
+                                                try {
 
-                                            $type: "div",
-                                            $components: [{
-                                                class: "mdc-text-field__input prop-text-field-input",
-                                                id: "methodParams",
+                                                } catch (e) {
+                                                    // restore the original value on error
 
-                                                $type: "input",
-                                                type: "text",
-                                                value: JSON.stringify(this._method.parameters),
-                                                onchange: function (e) {
-                                                    let propValue = this.value;
-                                                    try {
-
-                                                    } catch (e) {
-                                                        // restore the original value on error
-
-                                                    }
                                                 }
-                                            }]
+                                            }
+                                        })
 
-                                        }
                                     ]
                                 },
                                 {
@@ -2867,7 +2892,7 @@ define([
                 $cell: true,
                 $type: "div",
                 id: 'sideBar',
-                class: "sideBar mdc-toolbar-fixed-adjust",
+                class: "sideBar mdc-top-app-bar--fixed-adjust",
                 _sideBarComponent: {},
                 _sideCurrentNode: '',
                 $init: function () {
@@ -2954,251 +2979,245 @@ define([
 
             let drawerCell = {
                 $cell: true,
-                $type: "nav",
-                class: "mdc-drawer__drawer",
-
+                $type: "div",
+                class: "mdc-drawer__content",
                 $components: [
                     {
-
-                        $type: "header",
-                        class: "mdc-drawer__header",
-                        $components: [
-                            {
-
-                                $type: "div",
-                                class: "mdc-drawer__header-content mdc-theme--primary-bg mdc-theme--text-primary-on-primary",
-                                $text: self.lang.t("home")
-                            }
-                        ]
-                    },
-
-                    {
-
                         $type: "nav",
-                        class: "mdc-drawer__content mdc-list-group",
+                        class: "mdc-list",
+                        $init: function () { },
                         $components: [
+
+
                             {
+                                $type: "a",
+                                class: "mdc-list-item mdc-list-item--activated",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    let sideBar = document.querySelector('#sideBar');
 
-                                $type: "div",
-                                class: "mdc-list",
-                                $components: [
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-
-                                            let sideBar = document.querySelector('#sideBar');
-
-                                            try {
-                                                sideBar._sideBarComponent = createApp.call(self);
-                                            } catch (e) {
-                                                sideBar._sideBarComponent = defaultApp();
-                                            }
-
-                                            drawer.open = !drawer.open
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "play_arrow"
-                                        },
-                                        {
-                                            $text: self.lang.t("App")
-                                        }]
-
-                                    },
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-
-                                            let sideBar = document.querySelector('#sideBar');
-                                            sideBar._sideBarComponent = viewSceneProps;
-
-                                            let currentNode = document.querySelector('#sideBar')._sideCurrentNode;
-                                            currentNode == '' ? document.querySelector('#sideBar')._sideCurrentNode = (vwf_view.kernel.find("", "/")[0]) :
-                                                document.querySelector('#sideBar')._sideCurrentNode = currentNode;
-
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-                                            drawer.open = !drawer.open
-                                            // let currentNode = document.querySelector('#currentNode')._currentNode;
-                                            // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
-                                            //     document.querySelector('#currentNode')._setNode(currentNode);
-
-
-
-
-                                        },
-                                        $components: [{
-
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            $text: "description"
-                                        },
-                                        {
-                                            $text: "Scene"
-                                        }
-                                        ]
-
-                                    },
-
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-                                            //self.currentNodeID = m.ID;
-
-                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                            // document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                            let sideBar = document.querySelector('#sideBar');
-                                            sideBar._sideBarComponent = createSettings;
-
-                                            drawer.open = !drawer.open
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "create"
-                                        },
-                                        {
-                                            $text: "Create"
-                                        }]
-
-                                    },
-
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-                                            // var currentNode = document.querySelector('#currentNode')._currentNode;
-                                            // if (currentNode == '') {
-                                            //     currentNode = vwf_view.kernel.find("", "/")[0];
-                                            // }
-                                            document.querySelector('#liveCodeEditor')._setNode(vwf_view.kernel.find("", "/")[0]);
-                                            //createAceEditor(self, currentNode);
-                                            document.querySelector('#codeEditorWindow').style.visibility = 'visible';
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "code"
-                                        },
-                                        {
-                                            $text: "Code editor"
-                                        }]
-
-                                    },
-
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-                                            //self.currentNodeID = m.ID;
-
-                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-                                            // document.querySelector('#clientsWindow').style.visibility = 'visible';
-                                            let sideBar = document.querySelector('#sideBar');
-                                            sideBar._sideBarComponent = avatarSettings;
-
-                                            drawer.open = !drawer.open
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "account_circle"
-                                        },
-                                        {
-                                            $text: "My Avatar"
-                                        }]
-
-                                    },
-
-
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-                                            //self.currentNodeID = m.ID;
-
-                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-
-                                            let sideBar = document.querySelector('#sideBar');
-                                            sideBar._sideBarComponent = viewSettings;
-
-                                            drawer.open = !drawer.open
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "settings"
-                                        },
-                                        {
-                                            $text: "Settings"
-                                        }]
-
-                                    },
-                                    {
-
-                                        $type: "a",
-                                        class: "mdc-list-item",
-                                        $href: "#",
-                                        onclick: function (e) {
-                                            //self.currentNodeID = m.ID;
-
-                                            // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
-
-                                            let sideBar = document.querySelector('#sideBar');
-
-                                            sideBar._sideBarComponent = loadSaveSettings;
-
-                                            if (document.querySelector('#loadSaveSettings')) {
-                                                //document.querySelector('#loadSaveSettings')._refresh();
-                                                //document.querySelector('#loadSaveSettings')._getStates();
-                                            }
-                                            //sideBar._sideBarComponent._getStates();
-                                            drawer.open = !drawer.open
-                                            document.querySelector('#sideBar').style.visibility = 'visible';
-
-
-
-                                        },
-                                        $components: [{
-                                            $type: "i",
-                                            class: "material-icons mdc-list-item__graphic",
-                                            'aria-hidden': "true",
-                                            $text: "save"
-                                        },
-                                        {
-                                            $text: "Clone/Save"
-                                        }]
-
+                                    try {
+                                        sideBar._sideBarComponent = createApp.call(self);
+                                    } catch (e) {
+                                        sideBar._sideBarComponent = defaultApp();
                                     }
 
+                                    self.drawer.open = false//!self.drawer.open
+                                    //self.drawer.close();
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "play_arrow"
+                                },
+                                {
+                                    $text: self.lang.t("App")
+                                }]
 
-
-                                ]
                             },
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    let sideBar = document.querySelector('#sideBar');
+                                    sideBar._sideBarComponent = viewSceneProps;
+
+                                    let currentNode = document.querySelector('#sideBar')._sideCurrentNode;
+                                    currentNode == '' ? document.querySelector('#sideBar')._sideCurrentNode = (vwf_view.kernel.find("", "/")[0]) :
+                                        document.querySelector('#sideBar')._sideCurrentNode = currentNode;
+
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+                                    self.drawer.open = !self.drawer.open
+                                    // let currentNode = document.querySelector('#currentNode')._currentNode;
+                                    // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
+                                    //     document.querySelector('#currentNode')._setNode(currentNode);
+
+
+
+
+                                },
+                                $components: [{
+
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    $text: "description"
+                                },
+                                {
+                                    $text: "Scene"
+                                }
+                                ]
+
+                            },
+
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    //self.currentNodeID = m.ID;
+
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                    let sideBar = document.querySelector('#sideBar');
+                                    sideBar._sideBarComponent = createSettings;
+
+                                    self.drawer.open = !self.drawer.open
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "create"
+                                },
+                                {
+                                    $text: "Create"
+                                }]
+
+                            },
+
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    // var currentNode = document.querySelector('#currentNode')._currentNode;
+                                    // if (currentNode == '') {
+                                    //     currentNode = vwf_view.kernel.find("", "/")[0];
+                                    // }
+                                    document.querySelector('#liveCodeEditor')._setNode(vwf_view.kernel.find("", "/")[0]);
+                                    //createAceEditor(self, currentNode);
+                                    document.querySelector('#codeEditorWindow').style.visibility = 'visible';
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "code"
+                                },
+                                {
+                                    $text: "Code editor"
+                                }]
+
+                            },
+
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    //self.currentNodeID = m.ID;
+
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsWindow').style.visibility = 'visible';
+                                    let sideBar = document.querySelector('#sideBar');
+                                    sideBar._sideBarComponent = avatarSettings;
+
+                                    self.drawer.open = !self.drawer.open
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "account_circle"
+                                },
+                                {
+                                    $text: "My Avatar"
+                                }]
+
+                            },
+
+
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    //self.currentNodeID = m.ID;
+
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+
+                                    let sideBar = document.querySelector('#sideBar');
+                                    sideBar._sideBarComponent = viewSettings;
+
+                                    self.drawer.open = !self.drawer.open
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "settings"
+                                },
+                                {
+                                    $text: "Settings"
+                                }]
+
+                            },
+                            {
+
+                                $type: "a",
+                                class: "mdc-list-item",
+                                $href: "#",
+                                tabindex: "-1",
+                                onclick: function (e) {
+                                    e.preventDefault();
+                                    //self.currentNodeID = m.ID;
+
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+
+                                    let sideBar = document.querySelector('#sideBar');
+
+                                    sideBar._sideBarComponent = loadSaveSettings;
+
+                                    if (document.querySelector('#loadSaveSettings')) {
+                                        //document.querySelector('#loadSaveSettings')._refresh();
+                                        //document.querySelector('#loadSaveSettings')._getStates();
+                                    }
+                                    //sideBar._sideBarComponent._getStates();
+                                    self.drawer.open = !self.drawer.open
+                                    document.querySelector('#sideBar').style.visibility = 'visible';
+
+
+
+                                },
+                                $components: [{
+                                    $type: "i",
+                                    class: "material-icons mdc-list-item__graphic",
+                                    'aria-hidden': "true",
+                                    $text: "save"
+                                },
+                                {
+                                    $text: "Clone/Save"
+                                }]
+
+                            },
+
+
+
+
+
                             self.widgets.divider,
                             webrtcGUI,
                             self.widgets.divider,
@@ -3243,30 +3262,61 @@ define([
             document.querySelector("#drawer").$cell({
                 $cell: true,
                 $type: "aside",
-                class: "mdc-drawer--temporary",
-                $components: [drawerCell]
+                class: "mdc-drawer mdc-drawer--modal",
+                $init: function () {
+                    let elScrim = document.createElement("div");
+                    elScrim.classList.add("mdc-drawer-scrim");
+                    this.after(elScrim);
+
+                    self.drawer = new mdc.drawer.MDCDrawer(this);
+                },
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-drawer__header",
+                        $components: [
+                            {
+                                $type: "h3",
+                                class: "mdc-drawer__title",
+                                $text: self.lang.t("home")
+                            },
+                            {
+                                $type: "h6",
+                                class: "mdc-drawer__subtitle",
+                                $text: "menu"
+                            }
+                        ]
+
+                    },
+                    // {     
+                    //         $type: "button"
+                    // },
+                    drawerCell]
             }
             );
+
+
 
 
             let toolbar = {
                 $cell: true,
                 $type: "div",
-                class: "mdc-toolbar__row",
+                class: "mdc-top-app-bar__row",
                 $components: [{
                     $type: "section",
-                    class: "mdc-toolbar__section mdc-toolbar__section--align-start",
+                    class: "mdc-top-app-bar__section mdc-top-app-bar__section--align-start",
                     $components: [
                         {
-                            $type: "i",
-                            class: "demo-menu material-icons mdc-toolbar__menu-icon",
+                            $type: "button",
+                            type: "button",
+                            class: "material-icons mdc-top-app-bar__navigation-icon",
                             $text: "menu"
 
 
                         },
                         {
                             $type: "span",
-                            class: "mdc-toolbar__title catalog-title",
+                            class: "mdc-top-app-bar__title catalog-title",
                             $text: "LiveCoding.space"
                         },
 
@@ -3277,14 +3327,14 @@ define([
                             $components: [
                                 {
                                     $type: "a",
-                                    class: "material-icons mdc-toolbar__icon",
+                                    class: "material-icons mdc-top-app-bar__action-item",
                                     id: "toggleCreate",
                                     $text: "apps",
                                     'aria-label': "More"
                                 },
                                 {
                                     $type: "div",
-                                    class: "mdc-menu",
+                                    class: "mdc-menu mdc-menu-surface",
                                     "tabindex": "-1",
                                     id: "create-menu",
                                     $init: function () {
@@ -3321,7 +3371,7 @@ define([
                         },
 
                         self.widgets.icontoggle({
-                            'styleClass': "mdc-toolbar__icon",
+                            'styleClass': "mdc-top-app-bar__action-item",
                             'id': "selectNodeSwitch",
                             'label': 'select',
                             'on': JSON.stringify({ "content": "radio_button_checked", "label": "Select" }),
@@ -3355,12 +3405,12 @@ define([
                 },
                 {
                     $type: "section",
-                    class: "mdc-toolbar__section mdc-toolbar__section--align-end",
+                    class: "mdc-top-app-bar__section  mdc-top-app-bar__section--align-end",
                     $components: [
                         {
                             $type: "a",
                             href: "#",
-                            class: "mdc-toolbar__icon",
+                            class: "mdc-top-app-bar__action-item",
                             $text: "EN",
                             onclick: function () {
                                 //self.lang.changeLanguageTo('en')
@@ -3371,7 +3421,7 @@ define([
                         {
                             $type: "a",
                             href: "#",
-                            class: "mdc-toolbar__icon",
+                            class: "mdc-top-app-bar__action-item",
                             $text: "RU",
                             onclick: function () {
                                 //self.lang.changeLanguageTo('ru')
@@ -3382,11 +3432,13 @@ define([
                         {
                             $type: "a",
                             href: "#",
-                            class: "material-icons mdc-toolbar__icon toggle",
+                            class: "material-icons mdc-top-app-bar__action-item",
                             $text: "help",
-                            'aria-label': "Help"
-
-
+                            'aria-label': "Help",
+                            onclick: function (e) {
+                                e.preventDefault();
+                                console.log("TODO: help window")
+                            }
                         }
 
                     ]
@@ -3398,41 +3450,29 @@ define([
             document.querySelector("#toolbar").$cell({
                 $cell: true,
                 $type: "div",
-                class: "mdc-toolbar mdc-toolbar--fixed mdc-toolbar--flexible-space-maximized",
-                $components: [toolbar]
+                class: "drawer-frame-app-content",
+                $components: [
+                    {
+                        $type: "header",
+                        class: "mdc-top-app-bar drawer-top-app-bar",
+                        $init: function () {
+
+                            const topAppBar = new mdc.topAppBar.MDCTopAppBar.attachTo(this);
+                            topAppBar.listen('MDCTopAppBar:nav', () => {
+                                self.drawer.open = !self.drawer.open;
+                            });
+                        },
+                        $components: [
+                            toolbar
+                        ]
+                    }
+                ]
             }
             );
-
-            // let drawer = new mdc.drawer.MDCTemporaryDrawer(document.querySelector('.mdc-temporary-drawer'));
-            // document.querySelector('.menu').addEventListener('click', () => drawer.open = true);
 
             var toggleNodes = document.querySelectorAll('.mdc-icon-toggle');
             toggleNodes.forEach(el => {
                 mdc.iconToggle.MDCIconToggle.attachTo(el);
-            });
-
-
-
-            var drawerEl = document.querySelector('.mdc-drawer--temporary');
-            var MDCTemporaryDrawer = mdc.drawer.MDCTemporaryDrawer;
-            var drawer = new MDCTemporaryDrawer(drawerEl);
-            document.querySelector('.demo-menu').addEventListener('click', function () {
-                //self.currentNodeID = (self.currentNodeID == '') ? (vwf_view.kernel.find("", "/")[0]) : self.currentNodeID; 
-
-
-                // let currentNode = document.querySelector('#currentNode')._currentNode;
-                // currentNode == '' ? document.querySelector('#currentNode')._setNode(vwf_view.kernel.find("", "/")[0]) :
-                // document.querySelector('#currentNode')._setNode(currentNode);
-
-
-                //document.querySelector('#currentNode')._setNode(self.currentNodeID);
-                drawer.open = !drawer.open;
-            });
-            drawerEl.addEventListener('MDCTemporaryDrawer:open', function () {
-                //console.log('Received MDCPersistentDrawer:open');
-            });
-            drawerEl.addEventListener('MDCTemporaryDrawer:close', function () {
-                //console.log('Received MDCPersistentDrawer:close');
             });
 
 
@@ -3619,12 +3659,20 @@ define([
             if (nodeCell !== null) {
                 if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
                     let editCheckBox = document.querySelector("#currentNode #editnode");
+
+
                     if (editCheckBox) {
-                        if (propertyValue) {
-                            editCheckBox.setAttribute('checked', '');
-                        } else {
-                            let checkAttr = editCheckBox.getAttribute('checked');
-                            if (checkAttr) editCheckBox.removeAttribute('checked');
+                        let mdcSwitch = editCheckBox._switch;
+                        if (mdcSwitch) {
+                            if (propertyValue) {
+                                //editCheckBox.setAttribute('checked', '');
+                                //editCheckBox.classList.add("mdc-switch--checked");
+                                mdcSwitch.checked = true;
+                            } else {
+                                // let checkAttr = editCheckBox.getAttribute('checked');
+                                // if (checkAttr) editCheckBox.removeAttribute('checked');
+                                mdcSwitch.checked = false;
+                            }
                         }
                     }
                     console.log('EDIT !!! is ' + propertyValue)

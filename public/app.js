@@ -1,3 +1,4 @@
+import page from '/lib/page.mjs';
 import { Lang } from '/lib/polyglot/language.js';
 import { Helpers } from '/helpers.js';
 import { IndexApp } from '/web/index-app.js';
