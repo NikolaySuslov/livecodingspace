@@ -186,11 +186,12 @@ AFRAME.registerComponent('raycaster-listener', {
 
 
                 } else {
-                    console.log('I was intersected at: ', evt.detail.intersection.point);
-                    vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "intersectEvent")
+                    console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
+                    //evt.detail.intersection.object.el.id
+                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent")
                 }
 
-                self.casters[evt.detail.el.id] = evt.detail.el;
+                self.casters[evt.target.id] = evt.target;
                 self.intersected = true;
             }
 
@@ -205,10 +206,10 @@ AFRAME.registerComponent('raycaster-listener', {
             } else {
                 if (self.intersected) {
                     console.log('Clear intersection');
-                    if (Object.entries(self.casters).length == 1 && (self.casters[evt.detail.el.id] !== undefined)) {
+                    if (Object.entries(self.casters).length == 1 && (self.casters[evt.target.id] !== undefined)) {
                         vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
                     }
-                    delete self.casters[evt.detail.el.id]
+                    delete self.casters[evt.target.id]
                 } else { }
 
                 self.intersected = false;

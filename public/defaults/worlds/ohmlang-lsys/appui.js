@@ -58,7 +58,7 @@ function createApp() {
 
                                     newTurtle.properties.position = getNewPosition();
 
-                                    let randomName = "turtle-new-" + self.GUID();
+                                    let randomName = "turtle-new-" + _app.helpers.GUID();
                                     vwf_view.kernel.createChild(sceneID, randomName, newTurtle);
 
                                 }

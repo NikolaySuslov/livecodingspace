@@ -67,10 +67,10 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
-              
+                createAvatarControl(scene);
 
                 document.body.appendChild(scene); //append is not working in Edge browser
-                createAvatarControl(scene);
+                
                 createAvatar.call(this, childID);
 
                 // this.state.appInitialized  = true;
@@ -580,6 +580,7 @@ define(["module", "vwf/view"], function (module, view) {
             //avatarEl.setAttribute('position', '0 0 0');
         }
        
+        //avatarEl.setAttribute('position', '0 1.6 0');
 
         let controlEl = document.createElement('a-camera');
 
@@ -588,6 +589,7 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('look-controls', {pointerLockEnabled: false});
        //controlEl.setAttribute('gamepad-controls', {'controller': 0});
         
+       
 
         //controlEl.setAttribute('gearvr-controls',{});
         
@@ -595,7 +597,7 @@ define(["module", "vwf/view"], function (module, view) {
 
        
     //controlEl.setAttribute('position', '0 0 0');
-    controlEl.setAttribute('camera', 'active', true);
+   
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
@@ -611,6 +613,9 @@ define(["module", "vwf/view"], function (module, view) {
 
         avatarEl.appendChild(controlEl);
         aScene.appendChild(avatarEl);
+
+
+        controlEl.setAttribute('camera', 'active', true);
 
         // let gearVRControlsEl = document.createElement('a-entity');
         // gearVRControlsEl.setAttribute('id', 'gearvr-'+avatarName);
