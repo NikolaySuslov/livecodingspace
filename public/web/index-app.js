@@ -307,23 +307,32 @@ class IndexApp {
                                         class: "mdc-typography--headline5",
                                         $text: "Login: "
                                     },
-                                    {
-                                        class: "mdc-text-field",
-                                        $type: "span",
-                                        $init: function() {
-                                            this._aliasField = new mdc.textField.MDCTextField(this);
-                                        },
-                                        $components: [
-                                            {
-                                                class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                                $type: "input",
-                                                type: "text",
-                                                value: this._alias
-                                            }
+                                    window._app.widgets.inputTextFieldOutlined({
+                                        "id": 'aliasInput',
+                                        "label": "Login",
+                                        "value": this._alias,
+                                        "type": "text",
+                                        "init": function() {
+                                                    this._aliasField = new mdc.textField.MDCTextField(this);
+                                                }
+                                    }),
+                                    // {
+                                    //     class: "mdc-text-field",
+                                    //     $type: "span",
+                                    //     $init: function() {
+                                    //         this._aliasField = new mdc.textField.MDCTextField(this);
+                                    //     },
+                                    //     $components: [
+                                    //         {
+                                    //             class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
+                                    //             $type: "input",
+                                    //             type: "text",
+                                    //             value: this._alias
+                                    //         }
 
-                                        ]
+                                    //     ]
 
-                                    }
+                                    // }
 
                                 ]
                             },
@@ -336,23 +345,32 @@ class IndexApp {
                                         class: "mdc-typography--headline5",
                                         $text: "Password: "
                                     },
-                                    {
-                                        class: "mdc-text-field",
-                                        $type: "span",
-                                        $init: function() {
+                                    window._app.widgets.inputTextFieldOutlined({
+                                        "id": 'passwordInput',
+                                        "label": "Password",
+                                        "value": this._pass,
+                                        "type": "password",
+                                        "init": function() {
                                             this._passField = new mdc.textField.MDCTextField(this);
-                                        },
-                                        $components: [
-                                            {
-                                                class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                                $type: "input",
-                                                type: "password",
-                                                value: this._pass
-                                            }
+                                        }
+                                    }),
+                                    // {
+                                    //     class: "mdc-text-field",
+                                    //     $type: "span",
+                                    //     $init: function() {
+                                    //         this._passField = new mdc.textField.MDCTextField(this);
+                                    //     },
+                                    //     $components: [
+                                    //         {
+                                    //             class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
+                                    //             $type: "input",
+                                    //             type: "password",
+                                    //             value: this._pass
+                                    //         }
 
-                                        ]
+                                    //     ]
 
-                                    }
+                                    // }
 
                                 ]
                             },

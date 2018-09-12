@@ -15,6 +15,91 @@
             }
         }
 
+            inputTextFieldOutlined(obj){
+                function initFunc() {
+                    new mdc.textField.MDCTextField.attachTo(this);
+                }
+                let inputType = obj.type ? obj.type: 'text';
+                let init = obj.init ? obj.init: initFunc;
+                return {
+                    $cell: true,
+                    $type: "div",
+                    class: "mdc-text-field mdc-text-field--outlined mdc-text-field--dense",
+                    $init: init,
+                    $components:[
+                        {
+                            $type: "input",
+                            type: inputType,
+                            id: obj.id,
+                            class: "mdc-text-field__input",
+                            value: obj.value,
+                            onchange: obj.change
+                        },
+                        {
+                            $type: "label",
+                            class: "mdc-floating-label",
+                            for: obj.id,
+                            $text: obj.label
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-notched-outline",
+                            $components:[
+                                {
+                                    $type: "svg",
+                                    $components:[
+                                        {
+                                            $type: "path",
+                                            class: "mdc-notched-outline__path"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-notched-outline__idle"
+                        }
+                    ]
+                    //onclick: obj.onclick
+                }
+            }
+
+            inputTextFieldStandart(obj){
+                return {
+                    $cell: true,
+                    $type: "div",
+                    class: "mdc-text-field text-field mdc-ripple-upgraded",
+                    $init: function(){
+                    //new mdc.mdc.notchedOutline.MDCNotchedOutline(document.querySelector('.mdc-notched-outline'));
+                       new mdc.textField.MDCTextField.attachTo(this);
+                    },
+                    $components:[
+                        {
+                            $type: "input",
+                            type: "text",
+                            id: obj.id,
+                            class: "mdc-text-field__input",
+                            value: obj.value,
+                            onchange: obj.change
+                        },
+                        {
+                            $type: "label",
+                            class: "mdc-floating-label",
+                            for: obj.id,
+                            $text: obj.label
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-line-ripple"
+                        }
+                        
+                    ]
+                    //onclick: obj.onclick
+                }
+            }
+
+
         headerH3(headertype, label, cssclass) {
 
             return  {
@@ -479,6 +564,12 @@
                 $cell: true,
                 $type: "div",
                 class: "mdc-switch",
+                _switch: null,
+                id: obj.id,
+                $init: obj.init, 
+                //function(){
+                //     new mdc.switchControl.MDCSwitch(this);
+                // },
                 $components: [
                     {
                         $type: "div",
@@ -496,8 +587,8 @@
                                         $type: "input",
                                         type: "checkbox",
                                         class: "mdc-switch__native-control",
-                                        id: obj.id,
-                                        $init: obj.init,
+                                        
+                                        //$init: obj.init,
                                         //id: "basic-switch",
                                         onchange: obj.onchange,
                                         role: "switch"
