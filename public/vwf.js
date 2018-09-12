@@ -4905,7 +4905,7 @@ if ( ! childComponent.source ) {
                         callback_async( scriptText );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
 
-                    } catch{
+                    } catch (e) {
 
                         vwf.logger.warnx( "loadScript", "error loading", scriptURI + ":", error );
                         errback_async( error );
