@@ -1,3 +1,5 @@
+import page from '/lib/page.mjs';
+
 class IndexApp {
     constructor() {
         console.log("app constructor");
