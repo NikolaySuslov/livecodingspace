@@ -55,14 +55,6 @@ class IndexApp {
     }
 
 
-    initReflectorServer() {
-        this.currentReflector = localStorage.getItem('lcs_reflector');
-        if (!this.currentReflector) {
-            localStorage.setItem('lcs_reflector', window.location.host);
-            this.currentReflector = localStorage.getItem('lcs_reflector');
-        }
-    }
-
 
     async generateFrontPage() {
 
@@ -96,8 +88,6 @@ class IndexApp {
         appEl.innerHTML = appElHTML;
         document.body.appendChild(appEl);
 
-        this.initReflectorSelector();
-        this.initDBSelector();
         this.initUser();
         this.initUserGUI();
         this.initWorldsListGUI();
@@ -259,6 +249,14 @@ class IndexApp {
                     ]
                 }
                 this.$components = [
+                    window._app.widgets.buttonRaised(
+                        {
+                            "label": 'Connection settings',
+                            "onclick": function (e) {
+                                e.preventDefault();
+                                window.location.pathname = '/settings';
+                            }
+                        }),
                     {
                         $type: "h1",
                         class: "mdc-typography--headline3",
@@ -268,8 +266,7 @@ class IndexApp {
             }
         }
 
-
-
+    
         let loginGUI =
         {
             $type: "div",
@@ -283,12 +280,12 @@ class IndexApp {
             _initData: function () {
                 this._alias = '';
                 this._pass = '';
-                if (window.sessionStorage.getItem('alias')) {
-                    this._alias = window.sessionStorage.getItem('alias')
-                }
-                if (window.sessionStorage.getItem('tmp')) {
-                    this._pass = window.sessionStorage.getItem('tmp')
-                }
+                // if (window.sessionStorage.getItem('alias')) {
+                //     this._alias = window.sessionStorage.getItem('alias')
+                // }
+                // if (window.sessionStorage.getItem('tmp')) {
+                //     this._pass = window.sessionStorage.getItem('tmp')
+                // }
             },
             $init: function () {
                 this._initData();
@@ -318,24 +315,6 @@ class IndexApp {
                                                     this._aliasField = new mdc.textField.MDCTextField(this);
                                                 }
                                     }),
-                                    // {
-                                    //     class: "mdc-text-field",
-                                    //     $type: "span",
-                                    //     $init: function() {
-                                    //         this._aliasField = new mdc.textField.MDCTextField(this);
-                                    //     },
-                                    //     $components: [
-                                    //         {
-                                    //             class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                    //             $type: "input",
-                                    //             type: "text",
-                                    //             value: this._alias
-                                    //         }
-
-                                    //     ]
-
-                                    // }
-
                                 ]
                             },
                             {
@@ -356,24 +335,6 @@ class IndexApp {
                                             this._passField = new mdc.textField.MDCTextField(this);
                                         }
                                     }),
-                                    // {
-                                    //     class: "mdc-text-field",
-                                    //     $type: "span",
-                                    //     $init: function() {
-                                    //         this._passField = new mdc.textField.MDCTextField(this);
-                                    //     },
-                                    //     $components: [
-                                    //         {
-                                    //             class: "mdc-text-field__input prop-text-field-input mdc-typography--headline6",
-                                    //             $type: "input",
-                                    //             type: "password",
-                                    //             value: this._pass
-                                    //         }
-
-                                    //     ]
-
-                                    // }
-
                                 ]
                             },
                             {
@@ -441,6 +402,7 @@ class IndexApp {
                                                 });
                                             }
                                         })
+                                        
 
 
                                 ]
@@ -457,43 +419,11 @@ class IndexApp {
             id: "userLobby",
             $cell: true,
             $type: "div",
-            $components: [userGUI, loginGUI, _app.widgets.divider, worldGUI]
+            $components: [ 
+               
+                userGUI, loginGUI, _app.widgets.divider, worldGUI]
         }
         );
-    }
-
-    initReflectorSelector() {
-
-        const ref = document.querySelector('#currentReflector');
-        ref.value = window._app.reflectorHost;
-
-        const reflectorSelect = document.querySelector('#reflectorSelect');
-        mdc.textField.MDCTextField.attachTo(reflectorSelect);
-        reflectorSelect.addEventListener('change', function (e) {
-            console.log(e.target.value);
-            let config = JSON.parse(localStorage.getItem('lcs_config'));
-            config.reflector = e.target.value;
-            localStorage.setItem('lcs_config', JSON.stringify(config));
-            window.location.reload(true);
-        });
-    }
-
-    initDBSelector() {
-
-        const ref = document.querySelector('#currentdb');
-        ref.value = window._app.dbHost;
-
-        const dbSelect = document.querySelector('#dbSelect');
-        mdc.textField.MDCTextField.attachTo(dbSelect);
-        dbSelect.addEventListener('change', function (e) {
-            console.log(e.target.value);
-
-            let config = JSON.parse(localStorage.getItem('lcs_config'));
-            config.dbhost = e.target.value;
-
-            localStorage.setItem('lcs_config', JSON.stringify(config));
-            window.location.reload(true);
-        });
     }
 
     parseAppInstancesData(data) {

@@ -26,6 +26,7 @@ class App {
       //client routes
       page('/', this.HandleIndex);
       page('/setup', this.HandleSetupIndex);
+      page('/settings', this.HandleSettingsIndex);
       page('/profile', this.HandleUserIndex);
       page('/worlds', this.HandleIndex);
       page('/:user/worlds', this.HandleUserWorlds);
@@ -266,8 +267,8 @@ class App {
         } 
       }, 4),
 
-      "index_vwf_html": "",
-      "appui_js": "",
+      "index_vwf_html": JSON.stringify ("<!-- DEFAULT HTML -->"),
+      "appui_js": JSON.stringify ("//appui in JS"),
       "info_json": JSON.stringify ({
         "info": {
           "en": {
@@ -316,6 +317,19 @@ class App {
   }
 
   //load defaults for first registered user running ./setup
+
+  HandleSettingsIndex() {
+
+    window._app.hideProgressBar();
+    window._app.hideUIControl();
+
+    let el = document.createElement("div");
+    el.setAttribute("id", "appGUI");
+    document.body.appendChild(el);
+
+    _app.initReflectorGUI();
+
+  }
 
   HandleSetupIndex() {
 
@@ -733,7 +747,7 @@ class App {
 
     let pathToParse = pathname.replace('/' + user, "");
 
-    app.helpers.Process(pathToParse).then(parsedRequest => {
+    app.helpers.Process(pathToParse).then(async function(parsedRequest) {
 
       localStorage.setItem('lcs_app', JSON.stringify({ path: parsedRequest }));
       console.log(parsedRequest);
@@ -741,7 +755,7 @@ class App {
       var userLibraries = { model: {}, view: {} };
       var application;
 
-      vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+      await vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
     });
   }
 
@@ -774,7 +788,7 @@ class App {
     var userLibraries = { model: {}, view: {} };
     var application;
 
-    vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+    await vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
 
   }
 
@@ -805,8 +819,23 @@ class App {
     console.log(loadObj);
 
     //temporary solution for syncing DB replicas using Gun.load()
-    await _LCS_SYS_USER.get('proxy').load(res=>{}, {wait: 200}).then();
-    await _LCSDB.user(userPub).get('worlds').get(loadObj.path.public_path.slice(1)).load(res=>{}, {wait: 200}).then();
+    _LCS_SYS_USER.get('proxy').load(res=>{
+      if (res) 
+      {console.log('proxy loaded');
+
+      _LCSDB.user(userPub).get('worlds').get(loadObj.path.public_path.slice(1)).load(w=>{
+        if (w) {
+          console.log('world files loaded');
+          vwf.ready( vwf.application, loadObj)
+        }
+      }, {wait: 200});
+
+      
+
+    }
+    }, {wait: 200});
+
+    
 
     return loadObj
 
@@ -1290,6 +1319,148 @@ class App {
       progressbar.classList.add("mdc-linear-progress--indeterminate");
     }
   }
+
+
+  initReflectorGUI() {
+
+    let reflectorGUI =
+    {
+        $type: "div",
+        id: "reflectorGUI",
+        //style:"background-color: #efefef",
+        class: "mdc-layout-grid mdc-layout-grid--align-left",
+        _reflectorHost: null,
+        _dbHost: null,
+        _refHostField: null,
+        _dbHostField: null,
+        _initData: function () {
+            this._reflectorHost = '';
+            this._dbHost = '';
+
+            let config = JSON.parse(localStorage.getItem('lcs_config'));
+
+            if (config.reflector) {
+                this._reflectorHost = config.reflector
+            }
+            if (config.dbhost) {
+                this._dbHost =config.dbhost
+            }
+        },
+        $init: function () {
+            this._initData();
+        },
+        $update: function () {
+
+            this.$components = [
+                {
+                    $type: "div",
+                    class: "mdc-layout-grid__inner",
+                    $components: [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                            {
+                                $type: "h4",
+                                class: "mdc-typography--headline4",
+                                $text: "Connection settings"
+                            }
+                        ]
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                                {
+                                    $type: "span",
+                                    class: "mdc-typography--headline5",
+                                    $text: "Reflector: "
+                                },
+                                window._app.widgets.inputTextFieldOutlined({
+                                    "id": 'reflectorInput',
+                                    "label": "Reflector",
+                                    "value": this._reflectorHost,
+                                    "type": "text",
+                                    "init": function() {
+                                                this._refHostField = new mdc.textField.MDCTextField(this);
+                                            },
+                                    "style": 'width: 400px;'
+                                }),
+                            ]
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                                {
+                                    $type: "span",
+                                    class: "mdc-typography--headline5",
+                                    $text: "DB Host: "
+                                },
+                                window._app.widgets.inputTextFieldOutlined({
+                                    "id": 'dbhostInput',
+                                    "label": "DB Host",
+                                    "value": this._dbHost,
+                                    "type": "text",
+                                    "init": function() {
+                                        this._dbHostField = new mdc.textField.MDCTextField(this);
+                                    },
+                                    "style": 'width: 400px;'
+                                }),
+                            ]
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                                window._app.widgets.buttonRaised(
+                                    {
+                                        "label": 'Update',
+                                        "onclick": function (e) {
+                                            e.preventDefault();
+
+                                            let config = JSON.parse(localStorage.getItem('lcs_config'));
+
+                                            config.reflector = this._refHostField.value;
+                                            config.dbhost = this._dbHostField.value;
+
+                                            localStorage.setItem('lcs_config', JSON.stringify(config));
+                                            window.location.reload(true);
+                                        }
+                                    }),
+                                    {
+                                      $type: 'span',
+                                      $text: " "
+                                    },
+                                    {
+                                      $type: "button",
+                                      class: "mdc-button mdc-button--raised",
+                                      $text: "Close",
+                                      onclick: function (e) {
+                                          window.location.pathname = '/'
+                                      }
+                                    }
+                            ]
+                        }
+
+                    ]
+                }
+            ]
+        }
+
+    }
+
+    document.querySelector("#appGUI").$cell({
+        id: "appGUI",
+        $cell: true,
+        $type: "div",
+        $components: [reflectorGUI]
+    }
+    );
+
+}
+
+
 
 }
 

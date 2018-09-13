@@ -270,7 +270,7 @@
         //     [1] vwf.loadConfiguration( ..., { "vwf/model/glge": [ "#scene, "second param" ] }, { ... } )
         //     [2] vwf.loadConfiguration( ..., { "vwf/model/glge": "#scene" }, { ... } )
         //     [3] vwf.loadConfiguration( ..., { "vwf/model/javascript": undefined }, { ... } )
-       this.loadConfiguration = function(/* [ componentURI|componentObject ] { modelInitializers }
+       this.loadConfiguration = async function(/* [ componentURI|componentObject ] { modelInitializers }
             { viewInitializers } */) {
             var args = Array.prototype.slice.call( arguments );
 
@@ -561,7 +561,7 @@
 
                 require( requireConfig, getActiveLibraries(requireArray, false), function( ready ) {
 
-                    ready( function() {
+                    ready( async function() {
 
                         // Merge any application configuration settings into the configuration
                         // object.
@@ -573,7 +573,7 @@
                         // accepts three parameters: a world specification, model configuration parameters,
                         // and view configuration parameters.
 
-                        vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
+                        await vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
 
                     } );
 
@@ -618,7 +618,7 @@
         /// 
         /// @name module:vwf.initialize
 
-        this.initialize = function( /* [ componentURI|componentObject ] [ modelInitializers ]
+        this.initialize = async function( /* [ componentURI|componentObject ] [ modelInitializers ]
             [ viewInitializers ] */ ) {
 
             var args = Array.prototype.slice.call( arguments );
@@ -812,8 +812,9 @@
                 callback(compatibilityStatus);
             }
 
-            _app.getApplicationState()
-                .then(res => self.ready( application, res))
+            await _app.getApplicationState();
+        //    await _app.getApplicationState()
+        //         .then(res => self.ready( application, res))
 
         };
 
