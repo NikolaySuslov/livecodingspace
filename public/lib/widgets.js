@@ -21,10 +21,14 @@
                 }
                 let inputType = obj.type ? obj.type: 'text';
                 let init = obj.init ? obj.init: initFunc;
+
+                let style = obj.style ? obj.style: "";
+
                 return {
                     $cell: true,
                     $type: "div",
                     class: "mdc-text-field mdc-text-field--outlined mdc-text-field--dense",
+                    style: style,
                     $init: init,
                     $components:[
                         {
