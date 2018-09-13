@@ -420,14 +420,14 @@
                     { library: "vwf/model/object", active: true }
                 ],
                 view: [
+                    { library: "vwf/view/aframe", active: true },
+                    { library: "vwf/view/aframeComponent", active: true },
+
                     { library: "vwf/view/document", active: true },
                     { library: "vwf/view/editor-new", active: false },
 
                      { library: "vwf/view/ohm", active: true },
                      { library: "vwf/view/osc", active: true },
-                     
-                      { library: "vwf/view/aframe", active: true },
-                      { library: "vwf/view/aframeComponent", active: true },
 
                     { library: "vwf/view/webrtc", active: true}
 
@@ -1643,7 +1643,7 @@
 
                             loadComponent( nodeURI, undefined, function( nodeDescriptor ) /* async */ {
                                 nodeComponent = nodeDescriptor;
-                                series_callback_async( undefined, undefined );
+                                series_callback_async(undefined, undefined);
                             }, function( errorMessage ) {
                                 nodeComponent = undefined;
                                 series_callback_async( errorMessage, undefined );
@@ -2398,8 +2398,8 @@
 
                                 queue.suspend( "before beginning " + childID ); // suspend the queue
 
-                                async.nextTick( function() {
-                                    series_callback_async( undefined, undefined );
+                                async.nextTick( async function() {
+                                   await series_callback_async( undefined, undefined );
                                     queue.resume( "after beginning " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                                 } );
 
@@ -2418,8 +2418,8 @@
 
                         queue.suspend( "before beginning " + childID ); // suspend the queue
 
-                        async.nextTick( function() {
-                            series_callback_async( undefined, undefined );
+                        async.nextTick( async function() {
+                            await series_callback_async( undefined, undefined );
                             queue.resume( "after beginning " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                         } );
 
@@ -2551,11 +2551,11 @@ if ( ! childComponent.source ) {
                                 driver_ready = false;
                             }
 
-                            function resume( err ) {
+                            async function resume( err ) {
                                 window.clearTimeout( timeoutID );
                                 driver_ready = true;
                                 err && vwf.logger.warnx( "createChild", nodeID, childName + ":", err );
-                                each_callback_async( err ); // resume createChild()
+                                await each_callback_async( err ); // resume createChild()
                                 queue.resume( "after loading " + childComponent.source + " for " + childID + " in creatingNode" ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                             }
 
@@ -2576,7 +2576,7 @@ if ( ! childComponent.source ) {
                     // Call createdNode() on each view. The view is being notified of a node that has
                     // been constructed.
 
-                    async.forEach( vwf.views, function( view, each_callback_async /* ( err ) */ ) {
+                    async.forEachSeries( vwf.views, function( view, each_callback_async /* ( err ) */ ) {
 
                         var driver_ready = true;
                         var timeoutID;
@@ -2596,11 +2596,11 @@ if ( ! childComponent.source ) {
                                 driver_ready = false;
                             }
 
-                            function resume( err ) {
+                            async function resume( err ) {
                                 window.clearTimeout( timeoutID );
                                 driver_ready = true;
                                 err && vwf.logger.warnx( "createChild", nodeID, childName + ":", err );
-                                each_callback_async( err ); // resume createChild()
+                                await each_callback_async( err ); // resume createChild()
                                 queue.resume( "after loading " + childComponent.source + " for " + childID + " in createdNode" ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                             }
 
@@ -2888,8 +2888,8 @@ if ( ! childComponent.source ) {
 
                     queue.suspend( "before completing " + childID ); // suspend the queue
 
-                    async.nextTick( function() {
-                        callback_async( childID );
+                    async.nextTick( async function() {
+                        await callback_async( childID );
                         queue.resume( "after completing " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                     } );
 
@@ -4805,11 +4805,11 @@ if ( ! childComponent.source ) {
 
         /// @name module:vwf~loadComponent
 
-        var loadComponent = function( nodeURI, baseURI, callback_async /* nodeDescriptor */, errback_async /* errorMessage */ ) {  // TODO: turn this into a generic xhr loader exposed as a kernel function?
+        var loadComponent = async function( nodeURI, baseURI, callback_async /* nodeDescriptor */, errback_async /* errorMessage */ ) {  // TODO: turn this into a generic xhr loader exposed as a kernel function?
 
             if ( nodeURI == vwf.kutility.protoNodeURI ) {
 
-                callback_async( vwf.kutility.protoNodeDescriptor );
+                await callback_async( vwf.kutility.protoNodeDescriptor );
 
             } else if ( nodeURI.match( RegExp( "^data:application/json;base64," ) ) ) {
 
@@ -4817,7 +4817,7 @@ if ( ! childComponent.source ) {
                 // these ourselves since Chrome can't load data URIs due to cross origin
                 // restrictions.
 
-                callback_async( JSON.parse( atob( nodeURI.substring( 29 ) ) ) );  // TODO: support all data URIs
+                await callback_async( JSON.parse( atob( nodeURI.substring( 29 ) ) ) );  // TODO: support all data URIs
 
             } else {
 
@@ -4839,7 +4839,7 @@ if ( ! childComponent.source ) {
                 }
       
 
-                userDB.get(fileName).once(res => {
+                userDB.get(fileName).once(async function(res) {
 
                     let result = YAML.parse(res.file);
 
@@ -4847,7 +4847,7 @@ if ( ! childComponent.source ) {
                     // console.log(nativeObject);
  
                      if(nativeObject) {
-                         callback_async( nativeObject );
+                         await callback_async( nativeObject );
                          queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
      
                      } else {
@@ -4868,7 +4868,7 @@ if ( ! childComponent.source ) {
 
         /// @name module:vwf~loadScript
 
-        var loadScript = function( scriptURI, baseURI, callback_async /* scriptText */, errback_async /* errorMessage */ ) {
+        var loadScript = async function( scriptURI, baseURI, callback_async /* scriptText */, errback_async /* errorMessage */ ) {
 
             if ( scriptURI.match( RegExp( "^data:application/javascript;base64," ) ) ) {
 
@@ -4876,7 +4876,7 @@ if ( ! childComponent.source ) {
                 // these ourselves since Chrome can't load data URIs due to cross origin
                 // restrictions.
 
-                callback_async( atob( scriptURI.substring( 35 ) ) );  // TODO: support all data URIs
+                await callback_async( atob( scriptURI.substring( 35 ) ) );  // TODO: support all data URIs
 
             } else {
 
@@ -4897,12 +4897,12 @@ if ( ! childComponent.source ) {
                     fileName = dbName.replace(worldName + '/', "");
                 }
 
-                userDB.get(fileName).once(res => {
+                userDB.get(fileName).once(async function(res) {
 
                     let scriptText = res.file;
 
                     try {
-                        callback_async( scriptText );
+                        await callback_async( scriptText );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
 
                     } catch (e) {
