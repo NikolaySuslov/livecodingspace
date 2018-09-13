@@ -68,9 +68,6 @@ define(["module", "vwf/view"], function (module, view) {
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
                 createAvatarControl(scene);
-
-                document.body.appendChild(scene); //append is not working in Edge browser
-                
                 createAvatar.call(this, childID);
 
                 // this.state.appInitialized  = true;
@@ -101,6 +98,8 @@ define(["module", "vwf/view"], function (module, view) {
                         createWMRVR.call(this, childID, nodeName);
                     }
                 }
+
+                document.body.appendChild(scene); //append is not working in Edge browser
 
             }
 
@@ -613,7 +612,6 @@ define(["module", "vwf/view"], function (module, view) {
 
         avatarEl.appendChild(controlEl);
         aScene.appendChild(avatarEl);
-
 
         controlEl.setAttribute('camera', 'active', true);
 
