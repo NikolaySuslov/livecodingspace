@@ -617,6 +617,147 @@
 
         }
 
+
+        reflectorGUI() {
+
+            let reflectorGUI =
+            {
+                $type: "div",
+                id: "reflectorGUI",
+                //style:"background-color: #efefef",
+                class: "mdc-layout-grid mdc-layout-grid--align-left",
+                _reflectorHost: null,
+                _dbHost: null,
+                _refHostField: null,
+                _dbHostField: null,
+                _initData: function () {
+                    this._reflectorHost = '';
+                    this._dbHost = '';
+        
+                    let config = JSON.parse(localStorage.getItem('lcs_config'));
+        
+                    if (config.reflector) {
+                        this._reflectorHost = config.reflector
+                    }
+                    if (config.dbhost) {
+                        this._dbHost =config.dbhost
+                    }
+                },
+                $init: function () {
+                    this._initData();
+                },
+                $update: function () {
+        
+                    this.$components = [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                    {
+                                        $type: "h4",
+                                        class: "mdc-typography--headline4",
+                                        $text: "Connection settings"
+                                    }
+                                ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "Reflector: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'reflectorInput',
+                                            "label": "Reflector",
+                                            "value": this._reflectorHost,
+                                            "type": "text",
+                                            "init": function() {
+                                                        this._refHostField = new mdc.textField.MDCTextField(this);
+                                                    },
+                                            "style": 'width: 400px;'
+                                        }),
+                                    ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "DB Host: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'dbhostInput',
+                                            "label": "DB Host",
+                                            "value": this._dbHost,
+                                            "type": "text",
+                                            "init": function() {
+                                                this._dbHostField = new mdc.textField.MDCTextField(this);
+                                            },
+                                            "style": 'width: 400px;'
+                                        }),
+                                    ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        window._app.widgets.buttonRaised(
+                                            {
+                                                "label": 'Update',
+                                                "onclick": function (e) {
+                                                    e.preventDefault();
+        
+                                                    let config = JSON.parse(localStorage.getItem('lcs_config'));
+        
+                                                    config.reflector = this._refHostField.value;
+                                                    config.dbhost = this._dbHostField.value;
+        
+                                                    localStorage.setItem('lcs_config', JSON.stringify(config));
+                                                    window.location.reload(true);
+                                                }
+                                            }),
+                                            {
+                                              $type: 'span',
+                                              $text: " "
+                                            },
+                                            {
+                                              $type: "button",
+                                              class: "mdc-button mdc-button--raised",
+                                              $text: "Close",
+                                              onclick: function (e) {
+                                                  window.location.pathname = '/'
+                                              }
+                                            }
+                                    ]
+                                }
+        
+                            ]
+                        }
+                    ]
+                }
+        
+            }
+        
+            document.querySelector("#appGUI").$cell({
+                id: "appGUI",
+                $cell: true,
+                $type: "div",
+                $components: [reflectorGUI]
+            }
+            );
+        
+        }
+
+
       }
 
    export { Widgets }
