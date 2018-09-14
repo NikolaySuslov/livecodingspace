@@ -812,9 +812,9 @@
                 callback(compatibilityStatus);
             }
 
-            await _app.getApplicationState();
-        //    await _app.getApplicationState()
-        //         .then(res => self.ready( application, res))
+            //await _app.getApplicationState();
+            await _app.getApplicationState()
+                .then(res => self.ready( application, res))
 
         };
 
@@ -4860,7 +4860,7 @@ if ( ! childComponent.source ) {
  
                      }
 
-                })
+                }, {wait: 200})
             }
 
         };
@@ -4912,7 +4912,7 @@ if ( ! childComponent.source ) {
                         errback_async( error );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                     }
-                })
+                }, {wait: 200})
             }
 
         };
