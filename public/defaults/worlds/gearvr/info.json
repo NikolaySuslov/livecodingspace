@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Control in VR app",
+            "imgUrl": "/defaults/worlds/gearvr/webimg.jpg",
+            "text": "VR controler example"
+        },
+        "ru": {
+            "title": "Контроллер в VR",
+            "imgUrl": "/defaults/worlds/gearvr/webimg.jpg",
+            "text": "Пример мира с упралением контроллером GearVR"
+        }
+    }
+}

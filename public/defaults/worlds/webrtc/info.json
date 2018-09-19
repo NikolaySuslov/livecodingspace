@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "WebRTC app",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Audio and video streaming for Avatars"
+        },
+        "ru": {
+            "title": "WebRTC приложение",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Пример приложения с использованием WebRTC потокового аудио и видео"
+        }
+    }
+}
