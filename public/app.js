@@ -162,9 +162,14 @@ class App {
         let responseText = await proxyFile.text();
 
         if (responseText) {
+
+          let created = new Date().valueOf();
+
           let obj = {
             //'owner': userPub,
-            'file': responseText
+            'file': responseText,
+            'modified': created,
+            'created': created
           }
           proxyObj[entryName] = obj;
         }
@@ -203,11 +208,13 @@ class App {
         let worldFile = await fetch(url, { method: 'get' });
         let worldSource = await worldFile.text();
         if (worldSource) {
-          let modified = new Date().valueOf();
+          //let modified = new Date().valueOf();
+          let created = new Date().valueOf();
 
           let obj = {
             'file': worldSource,
-            'modified': modified
+            'modified': created,
+            'created': created
 
           }
 
@@ -293,10 +300,12 @@ class App {
     }
 
     Object.keys(emptyWorld).forEach(el=>{
-      let modified = new Date().valueOf();
+      //let modified = new Date().valueOf();
+      let created = new Date().valueOf();
       let obj = {
         'file': emptyWorld[el],
-        'modified': modified
+        'modified': created,
+        'created': created
       }
       worldsObj['empty'][el] = obj;
     }) 
@@ -961,8 +970,7 @@ class App {
   async getProtoWorldFiles(userPub, worldName, date) {
 
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent')
-      && (el !== 'info_json'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json'));
 
     let worldObj = {};
     for (var el in worldFileNames) {
@@ -970,7 +978,8 @@ class App {
       let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
       var data = {
         'file': res.file,
-        'modified': res.modified
+        'modified': res.modified,
+        'created': res.created
       }
       if (!date) {
         data = {
@@ -1173,7 +1182,7 @@ class App {
 
       if (res) {
 
-        let modified = new Date().valueOf();
+        let modified = saveRevision;
         let newOwner = _LCSUSER.is.pub;
         let userName = _LCSUSER.is.alias;
 
@@ -1181,7 +1190,8 @@ class App {
           'parent': userName + '/' + root,
           'owner': newOwner,
           'file': res.file,
-          'modified': modified
+          //'modified': modified,
+          'created': modified
 
         }
 
@@ -1190,6 +1200,13 @@ class App {
         _LCSUSER.get('documents').get(root).get(docInfoName).not(res => {
           _LCSUSER.get('documents').get(root).get(docInfoName).put(obj);
         });
+
+        _LCSUSER.get('documents').get(root).get(docInfoName).get('created').not(res => {
+          _LCSUSER.get('documents').get(root).get(docInfoName).get('created').put(modified);
+        });
+
+        _LCSUSER.get('documents').get(root).get(docInfoName).get('modified').put(modified);
+
       }
     });
 
