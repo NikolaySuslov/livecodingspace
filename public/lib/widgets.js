@@ -591,7 +591,7 @@
                                         $type: "input",
                                         type: "checkbox",
                                         class: "mdc-switch__native-control",
-                                        
+                                        id: 'input-' + obj.id,
                                         //$init: obj.init,
                                         //id: "basic-switch",
                                         onchange: obj.onchange,

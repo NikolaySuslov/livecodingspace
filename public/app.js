@@ -183,7 +183,7 @@ class App {
 
   }
 
-  async loadWorldsDefaults() {
+  async loadWorldsDefaults(replace) {
 
    //load to DB default worlds
 
@@ -236,6 +236,8 @@ class App {
 
     console.log(worldsObj);
 
+    if(replace){
+
     Object.entries(worldsObj).forEach(el => {
 
       let worldName = el[0];
@@ -246,6 +248,24 @@ class App {
 
       })
     })
+  } else {
+    //force replace all default worlds
+
+      Object.entries(worldsObj).forEach(el => {
+
+        let worldName = el[0];
+        let files = el[1];
+        Object.entries(files).forEach(file => {
+  
+          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res=>{
+            _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
+          })
+  
+        })
+      })
+
+    }
+
   }
 
   async loadEmptyDefaultProto() {
@@ -273,7 +293,7 @@ class App {
           "vwf/view/editor-new": null
         } 
       }, 4),
-
+      "assets_json": JSON.stringify ({}),
       "index_vwf_html": JSON.stringify ("<!-- DEFAULT HTML -->"),
       "appui_js": JSON.stringify ("//appui in JS"),
       "info_json": JSON.stringify ({
@@ -411,6 +431,7 @@ class App {
 
             let loadDefaults = {
               $cell: true,
+              _replaceSwitch: null,
               $components: [
                 {
                   $type: "p",
@@ -424,9 +445,29 @@ class App {
                   $text: "Load default worlds (from server)",
                   onclick: function (e) {
                     console.log("admin action");
-                    window._app.loadWorldsDefaults();
+                    let forceReplace = this._replaceSwitch.checked;
+                    //console.log(forceReplace);
+                    window._app.loadWorldsDefaults(forceReplace);
                   }
-                }
+                },
+                {
+                  $type: 'p'
+                },
+                _cellWidgets.switch({
+                  'id': 'forceReplace',
+                  'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      this._replaceSwitch = this._switch;
+                      this._switch.checked = false;
+                  }
+              }
+              ),
+              {
+                $type: 'label',
+                for: 'input-forceReplace',
+                $text: 'Force replace'
+              }
+
               ]
             }
 

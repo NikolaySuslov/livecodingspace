@@ -690,13 +690,13 @@ class IndexApp {
                                     $text: 'created: ' + (new Date(desc[4])).toUTCString()
                                 },
                                 {
-                                    $type: "br", 
-                                },
-                                {
-                                    $type: "span",
-                                    class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
-                                    $text: 'modified: ' + (new Date(desc[5])).toUTCString()
+                                    $type: "p", 
                                 }
+                                // ,{
+                                //     $type: "span",
+                                //     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                //     $text: 'modified: ' + (new Date(desc[5])).toUTCString()
+                                // }
                             ]
                         },
                         {
