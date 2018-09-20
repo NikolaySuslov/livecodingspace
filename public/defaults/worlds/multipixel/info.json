@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Multi-Pixel",
+            "imgUrl": "/defaults/worlds/multipixel/webimg.jpg",
+            "text": "Multi offset view camera example"
+        },
+        "ru": {
+            "title": "Мульти-пиксел",
+            "imgUrl": "/defaults/worlds/multipixel/webimg.jpg",
+            "text": "Пример мира с мульти-пекселом"
+        }
+    }
+}

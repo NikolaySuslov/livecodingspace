@@ -162,9 +162,14 @@ class App {
         let responseText = await proxyFile.text();
 
         if (responseText) {
+
+          let created = new Date().valueOf();
+
           let obj = {
             //'owner': userPub,
-            'file': responseText
+            'file': responseText,
+            'modified': created,
+            'created': created
           }
           proxyObj[entryName] = obj;
         }
@@ -178,7 +183,7 @@ class App {
 
   }
 
-  async loadWorldsDefaults() {
+  async loadWorldsDefaults(replace) {
 
    //load to DB default worlds
 
@@ -203,11 +208,13 @@ class App {
         let worldFile = await fetch(url, { method: 'get' });
         let worldSource = await worldFile.text();
         if (worldSource) {
-          let modified = new Date().valueOf();
+          //let modified = new Date().valueOf();
+          let created = new Date().valueOf();
 
           let obj = {
             'file': worldSource,
-            'modified': modified
+            'modified': created,
+            'created': created
 
           }
 
@@ -229,6 +236,8 @@ class App {
 
     console.log(worldsObj);
 
+    if(replace){
+
     Object.entries(worldsObj).forEach(el => {
 
       let worldName = el[0];
@@ -239,6 +248,24 @@ class App {
 
       })
     })
+  } else {
+    //force replace all default worlds
+
+      Object.entries(worldsObj).forEach(el => {
+
+        let worldName = el[0];
+        let files = el[1];
+        Object.entries(files).forEach(file => {
+  
+          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res=>{
+            _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
+          })
+  
+        })
+      })
+
+    }
+
   }
 
   async loadEmptyDefaultProto() {
@@ -266,11 +293,11 @@ class App {
           "vwf/view/editor-new": null
         } 
       }, 4),
-
+      "assets_json": JSON.stringify ({}),
       "index_vwf_html": JSON.stringify ("<!-- DEFAULT HTML -->"),
       "appui_js": JSON.stringify ("//appui in JS"),
-      "info_json": JSON.stringify ({
-        "info": {
+      "info_json": JSON.stringify ({ 
+        "info": { 
           "en": {
               "title": "Empty World",
               "imgUrl": "",
@@ -282,7 +309,7 @@ class App {
               "text": "Новый Мир"
           }
       }
-      })
+      }, null, 4)
     }
 
     worldsObj['empty'] = {
@@ -293,10 +320,12 @@ class App {
     }
 
     Object.keys(emptyWorld).forEach(el=>{
-      let modified = new Date().valueOf();
+      //let modified = new Date().valueOf();
+      let created = new Date().valueOf();
       let obj = {
         'file': emptyWorld[el],
-        'modified': modified
+        'modified': created,
+        'created': created
       }
       worldsObj['empty'][el] = obj;
     }) 
@@ -402,6 +431,7 @@ class App {
 
             let loadDefaults = {
               $cell: true,
+              _replaceSwitch: null,
               $components: [
                 {
                   $type: "p",
@@ -415,9 +445,29 @@ class App {
                   $text: "Load default worlds (from server)",
                   onclick: function (e) {
                     console.log("admin action");
-                    window._app.loadWorldsDefaults();
+                    let forceReplace = this._replaceSwitch.checked;
+                    //console.log(forceReplace);
+                    window._app.loadWorldsDefaults(forceReplace);
                   }
-                }
+                },
+                {
+                  $type: 'p'
+                },
+                _cellWidgets.switch({
+                  'id': 'forceReplace',
+                  'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      this._replaceSwitch = this._switch;
+                      this._switch.checked = false;
+                  }
+              }
+              ),
+              {
+                $type: 'label',
+                for: 'input-forceReplace',
+                $text: 'Force replace'
+              }
+
               ]
             }
 
@@ -961,8 +1011,7 @@ class App {
   async getProtoWorldFiles(userPub, worldName, date) {
 
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent')
-      && (el !== 'info_json'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json'));
 
     let worldObj = {};
     for (var el in worldFileNames) {
@@ -970,7 +1019,8 @@ class App {
       let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
       var data = {
         'file': res.file,
-        'modified': res.modified
+        'modified': res.modified,
+        'created': res.created
       }
       if (!date) {
         data = {
@@ -1173,7 +1223,7 @@ class App {
 
       if (res) {
 
-        let modified = new Date().valueOf();
+        let modified = saveRevision;
         let newOwner = _LCSUSER.is.pub;
         let userName = _LCSUSER.is.alias;
 
@@ -1181,7 +1231,8 @@ class App {
           'parent': userName + '/' + root,
           'owner': newOwner,
           'file': res.file,
-          'modified': modified
+          //'modified': modified,
+          'created': modified
 
         }
 
@@ -1190,6 +1241,13 @@ class App {
         _LCSUSER.get('documents').get(root).get(docInfoName).not(res => {
           _LCSUSER.get('documents').get(root).get(docInfoName).put(obj);
         });
+
+        _LCSUSER.get('documents').get(root).get(docInfoName).get('created').not(res => {
+          _LCSUSER.get('documents').get(root).get(docInfoName).get('created').put(modified);
+        });
+
+        _LCSUSER.get('documents').get(root).get(docInfoName).get('modified').put(modified);
+
       }
     });
 

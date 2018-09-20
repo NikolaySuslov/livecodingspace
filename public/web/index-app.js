@@ -516,7 +516,7 @@ class IndexApp {
                 var appInfo = m
                 if (langID) {
                     if (m[1][langID]) {
-                        appInfo = [m[0], m[1][langID], m[1].user, m[1].type]
+                        appInfo = [m[0], m[1][langID], m[1].user, m[1].type, m[1].created, m[1].modified]
                     }
                 }
                 return {
@@ -554,7 +554,9 @@ class IndexApp {
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
-                                $components: Object.entries(this._jsonData).map(this._makeWorldCard)
+                                $components: Object.entries(this._jsonData).sort(function(el1, el2){
+                                    return parseInt(el2[1].created) - parseInt(el1[1].created)
+                                }).map(this._makeWorldCard)
                             }
                         ]
 
@@ -680,8 +682,21 @@ class IndexApp {
                                 {
                                     $type: "h2",
                                     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
-                                    $text: desc[1].text
+                                    $text: desc[1].text 
+                                },
+                                {
+                                    $type: "span",
+                                    class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                    $text: 'created: ' + (new Date(desc[4])).toUTCString()
+                                },
+                                {
+                                    $type: "p", 
                                 }
+                                // ,{
+                                //     $type: "span",
+                                //     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                //     $text: 'modified: ' + (new Date(desc[5])).toUTCString()
+                                // }
                             ]
                         },
                         {
@@ -814,11 +829,15 @@ class IndexApp {
                     saves.forEach(el => {
                         db.get('documents').get(index).get(el).once(res => {
                             if (res) {
+                                let created = res.created ? res.created: res.modified;
+
                                 let fileName = el.split('/')[2].replace('_info_vwf_json', "");
                                 let world = JSON.parse(res.file);
                                 let root = Object.keys(world)[0];
                                 world[root].user = userAlias;
                                 world[root].type = 'saveState';
+                                world[root].created = created;
+                                world[root].modified = res.modified;
                                 this.worlds[index + '/load/' + fileName] = world[root];
                                 document.querySelector("#main")._jsonData = Object.assign({}, this.worlds);
                             }
@@ -861,10 +880,14 @@ class IndexApp {
 
                         if (res) {
 
+                            let created = res.created ? res.created: res.modified;
+
                             let world = JSON.parse(res.file);
                             let root = Object.keys(world)[0];
                             world[root].user = userAlias;
                             world[root].type = 'proto';
+                            world[root].created = created;
+                            world[root].modified = res.modified;
                             this.worlds[index] = world[root];
                             document.querySelector("#main")._jsonData = Object.assign({}, this.worlds);
                         }
@@ -920,11 +943,16 @@ class IndexApp {
                                     db.get('documents').get(index).get(el).once(res => {
 
                                         if (res) {
+
+                                            let created = res.created ? res.created: res.modified;
+
                                             let fileName = el.split('/')[2].replace('_info_vwf_json', "");
                                             let world = JSON.parse(res.file);
                                             let root = Object.keys(world)[0];
                                             world[root].user = userAlias;
                                             world[root].type = 'saveState';
+                                            world[root].created = created;
+                                            world[root].modified = res.modified;
                                             this.worlds[index + '/load/' + fileName] = world[root];
                                             document.querySelector("#main")._jsonData = Object.assign({}, this.worlds);
 

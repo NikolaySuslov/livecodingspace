@@ -1,0 +1,10 @@
+{
+    "sky":{
+        "tag": "img",
+        "src": "/defaults/assets/skyes/sky3.jpg"
+    },
+     "bg2":{
+        "tag": "img",
+        "src": "/defaults/assets/checker.jpg"
+    }
+}
