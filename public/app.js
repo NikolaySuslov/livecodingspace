@@ -296,8 +296,8 @@ class App {
       "assets_json": JSON.stringify ({}),
       "index_vwf_html": JSON.stringify ("<!-- DEFAULT HTML -->"),
       "appui_js": JSON.stringify ("//appui in JS"),
-      "info_json": JSON.stringify ({
-        "info": {
+      "info_json": JSON.stringify ({ 
+        "info": { 
           "en": {
               "title": "Empty World",
               "imgUrl": "",
@@ -309,7 +309,7 @@ class App {
               "text": "Новый Мир"
           }
       }
-      })
+      }, null, 4)
     }
 
     worldsObj['empty'] = {
