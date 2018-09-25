@@ -575,7 +575,7 @@ class IndexApp {
                 if (desc[3] == 'saveState') {
                     cardInfo.title = desc[0].split('/')[2];
                 }
-                
+
                 if (desc[3] == 'proto') {
                     cardInfo.title = desc[0];
 
@@ -727,7 +727,14 @@ class IndexApp {
                                 {
                                     $type: "span",
                                     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
-                                    $text: 'id: ' + cardInfo.title
+                                    $text: 'id: '
+                                },
+                                {
+                                    $type: "input",
+                                    type: "text",
+                                    disabled: "",
+                                    style: "font-size:18px",
+                                    value: cardInfo.title
                                 },
                                 {
                                     $type: "p", 

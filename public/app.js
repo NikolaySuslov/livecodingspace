@@ -1439,6 +1439,7 @@ class App {
         for (const el of Object.keys(worldFiles)) {
           if (el !== '_') {
             let doc = await _LCSUSER.get('worlds').get(worldName).get(el).once().then();
+            if(doc) {
             if (doc.file) {
               for (const fEl of Object.keys(doc)) {
                 if (fEl !== '_') {
@@ -1449,6 +1450,7 @@ class App {
             } else {
               await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then()
             }
+          }
           }
         }
       }
