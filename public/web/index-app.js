@@ -567,9 +567,18 @@ class IndexApp {
             },
             _worldCardDef: function (desc) {
 
-                var userGUI = [];
+                let userGUI = [];
+                let cardInfo = {
+                    "title": ""
+                };
 
+                if (desc[3] == 'saveState') {
+                    cardInfo.title = desc[0].split('/')[2];
+                }
+                
                 if (desc[3] == 'proto') {
+                    cardInfo.title = desc[0];
+
                     userGUI.push(
 
                         {
@@ -620,7 +629,36 @@ class IndexApp {
                                     }
                                 }
                             );
+
+                            userGUI.push(
+                                {
+                                    $type: "a",
+                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    $text: "Delete",
+                                    //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                    onclick: function (e) {
+                                        _app.deleteWorld(desc[0], 'proto');
+                                    }
+                                }
+                            );
                         }
+
+
+                        if(desc[3] == 'saveState'){
+                            userGUI.push(
+                                {
+                                    $type: "a",
+                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    $text: "Delete",
+                                    //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                    onclick: function (e) {
+                                        _app.deleteWorld(desc[0], 'state');
+                                    }
+                                }
+                            );
+                        }
+
+
                     }
 
                     if (desc[3] == 'proto') {
@@ -638,6 +676,8 @@ class IndexApp {
 
                         )
                     } else if (desc[3] == 'saveState') {
+
+                        
                         // userGUI.push(
                         //     {
                         //         $type: "a",
@@ -683,6 +723,14 @@ class IndexApp {
                                     $type: "h2",
                                     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
                                     $text: desc[1].text 
+                                },
+                                {
+                                    $type: "span",
+                                    class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                    $text: 'id: ' + cardInfo.title
+                                },
+                                {
+                                    $type: "p", 
                                 },
                                 {
                                     $type: "span",
@@ -878,7 +926,9 @@ class IndexApp {
                 if (w) {
                     db.get('worlds').get(index).get('info_json').once(res => {
 
-                        if (res) {
+                        if (res && res !== 'null') {
+
+                            if (res.file && res.file !== 'null') {
 
                             let created = res.created ? res.created: res.modified;
 
@@ -890,6 +940,7 @@ class IndexApp {
                             world[root].modified = res.modified;
                             this.worlds[index] = world[root];
                             document.querySelector("#main")._jsonData = Object.assign({}, this.worlds);
+                            }
                         }
 
                     })
@@ -942,7 +993,8 @@ class IndexApp {
 
                                     db.get('documents').get(index).get(el).once(res => {
 
-                                        if (res) {
+                                        if (res ) {
+                                            if(res.file && res.file !== "null") {
 
                                             let created = res.created ? res.created: res.modified;
 
@@ -955,7 +1007,7 @@ class IndexApp {
                                             world[root].modified = res.modified;
                                             this.worlds[index + '/load/' + fileName] = world[root];
                                             document.querySelector("#main")._jsonData = Object.assign({}, this.worlds);
-
+                                            }
                                         }
                                     })
                                 })

@@ -952,6 +952,10 @@ class App {
 
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
 
+    if(!loadInfo.save_name){
+        return undefined
+    }
+
     let objName = "savestate_" + loadInfo['application_path'] + '/' + loadInfo['save_name'] + '_vwf_json';
     let objNameRev = "savestate_" + loadInfo['save_revision'] + loadInfo['application_path'] + '/' + loadInfo['save_name'] + '_vwf_json';
 
@@ -1047,6 +1051,7 @@ class App {
     console.log('clone: ' + worldName + 'to: ' + worldID);
 
     let newOwner = _LCSUSER.is.pub;
+    let created = new Date().valueOf();
 
     let worldObj = {
       'owner': newOwner,
@@ -1064,7 +1069,7 @@ class App {
       let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
       let data = {
         'file': res.file,
-        'modified': res.modified
+        'modified': created
       }
       worldObj[fn] = data;
     }
@@ -1373,7 +1378,109 @@ class App {
     }
   }
 
+  // SUPPORT of DELETE USER WORLDS & SAVE STATES (experimental)
+  // TODO: manual garbage collection
 
+  async deleteWorldState(worldName, indexState) {
+
+    let revs = await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').once().then();
+    if (revs) {
+      for (const el of Object.keys(revs)) {
+        if (el !== '_') {
+          let doc = await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).once().then();
+          for (const rev of Object.keys(doc)) {
+            if (rev !== '_') {
+              await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).then();
+            }
+          }
+          await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).then();
+        }
+      }
+    }
+
+    // clear all state params
+    let stateDoc = await _LCSUSER.get('documents').get(worldName).get(indexState).once().then();
+    for (const state of Object.keys(stateDoc)) {
+      if (state !== '_' && state !== 'revs') {
+        await _LCSUSER.get('documents').get(worldName).get(indexState).get(state).put(null).then();
+      }
+    }
+
+    await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').put(null).then();
+    await _LCSUSER.get('documents').get(worldName).get(indexState).put(null).then();
+
+  }
+
+  async deleteWorld(name, type) {
+
+    if (type == 'proto') {
+
+      let worldName = name;
+      //TODO check for states (ask for deleting all states first...)
+      //delete states
+
+      let documents = await _LCSUSER.get('documents').once().then();
+      if (documents) {
+        let states = await _LCSUSER.get('documents').get(worldName).once().then();
+        if (states) {
+          for (const el of Object.keys(states)) {
+            if (el !== '_') {
+              if (states[el]) {
+                await this.deleteWorldState(worldName, el);
+              }
+
+            }
+          }
+        }
+      }
+
+      let worldFiles = await _LCSUSER.get('worlds').get(worldName).once().then();
+      if (worldFiles) {
+        for (const el of Object.keys(worldFiles)) {
+          if (el !== '_') {
+            let doc = await _LCSUSER.get('worlds').get(worldName).get(el).once().then();
+            if (doc.file) {
+              for (const fEl of Object.keys(doc)) {
+                if (fEl !== '_') {
+                  await _LCSUSER.get('worlds').get(worldName).get(el).get(fEl).put(null).then();
+                }
+              }
+              await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then();
+            } else {
+              await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then()
+            }
+          }
+        }
+      }
+
+      //  _LCSUSER.get('worlds').get(worldName).map((res, index) => {
+
+      //       if(typeof res == 'object'){
+      //         _LCSUSER.get('worlds').get(worldName).get(index)
+      //         .get('file').put("null")
+      //         .back(1)
+      //         .get('modified').put("null")
+      //         .back(1)
+      //         .get('created').put("null")
+      //         .back(1).put("null")
+      //       } else {
+      //         _LCSUSER.get('worlds').get(worldName).get(index).put("null")
+      //       }
+      //  })
+
+      await _LCSUSER.get('worlds').get(worldName).put(null).then();
+
+    } else if (type == 'state') {
+
+      let worldName = name.split('/')[0];
+      let stateName = name.split('/')[2];
+
+      let stateEntryInfo = 'savestate_/' + worldName + '/' + stateName + '_info_vwf_json';
+      let stateEntry = 'savestate_/' + worldName + '/' + stateName + '_vwf_json';
+      await this.deleteWorldState(worldName, stateEntryInfo);
+      await this.deleteWorldState(worldName, stateEntry);
+    }
+  }
 
 
 }
