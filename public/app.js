@@ -3,6 +3,7 @@ import { Lang } from '/lib/polyglot/language.js';
 import { Helpers } from '/helpers.js';
 import { IndexApp } from '/web/index-app.js';
 import { WorldApp } from '/web/world-app.js';
+import { Header } from '/web/header.js';
 import { Widgets } from '/lib/widgets.js';
 
 
@@ -374,7 +375,17 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
+    let headerGUI = new Header();
+    headerGUI.init();
+
+    // if (!_app.indexApp) {
+    //   _app.indexApp = new IndexApp;
+    //   document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
+    // }
+
+    // if (!document.querySelector('#app')) {
+    //   _app.indexApp.initApp();
+    // }
 
     let worldApp = new WorldApp(userAlias, worldName, saveName);
     worldApp.initWorldGUI();
@@ -665,11 +676,11 @@ class App {
                     $text: "Close",
                     onclick: function (e) {
                       console.log("close");
-                      history.back()
+                      window.history.back();
                       // if (type == "proto")
-                      //   window.location.pathname = "/" + user + '/worlds/protos'
+                      //   window.location.pathname = "/" + user + '/' + worldName + '/about'
                       // if (type == "state")
-                      //   window.location.pathname = "/" + user + '/worlds/states'
+                      //   window.location.pathname = "/" + user + '/' + worldName + '/about'
                     }
                   }
                 ]
@@ -696,19 +707,15 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    if (!_app.indexApp) {
-      _app.indexApp = new IndexApp;
-      document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
-    }
-
-    if (!document.querySelector('#app')) {
-      await _app.indexApp.initApp();
-    }
-
+    let indexApp = new IndexApp;
+    indexApp.initApp();
+ 
     if (type == 'protos') {
-      await _app.indexApp.getWorldsProtosFromUserDB(user);
+      await indexApp.getWorldsProtosListForUser(user); 
     } else if (type == 'states') {
-      await _app.indexApp.getWorldsFromUserDB(user);
+      await indexApp.getWorldsStatesListForUser(user);
+
+      //await _app.indexApp.getWorldsFromUserDB(user);
     }
 
   }
@@ -720,12 +727,12 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    _app.indexApp = new IndexApp;
-    document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
+    let indexApp = new IndexApp;
 
-    await _app.indexApp.generateFrontPage();
-    await _app.indexApp.initApp();
-    await _app.indexApp.getAppDetailsFromDB();
+    await indexApp.generateFrontPage();
+    indexApp.initApp();
+    await indexApp.getWorldsProtosListForUser('app'); 
+    //await _app.indexApp.getAppDetailsFromDB();
 
   }
 
@@ -1566,6 +1573,36 @@ class App {
 
     return listData
     // console.log(data)
+  }
+
+  async getAllStateWorldsInfoForUser (userAlias) {
+
+    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == userAlias)
+        db = _LCSUSER;
+    }
+
+    var states = {};
+
+    let worldDocs = await db.get('worlds').once().then();
+    if(worldDocs) {
+      let protos = Object.keys(worldDocs).filter(el => el !== '_');
+      
+      if (protos) {
+        for (const el of protos) {
+          let info = await this.getSaveStates(userAlias, el);
+         if (Object.keys(info).length !== 0)
+            states[el] = info;
+        }
+      }
+    }
+
+    return states
+
   }
 
 
