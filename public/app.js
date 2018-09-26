@@ -23,7 +23,7 @@ class App {
 
       this.helpers = new Helpers;
       this.initUser();
-      
+
       //client routes
       page('/', this.HandleIndex);
       page('/setup', this.HandleSetupIndex);
@@ -188,7 +188,7 @@ class App {
 
   async loadWorldsDefaults(replace) {
 
-   //load to DB default worlds
+    //load to DB default worlds
 
     let worldsResponse = await fetch('/world-files', { method: 'get' });
     let worldFiles = await worldsResponse.json();
@@ -239,31 +239,31 @@ class App {
 
     console.log(worldsObj);
 
-    if(replace){
-
-    Object.entries(worldsObj).forEach(el => {
-
-      let worldName = el[0];
-      let files = el[1];
-      Object.entries(files).forEach(file => {
-
-        _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
-
-      })
-    })
-  } else {
-    //force replace all default worlds
+    if (replace) {
 
       Object.entries(worldsObj).forEach(el => {
 
         let worldName = el[0];
         let files = el[1];
         Object.entries(files).forEach(file => {
-  
-          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res=>{
+
+          _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
+
+        })
+      })
+    } else {
+      //force replace all default worlds
+
+      Object.entries(worldsObj).forEach(el => {
+
+        let worldName = el[0];
+        let files = el[1];
+        Object.entries(files).forEach(file => {
+
+          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res => {
             _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
           })
-  
+
         })
       })
 
@@ -273,10 +273,10 @@ class App {
 
   async loadEmptyDefaultProto() {
 
-     //empty proto world
-     let userPub = _LCSUSER.is.pub;
-     let worldsObj = {};
-     let emptyWorld = {
+    //empty proto world
+    let userPub = _LCSUSER.is.pub;
+    let worldsObj = {};
+    let emptyWorld = {
 
       "index_vwf_yaml": YAML.stringify(
         {
@@ -285,33 +285,33 @@ class App {
 
       "index_vwf_config_yaml": YAML.stringify(
         {
+          "info": {
+            "title": "Empty World"
+          },
+          "model": {
+            "vwf/model/aframe": null
+          },
+          "view": {
+            "vwf/view/aframe": null,
+            "vwf/view/editor-new": null
+          }
+        }, 4),
+      "assets_json": JSON.stringify({}),
+      "index_vwf_html": JSON.stringify("<!-- DEFAULT HTML -->"),
+      "appui_js": JSON.stringify("//appui in JS"),
+      "info_json": JSON.stringify({
         "info": {
-          "title": "Empty World"
-        },
-        "model": {
-          "vwf/model/aframe": null
-        },
-        "view": {
-          "vwf/view/aframe": null,
-          "vwf/view/editor-new": null
-        } 
-      }, 4),
-      "assets_json": JSON.stringify ({}),
-      "index_vwf_html": JSON.stringify ("<!-- DEFAULT HTML -->"),
-      "appui_js": JSON.stringify ("//appui in JS"),
-      "info_json": JSON.stringify ({ 
-        "info": { 
           "en": {
-              "title": "Empty World",
-              "imgUrl": "",
-              "text": "Empty World"
+            "title": "Empty World",
+            "imgUrl": "",
+            "text": "Empty World"
           },
           "ru": {
-              "title": "Новый Мир",
-              "imgUrl": "",
-              "text": "Новый Мир"
+            "title": "Новый Мир",
+            "imgUrl": "",
+            "text": "Новый Мир"
           }
-      }
+        }
       }, null, 4)
     }
 
@@ -322,7 +322,7 @@ class App {
       'published': true
     }
 
-    Object.keys(emptyWorld).forEach(el=>{
+    Object.keys(emptyWorld).forEach(el => {
       //let modified = new Date().valueOf();
       let created = new Date().valueOf();
       let obj = {
@@ -331,7 +331,7 @@ class App {
         'created': created
       }
       worldsObj['empty'][el] = obj;
-    }) 
+    })
 
     console.log(worldsObj);
 
@@ -363,13 +363,13 @@ class App {
 
   }
 
-  HandleWorldAbout(ctx){
+  HandleWorldAbout(ctx) {
 
     console.log("about world");
 
     let userAlias = ctx.params.user;
     let worldName = ctx.params.space;
-    let saveName =  ctx.params.savename;
+    let saveName = ctx.params.savename;
 
     window._app.hideProgressBar();
     window._app.hideUIControl();
@@ -378,7 +378,7 @@ class App {
 
     let worldApp = new WorldApp(userAlias, worldName, saveName);
     worldApp.initWorldGUI();
-    
+
   }
 
   HandleSetupIndex() {
@@ -390,7 +390,7 @@ class App {
     el.setAttribute("id", "admin");
     document.body.appendChild(el);
 
-   
+
     _LCSDB.on('auth',
       async function (ack) {
 
@@ -404,7 +404,7 @@ class App {
                 $type: "p",
                 class: "mdc-typography--headline5",
                 $text: "1. Set app system user PUB key"
-            },
+              },
               {
                 $type: "button",
                 class: "mdc-button mdc-button--raised",
@@ -415,11 +415,11 @@ class App {
                 }
               }
             ]
-      
+
           }
-      
+
           let adminComponents = [];
-      
+
 
           let defaultPub = await _LCSDB.get('lcs/app').get('pub').once().then();
           if (!defaultPub) {
@@ -435,7 +435,7 @@ class App {
                   $type: "p",
                   class: "mdc-typography--headline5",
                   $text: "3. Initialize empty World proto"
-              },
+                },
                 {
                   $type: "button",
                   id: "loadDefaults",
@@ -448,7 +448,7 @@ class App {
                 }
               ]
             }
-            
+
 
             let loadDefaults = {
               $cell: true,
@@ -458,7 +458,7 @@ class App {
                   $type: "p",
                   class: "mdc-typography--headline5",
                   $text: "4. Load Sample Worlds protos from server (optional)"
-              },
+                },
                 {
                   $type: "button",
                   id: "loadDefaults",
@@ -477,17 +477,17 @@ class App {
                 _cellWidgets.switch({
                   'id': 'forceReplace',
                   'init': function () {
-                      this._switch = new mdc.switchControl.MDCSwitch(this);
-                      this._replaceSwitch = this._switch;
-                      this._switch.checked = false;
+                    this._switch = new mdc.switchControl.MDCSwitch(this);
+                    this._replaceSwitch = this._switch;
+                    this._switch.checked = false;
                   }
-              }
-              ),
-              {
-                $type: 'label',
-                for: 'input-forceReplace',
-                $text: 'Force replace'
-              }
+                }
+                ),
+                {
+                  $type: 'label',
+                  for: 'input-forceReplace',
+                  $text: 'Force replace'
+                }
 
               ]
             }
@@ -499,7 +499,7 @@ class App {
                   $type: "p",
                   class: "mdc-typography--headline5",
                   $text: "3. Load VWF & A-Frame default components"
-              },
+                },
                 {
                   $type: "button",
                   class: "mdc-button mdc-button--raised",
@@ -535,39 +535,39 @@ class App {
 
     _LCSDB.on('auth',
       async function (ack) {
-        if(ack.pub){
+        if (ack.pub) {
           document.querySelector("#profile")._status = "User: " + _LCSUSER.is.alias //+' pub: ' + _LCSUSER.is.pub;
           document.querySelector("#profile").$update();
         }
       })
 
-      let el = document.createElement("div");
-      el.setAttribute("id", "userProfile");
-      document.body.appendChild(el);
+    let el = document.createElement("div");
+    el.setAttribute("id", "userProfile");
+    document.body.appendChild(el);
 
-      let userProfile = {
-        $type: 'div',
-        id: "profile",
-        _status: "",
-        $init: function(){
-          this._status = "user is not signed in..."
-        },
-        $update: function(){
-          this.$components = [
-            {
-                $type: "h1",
-                class: "mdc-typography--headline4",
-                $text: this._status //"Profile for: " + _LCSUSER.is.alias
-            }
-          ]
-        }
+    let userProfile = {
+      $type: 'div',
+      id: "profile",
+      _status: "",
+      $init: function () {
+        this._status = "user is not signed in..."
+      },
+      $update: function () {
+        this.$components = [
+          {
+            $type: "h1",
+            class: "mdc-typography--headline4",
+            $text: this._status //"Profile for: " + _LCSUSER.is.alias
+          }
+        ]
       }
+    }
 
-      document.querySelector("#userProfile").$cell({
-        $cell: true,
-        $type: "div",
-        $components: [userProfile]
-      })
+    document.querySelector("#userProfile").$cell({
+      $cell: true,
+      $type: "div",
+      $components: [userProfile]
+    })
   }
 
 
@@ -640,7 +640,7 @@ class App {
                       editor.getSession().setMode(mode);
                       editor.setOptions({
                         maxLines: Infinity
-                    });
+                      });
                     }
                   },
                   {
@@ -803,7 +803,7 @@ class App {
 
   }
 
-  
+
   async HandleParsableRequestWithID(ctx) {
 
     let app = window._app;
@@ -819,7 +819,7 @@ class App {
 
     let pathToParse = pathname.replace('/' + user, "");
 
-    app.helpers.Process(pathToParse).then(async function(parsedRequest) {
+    app.helpers.Process(pathToParse).then(async function (parsedRequest) {
 
       localStorage.setItem('lcs_app', JSON.stringify({ path: parsedRequest }));
       console.log(parsedRequest);
@@ -849,7 +849,7 @@ class App {
 
       // Redirect if the url request does not include an application/file && a default 'index.vwf.yaml' exists
       // page.redirect(pathname + '/' + app.helpers.GenerateInstanceID());
-      window.location.pathname = pathname + '/' + app.helpers.GenerateInstanceID() 
+      window.location.pathname = pathname + '/' + app.helpers.GenerateInstanceID()
 
       //return true;
     } else {
@@ -974,8 +974,8 @@ class App {
 
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
 
-    if(!loadInfo.save_name){
-        return undefined
+    if (!loadInfo.save_name) {
+      return undefined
     }
 
     let objName = "savestate_" + loadInfo['application_path'] + '/' + loadInfo['save_name'] + '_vwf_json';
@@ -1461,18 +1461,18 @@ class App {
         for (const el of Object.keys(worldFiles)) {
           if (el !== '_') {
             let doc = await _LCSUSER.get('worlds').get(worldName).get(el).once().then();
-            if(doc) {
-            if (doc.file) {
-              for (const fEl of Object.keys(doc)) {
-                if (fEl !== '_') {
-                  await _LCSUSER.get('worlds').get(worldName).get(el).get(fEl).put(null).then();
+            if (doc) {
+              if (doc.file) {
+                for (const fEl of Object.keys(doc)) {
+                  if (fEl !== '_') {
+                    await _LCSUSER.get('worlds').get(worldName).get(el).get(fEl).put(null).then();
+                  }
                 }
+                await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then();
+              } else {
+                await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then()
               }
-              await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then();
-            } else {
-              await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then()
             }
-          }
           }
         }
       }
@@ -1504,6 +1504,16 @@ class App {
       await this.deleteWorldState(worldName, stateEntryInfo);
       await this.deleteWorldState(worldName, stateEntry);
     }
+
+    let noty = new Noty({
+      text: "World Deleted!",
+      timeout: 2000,
+      theme: 'mint',
+      layout: 'bottomRight',
+      type: 'success'
+    });
+    noty.show();
+
   }
 
 
@@ -1514,50 +1524,230 @@ class App {
     let listData = {};
 
     for (var prop in jsonObj) {
-        var name = prop.split('/')[1];
-        if (parsed[name]) {
-            parsed[name][prop] = jsonObj[prop];
-        } else {
-            parsed[name] = {};
-            parsed[name][prop] = jsonObj[prop];
-        }
+      var name = prop.split('/')[1];
+      if (parsed[name]) {
+        parsed[name][prop] = jsonObj[prop];
+      } else {
+        parsed[name] = {};
+        parsed[name][prop] = jsonObj[prop];
+      }
 
     }
     //console.log(parsed);
     for (var prop in parsed) {
-        var name = prop;
-        let obj = Object.entries(parsed[prop]);
-        var lists = {};
-        obj.forEach(el => {
-            if (el[1].loadInfo['save_name']) {
-                let saveName = prop + '/load/' + el[1].loadInfo.save_name;
-                if (!lists[saveName])
-                    lists[saveName] = {};
-                lists[saveName][el[0]] = el[1]
-            } else {
-                if (!lists[name])
-                    lists[name] = {};
-                lists[name][el[0]] = el[1]
-            }
-        });
+      var name = prop;
+      let obj = Object.entries(parsed[prop]);
+      var lists = {};
+      obj.forEach(el => {
+        if (el[1].loadInfo['save_name']) {
+          let saveName = prop + '/load/' + el[1].loadInfo.save_name;
+          if (!lists[saveName])
+            lists[saveName] = {};
+          lists[saveName][el[0]] = el[1]
+        } else {
+          if (!lists[name])
+            lists[name] = {};
+          lists[name][el[0]] = el[1]
+        }
+      });
 
-        // console.log(lists);
+      // console.log(lists);
 
-        Object.entries(lists).forEach(list => {
+      Object.entries(lists).forEach(list => {
 
-          listData[list[0]] = list[1];
+        listData[list[0]] = list[1];
 
-            // let element = document.getElementById(list[0] + 'List');
-            // if (element) {
-            //     element._setListData(list[1]);
-            // }
-        })
+        // let element = document.getElementById(list[0] + 'List');
+        // if (element) {
+        //     element._setListData(list[1]);
+        // }
+      })
     }
 
     return listData
     // console.log(data)
-}
+  }
 
+
+  async getAllProtoWorldsInfoForUser(userAlias) {
+
+    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == userAlias)
+        db = _LCSUSER;
+    }
+
+    var worlds = {};
+
+    let worldDocs = await db.get('worlds').once().then();
+    if(worldDocs) {
+      let protos = Object.keys(worldDocs).filter(el => el !== '_');
+
+      if (protos) {
+        for (const el of protos) {
+          let info = await this.getWorldInfo(userAlias, el);
+         if (Object.keys(info).length !== 0)
+                worlds[el] = info;
+        }
+      }
+    }
+
+    return worlds
+
+    // await db.get('worlds').once(async (proto, index) => {
+    //   let protos = Object.keys(proto).filter(el => el !== '_');
+    //  // console.log(protos);
+
+    //   if (protos) {
+    //     for (const el of protos) {
+    //       let info = await this.getWorldInfo(userAlias, el);
+    //       worlds[el] = info;
+    //     }
+    //   }
+    // }).then();
+    // return worlds
+  }
+
+  async getSaveStates(userAlias, worldName) {
+
+    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == userAlias)
+        db = _LCSUSER;
+    }
+
+    var states = {};
+
+    let docs = await db.get('documents').get(worldName).once().then();
+    if(docs){
+    let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
+    if (saves) {
+      for (const el of saves) {
+        let stateName = el.split('/')[2].replace('_info_vwf_json', "");
+        let info = await this.getStateInfo(userAlias, worldName, stateName);
+        if (Object.keys(info).length !== 0)
+          states[stateName] = info;
+      }
+    }
+  }
+      return states
+
+
+  //  return await db.get('documents').get(worldName).once(async (save, index) => {
+  //     let saves = Object.keys(save).filter(el => el.includes('_info_vwf_json'));
+  //     //console.log(saves);
+  //     if (saves) {
+  //       for (const el of saves) {
+  //         let stateName = el.split('/')[2].replace('_info_vwf_json', "");
+  //         let info = await this.getStateInfo(userAlias, worldName, stateName);
+  //         states[stateName] = info;
+  //       }
+  //     }
+  //     return states
+  //   }).then();
+  //   //return states
+  }
+
+  async getStateInfo(user, space, saveName) {
+
+    let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == user)
+        db = _LCSUSER;
+    }
+
+    var info = {};
+
+    let docName = 'savestate_/' + space + '/' + saveName + '_info_vwf_json';
+    let world = await db.get('documents').get(space).get(docName).once().then();
+    if (world) {
+      let doc = await db.get('documents').get(space).get(docName).once((res) => {
+
+        if (res && res !== 'null') {
+
+          if (res.file && res.file !== 'null') {
+
+            let worldDesc = JSON.parse(res.file);
+            let root = Object.keys(worldDesc)[0];
+            var appInfo = worldDesc[root]['en'];
+
+            let langID = localStorage.getItem('krestianstvo_locale');
+            if (langID) {
+              appInfo = worldDesc[root][langID]
+            }
+
+            info = {
+              'worldName': space + '/load/' + saveName,
+              'created': res.created ? res.created : res.modified,
+              'modified': res.modified,
+              'type': 'saveState',
+              'userAlias': user,
+              'info': appInfo
+            }
+          }
+        }
+      }).then();
+    }
+    return info
+  }
+
+
+  async getWorldInfo(user, space) {
+    //get space for user
+
+    let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == user)
+        db = _LCSUSER;
+    }
+
+    var info = {};
+
+
+    let world = await db.get('worlds').get(space).once().then();
+    if (world) {
+      let doc = await db.get('worlds').get(space).get('info_json').once((res) => {
+
+        if (res && res !== 'null') {
+
+          if (res.file && res.file !== 'null') {
+
+            let worldDesc = JSON.parse(res.file);
+            let root = Object.keys(worldDesc)[0];
+            var appInfo = worldDesc[root]['en'];
+
+            let langID = localStorage.getItem('krestianstvo_locale');
+            if (langID) {
+              appInfo = worldDesc[root][langID]
+            }
+
+            info = {
+              'worldName': space,
+              'created': res.created ? res.created : res.modified,
+              'modified': res.modified,
+              'type': 'proto',
+              'userAlias': user,
+              'info': appInfo
+            }
+
+          }
+        }
+      }).then();
+    }
+
+    return info
+
+  }
 
 
 }
