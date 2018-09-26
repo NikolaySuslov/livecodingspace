@@ -23,7 +23,7 @@ class IndexApp {
         const parse = (msg) => {
             this.parseAppInstancesData(msg)
         }
-        socket.on('getWebAppUpdate', msg => parse.call(self, msg));
+        socket.on('getWebAppUpdate', msg => parse.call(this, msg));
         socket.on("connect", function () {
 
             let noty = new Noty({
@@ -426,70 +426,6 @@ class IndexApp {
         );
     }
 
-    parseAppInstancesData(data) {
-
-        if (data == "{}") {
-            var el = document.querySelector(".instance");
-            if (el) {
-                var topEl = el.parentNode;
-                topEl.removeChild(el);
-            }
-            // let removeElements = elms => Array.from(elms).forEach(el => el.remove()); 
-        }
-
-        let jsonObj = JSON.parse(data);
-        var parsed = {};
-        for (var prop in jsonObj) {
-            var name = prop.split('/')[1];
-            if (parsed[name]) {
-                parsed[name][prop] = jsonObj[prop];
-            } else {
-                parsed[name] = {};
-                parsed[name][prop] = jsonObj[prop];
-            }
-
-        }
-        //console.log(parsed);
-
-        if (Object.entries(this.worlds).length !== 0)
-            document.querySelector("#main")._emptyLists();
-
-        for (var prop in parsed) {
-            var name = prop;
-            let obj = Object.entries(parsed[prop]);
-            var lists = {};
-            obj.forEach(el => {
-                let sotSave = prop;
-
-                if (el[1].loadInfo['save_name']) {
-                    let saveName = prop + '/load/' + el[1].loadInfo.save_name;
-                    if (!lists[saveName])
-                        lists[saveName] = {};
-
-                    lists[saveName][el[0]] = el[1]
-                } else {
-                    if (!lists[name])
-                        lists[name] = {};
-
-                    lists[name][el[0]] = el[1]
-
-                }
-            });
-
-            // console.log(lists);
-
-            Object.entries(lists).forEach(list => {
-
-                let element = document.getElementById(list[0] + 'List');
-                if (element) {
-                    element._setListData(list[1]);
-                }
-            })
-        }
-        // console.log(data)
-    }
-
-
     initWorldsListGUI() {
 
         var self = this;
@@ -766,6 +702,19 @@ class IndexApp {
                                     href: "/" + desc[2] + '/' + desc[0],
                                     onclick: function (e) {
                                         self.refresh();
+                                    }
+                                },
+                                {
+                                    $type: "a",
+                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    $text: "Details",//"clone",
+                                    //href: "/" + desc[2] + '/' + desc[0] +'/about',
+                                    onclick: function (e) {
+                                        e.preventDefault();
+                                        window.location.pathname = "/" + desc[2] + '/' + desc[0] +'/about'
+                                        //console.log('clone');
+                                       // _app.cloneWorldPrototype(desc[0], desc[2]);
+                                        //self.refresh();
                                     }
                                 }
                             ].concat(userGUI)
@@ -1048,6 +997,70 @@ class IndexApp {
 
     refresh() {
         // socket.emit('getWebAppUpdate', "");
+    }
+
+
+    parseAppInstancesData(data) {
+
+        if (data == "{}") {
+            var el = document.querySelector(".instance");
+            if (el) {
+                var topEl = el.parentNode;
+                topEl.removeChild(el);
+            }
+            // let removeElements = elms => Array.from(elms).forEach(el => el.remove()); 
+        }
+    
+        let jsonObj = JSON.parse(data);
+        var parsed = {};
+        for (var prop in jsonObj) {
+            var name = prop.split('/')[1];
+            if (parsed[name]) {
+                parsed[name][prop] = jsonObj[prop];
+            } else {
+                parsed[name] = {};
+                parsed[name][prop] = jsonObj[prop];
+            }
+    
+        }
+        //console.log(parsed);
+    
+        if (Object.entries(this.worlds).length !== 0)
+            document.querySelector("#main")._emptyLists();
+    
+        for (var prop in parsed) {
+            var name = prop;
+            let obj = Object.entries(parsed[prop]);
+            var lists = {};
+            obj.forEach(el => {
+                let sotSave = prop;
+    
+                if (el[1].loadInfo['save_name']) {
+                    let saveName = prop + '/load/' + el[1].loadInfo.save_name;
+                    if (!lists[saveName])
+                        lists[saveName] = {};
+    
+                    lists[saveName][el[0]] = el[1]
+                } else {
+                    if (!lists[name])
+                        lists[name] = {};
+    
+                    lists[name][el[0]] = el[1]
+    
+                }
+            });
+    
+            // console.log(lists);
+    
+            Object.entries(lists).forEach(list => {
+    
+                let element = document.getElementById(list[0] + 'List');
+                if (element) {
+                    element._setListData(list[1]);
+                }
+            })
+        }
+        // console.log(data)
     }
 
 

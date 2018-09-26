@@ -2,6 +2,7 @@ import page from '/lib/page.mjs';
 import { Lang } from '/lib/polyglot/language.js';
 import { Helpers } from '/helpers.js';
 import { IndexApp } from '/web/index-app.js';
+import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/widgets.js';
 
 
@@ -33,9 +34,11 @@ class App {
       page('/:user/worlds/:type', this.HandleUserWorldsWithType);
       page('/:user/:type/:name/edit/:file', this.HandleFileEdit);
       page('/:user/:space', this.HandleParsableRequestGenID);
+      page('/:user/:space/about', this.HandleWorldAbout);
       page('/:user/:space/:id', this.HandleParsableRequestWithID);
       page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
       page('/:user/:space/load/:savename', this.HandleParsableLoadRequest);
+      page('/:user/:space/load/:savename/about', this.HandleWorldAbout);
       page('/:user/:space/:id/load/:savename', this.HandleParsableRequestWithID);
 
       page('/:user/:space/load/:savename/:rev', this.HandleParsableLoadRequestWithRev);
@@ -360,6 +363,24 @@ class App {
 
   }
 
+  HandleWorldAbout(ctx){
+
+    console.log("about world");
+
+    let userAlias = ctx.params.user;
+    let worldName = ctx.params.space;
+    let saveName =  ctx.params.savename;
+
+    window._app.hideProgressBar();
+    window._app.hideUIControl();
+
+    document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
+
+    let worldApp = new WorldApp(userAlias, worldName, saveName);
+    worldApp.initWorldGUI();
+    
+  }
+
   HandleSetupIndex() {
 
     window._app.hideProgressBar();
@@ -644,10 +665,11 @@ class App {
                     $text: "Close",
                     onclick: function (e) {
                       console.log("close");
-                      if (type == "proto")
-                        window.location.pathname = "/" + user + '/worlds/protos'
-                      if (type == "state")
-                        window.location.pathname = "/" + user + '/worlds/states'
+                      history.back()
+                      // if (type == "proto")
+                      //   window.location.pathname = "/" + user + '/worlds/protos'
+                      // if (type == "state")
+                      //   window.location.pathname = "/" + user + '/worlds/states'
                     }
                   }
                 ]
@@ -1483,6 +1505,59 @@ class App {
       await this.deleteWorldState(worldName, stateEntry);
     }
   }
+
+
+  parseAppInstancesData(data) {
+
+    let jsonObj = JSON.parse(data);
+    var parsed = {};
+    let listData = {};
+
+    for (var prop in jsonObj) {
+        var name = prop.split('/')[1];
+        if (parsed[name]) {
+            parsed[name][prop] = jsonObj[prop];
+        } else {
+            parsed[name] = {};
+            parsed[name][prop] = jsonObj[prop];
+        }
+
+    }
+    //console.log(parsed);
+    for (var prop in parsed) {
+        var name = prop;
+        let obj = Object.entries(parsed[prop]);
+        var lists = {};
+        obj.forEach(el => {
+            if (el[1].loadInfo['save_name']) {
+                let saveName = prop + '/load/' + el[1].loadInfo.save_name;
+                if (!lists[saveName])
+                    lists[saveName] = {};
+                lists[saveName][el[0]] = el[1]
+            } else {
+                if (!lists[name])
+                    lists[name] = {};
+                lists[name][el[0]] = el[1]
+            }
+        });
+
+        // console.log(lists);
+
+        Object.entries(lists).forEach(list => {
+
+          listData[list[0]] = list[1];
+
+            // let element = document.getElementById(list[0] + 'List');
+            // if (element) {
+            //     element._setListData(list[1]);
+            // }
+        })
+    }
+
+    return listData
+    // console.log(data)
+}
+
 
 
 }
