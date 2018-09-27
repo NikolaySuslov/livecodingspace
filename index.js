@@ -41,7 +41,8 @@ function readDirR(dir) {
     } else {
       if ((dir.indexOf('.yaml') !== -1) || (dir.indexOf('.js') !== -1) || (dir.indexOf('.html') !== -1)
       || (dir.indexOf('.json') !== -1))
-       return dir.replace(__dirname + '/public/', "/")
+       // a little hack to resolve serving file paths under PC/Windows file system...
+       return dir.replace(__dirname, '').replace(/\\/g, '/').replace('/public/',"/");
     }
 }
 
