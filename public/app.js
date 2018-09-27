@@ -1683,6 +1683,8 @@ class App {
 
     var states = {};
 
+    let documents = await db.get('documents').once().then();
+    if(documents) {
     let docs = await db.get('documents').get(worldName).once().then();
     if (docs) {
       let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
@@ -1695,6 +1697,7 @@ class App {
         }
       }
     }
+  }
     return states
   }
 
