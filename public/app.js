@@ -3,7 +3,6 @@ import { Lang } from '/lib/polyglot/language.js';
 import { Helpers } from '/helpers.js';
 import { IndexApp } from '/web/index-app.js';
 import { WorldApp } from '/web/world-app.js';
-import { Header } from '/web/header.js';
 import { Widgets } from '/lib/widgets.js';
 
 
@@ -375,17 +374,11 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    let headerGUI = new Header();
-    headerGUI.init();
-
-    // if (!_app.indexApp) {
-    //   _app.indexApp = new IndexApp;
-    //   document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
-    // }
-
-    // if (!document.querySelector('#app')) {
-    //   _app.indexApp.initApp();
-    // }
+    if (!_app.indexApp) {
+      _app.indexApp = new IndexApp;
+      _app.indexApp.initHTML();
+      _app.indexApp.initApp();
+    }
 
     let worldApp = new WorldApp(userAlias, worldName, saveName);
     worldApp.initWorldGUI();
@@ -707,13 +700,16 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    let indexApp = new IndexApp;
-    indexApp.initApp();
- 
+    if (!_app.indexApp) {
+      _app.indexApp = new IndexApp;
+      _app.indexApp.initHTML();
+      _app.indexApp.initApp();
+    }
+
     if (type == 'protos') {
-      await indexApp.getWorldsProtosListForUser(user); 
+      await _app.indexApp.initWorldsProtosListForUser(user)//.getWorldsProtosListForUser(user); 
     } else if (type == 'states') {
-      await indexApp.getWorldsStatesListForUser(user);
+      await _app.indexApp.initWorldsStatesListForUser(user);
 
       //await _app.indexApp.getWorldsFromUserDB(user);
     }
@@ -727,11 +723,14 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-    let indexApp = new IndexApp;
+    if (!_app.indexApp) {
+      _app.indexApp = new IndexApp;
+      await _app.indexApp.generateFrontPage();
+      _app.indexApp.initHTML();
+    }
 
-    await indexApp.generateFrontPage();
-    indexApp.initApp();
-    await indexApp.getWorldsProtosListForUser('app'); 
+    _app.indexApp.initApp();
+    await _app.indexApp.initWorldsProtosListForUser('app');
     //await _app.indexApp.getAppDetailsFromDB();
 
   }
@@ -1068,6 +1067,8 @@ class App {
 
   async cloneWorldPrototype(worldName, userName, newWorldName) {
 
+    _app.showProgressBar();
+
     let userPub = await _LCSDB.get('users').get(userName).get('pub').once().then();
     //let worldProto = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
 
@@ -1104,9 +1105,44 @@ class App {
     }
     console.log(worldObj);
 
-    Object.keys(worldObj).forEach(el => {
-      _LCSUSER.get('worlds').get(worldID).get(el).put(worldObj[el]);
-    })
+    for (const el of Object.keys(worldObj)) {
+      await _LCSUSER.get('worlds').get(worldID).get(el).put(worldObj[el]).then();
+    }
+
+    _app.hideProgressBar();
+    console.log('CLONED!!!');
+
+    let appEl = document.createElement("div");
+    appEl.setAttribute("id", 'cloneLink');
+    let entry = document.querySelector('#worldActionsGUI');
+    if (entry) {
+      entry.appendChild(appEl);
+
+      document.querySelector("#cloneLink").$cell({
+        id: 'cloneLink',
+        $cell: true,
+        $type: "div",
+        $components: [
+          {
+            $type: "a",
+            class: "mdc-button mdc-button--raised mdc-card__action",
+            $text: "Go to new cloned World!",
+            onclick: function (e) {
+              window.location.pathname = '/' + userName + '/' + worldID + '/about'
+            }
+          }
+        ]
+      })
+    }
+
+    //window.location.pathname = '/' + userName + '/' + worldID + '/about'
+    //page()
+
+    // Object.keys(worldObj).forEach(el => {
+    //   _LCSUSER.get('worlds').get(worldID).get(el).put(worldObj[el]);
+    // })
+
+
   }
 
   async cloneWorldState(filename) {
@@ -1391,6 +1427,8 @@ class App {
     var progressbar = document.getElementById("load-progressbar");
     if (progressbar) {
       progressbar.classList.remove("visible");
+      progressbar.classList.remove("mdc-linear-progress--indeterminate");
+
       progressbar.classList.add("not-visible");
       progressbar.classList.add("mdc-linear-progress--closed");
 
@@ -1402,6 +1440,9 @@ class App {
 
     let progressbar = document.getElementById("load-progressbar");
     if (progressbar) {
+      progressbar.classList.remove("not-visible");
+      progressbar.classList.remove("mdc-linear-progress--closed");
+
       progressbar.classList.add("visible");
       progressbar.classList.add("mdc-linear-progress--indeterminate");
     }
@@ -1561,13 +1602,7 @@ class App {
       // console.log(lists);
 
       Object.entries(lists).forEach(list => {
-
         listData[list[0]] = list[1];
-
-        // let element = document.getElementById(list[0] + 'List');
-        // if (element) {
-        //     element._setListData(list[1]);
-        // }
       })
     }
 
@@ -1575,7 +1610,7 @@ class App {
     // console.log(data)
   }
 
-  async getAllStateWorldsInfoForUser (userAlias) {
+  async getAllStateWorldsInfoForUser(userAlias) {
 
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
 
@@ -1589,13 +1624,13 @@ class App {
     var states = {};
 
     let worldDocs = await db.get('worlds').once().then();
-    if(worldDocs) {
+    if (worldDocs) {
       let protos = Object.keys(worldDocs).filter(el => el !== '_');
-      
+
       if (protos) {
         for (const el of protos) {
           let info = await this.getSaveStates(userAlias, el);
-         if (Object.keys(info).length !== 0)
+          if (Object.keys(info).length !== 0)
             states[el] = info;
         }
       }
@@ -1620,32 +1655,19 @@ class App {
     var worlds = {};
 
     let worldDocs = await db.get('worlds').once().then();
-    if(worldDocs) {
+    if (worldDocs) {
       let protos = Object.keys(worldDocs).filter(el => el !== '_');
 
       if (protos) {
         for (const el of protos) {
           let info = await this.getWorldInfo(userAlias, el);
-         if (Object.keys(info).length !== 0)
-                worlds[el] = info;
+          if (Object.keys(info).length !== 0)
+            worlds[el] = info;
         }
       }
     }
 
     return worlds
-
-    // await db.get('worlds').once(async (proto, index) => {
-    //   let protos = Object.keys(proto).filter(el => el !== '_');
-    //  // console.log(protos);
-
-    //   if (protos) {
-    //     for (const el of protos) {
-    //       let info = await this.getWorldInfo(userAlias, el);
-    //       worlds[el] = info;
-    //     }
-    //   }
-    // }).then();
-    // return worlds
   }
 
   async getSaveStates(userAlias, worldName) {
@@ -1662,33 +1684,18 @@ class App {
     var states = {};
 
     let docs = await db.get('documents').get(worldName).once().then();
-    if(docs){
-    let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
-    if (saves) {
-      for (const el of saves) {
-        let stateName = el.split('/')[2].replace('_info_vwf_json', "");
-        let info = await this.getStateInfo(userAlias, worldName, stateName);
-        if (Object.keys(info).length !== 0)
-          states[stateName] = info;
+    if (docs) {
+      let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
+      if (saves) {
+        for (const el of saves) {
+          let stateName = el.split('/')[2].replace('_info_vwf_json', "");
+          let info = await this.getStateInfo(userAlias, worldName, stateName);
+          if (Object.keys(info).length !== 0)
+            states[stateName] = info;
+        }
       }
     }
-  }
-      return states
-
-
-  //  return await db.get('documents').get(worldName).once(async (save, index) => {
-  //     let saves = Object.keys(save).filter(el => el.includes('_info_vwf_json'));
-  //     //console.log(saves);
-  //     if (saves) {
-  //       for (const el of saves) {
-  //         let stateName = el.split('/')[2].replace('_info_vwf_json', "");
-  //         let info = await this.getStateInfo(userAlias, worldName, stateName);
-  //         states[stateName] = info;
-  //       }
-  //     }
-  //     return states
-  //   }).then();
-  //   //return states
+    return states
   }
 
   async getStateInfo(user, space, saveName) {

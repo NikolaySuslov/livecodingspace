@@ -1,5 +1,4 @@
 import page from '/lib/page.mjs';
-import { IndexApp } from '/web/index-app.js';
 
 class WorldApp {
     constructor(userAlias, worldName, saveName) {
@@ -11,9 +10,6 @@ class WorldApp {
 
         //this.worlds = {};
         this.language = _LangManager.language;
-
-        this.indexApp = new IndexApp;
-        this.indexApp.initApp();
           
     }
 
@@ -35,7 +31,7 @@ class WorldApp {
             },
             _makeWorldCard: function (data) {
                 let cardID = data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
-                let card = self.indexApp.createWorldCard(cardID, 'min');
+                let card = _app.indexApp.createWorldCard(cardID, 'min');
                 card._worldInfo = data[1];
                 card.$update();
                 return {
@@ -96,6 +92,13 @@ class WorldApp {
 
     async initWorldGUI() {
 
+    //  _LCSDB.on('auth',
+    //     function (ack) {
+
+    //             document.querySelector('#worldActionsGUI')._refresh();
+            
+    //     })
+
         let self = this;
         let user = this.userAlias;
         let space = this.worldName;
@@ -106,7 +109,7 @@ class WorldApp {
         document.body.appendChild(el);
 
         let cardID = user + '_' + space + '_' + (saveName ? saveName : "");
-        let worldCardGUI = this.indexApp.createWorldCard(cardID, 'full');
+        let worldCardGUI = _app.indexApp.createWorldCard(cardID, 'full');
         let worldStatesGUI = [];
 
         var info = {};
@@ -167,7 +170,7 @@ class WorldApp {
                         userGUI.push(
                             {
                                 $type: "a",
-                                class: "mdc-button mdc-button--compact mdc-card__action",
+                                class: "mdc-button mdc-button--raised mdc-card__action actionButton",
                                 $text: "Edit info",
                                 //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                 onclick: function (e) {
@@ -188,7 +191,7 @@ class WorldApp {
                             userGUI.push(
                                 {
                                     $type: "a",
-                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    class: "mdc-button mdc-button--raised mdc-card__action actionButton",
                                     $text: "Edit proto",
                                     //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                     onclick: function (e) {
@@ -200,7 +203,7 @@ class WorldApp {
                             userGUI.push(
                                 {
                                     $type: "a",
-                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    class: "mdc-button mdc-button--raised mdc-card__action actionButton",
                                     $text: "Delete",
                                     //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                     onclick: function (e) {
@@ -215,7 +218,7 @@ class WorldApp {
                             userGUI.push(
                                 {
                                     $type: "a",
-                                    class: "mdc-button mdc-button--compact mdc-card__action",
+                                    class: "mdc-button mdc-button--raised mdc-card__action actionButton",
                                     $text: "Delete",
                                     //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                     onclick: function (e) {
@@ -232,7 +235,7 @@ class WorldApp {
                         userGUI.push(
                             {
                                 $type: "a",
-                                class: "mdc-button mdc-button--compact mdc-card__action",
+                                class: "mdc-button mdc-button--raised mdc-card__action actionButton",
                                 $text: self.language.t('clone proto'),//"clone",
                                 onclick: function (e) {
                                     //console.log('clone');
@@ -273,14 +276,7 @@ class WorldApp {
             }
         }
 
-        _LCSDB.on('auth',
-            async function (ack) {
-                if (_LCSUSER.is) {
-                    document.querySelector('#worldActionsGUI')._refresh();
-                }
-            })
-
-
+    
         document.querySelector("#aboutWorld").$cell({
             id: 'aboutWorld',
             $cell: true,

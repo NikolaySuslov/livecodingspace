@@ -77,3 +77,7 @@ background: rgb(217, 217, 217);
 .divider {
   border-bottom-width: thin;
 }
+
+.actionButton {
+  margin: 3px
+}
