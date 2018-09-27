@@ -1610,7 +1610,60 @@ class App {
     // console.log(data)
   }
 
-  async getAllStateWorldsInfoForUser(userAlias) {
+  async getAllStateWorldsInfoForUser(userAlias, cb) {
+
+    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == userAlias)
+        db = _LCSUSER;
+    }
+
+
+    db.get('worlds').once().map().once((val, index)=>{
+      db.get('documents').get(index).once().map().once((res, datI)=>{
+
+        var doc = {};
+
+         if (datI.includes('_info_vwf_json')){
+
+          if (res && res !== 'null') {
+
+            if (res.file && res.file !== 'null') {
+  
+              let saveName = datI.split('/')[2].replace('_info_vwf_json', "");
+
+              let worldDesc = JSON.parse(res.file);
+              let root = Object.keys(worldDesc)[0];
+              var appInfo = worldDesc[root]['en'];
+  
+              let langID = localStorage.getItem('krestianstvo_locale');
+              if (langID) {
+                appInfo = worldDesc[root][langID]
+              }
+  
+              doc = {
+                'worldName': index + '/load/' + saveName,
+                'created': res.created ? res.created : res.modified,
+                'modified': res.modified,
+                'type': 'saveState',
+                'userAlias': userAlias,
+                'info': appInfo
+              }
+            }
+          }
+         }
+
+         if (Object.keys(doc).length !== 0)
+            cb({[doc.worldName]: doc})
+      })
+    })
+  }
+
+
+  async getAllStateWorldsInfoForUserPromise(userAlias) {
 
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
 
@@ -1641,7 +1694,54 @@ class App {
   }
 
 
-  async getAllProtoWorldsInfoForUser(userAlias) {
+  async getAllProtoWorldsInfoForUser (userAlias, cb){
+
+    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    var db = _LCSDB.user(userPub);
+
+    if (_LCSUSER.is) {
+      if (_LCSUSER.is.alias == userAlias)
+        db = _LCSUSER;
+    }
+
+    db.get('worlds').once().map().once((val, index)=>{
+      db.get('worlds').get(index).get('info_json').once(res=>{
+        
+       var doc = {};
+
+        if (res && res !== 'null') {
+
+          if (res.file && res.file !== 'null') {
+
+            let worldDesc = JSON.parse(res.file);
+            let root = Object.keys(worldDesc)[0];
+            var appInfo = worldDesc[root]['en'];
+
+            let langID = localStorage.getItem('krestianstvo_locale');
+            if (langID) {
+              appInfo = worldDesc[root][langID]
+            }
+
+           doc = {
+              'worldName': index,
+              'created': res.created ? res.created : res.modified,
+              'modified': res.modified,
+              'type': 'proto',
+              'userAlias': userAlias,
+              'info': appInfo
+            }
+          }
+        }
+
+        if (Object.keys(doc).length !== 0)
+            cb({[index]: doc})
+      })
+    })
+
+  }
+
+  async getAllProtoWorldsInfoForUserPromise(userAlias) {
 
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
 
