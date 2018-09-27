@@ -363,7 +363,7 @@ class App {
 
   }
 
-  HandleWorldAbout(ctx) {
+  async HandleWorldAbout(ctx) {
 
     console.log("about world");
 
@@ -381,7 +381,7 @@ class App {
     }
 
     let worldApp = new WorldApp(userAlias, worldName, saveName);
-    worldApp.initWorldGUI();
+    await worldApp.initWorldGUI();
 
   }
 
