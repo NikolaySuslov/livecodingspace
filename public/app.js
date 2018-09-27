@@ -156,10 +156,10 @@ class App {
 
     for (var index in filterProxyFiles) {
 
-      let el = filterProxyFiles[index];
+      let doc = filterProxyFiles[index];
 
-      if (el) {
-        var url = origin + el;
+      if (doc) {
+        var url = origin + doc;
         var entryName = url.replace(origin + '/defaults/', "").split(".").join("_");
         let proxyFile = await fetch(url, { method: 'get' });
         let responseText = await proxyFile.text();
@@ -180,8 +180,8 @@ class App {
     }
     console.log(proxyObj);
 
-    Object.keys(proxyObj).forEach(el => {
-      _LCSDB.user().get('proxy').get(el).put(proxyObj[el]);
+    Object.keys(proxyObj).forEach(res => {
+      _LCSDB.user().get('proxy').get(res).put(proxyObj[res]);
     })
 
   }
@@ -199,10 +199,10 @@ class App {
 
     for (var index in filterworldFiles) {
 
-      let el = filterworldFiles[index];
+      let doc = filterworldFiles[index];
 
-      if (el) {
-        let url = window.location.origin + el;
+      if (doc) {
+        let url = window.location.origin + doc;
         var entryName = url.replace(window.location.origin + '/defaults/worlds/', "").split(".").join("_");
 
         let worldName = entryName.split("/")[0];
@@ -241,10 +241,10 @@ class App {
 
     if (replace) {
 
-      Object.entries(worldsObj).forEach(el => {
+      Object.entries(worldsObj).forEach(res => {
 
-        let worldName = el[0];
-        let files = el[1];
+        let worldName = res[0];
+        let files = res[1];
         Object.entries(files).forEach(file => {
 
           _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
@@ -254,10 +254,10 @@ class App {
     } else {
       //force replace all default worlds
 
-      Object.entries(worldsObj).forEach(el => {
+      Object.entries(worldsObj).forEach(res => {
 
-        let worldName = el[0];
-        let files = el[1];
+        let worldName = res[0];
+        let files = res[1];
         Object.entries(files).forEach(file => {
 
           _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res => {
@@ -1046,8 +1046,8 @@ class App {
     let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json'));
 
     let worldObj = {};
-    for (var el in worldFileNames) {
-      let fn = worldFileNames[el];
+    for (var doc in worldFileNames) {
+      let fn = worldFileNames[doc];
       let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
       var data = {
         'file': res.file,
@@ -1093,9 +1093,9 @@ class App {
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
     let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published'));
 
-    for (var el in worldFileNames) {
+    for (var doc in worldFileNames) {
 
-      let fn = worldFileNames[el];
+      let fn = worldFileNames[doc];
       let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
       let data = {
         'file': res.file,
@@ -1105,8 +1105,8 @@ class App {
     }
     console.log(worldObj);
 
-    for (const el of Object.keys(worldObj)) {
-      await _LCSUSER.get('worlds').get(worldID).get(el).put(worldObj[el]).then();
+    for (const obj of Object.keys(worldObj)) {
+      await _LCSUSER.get('worlds').get(worldID).get(obj).put(worldObj[obj]).then();
     }
 
     _app.hideProgressBar();
@@ -1405,7 +1405,7 @@ class App {
 
   hideUIControl() {
 
-    var el = document.getElementById("ui-controls");
+    let el = document.getElementById("ui-controls");
     if (el) {
       el.classList.remove("visible");
       el.classList.add("not-visible");
@@ -1414,7 +1414,7 @@ class App {
 
   showUIControl() {
 
-    var el = document.getElementById("ui-controls");
+    let el = document.getElementById("ui-controls");
     if (el) {
       el.classList.remove("not-visible");
       el.classList.add("visible");
@@ -1493,10 +1493,10 @@ class App {
       if (documents) {
         let states = await _LCSUSER.get('documents').get(worldName).once().then();
         if (states) {
-          for (const el of Object.keys(states)) {
-            if (el !== '_') {
-              if (states[el]) {
-                await this.deleteWorldState(worldName, el);
+          for (const st of Object.keys(states)) {
+            if (st !== '_') {
+              if (states[st]) {
+                await this.deleteWorldState(worldName, st);
               }
 
             }

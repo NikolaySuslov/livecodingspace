@@ -289,7 +289,7 @@ class IndexApp {
 
                 _LCSUSER.get('profile').once(function (data) { console.log(data) })
 
-                var el = document.getElementById("loginGUI");
+                let el = document.getElementById("loginGUI");
                 if (el) {
                     el.remove();
                 }
