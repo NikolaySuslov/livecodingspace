@@ -5,7 +5,7 @@ import { Header } from '/web/header.js';
 class IndexApp {
     constructor() {
         console.log("app constructor");
-        
+
 
         this.worlds = {};
         this.language = _LangManager.language;
@@ -73,19 +73,19 @@ class IndexApp {
         document.body.appendChild(entry);
 
         let divs = ['appGUI', 'userLobby', 'main', 'worldsGUI'];
-        divs.forEach(el=>{
+        divs.forEach(el => {
             let appEl = document.createElement("div");
             appEl.setAttribute("id", el);
             entry.appendChild(appEl);
         })
-        
+
         //init CELL
         document.querySelector("#userLobby").$cell({
             id: "userLobby",
             $cell: true,
             $type: "div",
             $components: [],
-            $update: function(){
+            $update: function () {
                 this.$components = self.initUserGUI()
             }
         });
@@ -96,13 +96,13 @@ class IndexApp {
             $type: "div",
             $components: [],
             _comps: [],
-            _refresh: async function(data, fn){
+            _refresh: async function (data, fn) {
                 _app.showProgressBar();
                 this._comps = await fn.call(self, data);
                 this.$update();
                 _app.hideProgressBar();
             },
-            $update: async function(){
+            $update: async function () {
                 this.$components = this._comps
             }
         });
@@ -133,7 +133,7 @@ class IndexApp {
 
     }
 
-   initApp() {
+    initApp() {
 
         // let appElHTML = await _app.helpers.getHtmlText('/web/app.html');
         // appEl.innerHTML = appElHTML;
@@ -147,107 +147,130 @@ class IndexApp {
 
     }
 
-    async initWorldsProtosListForUser (userAlias) {
+    async initWorldsProtosListForUser(userAlias) {
         document.querySelector("#worldsGUI").$components = [];
         await document.querySelector("#worldsGUI")._refresh(userAlias, this.getWorldsProtosListForUser);
-     }
-
-    async initWorldsStatesListForUser (userAlias) {
-        document.querySelector("#worldsGUI").$components = [];
-        await document.querySelector("#worldsGUI")._refresh(userAlias, this.getWorldsStatesListForUser);
-     }
-
-
-    async getWorldsStatesListForUser (userAlias) {
-
-        let worldsGUI = [];
-
-        let data = await _app.getAllStateWorldsInfoForUser(userAlias);
-
-        Object.entries(data).forEach(el=>{
-
-            let worlds = this.createWorldsGUI(userAlias, el[0]);
-            worlds._states = el[1];
-            worlds.$update();
-            worldsGUI.push(worlds);
-
-        })
-
-       
-        return [ 
-                {
-                    $type: "div",
-                    class: "mdc-layout-grid",
-                    $components: [
-                        {
-                            $type: "div",
-                            class: "mdc-layout-grid__inner",
-                            $components: [
-                                {
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-                                        {
-                                            $type: "h1",
-                                            class: "mdc-typography--headline4",
-                                            $text: 'States for ' + userAlias
-                                        }
-                                    ]
-                                },
-                                {
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [].concat(worldsGUI)
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
     }
 
-    async getWorldsProtosListForUser (userAlias) {
+    async initWorldsStatesListForUser(userAlias) {
+        document.querySelector("#worldsGUI").$components = [];
+        await document.querySelector("#worldsGUI")._refresh(userAlias, this.getWorldsStatesListForUser);
+    }
 
 
-            let worldsGUI = [];
+    async getWorldsStatesListForUser(userAlias) {
 
-            let data = await _app.getAllProtoWorldsInfoForUser(userAlias);
+        let self = this;
+        let worldsGUI = [];
 
-            let worlds = this.createWorldsGUI(userAlias);
-            worlds._states = data;
-            worlds.$update();
+
+        let worlds = self.createWorldsGUI(userAlias, 'allStates' );
+
+        await _app.getAllStateWorldsInfoForUser(userAlias,
+            function (data) {
+            let doc = document.querySelector("#allStates_" + userAlias);
+            if (doc) {
+                Object.assign(doc._states, data);
+                doc.$update();
+            }
+        }
+            );
             worldsGUI.push(worlds);
-        
-            return [
+
+        // Object.entries(data).forEach(el => {
+
+        //     let worlds = this.createWorldsGUI(userAlias, el[0]);
+        //     worlds._states = el[1];
+        //     worlds.$update();
+        //     worldsGUI.push(worlds);
+
+        // })
+
+
+        return [
+            {
+                $type: "div",
+                class: "mdc-layout-grid",
+                $components: [
                     {
                         $type: "div",
-                        class: "mdc-layout-grid",
+                        class: "mdc-layout-grid__inner",
                         $components: [
                             {
                                 $type: "div",
-                                class: "mdc-layout-grid__inner",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
                                     {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                        $components: [
-                                            {
-                                                $type: "h1",
-                                                class: "mdc-typography--headline4",
-                                                $text: 'Worlds for ' + userAlias
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                        $components: [].concat(worldsGUI)
-                                    },
+                                        $type: "h1",
+                                        class: "mdc-typography--headline4",
+                                        $text: 'States for ' + userAlias
+                                    }
                                 ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [].concat(worldsGUI)
                             }
                         ]
                     }
                 ]
+            }
+        ]
+    }
+
+    async getWorldsProtosListForUser(userAlias) {
+
+
+        let worldsGUI = [];
+
+        //let data = await _app.getAllProtoWorldsInfoForUser(userAlias);
+
+        let worlds = this.createWorldsGUI(userAlias);
+
+        await _app.getAllProtoWorldsInfoForUser(userAlias, function (data) {
+
+            let doc = document.querySelector("#allWorlds_" + userAlias);
+            if (doc) {
+                Object.assign(doc._states, data);
+                doc.$update();
+            }
+        })
+
+        //worlds._states = data;
+        //worlds.$update();
+        worldsGUI.push(worlds);
+
+        return [
+            {
+                $type: "div",
+                class: "mdc-layout-grid",
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $type: "h1",
+                                        class: "mdc-typography--headline4",
+                                        $text: 'Worlds for ' + userAlias
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [].concat(worldsGUI)
+                            },
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 
     initUser() {
@@ -324,7 +347,7 @@ class IndexApp {
                             "onclick": function (e) {
                                 e.preventDefault();
                                 page("/app/worlds/states")
-                               // window.location.pathname = "/app/worlds/states"
+                                // window.location.pathname = "/app/worlds/states"
                                 //_app.indexApp.getAppDetailsFromDefaultDB('states');
 
                             }
@@ -406,9 +429,9 @@ class IndexApp {
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSUSER.is.alias;
-                                   // window.location.pathname = '/' + alias + '/worlds/states'
-                                   page('/' + alias + '/worlds/states');
-                                   // page.redirect('/' + alias + '/worlds/states');
+                                    // window.location.pathname = '/' + alias + '/worlds/states'
+                                    page('/' + alias + '/worlds/states');
+                                    // page.redirect('/' + alias + '/worlds/states');
                                     //_app.indexApp.getWorldsFromUserDB(alias);       
                                 }
                             })
@@ -431,7 +454,7 @@ class IndexApp {
                 ].concat(gui)
             }
         }
-    
+
         let loginGUI =
         {
             $type: "div",
@@ -476,9 +499,9 @@ class IndexApp {
                                         "label": "Login",
                                         "value": this._alias,
                                         "type": "text",
-                                        "init": function() {
-                                                    this._aliasField = new mdc.textField.MDCTextField(this);
-                                                }
+                                        "init": function () {
+                                            this._aliasField = new mdc.textField.MDCTextField(this);
+                                        }
                                     }),
                                 ]
                             },
@@ -496,7 +519,7 @@ class IndexApp {
                                         "label": "Password",
                                         "value": this._pass,
                                         "type": "password",
-                                        "init": function() {
+                                        "init": function () {
                                             this._passField = new mdc.textField.MDCTextField(this);
                                         }
                                     }),
@@ -567,7 +590,7 @@ class IndexApp {
                                                 });
                                             }
                                         })
-                                        
+
 
 
                                 ]
@@ -585,7 +608,7 @@ class IndexApp {
         //     $cell: true,
         //     $type: "div",
         //     $components: [ 
-               
+
         //         userGUI, loginGUI, _app.widgets.divider, worldGUI]
         // }
         // );
@@ -790,7 +813,7 @@ class IndexApp {
                     //             // document.querySelector('#worldStatesGUI')._refresh({});
                     //             // let data = await _app.getSaveStates(desc.userAlias, desc.worldName);
                     //             // document.querySelector('#worldStatesGUI')._refresh(data);
- 
+
                     //         }
                     //     }
                     // )
@@ -885,8 +908,8 @@ class IndexApp {
 
     createWorldsGUI(userAlias, worldName) {
         let self = this;
-        let id = worldName?worldName + '_' + userAlias: "allWorlds_" + userAlias
-        let headerText = worldName?'States for ' + worldName: 'All Worlds Protos'
+        let id = worldName ? worldName + '_' + userAlias : "allWorlds_" + userAlias
+        let headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
 
         let worldCards = {
             $cell: true,
@@ -943,11 +966,11 @@ class IndexApp {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
                                 $components: Object.entries(this._states)
-                                .filter(el =>Object.keys(el[1]).length !== 0)
-                                .sort(function (el1, el2) {
-                                    return parseInt(el2[1].created) - parseInt(el1[1].created)
-                                })
-                                .map(this._makeWorldCard)
+                                    .filter(el => Object.keys(el[1]).length !== 0)
+                                    .sort(function (el1, el2) {
+                                        return parseInt(el2[1].created) - parseInt(el1[1].created)
+                                    })
+                                    .map(this._makeWorldCard)
                             }
                         ]
 
