@@ -1713,7 +1713,7 @@ class App {
     let docName = 'savestate_/' + space + '/' + saveName + '_info_vwf_json';
     let world = await db.get('documents').get(space).get(docName).once().then();
     if (world) {
-      let doc = await db.get('documents').get(space).get(docName).once((res) => {
+      let res = await db.get('documents').get(space).get(docName).once().then();
 
         if (res && res !== 'null') {
 
@@ -1738,7 +1738,7 @@ class App {
             }
           }
         }
-      }).then();
+    
     }
     return info
   }
@@ -1760,7 +1760,7 @@ class App {
 
     let world = await db.get('worlds').get(space).once().then();
     if (world) {
-      let doc = await db.get('worlds').get(space).get('info_json').once((res) => {
+      let res = await db.get('worlds').get(space).get('info_json').once().then();
 
         if (res && res !== 'null') {
 
@@ -1786,7 +1786,7 @@ class App {
 
           }
         }
-      }).then();
+      
     }
 
     return info
