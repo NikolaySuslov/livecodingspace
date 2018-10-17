@@ -2,7 +2,12 @@
   "name": "livecodingspace",
   "description": "LiveCoding.Space",
   "version": "0.0.2",
+  "author": "Nikolai Suslov",
   "homepage": "https://livecoding.space",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NikolaySuslov/livecodingspace.git"
+  },
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -12,20 +17,21 @@
     "morgan": "^1.9.0",
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
-    "optimist": "0.6.1"
+    "optimist": "0.6.1",
+    "winston": "3.1.0",
+    "socket.io": "2.1.1",
+    "lcs-reflector": "0.0.2"
   },
-  "devDependencies": {},
   "scripts": {
-    "start": "node index.js -p 3007",
+    "start": "node index.js",
     "startSSL": "node index.js -p 3007 -s -k ./certs/server-key.pem -c ./certs/server-crt.pem -t ./certs/ca-crt.pem -w 12345"
   },
   "keywords": [
-    "krestianstvo"
+    "krestianstvo",
+    "webvr",
+    "webxr",
+    "live coding"
   ],
-  "author": "Nikolai Suslov",
-  "license": "MIT",
   "readmeFilename": "README.md",
-  "repository": {
-    "type": "git"
-  }
+  "license": "MIT"
 }

@@ -1,4 +1,5 @@
-
+// Copyright (c) 2018 Nikolai Suslov
+// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
     /*
      * Cell widgets 
      */

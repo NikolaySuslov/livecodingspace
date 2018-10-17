@@ -36,3 +36,10 @@ alongside with the existed features from the initial version ```v0.1```:
 <br>
 <img src="https://krestianstvo.org/lib/images/doc/images/avatar.jpg" width="400">
 <br>
+
+## Contributing
+
+All code is published under the [MIT license](https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+
+A different license may apply to other software included in this package. Please consult their respective license files for the terms of their individual licenses   
+[VWF Apache License](https://github.com/NikolaySuslov/livecodingspace/blob/master/VWF_LICENSE.md)

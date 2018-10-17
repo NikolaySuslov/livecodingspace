@@ -1,7 +1,8 @@
-/*
- * WebRTC.js : Behaves as a wrapper for vwf/view/rtcObject
- * Maps simple 1:1 signal model to a broadcast model using target and sender ids
- */
+// VWF & OSC driver
+// Copyright (c) 2018 Nikolai Suslov
+// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+// VWF Apache License (https://github.com/NikolaySuslov/livecodingspace/blob/master/VWF_LICENSE.md)
+//
 
 define(["module", "vwf/view", "vwf/view/oscjs/dist/osc-module"], function(module, view, osc) {
 

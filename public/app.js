@@ -1,3 +1,7 @@
+// Copyright (c) 2018 Nikolai Suslov
+// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+// VWF Apache License (https://github.com/NikolaySuslov/livecodingspace/blob/master/VWF_LICENSE.md)
+
 import page from '/lib/page.mjs';
 import { Lang } from '/lib/polyglot/language.js';
 import { Helpers } from '/helpers.js';

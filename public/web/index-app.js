@@ -1,3 +1,6 @@
+// Copyright (c) 2018 Nikolai Suslov
+// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+
 import page from '/lib/page.mjs';
 import { Header } from '/web/header.js';
 

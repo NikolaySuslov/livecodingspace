@@ -10,9 +10,13 @@ coverage
 build
 certs
 
-
 # misc
 .DS_Store
 .env
-npm-debug.log
 .vscode
+
+config.json
+
+npm-debug.log
+error.log
+combined.log
