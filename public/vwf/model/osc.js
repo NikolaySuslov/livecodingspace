@@ -1,7 +1,11 @@
-// VWF & OSC driver
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-// VWF Apache License (https://github.com/NikolaySuslov/livecodingspace/blob/master/VWF_LICENSE.md)
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+
+Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
+*/
+
+// VWF & OSC model driver
 
 define( [ "module", "vwf/model" ], function( module, model ) {
 

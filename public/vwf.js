@@ -1,7 +1,9 @@
 "use strict";
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-//
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+*/
+
 // Copyright 2012 United States Government, as represented by the Secretary of Defense, Under
 // Secretary of Defense (Personnel & Readiness).
 // 

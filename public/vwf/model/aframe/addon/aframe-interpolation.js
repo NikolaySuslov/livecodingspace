@@ -1,9 +1,8 @@
 
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-//
-//For using in LiveCoding.space and A-Frame 0.8.x
-/* globals AFRAME, performance, THREE */
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+*/
 
 if (typeof AFRAME === 'undefined') {
   throw new Error('Component attempted to register before AFRAME was available.');

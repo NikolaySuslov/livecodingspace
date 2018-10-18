@@ -1,5 +1,7 @@
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+*/
 
 
 var express = require('express'),
@@ -99,15 +101,12 @@ function startServer() {
     // app.listen(port);
     // console.log('Web server is started on port: '+ port);
 
-
-
     var conf = config.parseConfigOptions();
 
     var srv = conf.ssl ? https.createServer(conf.sslOptions, app).listen(conf.port) : http.createServer(app).listen(conf.port);
     console.log('Serving on port ' + conf.port);
 
     registerReflector(srv);
-
 
 }
 

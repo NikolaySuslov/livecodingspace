@@ -1,11 +1,12 @@
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 
-// Interpolate component for A-Frame VR. 
-// https://github.com/scenevr/aframe-interpolate-component.git
-// The MIT License (MIT) Copyright (c) 2015 Kevin Ngo
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-//
-//For using in LiveCoding.space and A-Frame 0.8.x
+The MIT License (MIT) Copyright (c) 2015 Kevin Ngo
+https://github.com/scenevr/aframe-interpolate-component.git
+*/
+
+// Interpolate component for A-Frame VR. For using in LiveCoding.space and A-Frame 0.8.x
 
 /* globals AFRAME, performance, THREE */
 

@@ -1,12 +1,13 @@
 "use strict";
 
-//VWF & Ohm driver
-// Copyright (c) 2018 Nikolai Suslov
-// Krestianstvo.org MIT license (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-// VWF Apache License (https://github.com/NikolaySuslov/livecodingspace/blob/master/VWF_LICENSE.md)
-//
-/// @module vwf/model/scenejs
-/// @requires vwf/model
+/*
+The MIT License (MIT)
+Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+
+Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
+*/
+
+// VWF & Ohm model driver
 
 define( [ "module", "vwf/model", "vwf/utility", "vwf/model/ohm/ohm.min"], function( module, model, utility, ohm) {
 
