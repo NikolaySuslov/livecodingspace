@@ -64,5 +64,5 @@ SOFTWARE.
 ----
 
 A different license may apply to other software included in this package. Please consult their respective license files for the terms of their individual licenses.   
-[VWF Apache 2.0 License](https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/VWF_LICENSE.md)  
-[ADL VW Sandbox Apache 2.0 License](https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/ADL_Sandbox_LICENSE.md)
+[VWF Apache 2.0 License](https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)  
+[ADL VW Sandbox Apache 2.0 License](https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_ADL_Sandbox.md)
