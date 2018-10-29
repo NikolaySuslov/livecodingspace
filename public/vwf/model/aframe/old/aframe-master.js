@@ -4146,6 +4146,137 @@ module.exports = function createQuadElements(array, opt) {
     return indices
 }
 },{"an-array":1,"dtype":12,"is-buffer":18}],35:[function(_dereq_,module,exports){
+
+
+/*:: type Attr = { [key: string]: string | number } */
+/*:: type Opts = { preserveNumbers: ?boolean } */
+
+/*
+
+style-attr
+====
+
+Very simple parsing and stringifying of style attributes.
+
+`parse`
+----
+
+Convert a style attribute string to an object.
+
+*/
+
+/*:: declare function parse (raw: string, opts: ?Opts): Attr */
+function parse(raw, opts) {
+  opts = opts || {};
+
+  var preserveNumbers = opts.preserveNumbers;
+  var trim = function (s) {
+    return s.trim();
+  };
+  var obj = {};
+
+  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
+    // split with `.indexOf` rather than `.split` because the value may also contain colons.
+    var pos = item.indexOf(':');
+    var key = item.substr(0, pos).trim();
+    var val = item.substr(pos + 1).trim();
+    if (preserveNumbers && isNumeric(val)) {
+      val = Number(val);
+    }
+
+    obj[key] = val;
+  });
+
+  return obj;
+}
+
+/*
+
+`isNumeric`
+----
+
+Check if a value is numeric.
+Via: https://stackoverflow.com/a/1830844/9324
+
+*/
+
+/*:: declare function isNumeric (n: any): boolean */
+
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/*
+
+`getKeyValueChunks`
+----
+
+Split a string into chunks matching `<key>: <value>`
+
+*/
+/*:: declare function getKeyValueChunks (raw: string): Array<string> */
+function getKeyValueChunks(raw) {
+  var chunks = [];
+  var offset = 0;
+  var sep = ';';
+  var hasUnclosedUrl = /url\([^\)]+$/;
+  var chunk = '';
+  var nextSplit;
+  while (offset < raw.length) {
+    nextSplit = raw.indexOf(sep, offset);
+    if (nextSplit === -1) {
+      nextSplit = raw.length;
+    }
+
+    chunk += raw.substring(offset, nextSplit);
+
+    // data URIs can contain semicolons, so make sure we get the whole thing
+    if (hasUnclosedUrl.test(chunk)) {
+      chunk += ';';
+      offset = nextSplit + 1;
+      continue;
+    }
+
+    chunks.push(chunk);
+    chunk = '';
+    offset = nextSplit + 1;
+  }
+
+  return chunks;
+}
+
+/*
+
+`stringify`
+----
+
+Convert an object into an attribute string
+
+*/
+/*:: declare function stringify (obj: Attr): string */
+function stringify(obj) {
+  return Object.keys(obj).map(function (key) {
+    return key + ':' + obj[key];
+  }).join(';');
+}
+
+/*
+
+`normalize`
+----
+
+Normalize an attribute string (eg. collapse duplicates)
+
+*/
+/*:: declare function normalize (str: string, opts: ?Opts): string */
+function normalize(str, opts) {
+  return stringify(parse(str, opts));
+}
+
+module.exports.parse = parse;
+module.exports.stringify = stringify;
+module.exports.normalize = normalize;
+},{}],36:[function(_dereq_,module,exports){
 var createLayout = _dereq_('layout-bmfont-text')
 var inherits = _dereq_('inherits')
 var createIndices = _dereq_('quad-indices')
@@ -4271,7 +4402,7 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
-},{"./lib/utils":36,"./lib/vertices":37,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":34,"three-buffer-vertex-data":38}],36:[function(_dereq_,module,exports){
+},{"./lib/utils":37,"./lib/vertices":38,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":34,"three-buffer-vertex-data":39}],37:[function(_dereq_,module,exports){
 var itemSize = 2
 var box = { min: [0, 0], max: [0, 0] }
 
@@ -4311,7 +4442,7 @@ module.exports.computeSphere = function (positions, output) {
   output.radius = length / 2
 }
 
-},{}],37:[function(_dereq_,module,exports){
+},{}],38:[function(_dereq_,module,exports){
 module.exports.pages = function pages (glyphs) {
   var pages = new Float32Array(glyphs.length * 4 * 1)
   var i = 0
@@ -4390,7 +4521,7 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
-},{}],38:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 var flatten = _dereq_('flatten-vertex-data')
 var warned = false;
 
@@ -4490,7 +4621,7 @@ function rebuildAttribute (attrib, data, itemSize) {
   return false
 }
 
-},{"flatten-vertex-data":13}],39:[function(_dereq_,module,exports){
+},{"flatten-vertex-data":13}],40:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -51841,7 +51972,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 })));
 
-},{}],40:[function(_dereq_,module,exports){
+},{}],41:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author Mugen87 / https://github.com/Mugen87
@@ -55729,520 +55860,6 @@ THREE.ColladaLoader.prototype = {
 
 	}
 
-};
-
-},{}],41:[function(_dereq_,module,exports){
-// Copyright 2016 The Draco Authors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-'use strict';
-
-/**
- * @param {THREE.LoadingManager} manager
- */
-THREE.DRACOLoader = function(manager) {
-    this.timeLoaded = 0;
-    this.manager = manager || THREE.DefaultLoadingManager;
-    this.materials = null;
-    this.verbosity = 0;
-    this.attributeOptions = {};
-    this.drawMode = THREE.TrianglesDrawMode;
-    // Native Draco attribute type to Three.JS attribute type.
-    this.nativeAttributeMap = {
-      'position' : 'POSITION',
-      'normal' : 'NORMAL',
-      'color' : 'COLOR',
-      'uv' : 'TEX_COORD'
-    };
-};
-
-THREE.DRACOLoader.prototype = {
-
-    constructor: THREE.DRACOLoader,
-
-    load: function(url, onLoad, onProgress, onError) {
-        var scope = this;
-        var loader = new THREE.FileLoader(scope.manager);
-        loader.setPath(this.path);
-        loader.setResponseType('arraybuffer');
-        loader.load(url, function(blob) {
-            scope.decodeDracoFile(blob, onLoad);
-        }, onProgress, onError);
-    },
-
-    setPath: function(value) {
-        this.path = value;
-        return this;
-    },
-
-    setVerbosity: function(level) {
-        this.verbosity = level;
-        return this;
-    },
-
-    /**
-     *  Sets desired mode for generated geometry indices.
-     *  Can be either:
-     *      THREE.TrianglesDrawMode
-     *      THREE.TriangleStripDrawMode
-     */
-    setDrawMode: function(drawMode) {
-        this.drawMode = drawMode;
-        return this;
-    },
-
-    /**
-     * Skips dequantization for a specific attribute.
-     * |attributeName| is the THREE.js name of the given attribute type.
-     * The only currently supported |attributeName| is 'position', more may be
-     * added in future.
-     */
-    setSkipDequantization: function(attributeName, skip) {
-        var skipDequantization = true;
-        if (typeof skip !== 'undefined')
-          skipDequantization = skip;
-        this.getAttributeOptions(attributeName).skipDequantization =
-            skipDequantization;
-        return this;
-    },
-
-    /**
-     * |attributeUniqueIdMap| specifies attribute unique id for an attribute in
-     * the geometry to be decoded. The name of the attribute must be one of the
-     * supported attribute type in Three.JS, including:
-     *     'position',
-     *     'color',
-     *     'normal',
-     *     'uv',
-     *     'uv2',
-     *     'skinIndex',
-     *     'skinWeight'.
-     * The format is:
-     *     attributeUniqueIdMap[attributeName] = attributeId
-     */
-    decodeDracoFile: function(rawBuffer, callback, attributeUniqueIdMap,
-                              attributeTypeMap) {
-      var scope = this;
-      THREE.DRACOLoader.getDecoderModule()
-          .then( function ( module ) {
-            scope.decodeDracoFileInternal( rawBuffer, module.decoder, callback,
-              attributeUniqueIdMap || {}, attributeTypeMap || {});
-          });
-    },
-
-    decodeDracoFileInternal: function(rawBuffer, dracoDecoder, callback,
-                                      attributeUniqueIdMap, attributeTypeMap) {
-      /*
-       * Here is how to use Draco Javascript decoder and get the geometry.
-       */
-      var buffer = new dracoDecoder.DecoderBuffer();
-      buffer.Init(new Int8Array(rawBuffer), rawBuffer.byteLength);
-      var decoder = new dracoDecoder.Decoder();
-
-      /*
-       * Determine what type is this file: mesh or point cloud.
-       */
-      var geometryType = decoder.GetEncodedGeometryType(buffer);
-      if (geometryType == dracoDecoder.TRIANGULAR_MESH) {
-        if (this.verbosity > 0) {
-          console.log('Loaded a mesh.');
-        }
-      } else if (geometryType == dracoDecoder.POINT_CLOUD) {
-        if (this.verbosity > 0) {
-          console.log('Loaded a point cloud.');
-        }
-      } else {
-        var errorMsg = 'THREE.DRACOLoader: Unknown geometry type.'
-        console.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-      callback(this.convertDracoGeometryTo3JS(dracoDecoder, decoder,
-          geometryType, buffer, attributeUniqueIdMap, attributeTypeMap));
-    },
-
-    addAttributeToGeometry: function(dracoDecoder, decoder, dracoGeometry,
-                                     attributeName, attributeType, attribute,
-                                     geometry, geometryBuffer) {
-      if (attribute.ptr === 0) {
-        var errorMsg = 'THREE.DRACOLoader: No attribute ' + attributeName;
-        console.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-
-      var numComponents = attribute.num_components();
-      var numPoints = dracoGeometry.num_points();
-      var numValues = numPoints * numComponents;
-      var attributeData;
-      var TypedBufferAttribute;
-
-      switch ( attributeType ) {
-
-        case Float32Array:
-          attributeData = new dracoDecoder.DracoFloat32Array();
-          decoder.GetAttributeFloatForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Float32Array( numValues );
-          TypedBufferAttribute = THREE.Float32BufferAttribute;
-          break;
-
-        case Int8Array:
-          attributeData = new dracoDecoder.DracoInt8Array();
-          decoder.GetAttributeInt8ForAllPoints(
-            dracoGeometry, attribute, attributeData );
-          geometryBuffer[ attributeName ] = new Int8Array( numValues );
-          TypedBufferAttribute = THREE.Int8BufferAttribute;
-          break;
-
-        case Int16Array:
-          attributeData = new dracoDecoder.DracoInt16Array();
-          decoder.GetAttributeInt16ForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Int16Array( numValues );
-          TypedBufferAttribute = THREE.Int16BufferAttribute;
-          break;
-
-        case Int32Array:
-          attributeData = new dracoDecoder.DracoInt32Array();
-          decoder.GetAttributeInt32ForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Int32Array( numValues );
-          TypedBufferAttribute = THREE.Int32BufferAttribute;
-          break;
-
-        case Uint8Array:
-          attributeData = new dracoDecoder.DracoUInt8Array();
-          decoder.GetAttributeUInt8ForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Uint8Array( numValues );
-          TypedBufferAttribute = THREE.Uint8BufferAttribute;
-          break;
-
-        case Uint16Array:
-          attributeData = new dracoDecoder.DracoUInt16Array();
-          decoder.GetAttributeUInt16ForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Uint16Array( numValues );
-          TypedBufferAttribute = THREE.Uint16BufferAttribute;
-          break;
-
-        case Uint32Array:
-          attributeData = new dracoDecoder.DracoUInt32Array();
-          decoder.GetAttributeUInt32ForAllPoints(
-            dracoGeometry, attribute, attributeData);
-          geometryBuffer[ attributeName ] = new Uint32Array( numValues );
-          TypedBufferAttribute = THREE.Uint32BufferAttribute;
-          break;
-
-        default:
-          var errorMsg = 'THREE.DRACOLoader: Unexpected attribute type.';
-          console.error( errorMsg );
-          throw new Error( errorMsg );
-
-      }
-
-      // Copy data from decoder.
-      for (var i = 0; i < numValues; i++) {
-        geometryBuffer[attributeName][i] = attributeData.GetValue(i);
-      }
-      // Add attribute to THREEJS geometry for rendering.
-      geometry.addAttribute(attributeName,
-          new TypedBufferAttribute(geometryBuffer[attributeName],
-            numComponents));
-      dracoDecoder.destroy(attributeData);
-    },
-
-    convertDracoGeometryTo3JS: function(dracoDecoder, decoder, geometryType,
-                                        buffer, attributeUniqueIdMap,
-                                        attributeTypeMap) {
-        if (this.getAttributeOptions('position').skipDequantization === true) {
-          decoder.SkipAttributeTransform(dracoDecoder.POSITION);
-        }
-        var dracoGeometry;
-        var decodingStatus;
-        const start_time = performance.now();
-        if (geometryType === dracoDecoder.TRIANGULAR_MESH) {
-          dracoGeometry = new dracoDecoder.Mesh();
-          decodingStatus = decoder.DecodeBufferToMesh(buffer, dracoGeometry);
-        } else {
-          dracoGeometry = new dracoDecoder.PointCloud();
-          decodingStatus =
-              decoder.DecodeBufferToPointCloud(buffer, dracoGeometry);
-        }
-        if (!decodingStatus.ok() || dracoGeometry.ptr == 0) {
-          var errorMsg = 'THREE.DRACOLoader: Decoding failed: ';
-          errorMsg += decodingStatus.error_msg();
-          console.error(errorMsg);
-          dracoDecoder.destroy(decoder);
-          dracoDecoder.destroy(dracoGeometry);
-          throw new Error(errorMsg);
-        }
-
-        var decode_end = performance.now();
-        dracoDecoder.destroy(buffer);
-        /*
-         * Example on how to retrieve mesh and attributes.
-         */
-        var numFaces;
-        if (geometryType == dracoDecoder.TRIANGULAR_MESH) {
-          numFaces = dracoGeometry.num_faces();
-          if (this.verbosity > 0) {
-            console.log('Number of faces loaded: ' + numFaces.toString());
-          }
-        } else {
-          numFaces = 0;
-        }
-
-        var numPoints = dracoGeometry.num_points();
-        var numAttributes = dracoGeometry.num_attributes();
-        if (this.verbosity > 0) {
-          console.log('Number of points loaded: ' + numPoints.toString());
-          console.log('Number of attributes loaded: ' +
-              numAttributes.toString());
-        }
-
-        // Verify if there is position attribute.
-        var posAttId = decoder.GetAttributeId(dracoGeometry,
-                                              dracoDecoder.POSITION);
-        if (posAttId == -1) {
-          var errorMsg = 'THREE.DRACOLoader: No position attribute found.';
-          console.error(errorMsg);
-          dracoDecoder.destroy(decoder);
-          dracoDecoder.destroy(dracoGeometry);
-          throw new Error(errorMsg);
-        }
-        var posAttribute = decoder.GetAttribute(dracoGeometry, posAttId);
-
-        // Structure for converting to THREEJS geometry later.
-        var geometryBuffer = {};
-        // Import data to Three JS geometry.
-        var geometry = new THREE.BufferGeometry();
-
-        // Add native Draco attribute type to geometry.
-        for (var attributeName in this.nativeAttributeMap) {
-          // The native attribute type is only used when no unique Id is
-          // provided. For example, loading .drc files.
-          if (attributeUniqueIdMap[attributeName] === undefined) {
-            var attId = decoder.GetAttributeId(dracoGeometry,
-                dracoDecoder[this.nativeAttributeMap[attributeName]]);
-            if (attId !== -1) {
-              if (this.verbosity > 0) {
-                console.log('Loaded ' + attributeName + ' attribute.');
-              }
-              var attribute = decoder.GetAttribute(dracoGeometry, attId);
-              this.addAttributeToGeometry(dracoDecoder, decoder, dracoGeometry,
-                  attributeName, Float32Array, attribute, geometry, geometryBuffer);
-            }
-          }
-        }
-
-        // Add attributes of user specified unique id. E.g. GLTF models.
-        for (var attributeName in attributeUniqueIdMap) {
-          var attributeType = attributeTypeMap[attributeName] || Float32Array;
-          var attributeId = attributeUniqueIdMap[attributeName];
-          var attribute = decoder.GetAttributeByUniqueId(dracoGeometry,
-                                                         attributeId);
-          this.addAttributeToGeometry(dracoDecoder, decoder, dracoGeometry,
-              attributeName, attributeType, attribute, geometry, geometryBuffer);
-        }
-
-        // For mesh, we need to generate the faces.
-        if (geometryType == dracoDecoder.TRIANGULAR_MESH) {
-          if (this.drawMode === THREE.TriangleStripDrawMode) {
-            var stripsArray = new dracoDecoder.DracoInt32Array();
-            var numStrips = decoder.GetTriangleStripsFromMesh(
-                dracoGeometry, stripsArray);
-            geometryBuffer.indices = new Uint32Array(stripsArray.size());
-            for (var i = 0; i < stripsArray.size(); ++i) {
-              geometryBuffer.indices[i] = stripsArray.GetValue(i);
-            }
-            dracoDecoder.destroy(stripsArray);
-          } else {
-            var numIndices = numFaces * 3;
-            geometryBuffer.indices = new Uint32Array(numIndices);
-            var ia = new dracoDecoder.DracoInt32Array();
-            for (var i = 0; i < numFaces; ++i) {
-              decoder.GetFaceFromMesh(dracoGeometry, i, ia);
-              var index = i * 3;
-              geometryBuffer.indices[index] = ia.GetValue(0);
-              geometryBuffer.indices[index + 1] = ia.GetValue(1);
-              geometryBuffer.indices[index + 2] = ia.GetValue(2);
-            }
-            dracoDecoder.destroy(ia);
-         }
-        }
-
-        geometry.drawMode = this.drawMode;
-        if (geometryType == dracoDecoder.TRIANGULAR_MESH) {
-          geometry.setIndex(new(geometryBuffer.indices.length > 65535 ?
-                THREE.Uint32BufferAttribute : THREE.Uint16BufferAttribute)
-              (geometryBuffer.indices, 1));
-        }
-        var posTransform = new dracoDecoder.AttributeQuantizationTransform();
-        if (posTransform.InitFromAttribute(posAttribute)) {
-          // Quantized attribute. Store the quantization parameters into the
-          // THREE.js attribute.
-          geometry.attributes['position'].isQuantized = true;
-          geometry.attributes['position'].maxRange = posTransform.range();
-          geometry.attributes['position'].numQuantizationBits =
-              posTransform.quantization_bits();
-          geometry.attributes['position'].minValues = new Float32Array(3);
-          for (var i = 0; i < 3; ++i) {
-            geometry.attributes['position'].minValues[i] =
-                posTransform.min_value(i);
-          }
-        }
-        dracoDecoder.destroy(posTransform);
-        dracoDecoder.destroy(decoder);
-        dracoDecoder.destroy(dracoGeometry);
-
-        this.decode_time = decode_end - start_time;
-        this.import_time = performance.now() - decode_end;
-
-        if (this.verbosity > 0) {
-          console.log('Decode time: ' + this.decode_time);
-          console.log('Import time: ' + this.import_time);
-        }
-        return geometry;
-    },
-
-    isVersionSupported: function(version, callback) {
-        THREE.DRACOLoader.getDecoderModule()
-            .then( function ( module ) {
-              callback( module.decoder.isVersionSupported( version ) );
-            });
-    },
-
-    getAttributeOptions: function(attributeName) {
-        if (typeof this.attributeOptions[attributeName] === 'undefined')
-          this.attributeOptions[attributeName] = {};
-        return this.attributeOptions[attributeName];
-    }
-};
-
-THREE.DRACOLoader.decoderPath = './';
-THREE.DRACOLoader.decoderConfig = {};
-THREE.DRACOLoader.decoderModulePromise = null;
-
-/**
- * Sets the base path for decoder source files.
- * @param {string} path
- */
-THREE.DRACOLoader.setDecoderPath = function ( path ) {
-  THREE.DRACOLoader.decoderPath = path;
-};
-
-/**
- * Sets decoder configuration and releases singleton decoder module. Module
- * will be recreated with the next decoding call.
- * @param {Object} config
- */
-THREE.DRACOLoader.setDecoderConfig = function ( config ) {
-  var wasmBinary = THREE.DRACOLoader.decoderConfig.wasmBinary;
-  THREE.DRACOLoader.decoderConfig = config || {};
-  THREE.DRACOLoader.releaseDecoderModule();
-
-  // Reuse WASM binary.
-  if ( wasmBinary ) THREE.DRACOLoader.decoderConfig.wasmBinary = wasmBinary;
-};
-
-/**
- * Releases the singleton DracoDecoderModule instance. Module will be recreated
- * with the next decoding call.
- */
-THREE.DRACOLoader.releaseDecoderModule = function () {
-  THREE.DRACOLoader.decoderModulePromise = null;
-};
-
-/**
- * Gets WebAssembly or asm.js singleton instance of DracoDecoderModule
- * after testing for browser support. Returns Promise that resolves when
- * module is available.
- * @return {Promise<{decoder: DracoDecoderModule}>}
- */
-THREE.DRACOLoader.getDecoderModule = function () {
-  var scope = this;
-  var path = THREE.DRACOLoader.decoderPath;
-  var config = THREE.DRACOLoader.decoderConfig;
-  var promise = THREE.DRACOLoader.decoderModulePromise;
-
-  if ( promise ) return promise;
-
-  // Load source files.
-  if ( typeof DracoDecoderModule !== 'undefined' ) {
-    // Loaded externally.
-    promise = Promise.resolve();
-  } else if ( typeof WebAssembly !== 'object' || config.type === 'js' ) {
-    // Load with asm.js.
-    promise = THREE.DRACOLoader._loadScript( path + 'draco_decoder.js' );
-  } else {
-    // Load with WebAssembly.
-    config.wasmBinaryFile = path + 'draco_decoder.wasm';
-    promise = THREE.DRACOLoader._loadScript( path + 'draco_wasm_wrapper.js' )
-        .then( function () {
-          return THREE.DRACOLoader._loadArrayBuffer( config.wasmBinaryFile );
-        } )
-        .then( function ( wasmBinary ) {
-          config.wasmBinary = wasmBinary;
-        } );
-  }
-
-  // Wait for source files, then create and return a decoder.
-  promise = promise.then( function () {
-    return new Promise( function ( resolve ) {
-      config.onModuleLoaded = function ( decoder ) {
-        scope.timeLoaded = performance.now();
-        // Module is Promise-like. Wrap before resolving to avoid loop.
-        resolve( { decoder: decoder } );
-      };
-      DracoDecoderModule( config );
-    } );
-  } );
-
-  THREE.DRACOLoader.decoderModulePromise = promise;
-  return promise;
-};
-
-/**
- * @param {string} src
- * @return {Promise}
- */
-THREE.DRACOLoader._loadScript = function ( src ) {
-  var prevScript = document.getElementById( 'decoder_script' );
-  if ( prevScript !== null ) {
-    prevScript.parentNode.removeChild( prevScript );
-  }
-  var head = document.getElementsByTagName( 'head' )[ 0 ];
-  var script = document.createElement( 'script' );
-  script.id = 'decoder_script';
-  script.type = 'text/javascript';
-  script.src = src;
-  return new Promise( function ( resolve ) {
-    script.onload = resolve;
-    head.appendChild( script );
-  });
-};
-
-/**
- * @param {string} src
- * @return {Promise}
- */
-THREE.DRACOLoader._loadArrayBuffer = function ( src ) {
-  var loader = new THREE.FileLoader();
-  loader.setResponseType( 'arraybuffer' );
-  return new Promise( function( resolve, reject ) {
-    loader.load( src, resolve, undefined, reject );
-  });
 };
 
 },{}],42:[function(_dereq_,module,exports){
@@ -64696,7 +64313,7 @@ module.exports={
   ],
   "dependencies": {
     "animejs": "^2.2.0",
-    "browserify-css": "^0.8.4",
+    "browserify-css": "^0.8.2",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7f3744be954574caf3072a5fd260ca90",
@@ -64932,7 +64549,7 @@ module.exports.Component = registerComponent('animation', {
 
   pause: function () {
     this.paused = true;
-    this.pausedWasPlaying = this.animationIsPlaying;
+    this.pausedWasPlaying = true;
     this.pauseAnimation();
     this.removeEventListeners();
   },
@@ -65407,7 +65024,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":102,"../lib/three":151,"../utils":174,"animejs":2}],53:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils":172,"animejs":2}],53:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -65499,7 +65116,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151}],54:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150}],54:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -65533,7 +65150,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151}],55:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150}],55:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -65911,7 +65528,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":102,"../utils/":174}],56:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/":172}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -66089,7 +65706,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":168,"../utils/tracked-controls":180}],57:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -66265,7 +65882,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":168,"../utils/tracked-controls":180}],58:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],58:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -66329,10 +65946,12 @@ module.exports.Component = registerComponent('geometry', {
 
   /**
    * Update geometry component schema based on geometry type.
+   *
+   * @param {object} data - New data passed by Component.
    */
   updateSchema: function (data) {
-    var currentGeometryType = this.oldData && this.oldData.primitive;
     var newGeometryType = data.primitive;
+    var currentGeometryType = this.data && this.data.primitive;
     var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
 
     // Geometry has no schema.
@@ -66344,7 +65963,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":102,"../core/geometry":103,"../lib/three":151}],59:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/geometry":103,"../lib/three":150}],59:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -66357,12 +65976,8 @@ module.exports.Component = registerComponent('gltf-model', {
   schema: {type: 'model'},
 
   init: function () {
-    var dracoLoader = this.system.getDRACOLoader();
     this.model = null;
     this.loader = new THREE.GLTFLoader();
-    if (dracoLoader) {
-      this.loader.setDRACOLoader(dracoLoader);
-    }
   },
 
   update: function () {
@@ -66392,7 +66007,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/":174}],60:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/":172}],60:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -66893,12 +66508,12 @@ registerComponent('laser-controls', {
     },
 
     'gearvr-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
     'oculus-go-controls': {
-      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      cursor: {downEvents: ['trackpaddown', 'triggerdown'], upEvents: ['trackpadup', 'triggerup']},
       raycaster: {origin: {x: 0, y: 0.0005, z: 0}}
     },
 
@@ -66918,7 +66533,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/":174}],63:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/":172}],63:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -67195,7 +66810,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils":174,"../utils/bind":168,"../utils/debug":170}],64:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils":172,"../utils/bind":166,"../utils/debug":168}],64:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -67642,7 +67257,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":102,"../core/shader":112,"../lib/three":151}],66:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/shader":111,"../lib/three":150}],66:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -67650,6 +67265,7 @@ var bind = utils.bind;
 var PolyfillControls = _dereq_('../utils').device.PolyfillControls;
 
 // To avoid recalculation at every mouse movement tick
+var GRABBING_CLASS = 'a-grabbing';
 var PI_2 = Math.PI / 2;
 
 var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
@@ -67665,7 +67281,6 @@ module.exports.Component = registerComponent('look-controls', {
     hmdEnabled: {default: true},
     pointerLockEnabled: {default: false},
     reverseMouseDrag: {default: false},
-    reverseTouchDrag: {default: false},
     touchEnabled: {default: true}
   },
 
@@ -67892,7 +67507,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     this.mouseDown = true;
     this.previousMouseEvent = evt;
-    this.showGrabbingCursor();
+    document.body.classList.add(GRABBING_CLASS);
 
     if (this.data.pointerLockEnabled && !this.pointerLocked) {
       if (canvasEl.requestPointerLock) {
@@ -67904,25 +67519,11 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   /**
-   * Shows grabbing cursor on scene
-   */
-  showGrabbingCursor: function () {
-    this.el.sceneEl.canvas.style.cursor = 'grabbing';
-  },
-
-  /**
-   * Hides grabbing cursor on scene
-   */
-  hideGrabbingCursor: function () {
-    this.el.sceneEl.canvas.style.cursor = '';
-  },
-
-  /**
    * Register mouse up to detect release of mouse drag.
    */
   onMouseUp: function () {
     this.mouseDown = false;
-    this.hideGrabbingCursor();
+    document.body.classList.remove(GRABBING_CLASS);
   },
 
   /**
@@ -67941,7 +67542,6 @@ module.exports.Component = registerComponent('look-controls', {
    * Translate touch move to Y-axis rotation.
    */
   onTouchMove: function (evt) {
-    var direction;
     var canvas = this.el.sceneEl.canvas;
     var deltaY;
     var yawObject = this.yawObject;
@@ -67950,9 +67550,8 @@ module.exports.Component = registerComponent('look-controls', {
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
-    direction = this.data.reverseTouchDrag ? 1 : -1;
     // Limit touch orientaion to to yaw (y axis).
-    yawObject.rotation.y -= deltaY * 0.5 * direction;
+    yawObject.rotation.y -= deltaY * 0.5;
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -68055,7 +67654,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils":174,"../utils/":174}],67:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils":172,"../utils/":172}],67:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -68111,16 +67710,10 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateSchema: function (data) {
-    var currentShader;
-    var newShader;
-    var schema;
-    var shader;
-
-    newShader = data && data.shader;
-    currentShader = this.oldData && this.oldData.shader;
-    shader = newShader || currentShader;
-    schema = shaders[shader] && shaders[shader].schema;
-
+    var newShader = data.shader;
+    var currentShader = this.data && this.data.shader;
+    var shader = newShader || currentShader;
+    var schema = shaders[shader] && shaders[shader].schema;
     if (!schema) { error('Unknown shader schema ' + shader); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
@@ -68128,35 +67721,28 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
-    var key;
-    var sceneEl = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
-    var tickProperties;
-
-    function tickTime (time, delta) {
-      var key;
-      for (key in tickProperties) {
+    var sceneEl = this.el.sceneEl;
+    var tickProperties = {};
+    var tick = function (time, delta) {
+      Object.keys(tickProperties).forEach(function update (key) {
         tickProperties[key] = time;
-      }
+      });
       self.shader.update(tickProperties);
-    }
-
+    };
     this.tick = undefined;
-
-    tickProperties = {};
-    for (key in schema) {
+    Object.keys(schema).forEach(function (key) {
       if (schema[key].type === 'time') {
-        this.tick = tickTime;
+        self.tick = tick;
         tickProperties[key] = true;
       }
-    }
-
+    });
     if (!sceneEl) { return; }
-    if (this.tick) {
-      sceneEl.addBehavior(this);
-    } else {
+    if (!this.tick) {
       sceneEl.removeBehavior(this);
+    } else {
+      sceneEl.addBehavior(this);
     }
   },
 
@@ -68182,7 +67768,6 @@ module.exports.Component = registerComponent('material', {
   updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
-    var oldDataHasKeys;
 
     // Base material properties.
     material.alphaTest = data.alphaTest;
@@ -68197,8 +67782,7 @@ module.exports.Component = registerComponent('material', {
     material.blending = parseBlending(data.blending);
 
     // Check if material needs update.
-    for (oldDataHasKeys in oldData) { break; }
-    if (oldDataHasKeys &&
+    if (Object.keys(oldData).length &&
         (oldData.alphaTest !== data.alphaTest ||
          oldData.side !== data.side ||
          oldData.vertexColors !== data.vertexColors)) {
@@ -68324,7 +67908,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":102,"../core/shader":112,"../lib/three":151,"../utils/":174}],68:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/shader":111,"../lib/three":150,"../utils/":172}],68:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -68348,16 +67932,12 @@ module.exports.Component = registerComponent('obj-model', {
   update: function () {
     var data = this.data;
     if (!data.obj) { return; }
-    this.resetMesh();
+    this.remove();
     this.loadObj(data.obj, data.mtl);
   },
 
   remove: function () {
     if (!this.model) { return; }
-    this.resetMesh();
-  },
-
-  resetMesh: function () {
     this.el.removeObject3D('mesh');
   },
 
@@ -68404,7 +67984,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/debug":170}],69:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/debug":168}],69:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -68576,7 +68156,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/bind":168,"../utils/tracked-controls":180}],70:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":166,"../utils/tracked-controls":178}],70:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
@@ -68794,7 +68374,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/bind":168,"../utils/tracked-controls":180}],71:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/bind":166,"../utils/tracked-controls":178}],71:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -69241,7 +68821,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":102,"../lib/three":151,"../utils/":174}],73:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/":172}],73:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -69264,7 +68844,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151}],74:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -69416,7 +68996,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":102,"../../lib/three":151,"../../utils/debug":170}],79:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":150,"../../utils/debug":168}],79:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -69521,7 +69101,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":51,"../../constants":94,"../../core/component":102,"../../utils/bind":168,"_process":32}],80:[function(_dereq_,module,exports){
+},{"../../../package":51,"../../constants":94,"../../core/component":102,"../../utils/bind":166,"_process":32}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -69560,7 +69140,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":102,"../../utils/":174}],81:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/":172}],81:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69678,7 +69258,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":102,"../../utils/debug":170}],82:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/debug":168}],82:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var debug = _dereq_('../../utils/debug');
 
@@ -69760,7 +69340,7 @@ module.exports.Component = register('renderer', {
   }
 });
 
-},{"../../core/component":102,"../../utils/debug":170}],83:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/debug":168}],83:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -70019,7 +69599,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":151}],84:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":150}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -70099,7 +69679,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":182,"../../../vendor/rStats.extras":181,"../../core/component":102,"../../lib/rStatsAframe":150,"../../utils":174}],85:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":180,"../../../vendor/rStats.extras":179,"../../core/component":102,"../../lib/rStatsAframe":149,"../../utils":172}],85:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -70285,7 +69865,7 @@ function createOrientationModal (onClick) {
   return modal;
 }
 
-},{"../../constants/":94,"../../core/component":102,"../../utils/":174}],86:[function(_dereq_,module,exports){
+},{"../../constants/":94,"../../core/component":102,"../../utils/":172}],86:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -70339,7 +69919,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/bind":168}],87:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/bind":166}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -70557,7 +70137,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":102,"../lib/three":151,"../utils/bind":168,"../utils/debug":170}],88:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":150,"../utils/bind":166,"../utils/debug":168}],88:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 
@@ -70656,7 +70236,7 @@ module.exports.Component = registerComponent('text', {
   },
 
   update: function (oldData) {
-    var data = this.data;
+    var data = coerceData(this.data);
     var font = this.currentFont;
 
     if (textures[data.font]) {
@@ -70678,8 +70258,8 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry and layout.
     if (font) {
-      this.updateGeometry(this.geometry, font);
-      this.updateLayout();
+      this.updateGeometry(this.geometry, data, font);
+      this.updateLayout(data);
     }
   },
 
@@ -70768,6 +70348,7 @@ module.exports.Component = registerComponent('text', {
     cache.get(fontSrc, function doLoadFont () {
       return loadFont(fontSrc, data.yOffset);
     }).then(function setFont (font) {
+      var coercedData;
       var fontImgSrc;
 
       if (font.pages.length !== 1) {
@@ -70779,11 +70360,12 @@ module.exports.Component = registerComponent('text', {
       }
 
       // Update geometry given font metrics.
-      self.updateGeometry(geometry, font);
+      coercedData = coerceData(data);
+      self.updateGeometry(geometry, self.data, font);
 
       // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout();
+      self.updateLayout(coercedData);
 
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.getFontImageSrc();
@@ -70823,11 +70405,10 @@ module.exports.Component = registerComponent('text', {
   /**
    * Update layout with anchor, alignment, baseline, and considering any meshes.
    */
-  updateLayout: function () {
+  updateLayout: function (data) {
     var anchor;
     var baseline;
     var el = this.el;
-    var data = this.data;
     var geometry = this.geometry;
     var geometryComponent;
     var height;
@@ -70892,6 +70473,7 @@ module.exports.Component = registerComponent('text', {
     // Place text slightly in front to avoid Z-fighting.
     mesh.position.z = data.zOffset;
     mesh.scale.set(textScale, -1 * textScale, textScale);
+    this.geometry.computeBoundingSphere();
   },
 
   /**
@@ -70905,26 +70487,14 @@ module.exports.Component = registerComponent('text', {
   /**
    * Update the text geometry using `three-bmfont-text.update`.
    */
-  updateGeometry: (function () {
-    var geometryUpdateBase = {};
-    var geometryUpdateData = {};
-    var newLineRegex = /\\n/g;
-    var tabRegex = /\\t/g;
-
-    return function (geometry, font) {
-      var data = this.data;
-
-      geometryUpdateData.font = font;
-      geometryUpdateData.lineHeight = data.lineHeight && isFinite(data.lineHeight)
-        ? data.lineHeight
-        : font.common.lineHeight;
-      geometryUpdateData.text = data.value.toString().replace(newLineRegex, '\n')
-                                                     .replace(tabRegex, '\t');
-      geometryUpdateData.width = computeWidth(data.wrapPixels, data.wrapCount,
-                                              font.widthFactor);
-      geometry.update(utils.extend(geometryUpdateBase, data, geometryUpdateData));
-    };
-  })()
+  updateGeometry: function (geometry, data, font) {
+    geometry.update(utils.extend({}, data, {
+      font: font,
+      width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
+      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      lineHeight: data.lineHeight || font.common.lineHeight
+    }));
+  }
 });
 
 /**
@@ -70943,6 +70513,23 @@ function parseSide (side) {
       return THREE.BackSide;
     }
   }
+}
+
+/**
+ * Coerce some data to numbers.
+ * as they will be passed directly into text creation and update
+ */
+function coerceData (data) {
+  data = utils.clone(data);
+  if (data.lineHeight !== undefined) {
+    data.lineHeight = parseFloat(data.lineHeight);
+    if (!isFinite(data.lineHeight)) { data.lineHeight = undefined; }
+  }
+  if (data.width !== undefined) {
+    data.width = parseFloat(data.width);
+    if (!isFinite(data.width)) { data.width = undefined; }
+  }
+  return data;
 }
 
 /**
@@ -71042,7 +70629,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":102,"../core/shader":112,"../lib/three":151,"../utils/":174,"load-bmfont":23,"three-bmfont-text":35}],89:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/shader":111,"../lib/three":150,"../utils/":172,"load-bmfont":23,"three-bmfont-text":36}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -71376,7 +70963,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":94,"../core/component":102,"../lib/three":151,"../utils/tracked-controls":180}],90:[function(_dereq_,module,exports){
+},{"../constants":94,"../core/component":102,"../lib/three":150,"../utils/tracked-controls":178}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -71619,7 +71206,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":102,"../utils/":174,"../utils/tracked-controls":180}],92:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/":172,"../utils/tracked-controls":178}],92:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71655,6 +71242,8 @@ module.exports.Component = registerComponent('wasd-controls', {
   init: function () {
     // To keep track of the pressed keys.
     this.keys = {};
+
+    this.position = {};
     this.velocity = new THREE.Vector3();
 
     // Bind methods and add event listeners.
@@ -71667,8 +71256,11 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   tick: function (time, delta) {
+    var currentPosition;
     var data = this.data;
     var el = this.el;
+    var movementVector;
+    var position = this.position;
     var velocity = this.velocity;
 
     if (!velocity[data.adAxis] && !velocity[data.wsAxis] &&
@@ -71681,7 +71273,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     if (!velocity[data.adAxis] && !velocity[data.wsAxis]) { return; }
 
     // Get movement vector and translate position.
-    el.object3D.position.add(this.getMovementVector(delta));
+    currentPosition = el.getAttribute('position');
+    movementVector = this.getMovementVector(delta);
+    position.x = currentPosition.x + movementVector.x;
+    position.y = currentPosition.y + movementVector.y;
+    position.z = currentPosition.z + movementVector.z;
+    el.setAttribute('position', position);
   },
 
   remove: function () {
@@ -71828,7 +71425,7 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":94,"../core/component":102,"../lib/three":151,"../utils/":174}],93:[function(_dereq_,module,exports){
+},{"../constants":94,"../core/component":102,"../lib/three":150,"../utils/":172}],93:[function(_dereq_,module,exports){
 /* global THREE */
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -72277,7 +71874,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":94,"../core/component":102,"../utils/":174,"../utils/bind":168,"../utils/tracked-controls":180}],94:[function(_dereq_,module,exports){
+},{"../constants":94,"../core/component":102,"../utils/":172,"../utils/bind":166,"../utils/tracked-controls":178}],94:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -72565,7 +72162,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":151,"../utils/bind":168,"../utils/debug":170,"./a-node":100,"./a-register-element":101}],97:[function(_dereq_,module,exports){
+},{"../lib/three":150,"../utils/bind":166,"../utils/debug":168,"./a-node":100,"./a-register-element":101}],97:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -72615,7 +72212,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":170,"./a-register-element":101}],98:[function(_dereq_,module,exports){
+},{"../utils/debug":168,"./a-register-element":101}],98:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -73240,59 +72837,52 @@ var proto = Object.create(ANode.prototype, {
    *   it is a boolean indicating whether to clobber previous values (defaults to false).
    */
   setAttribute: {
-    value: (function () {
-      var singlePropUpdate = {};
+    value: function (attrName, arg1, arg2) {
+      var newAttrValue;
+      var clobber;
+      var componentName;
+      var delimiterIndex;
+      var isDebugMode;
 
-      return function (attrName, arg1, arg2) {
-        var newAttrValue;
-        var clobber;
-        var componentName;
-        var delimiterIndex;
-        var isDebugMode;
-        var key;
+      delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+      componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
 
-        delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-        componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
+      // Not a component. Normal set attribute.
+      if (!COMPONENTS[componentName]) {
+        if (attrName === 'mixin') { this.mixinUpdate(arg1); }
+        ANode.prototype.setAttribute.call(this, attrName, arg1);
+        return;
+      }
 
-        // Not a component. Normal set attribute.
-        if (!COMPONENTS[componentName]) {
-          if (attrName === 'mixin') { this.mixinUpdate(arg1); }
-          ANode.prototype.setAttribute.call(this, attrName, arg1);
-          return;
-        }
+      // Initialize component first if not yet initialized.
+      if (!this.components[attrName] && this.hasAttribute(attrName)) {
+        this.updateComponent(attrName,
+                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
+      }
 
-        // Initialize component first if not yet initialized.
-        if (!this.components[attrName] && this.hasAttribute(attrName)) {
-          this.updateComponent(
-            attrName,
-            window.HTMLElement.prototype.getAttribute.call(this, attrName));
-        }
+      // Determine new attributes from the arguments
+      if (typeof arg2 !== 'undefined' &&
+          typeof arg1 === 'string' &&
+          arg1.length > 0 &&
+          typeof utils.styleParser.parse(arg1) === 'string') {
+        // Update a single property of a multi-property component
+        newAttrValue = {};
+        newAttrValue[arg1] = arg2;
+        clobber = false;
+      } else {
+        // Update with a value, object, or CSS-style property string, with the possiblity
+        // of clobbering previous values.
+        newAttrValue = arg1;
+        clobber = (arg2 === true);
+      }
 
-        // Determine new attributes from the arguments
-        if (typeof arg2 !== 'undefined' &&
-            typeof arg1 === 'string' &&
-            arg1.length > 0 &&
-            typeof utils.styleParser.parse(arg1) === 'string') {
-          // Update a single property of a multi-property component
-          for (key in singlePropUpdate) { delete singlePropUpdate[key]; }
-          newAttrValue = singlePropUpdate;
-          newAttrValue[arg1] = arg2;
-          clobber = false;
-        } else {
-          // Update with a value, object, or CSS-style property string, with the possiblity
-          // of clobbering previous values.
-          newAttrValue = arg1;
-          clobber = (arg2 === true);
-        }
+      // Update component
+      this.updateComponent(attrName, newAttrValue, clobber);
 
-        // Update component
-        this.updateComponent(attrName, newAttrValue, clobber);
-
-        // In debug mode, write component data up to the DOM.
-        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-        if (isDebugMode) { this.components[attrName].flushToDOM(); }
-      };
-    })(),
+      // In debug mode, write component data up to the DOM.
+      isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      if (isDebugMode) { this.components[attrName].flushToDOM(); }
+    },
     writable: window.debug
   },
 
@@ -73468,7 +73058,7 @@ function getRotation (entityEl) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":151,"../utils/":174,"./a-node":100,"./a-register-element":101,"./component":102}],99:[function(_dereq_,module,exports){
+},{"../lib/three":150,"../utils/":172,"./a-node":100,"./a-register-element":101,"./component":102}],99:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -73583,7 +73173,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"../utils":174,"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
+},{"../utils":172,"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
 /* global CustomEvent, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -73891,7 +73481,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":174,"./a-register-element":101}],101:[function(_dereq_,module,exports){
+},{"../utils/":172,"./a-register-element":101}],101:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -74098,9 +73688,6 @@ var warn = utils.debug('core:component:warn');
 var aframeScript = document.currentScript;
 var upperCaseRegExp = new RegExp('[A-Z]+');
 
-// Object pools by component, created upon registration.
-var objectPools = {};
-
 /**
  * Component class definition.
  *
@@ -74121,23 +73708,13 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.evtDetail = {id: this.id, name: this.name};
   this.initialized = false;
-  this.isSingleProperty = isSingleProp(this.schema);
-  this.isSinglePropertyObject = this.isSingleProperty &&
-                                isObject(parseProperty(undefined, this.schema));
-  this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
-  this.objectPool = objectPools[this.name];
 
   // Store component data from previous update call.
-  this.attrValue = undefined;
-  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
-  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
-  // Purely for deciding to skip type checking.
-  this.previousAttrValue = undefined;
+  this.oldData = undefined;
 
   // Last value passed to updateProperties.
+  this.previousAttrValue = undefined;
   this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
     el.emit('componentchanged', self.evtDetail, false);
   }, 200);
@@ -74217,7 +73794,7 @@ Component.prototype = {
    */
   parse: function (value, silent) {
     var schema = this.schema;
-    if (this.isSingleProperty) { return parseProperty(value, schema); }
+    if (isSingleProp(schema)) { return parseProperty(value, schema); }
     return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
@@ -74233,7 +73810,7 @@ Component.prototype = {
   stringify: function (data) {
     var schema = this.schema;
     if (typeof data === 'string') { return data; }
-    if (this.isSingleProperty) { return stringifyProperty(data, schema); }
+    if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
   },
@@ -74245,51 +73822,28 @@ Component.prototype = {
    * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
   updateCachedAttrValue: function (value, clobber) {
-    var newAttrValue;
-    var tempObject;
+    var attrValue = this.parseAttrValueForCache(value);
+    var isSinglePropSchema = isSingleProp(this.schema);
     var property;
-
     if (value === undefined) { return; }
 
-    // If null value is the new attribute value, make the attribute value falsy.
-    if (value === null) {
-      if (this.isObjectBased && this.attrValue) {
-        this.objectPool.recycle(this.attrValue);
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (!isSinglePropSchema && !clobber) {
+      this.attrValue = this.attrValue ? cloneData(this.attrValue) : {};
+      for (property in attrValue) {
+        this.attrValue[property] = attrValue[property];
       }
-      this.attrValue = undefined;
       return;
     }
 
-    if (value instanceof Object) {
-      // If value is an object, copy it to our pooled newAttrValue object to use to update
-      // the attrValue.
-      tempObject = this.objectPool.use();
-      newAttrValue = utils.extend(tempObject, value);
-    } else {
-      newAttrValue = this.parseAttrValueForCache(value);
-    }
-
-    // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (this.isObjectBased && !clobber && this.attrValue) {
-      for (property in this.attrValue) {
-        if (newAttrValue[property] === undefined) {
-          newAttrValue[property] = this.attrValue[property];
-        }
-      }
-    }
-
-    // Update attrValue.
-    if (this.isObjectBased && !this.attrValue) {
-      this.attrValue = this.objectPool.use();
-    }
-    utils.objectPool.clearObject(this.attrValue);
-    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    utils.objectPool.clearObject(tempObject);
+    // If single-prop schema or clobber.
+    this.attrValue = attrValue;
   },
 
   /**
-   * Given an HTML attribute value parses the string based on the component schema.
-   * To avoid double parsings of strings into strings we store the original instead
+   * Given an HTML attribute value parses the string
+   * based on the component schema. To avoid double parsings of
+   * strings into strings we store the original instead
    * of the parsed one
    *
    * @param {string} value - HTML attribute value
@@ -74297,7 +73851,7 @@ Component.prototype = {
   parseAttrValueForCache: function (value) {
     var parsedValue;
     if (typeof value !== 'string') { return value; }
-    if (this.isSingleProperty) {
+    if (isSingleProp(this.schema)) {
       parsedValue = this.schema.parse(value);
       /**
        * To avoid bogus double parsings. Cached values will be parsed when building
@@ -74308,8 +73862,7 @@ Component.prototype = {
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
       // Parse using the style parser to avoid double parsing of individual properties.
-      utils.objectPool.clearObject(this.parsingAttrValue);
-      parsedValue = styleParser.parse(value, this.parsingAttrValue);
+      parsedValue = styleParser.parse(value);
     }
     return parsedValue;
   },
@@ -74324,7 +73877,7 @@ Component.prototype = {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
-                                                   this.stringify(attrValue));
+                                            this.stringify(attrValue));
   },
 
   /**
@@ -74336,9 +73889,10 @@ Component.prototype = {
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
+    var isSinglePropSchema;
     var key;
-    var initialOldData;
     var skipTypeChecking;
+    var oldData = this.oldData;
     var hasComponentChanged;
 
     // Just cache the attribute if the entity has not loaded
@@ -74347,6 +73901,8 @@ Component.prototype = {
       this.updateCachedAttrValue(attrValue);
       return;
     }
+
+    isSinglePropSchema = isSingleProp(this.schema);
 
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
@@ -74369,17 +73925,13 @@ Component.prototype = {
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
-    // Parse the attribute value.
     // Cache current attrValue for future updates. Updates `this.attrValue`.
     attrValue = this.parseAttrValueForCache(attrValue);
-
-    // Update previous attribute value to later decide if we skip type checking.
-    this.previousAttrValue = attrValue;
-
-    // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue, clobber);
 
-    if (this.updateSchema) { this.updateSchema(this.buildData(this.attrValue, false, true)); }
+    if (this.updateSchema) {
+      this.updateSchema(this.buildData(this.attrValue, false, true));
+    }
     this.data = this.buildData(this.attrValue, clobber, false, skipTypeChecking);
 
     if (!this.initialized) {
@@ -74391,44 +73943,28 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
-
-      // Store current data as previous data for future updates.
-      this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
-
       // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
       // Pass undefined to rest of types.
-      initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
-      this.update(initialOldData);
-      if (this.isObjectBased) { this.objectPool.recycle(initialOldData); }
-
+      oldData = (!isSinglePropSchema ||
+                 typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
+      this.update(oldData);
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
       el.emit('componentinitialized', this.evtDetail, false);
     } else {
-      // Store the previous old data before we calculate the new oldData.
-      if (this.previousOldData instanceof Object) {
-        utils.objectPool.clearObject(this.previousOldData);
-      }
-      if (this.isObjectBased) {
-        copyData(this.previousOldData, this.oldData);
-      } else {
-        this.previousOldData = this.oldData;
-      }
-
       hasComponentChanged = !utils.deepEqual(this.oldData, this.data);
-
       // Don't update if properties haven't changed.
       // Always update rotation, position, scale.
       if (!this.isPositionRotationScale && !hasComponentChanged) { return; }
-
-      // Store current data as previous data for future updates.
-      // Reuse `this.oldData` object to try not to allocate another one.
-      if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
-      this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
-
-      // Update component with the previous old data.
-      this.update(this.previousOldData);
-
+     // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
+      // Update component.
+      this.update(oldData);
+      // In the case of position, rotation, scale always update the component
+      // but don't emit componentchanged event if component has not changed.
+      if (!hasComponentChanged) { return; }
       this.throttledEmitComponentChanged();
     }
   },
@@ -74440,7 +73976,7 @@ Component.prototype = {
    * @param {string} propertyName - Name of property to reset.
    */
   resetProperty: function (propertyName) {
-    if (!this.isObjectBased) {
+    if (isSingleProp(this.schema)) {
       this.attrValue = undefined;
     } else {
       if (!(propertyName in this.attrValue)) { return; }
@@ -74459,17 +73995,16 @@ Component.prototype = {
    * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
   extendSchema: function (schemaAddon) {
-    var extendedSchema;
     // Clone base schema.
-    extendedSchema = utils.extend({}, components[this.name].schema);
+    var extendedSchema = utils.extend({}, components[this.name].schema);
     // Extend base schema with new schema chunk.
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
-    this.el.emit('schemachanged', this.evtDetail);
+    this.el.emit('schemachanged', {component: this.name});
   },
 
   /**
-   * Build component data from the current state of the entity, ultimately
+   * Builds component data from the current state of the entity, ultimately
    * updating this.data.
    *
    * If the component was detached completely, set data to null.
@@ -74484,18 +74019,19 @@ Component.prototype = {
    * @param {object} newData - Element new data.
    * @param {boolean} clobber - The previous data is completely replaced by the new one.
    * @param {boolean} silent - Suppress warning messages.
-   * @param {boolean} skipTypeChecking - Skip type checking and coercion.
+   * @param {boolean} skipTypeChecking - Skip type checking and cohercion.
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
     var componentDefined;
     var data;
     var defaultValue;
-    var key;
+    var keys;
+    var keysLength;
     var mixinData;
-    var nextData = this.nextData;
     var schema = this.schema;
     var i;
+    var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
 
@@ -74504,62 +74040,46 @@ Component.prototype = {
       ? newData.length
       : newData !== undefined && newData !== null;
 
-    if (this.isObjectBased) { utils.objectPool.clearObject(nextData); }
-
     // 1. Default values (lowest precendence).
-    if (this.isSingleProperty) {
-      if (this.isObjectBased) {
-        // If object-based single-prop, then copy over the data to our pooled object.
-        data = copyData(nextData, schema.default);
-      } else {
-        // If is plain single-prop, copy by value the default.
-        data = isObjectOrArray(schema.default)
-          ? utils.clone(schema.default)
-          : schema.default;
-      }
+    if (isSinglePropSchema) {
+      // Clone default value if plain object so components don't share the same object
+      // that might be modified by the user.
+      data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
-
-      // Clone default value if object so components don't share object
-      data = previousData instanceof Object
-        ? copyData(nextData, previousData)
-        : nextData;
+      // Clone previous data to prevent sharing references with attrValue that might be
+      // modified by the user.
+      data = typeof previousData === 'object' ? cloneData(previousData) : {};
 
       // Apply defaults.
-      for (key in schema) {
-        defaultValue = schema[key].default;
-        if (data[key] !== undefined) { continue; }
+      for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
+        defaultValue = schema[keys[i]].default;
+        if (data[keys[i]] !== undefined) { continue; }
         // Clone default value if object so components don't share object
-        data[key] = isObjectOrArray(defaultValue)
-          ? utils.clone(defaultValue)
-          : defaultValue;
+        data[keys[i]] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
       }
     }
 
     // 2. Mixin values.
     for (i = 0; i < mixinEls.length; i++) {
       mixinData = mixinEls[i].getAttribute(this.attrName);
-      if (!mixinData) { continue; }
-      data = extendProperties(data, mixinData, this.isObjectBased);
+      if (mixinData) {
+        data = extendProperties(data, mixinData, isSinglePropSchema);
+      }
     }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
-      if (this.isSingleProperty) {
+      if (isSinglePropSchema) {
         if (skipTypeChecking === true) { return newData; }
-        // If object-based, copy the value to not modify the original.
-        if (isObject(newData)) {
-          copyData(this.parsingAttrValue, newData);
-          return parseProperty(this.parsingAttrValue, schema);
-        }
         return parseProperty(newData, schema);
       }
-      data = extendProperties(data, newData, this.isObjectBased);
+      data = extendProperties(data, newData, isSinglePropSchema);
     } else {
       if (skipTypeChecking === true) { return data; }
       // Parse and coerce using the schema.
-      if (this.isSingleProperty) { return parseProperty(data, schema); }
+      if (isSinglePropSchema) { return parseProperty(data, schema); }
     }
 
     if (skipTypeChecking === true) { return data; }
@@ -74638,21 +74158,15 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-  NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
-
-  // Create object pool for class of components.
-  objectPools[name] = utils.objectPool.createPool();
 
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     isSingleProp: isSingleProp(NewComponent.prototype.schema),
     multiple: NewComponent.prototype.multiple,
-    name: name,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema,
-                                       NewComponent.prototype.name)),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
@@ -74666,17 +74180,15 @@ module.exports.registerComponent = function (name, definition) {
 * @param data - Component data to clone.
 * @returns Cloned data.
 */
-function copyData (dest, sourceData) {
+function cloneData (data) {
+  var clone = {};
   var parsedProperty;
   var key;
-  for (key in sourceData) {
-    if (sourceData[key] === undefined) { continue; }
-    parsedProperty = sourceData[key];
-    dest[key] = isObjectOrArray(parsedProperty)
-      ? utils.clone(parsedProperty)
-      : parsedProperty;
+  for (key in data) {
+    parsedProperty = data[key];
+    clone[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
   }
-  return dest;
+  return clone;
 }
 
 /**
@@ -74684,23 +74196,18 @@ function copyData (dest, sourceData) {
 *
 * @param dest - Destination object or value.
 * @param source - Source object or value
-* @param {boolean} isObjectBased - Whether values are objects.
+* @param {boolean} isSinglePropSchema - Whether or not schema is only a single property.
 * @returns Overridden object or value.
 */
-function extendProperties (dest, source, isObjectBased) {
+function extendProperties (dest, source, isSinglePropSchema) {
+  if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
+  var copy = utils.extend(dest, source);
   var key;
-  if (isObjectBased && source.constructor === Object) {
-    for (key in source) {
-      if (source[key] === undefined) { continue; }
-      if (source[key] && source[key].constructor === Object) {
-        dest[key] = utils.clone(source[key]);
-      } else {
-        dest[key] = source[key];
-      }
-    }
-    return dest;
+  for (key in copy) {
+    if (!copy[key] || copy[key].constructor !== Object) { continue; }
+    copy[key] = utils.clone(copy[key]);
   }
-  return source;
+  return copy;
 }
 
 /**
@@ -74711,10 +74218,10 @@ function hasBehavior (component) {
 }
 
 /**
- * Wrapper for defined pause method.
+ * Wrapper for user defined pause method
  * Pause component by removing tick behavior and calling user's pause method.
  *
- * @param pauseMethod {function}
+ * @param pauseMethod {function} - user defined pause method
  */
 function wrapPause (pauseMethod) {
   return function pause () {
@@ -74729,10 +74236,11 @@ function wrapPause (pauseMethod) {
 }
 
 /**
- * Wrapper for defined play method.
+ * Wrapper for user defined play method
  * Play component by adding tick behavior and calling user's play method.
  *
- * @param playMethod {function}
+ * @param playMethod {function} - user defined play method
+ *
  */
 function wrapPlay (playMethod) {
   return function play () {
@@ -74747,30 +74255,11 @@ function wrapPlay (playMethod) {
   };
 }
 
-/**
- * Wrapper for defined remove method.
- * Clean up memory.
- *
- * @param removeMethod {function} - Defined remove method.
- */
-function wrapRemove (removeMethod) {
-  return function remove () {
-    removeMethod.call(this);
-    this.objectPool.recycle(this.attrValue);
-    this.objectPool.recycle(this.oldData);
-    this.objectPool.recycle(this.parsingAttrValue);
-  };
-}
-
-function isObject (value) {
-  return value && value.constructor === Object;
-}
-
 function isObjectOrArray (value) {
   return value && (value.constructor === Object || value.constructor === Array);
 }
 
-},{"../utils/":174,"./scene/scenes":109,"./schema":111,"./system":113}],103:[function(_dereq_,module,exports){
+},{"../utils/":172,"./scene/scenes":108,"./schema":110,"./system":112}],103:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -74844,7 +74333,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":151,"./schema":111}],104:[function(_dereq_,module,exports){
+},{"../lib/three":150,"./schema":110}],104:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -75068,11 +74557,10 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":169,"debug":8}],105:[function(_dereq_,module,exports){
+},{"../utils/coordinates":167,"debug":8}],105:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
-var loadingScreen = _dereq_('./loadingScreen');
 var re = _dereq_('../a-register-element');
 var scenes = _dereq_('./scenes');
 var systems = _dereq_('../system').systems;
@@ -75157,6 +74645,7 @@ module.exports.AScene = registerElement('a-scene', {
     attachedCallback: {
       value: function () {
         var self = this;
+
         // Renderer initialization
         setupCanvas(this);
         this.setupRenderer();
@@ -75618,11 +75107,10 @@ module.exports.AScene = registerElement('a-scene', {
         renderer = this.renderer = new THREE.WebGLRenderer(rendererConfig);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        if (this.camera) { renderer.vr.setPoseTarget(this.camera.el.object3D); }
+        renderer.vr.setPoseTarget(this.camera);
         this.addEventListener('camera-set-active', function () {
-          renderer.vr.setPoseTarget(self.camera.el.object3D);
+          renderer.vr.setPoseTarget(self.camera);
         });
-        loadingScreen.setup(this, getCanvasSize);
       },
       writable: window.debug
     },
@@ -75652,7 +75140,6 @@ module.exports.AScene = registerElement('a-scene', {
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
             sceneEl.clock = new THREE.Clock();
-            loadingScreen.remove();
             sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
@@ -75863,112 +75350,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":151,"../../utils/":174,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":113,"./loadingScreen":106,"./metaTags":107,"./postMessage":108,"./scenes":109,"./wakelock":110}],106:[function(_dereq_,module,exports){
-/* global THREE */
-var utils = _dereq_('../../utils/');
-var styleParser = utils.styleParser;
-
-var sceneEl;
-var titleEl;
-var getSceneCanvasSize;
-
-var ATTR_NAME = 'loading-screen';
-var LOADER_TITLE_CLASS = 'a-loader-title';
-
-// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function () {
-  var vrManager = sceneEl.renderer.vr;
-  var vrDisplay = utils.device.getVRDisplay();
-
-  vrManager.setDevice(vrDisplay);
-  vrManager.enabled = true;
-  if (!vrDisplay.isPresenting) {
-    return vrDisplay.requestPresent([{source: sceneEl.canvas}]).then(function () {}, function () {});
-  }
-});
-
-module.exports.setup = function setup (el, getCanvasSize) {
-  sceneEl = el;
-  getSceneCanvasSize = getCanvasSize;
-  var loaderAttribute = sceneEl.hasAttribute(ATTR_NAME) ? styleParser.parse(sceneEl.getAttribute(ATTR_NAME)) : undefined;
-  var dotsColor = loaderAttribute && loaderAttribute.dotsColor || 'white';
-  var backgroundColor = loaderAttribute && loaderAttribute.backgroundColor || '#24CAFF';
-  var loaderEnabled = loaderAttribute === undefined || loaderAttribute.enabled === true || loaderAttribute.enabled === undefined; // true default
-  var loaderScene;
-  var sphereGeometry;
-  var sphereMaterial;
-  var sphereMesh1;
-  var sphereMesh2;
-  var sphereMesh3;
-  var camera;
-  var clock;
-  var time;
-  var render;
-
-  if (!loaderEnabled) { return; }
-
-  // Setup Scene.
-  loaderScene = new THREE.Scene();
-  sphereGeometry = new THREE.SphereGeometry(0.20, 36, 18, 0, 2 * Math.PI, 0, Math.PI);
-  sphereMaterial = new THREE.MeshBasicMaterial({color: dotsColor});
-  sphereMesh1 = new THREE.Mesh(sphereGeometry, sphereMaterial);
-  sphereMesh2 = sphereMesh1.clone();
-  sphereMesh3 = sphereMesh1.clone();
-  camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.0005, 10000);
-  clock = new THREE.Clock();
-  time = 0;
-  render = function () {
-    sceneEl.renderer.render(loaderScene, camera);
-    time = clock.getElapsedTime() % 4;
-    sphereMesh1.visible = time >= 1;
-    sphereMesh2.visible = time >= 2;
-    sphereMesh3.visible = time >= 3;
-  };
-
-  loaderScene.background = new THREE.Color(backgroundColor);
-  loaderScene.add(camera);
-  sphereMesh1.position.set(-1, 0, -15);
-  sphereMesh2.position.set(0, 0, -15);
-  sphereMesh3.position.set(1, 0, -15);
-  camera.add(sphereMesh1);
-  camera.add(sphereMesh2);
-  camera.add(sphereMesh3);
-  setupTitle();
-
-  // Delay 200ms to avoid loader flashes.
-  setTimeout(function () {
-    if (sceneEl.hasLoaded) { return; }
-    resize(camera);
-    titleEl.style.display = 'block';
-    window.addEventListener('resize', function () { resize(camera); });
-    sceneEl.renderer.setAnimationLoop(render);
-  }, 200);
-};
-
-module.exports.remove = function remove () {
-  window.removeEventListener('resize', resize);
-  if (!titleEl) { return; }
-  // Hide title.
-  titleEl.style.display = 'none';
-};
-
-function resize (camera) {
-  var size = getSceneCanvasSize(sceneEl.canvas, false, sceneEl.maxCanvasSize, sceneEl.is('vr-mode'));
-  camera.aspect = size.width / size.height;
-  camera.updateProjectionMatrix();
-   // Notify renderer of size change.
-  sceneEl.renderer.setSize(size.width, size.height, false);
-}
-
-function setupTitle () {
-  titleEl = document.createElement('div');
-  titleEl.className = LOADER_TITLE_CLASS;
-  titleEl.innerHTML = document.title;
-  titleEl.style.display = 'none';
-  sceneEl.appendChild(titleEl);
-}
-
-},{"../../utils/":174}],107:[function(_dereq_,module,exports){
+},{"../../lib/three":150,"../../utils/":172,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":112,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109}],106:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -76049,7 +75431,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":94,"../../utils":174}],108:[function(_dereq_,module,exports){
+},{"../../constants/":94,"../../utils":172}],107:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -76082,13 +75464,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":174,"../../utils/bind":168}],109:[function(_dereq_,module,exports){
+},{"../../utils/":172,"../../utils/bind":166}],108:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],110:[function(_dereq_,module,exports){
+},{}],109:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -76099,7 +75481,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":184}],111:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":182}],110:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -76230,7 +75612,7 @@ module.exports.parseProperties = (function () {
 
     // Validation errors.
     for (propName in propData) {
-      if (propData[propName] !== undefined && !schema[propName] && !silent) {
+      if (!schema[propName] && !silent) {
         warn('Unknown property `' + propName +
              '` for component/system `' + componentName + '`.');
       }
@@ -76300,7 +75682,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":174,"./propertyTypes":104}],112:[function(_dereq_,module,exports){
+},{"../utils/":172,"./propertyTypes":104}],111:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -76489,7 +75871,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":151,"../utils":174,"./schema":111}],113:[function(_dereq_,module,exports){
+},{"../lib/three":150,"../utils":172,"./schema":110}],112:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -76647,10 +76029,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":174,"./component":102,"./schema":111}],114:[function(_dereq_,module,exports){
+},{"../utils/":172,"./component":102,"./schema":110}],113:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":115}],115:[function(_dereq_,module,exports){
+},{"./pivot":114}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -76699,7 +76081,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":102,"../../lib/three":151}],116:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":150}],115:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -76726,7 +76108,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":102,"../../core/shader":112,"../../utils/":174}],117:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../core/shader":111,"../../utils/":172}],116:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -76743,7 +76125,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":119,"./primitives/a-collada-model":120,"./primitives/a-cursor":121,"./primitives/a-curvedimage":122,"./primitives/a-gltf-model":123,"./primitives/a-image":124,"./primitives/a-light":125,"./primitives/a-link":126,"./primitives/a-obj-model":127,"./primitives/a-sky":128,"./primitives/a-sound":129,"./primitives/a-text":130,"./primitives/a-video":131,"./primitives/a-videosphere":132,"./primitives/meshPrimitives":133}],118:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":118,"./primitives/a-collada-model":119,"./primitives/a-cursor":120,"./primitives/a-curvedimage":121,"./primitives/a-gltf-model":122,"./primitives/a-image":123,"./primitives/a-light":124,"./primitives/a-link":125,"./primitives/a-obj-model":126,"./primitives/a-sky":127,"./primitives/a-sound":128,"./primitives/a-text":129,"./primitives/a-video":130,"./primitives/a-videosphere":131,"./primitives/meshPrimitives":132}],117:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -76942,7 +76324,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":98,"../../core/a-register-element":101,"../../core/component":102,"../../utils/":174}],119:[function(_dereq_,module,exports){
+},{"../../core/a-entity":98,"../../core/a-register-element":101,"../../core/component":102,"../../utils/":172}],118:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
@@ -76966,7 +76348,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../primitives":118}],120:[function(_dereq_,module,exports){
+},{"../primitives":117}],119:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -76975,7 +76357,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":118}],121:[function(_dereq_,module,exports){
+},{"../primitives":117}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77010,7 +76392,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],122:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],121:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77047,7 +76429,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],123:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],122:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -77056,7 +76438,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":118}],124:[function(_dereq_,module,exports){
+},{"../primitives":117}],123:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77080,7 +76462,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],125:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],124:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -77101,15 +76483,11 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":118}],126:[function(_dereq_,module,exports){
+},{"../primitives":117}],125:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
-  defaultComponents: {
-    link: {
-      visualAspectEnabled: true
-    }
-  },
+  defaultComponents: {},
 
   mappings: {
     href: 'link.href',
@@ -77118,7 +76496,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":118}],127:[function(_dereq_,module,exports){
+},{"../primitives":117}],126:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77134,7 +76512,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],128:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],127:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77160,7 +76538,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118,"./meshPrimitives":133}],129:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117,"./meshPrimitives":132}],128:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -77177,12 +76555,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":118}],130:[function(_dereq_,module,exports){
+},{"../primitives":117}],129:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":118}],131:[function(_dereq_,module,exports){
+},{"../primitives":117}],130:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77206,7 +76584,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],132:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],131:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77235,7 +76613,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],133:[function(_dereq_,module,exports){
+},{"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],132:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -77275,7 +76653,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":103,"../../../utils/":174,"../getMeshMixin":116,"../primitives":118}],134:[function(_dereq_,module,exports){
+},{"../../../core/geometry":103,"../../../utils/":172,"../getMeshMixin":115,"../primitives":117}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77296,7 +76674,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77316,7 +76694,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],135:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77342,7 +76720,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77366,7 +76744,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],138:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],137:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77381,7 +76759,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],139:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],138:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77396,7 +76774,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],140:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],139:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -77412,7 +76790,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":134,"./circle.js":135,"./cone.js":136,"./cylinder.js":137,"./dodecahedron.js":138,"./icosahedron.js":139,"./octahedron.js":141,"./plane.js":142,"./ring.js":143,"./sphere.js":144,"./tetrahedron.js":145,"./torus.js":146,"./torusKnot.js":147,"./triangle.js":148}],141:[function(_dereq_,module,exports){
+},{"./box.js":133,"./circle.js":134,"./cone.js":135,"./cylinder.js":136,"./dodecahedron.js":137,"./icosahedron.js":138,"./octahedron.js":140,"./plane.js":141,"./ring.js":142,"./sphere.js":143,"./tetrahedron.js":144,"./torus.js":145,"./torusKnot.js":146,"./triangle.js":147}],140:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77427,7 +76805,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],142:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],141:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77444,7 +76822,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],143:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],142:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77467,7 +76845,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],144:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],143:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77491,7 +76869,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],145:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],144:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77506,7 +76884,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],146:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],145:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77528,7 +76906,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],147:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],146:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77549,7 +76927,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],148:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],147:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -77604,7 +76982,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":103,"../lib/three":151}],149:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":150}],148:[function(_dereq_,module,exports){
 // Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 
@@ -77685,7 +77063,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.8.2 (Date 2018-10-28, Commit #ca9a08c)');
+console.log('A-Frame Version: 0.8.2 (Date 2018-09-05, Commit #27ead35)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77716,7 +77094,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":51,"./components/index":61,"./core/a-assets":96,"./core/a-cubemap":97,"./core/a-entity":98,"./core/a-mixin":99,"./core/a-node":100,"./core/a-register-element":101,"./core/component":102,"./core/geometry":103,"./core/scene/a-scene":105,"./core/scene/scenes":109,"./core/schema":111,"./core/shader":112,"./core/system":113,"./extras/components/":114,"./extras/primitives/":117,"./extras/primitives/getMeshMixin":116,"./extras/primitives/primitives":118,"./geometries/index":140,"./lib/three":151,"./shaders/index":153,"./style/aframe.css":158,"./style/rStats.css":159,"./systems/index":163,"./utils/":174,"animejs":2,"present":31,"promise-polyfill":33,"webvr-polyfill":46}],150:[function(_dereq_,module,exports){
+},{"../package":51,"./components/index":61,"./core/a-assets":96,"./core/a-cubemap":97,"./core/a-entity":98,"./core/a-mixin":99,"./core/a-node":100,"./core/a-register-element":101,"./core/component":102,"./core/geometry":103,"./core/scene/a-scene":105,"./core/scene/scenes":108,"./core/schema":110,"./core/shader":111,"./core/system":112,"./extras/components/":113,"./extras/primitives/":116,"./extras/primitives/getMeshMixin":115,"./extras/primitives/primitives":117,"./geometries/index":139,"./lib/three":150,"./shaders/index":152,"./style/aframe.css":157,"./style/rStats.css":158,"./systems/index":161,"./utils/":172,"animejs":2,"present":31,"promise-polyfill":33,"webvr-polyfill":46}],149:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -77773,7 +77151,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],151:[function(_dereq_,module,exports){
+},{}],150:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -77796,7 +77174,6 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
-_dereq_('three/examples/js/loaders/DRACOLoader');  // THREE.DRACOLoader
 _dereq_('three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 _dereq_('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 _dereq_('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
@@ -77811,7 +77188,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"three":39,"three/examples/js/loaders/ColladaLoader":40,"three/examples/js/loaders/DRACOLoader":41,"three/examples/js/loaders/GLTFLoader":42,"three/examples/js/loaders/MTLLoader":43,"three/examples/js/loaders/OBJLoader":44}],152:[function(_dereq_,module,exports){
+},{"three":40,"three/examples/js/loaders/ColladaLoader":41,"three/examples/js/loaders/GLTFLoader":42,"three/examples/js/loaders/MTLLoader":43,"three/examples/js/loaders/OBJLoader":44}],151:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77837,10 +77214,8 @@ module.exports.Shader = registerShader('flat', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.materialData = {color: new THREE.Color()};
     this.textureSrc = null;
-    getMaterialData(data, this.materialData);
-    this.material = new THREE.MeshBasicMaterial(this.materialData);
+    this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
     utils.material.updateMap(this, data);
   },
 
@@ -77855,11 +77230,11 @@ module.exports.Shader = registerShader('flat', {
    * @param {object} data - Material component data.
    */
   updateMaterial: function (data) {
-    var key;
-    getMaterialData(data, this.materialData);
-    for (key in this.materialData) {
-      this.material[key] = this.materialData[key];
-    }
+    var material = this.material;
+    data = getMaterialData(data);
+    Object.keys(data).forEach(function (key) {
+      material[key] = data[key];
+    });
   }
 });
 
@@ -77867,25 +77242,25 @@ module.exports.Shader = registerShader('flat', {
  * Builds and normalize material data, normalizing stuff along the way.
  *
  * @param {object} data - Material data.
- * @param {object} materialData - Object to reuse.
- * @returns {object} Updated material data.
+ * @returns {object} data - Processed material data.
  */
-function getMaterialData (data, materialData) {
-  materialData.color.set(data.color);
-  materialData.fog = data.fog;
-  materialData.wireframe = data.wireframe;
-  materialData.wireframeLinewidth = data.wireframeLinewidth;
-  return materialData;
+function getMaterialData (data) {
+  return {
+    fog: data.fog,
+    color: new THREE.Color(data.color),
+    wireframe: data.wireframe,
+    wireframeLinewidth: data.wireframeLinewidth
+  };
 }
 
-},{"../core/shader":112,"../lib/three":151,"../utils/":174}],153:[function(_dereq_,module,exports){
+},{"../core/shader":111,"../lib/three":150,"../utils/":172}],152:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":152,"./ios10hls":154,"./msdf":155,"./sdf":156,"./standard":157}],154:[function(_dereq_,module,exports){
+},{"./flat":151,"./ios10hls":153,"./msdf":154,"./sdf":155,"./standard":156}],153:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77920,7 +77295,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":112}],155:[function(_dereq_,module,exports){
+},{"../core/shader":111}],154:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77956,39 +77331,51 @@ module.exports.Shader = registerShader('msdf', {
     '#endif',
 
     'precision highp float;',
-    'uniform bool negate;',
-    'uniform float alphaTest;',
-    'uniform float opacity;',
+    // FIXME: Experimentally determined constants.
+    '#define BIG_ENOUGH 0.001',
+    '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+    '#define ALL_SMOOTH 0.4',
+    '#define ALL_ROUGH 0.02',
+    '#define DISCARD_ALPHA (alphaTest / (2.2 - 1.2 * ratio))',
     'uniform sampler2D map;',
     'uniform vec3 color;',
+    'uniform float opacity;',
+    'uniform float alphaTest;',
+    'uniform bool negate;',
     'varying vec2 vUV;',
 
     'float median(float r, float g, float b) {',
     '  return max(min(r, g), min(max(r, g), b));',
     '}',
-
-    // FIXME: Experimentally determined constants.
-    '#define BIG_ENOUGH 0.001',
-    '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
-
     'void main() {',
     '  vec3 sample = texture2D(map, vUV).rgb;',
-    '  if (negate) { sample = 1.0 - sample; }',
-
+    '  if (negate) {',
+    '    sample = 1.0 - sample;',
+    '  }',
     '  float sigDist = median(sample.r, sample.g, sample.b) - 0.5;',
-    '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
+    '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
     '  float dscale = 0.353505;',
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
     '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
-
-    '  // Do modified alpha test.',
+    // When texel is too small, blend raw alpha value rather than supersampling.
+    // FIXME: Experimentally determined constant.
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+    '  }',
+    // When texel is big enough, do standard alpha test.
+    // FIXME: Experimentally determined constant.
+    // Looks much better if we *don't* do this, but do we get Z fighting?
+    '  if (isBigEnough <= BIG_ENOUGH && alpha < alphaTest) { discard; return; }',
+    // Else, do modified alpha test.
+    // FIXME: Experimentally determined constant.
     '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
     '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
     '}'
   ].join('\n')
 });
 
-},{"../core/shader":112}],156:[function(_dereq_,module,exports){
+},{"../core/shader":111}],155:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -78023,79 +77410,82 @@ module.exports.Shader = registerShader('sdf', {
     '#endif',
 
     'precision highp float;',
-    'uniform float alphaTest;',
-    'uniform float opacity;',
-    'uniform sampler2D map;',
-    'uniform vec3 color;',
-    'varying vec2 vUV;',
-
-    '#ifdef GL_OES_standard_derivatives',
-    '  float contour(float width, float value) {',
-    '    return smoothstep(0.5 - value, 0.5 + value, width);',
-    '  }',
-    '#else',
-    '  float aastep(float value, float afwidth) {',
-    '    return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);',
-    '  }',
-    '#endif',
-
-    // FIXME: Experimentally determined constants.
+    // FIXME: experimentally determined constants
     '#define BIG_ENOUGH 0.001',
     '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
     '#define ALL_SMOOTH 0.4',
     '#define ALL_ROUGH 0.02',
     '#define DISCARD_ALPHA (alphaTest / (2.2 - 1.2 * ratio))',
-
+    'uniform sampler2D map;',
+    'uniform vec3 color;',
+    'uniform float opacity;',
+    'uniform float alphaTest;',
+    'varying vec2 vUV;',
+    '#ifdef GL_OES_standard_derivatives',
+    'float contour(float width, float value) {',
+    '  return smoothstep(0.5 - value, 0.5 + value, width);',
+    '}',
+    '#else',
+    'float aastep(float value, float afwidth) {',
+    '  return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);',
+    '}',
+    '#endif',
     'void main() {',
-       // When we have derivatives and can get texel size for supersampling.
-    '  #ifdef GL_OES_standard_derivatives',
-    '    vec2 uv = vUV;',
-    '    vec4 texColor = texture2D(map, uv);',
-    '    float dist = texColor.a;',
-    '    float width = fwidth(dist);',
-    '    float alpha = contour(dist, width);',
-    '    float dscale = 0.353505;',
-
-    '    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
-    '    float isBigEnough = max(abs(duv.x), abs(duv.y));',
-
-         // Otherwise do weighted supersampling.
-         // FIXME: why this weighting?
-    '    if (isBigEnough <= BIG_ENOUGH) {',
-    '      vec4 box = vec4 (uv - duv, uv + duv);',
-    '      alpha = (alpha + 0.5 * (',
-    '        contour(texture2D(map, box.xy).a, width)',
-    '        + contour(texture2D(map, box.zw).a, width)',
-    '        + contour(texture2D(map, box.xw).a, width)',
-    '        + contour(texture2D(map, box.zy).a, width)',
-    '      )) / 3.0;',
-    '    }',
-
-         // Do modified alpha test.
-    '    if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
-
-    '  #else',
-         // When we don't have derivatives, use approximations.
-    '    vec4 texColor = texture2D(map, vUV);',
-    '    float value = texColor.a;',
-         // FIXME: if we understood font pixel dimensions, this could probably be improved
-    '    float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
-    '    float alpha = aastep(value, afwidth);',
-
-         // Use gl_FragCoord.w to guess when we should blend.
-         // FIXME: If we understood font pixel dimensions, this could probably be improved.
-    '    float ratio = (gl_FragCoord.w >= ALL_SMOOTH) ? 1.0 : (gl_FragCoord.w < ALL_ROUGH) ? 0.0 : (gl_FragCoord.w - ALL_ROUGH) / (ALL_SMOOTH - ALL_ROUGH);',
-    '    if (alpha < alphaTest) { if (ratio >= 1.0) { discard; return; } alpha = 0.0; }',
-    '    alpha = alpha * ratio + (1.0 - ratio) * value;',
-    '    if (ratio < 1.0 && alpha <= DISCARD_ALPHA) { discard; return; }',
-    '  #endif',
-
+    '#ifdef GL_OES_standard_derivatives',
+    // when we have derivatives and can get texel size etc., that allows supersampling etc.
+    '  vec2 uv = vUV;',
+    '  vec4 texColor = texture2D(map, uv);',
+    '  float dist = texColor.a;',
+    '  float width = fwidth(dist);',
+    '  float alpha = contour(dist, width);',
+    '  float dscale = 0.353505;',
+    '  vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
+    '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+    // when texel is too small, blend raw alpha value rather than supersampling etc.
+    // FIXME: experimentally determined constant
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * dist;',
+    '  }',
+    // otherwise do weighted supersampling
+    // FIXME: why this weighting?
+    '  else if (isBigEnough <= BIG_ENOUGH) {',
+    '    vec4 box = vec4 (uv - duv, uv + duv);',
+    '    alpha = (alpha + 0.5 * (',
+    '      contour(texture2D(map, box.xy).a, width)',
+    '      + contour(texture2D(map, box.zw).a, width)',
+    '      + contour(texture2D(map, box.xw).a, width)',
+    '      + contour(texture2D(map, box.zy).a, width)',
+    '    )) / 3.0;',
+    '  }',
+    // when texel is big enough, do standard alpha test
+    // FIXME: experimentally determined constant
+    // looks much better if we DON'T do this, but do we get Z fighting etc.?
+    '  if (isBigEnough <= BIG_ENOUGH && alpha < alphaTest) { discard; return; }',
+    // else do modified alpha test
+    // FIXME: experimentally determined constant
+    '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+    '#else',
+    '  vec4 texColor = texture2D(map, vUV);',
+    '  float value = texColor.a;',
+    // when we don't have derivatives, use approximations
+    // FIXME: if we understood font pixel dimensions, this could probably be improved
+    '  float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
+    '  float alpha = aastep(value, afwidth);',
+    // use gl_FragCoord.w to guess when we should blend
+    // FIXME: if we understood font pixel dimensions, this could probably be improved
+    '  float ratio = (gl_FragCoord.w >= ALL_SMOOTH) ? 1.0 : (gl_FragCoord.w < ALL_ROUGH) ? 0.0 : (gl_FragCoord.w - ALL_ROUGH) / (ALL_SMOOTH - ALL_ROUGH);',
+    '  if (alpha < alphaTest) { if (ratio >= 1.0) { discard; return; } alpha = 0.0; }',
+    '  alpha = alpha * ratio + (1.0 - ratio) * value;',
+    '  if (ratio < 1.0)',
+    '    if (alpha <= DISCARD_ALPHA) { discard; return; }',
+    '#endif',
     '  gl_FragColor = vec4(color, opacity * alpha);',
     '}'
   ].join('\n')
 });
 
-},{"../core/shader":112}],157:[function(_dereq_,module,exports){
+},{"../core/shader":111}],156:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78157,10 +77547,7 @@ module.exports.Shader = registerShader('standard', {
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
-    this.materialData = {color: new THREE.Color(), emissive: new THREE.Color()};
-    getMaterialData(data, this.materialData);
-    this.material = new THREE.MeshStandardMaterial(this.materialData);
-
+    this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
     utils.material.updateMap(this, data);
     if (data.normalMap) { utils.material.updateDistortionMap('normal', this, data); }
     if (data.displacementMap) { utils.material.updateDistortionMap('displacement', this, data); }
@@ -78188,12 +77575,11 @@ module.exports.Shader = registerShader('standard', {
    * @returns {object} Material.
    */
   updateMaterial: function (data) {
-    var key;
     var material = this.material;
-    getMaterialData(data, this.materialData);
-    for (key in this.materialData) {
-      material[key] = this.materialData[key];
-    }
+    data = getMaterialData(data);
+    Object.keys(data).forEach(function (key) {
+      material[key] = data[key];
+    });
   },
 
   /**
@@ -78255,38 +77641,37 @@ module.exports.Shader = registerShader('standard', {
  * Builds and normalize material data, normalizing stuff along the way.
  *
  * @param {object} data - Material data.
- * @param {object} materialData - Object to use.
- * @returns {object} Updated materialData.
+ * @returns {object} data - Processed material data.
  */
-function getMaterialData (data, materialData) {
-  materialData.color.set(data.color);
-  materialData.emissive.set(data.emissive);
-  materialData.emissiveIntensity = data.emissiveIntensity;
-  materialData.fog = data.fog;
-  materialData.metalness = data.metalness;
-  materialData.roughness = data.roughness;
-  materialData.wireframe = data.wireframe;
-  materialData.wireframeLinewidth = data.wireframeLinewidth;
+function getMaterialData (data) {
+  var newData = {
+    color: new THREE.Color(data.color),
+    emissive: new THREE.Color(data.emissive),
+    emissiveIntensity: data.emissiveIntensity,
+    fog: data.fog,
+    metalness: data.metalness,
+    roughness: data.roughness,
+    wireframe: data.wireframe,
+    wireframeLinewidth: data.wireframeLinewidth
+  };
 
-  if (data.normalMap) { materialData.normalScale = data.normalScale; }
+  if (data.normalMap) { newData.normalScale = data.normalScale; }
 
-  if (data.ambientOcclusionMap) {
-    materialData.aoMapIntensity = data.ambientOcclusionMapIntensity;
-  }
+  if (data.ambientOcclusionMap) { newData.aoMapIntensity = data.ambientOcclusionMapIntensity; }
 
   if (data.displacementMap) {
-    materialData.displacementScale = data.displacementScale;
-    materialData.displacementBias = data.displacementBias;
+    newData.displacementScale = data.displacementScale;
+    newData.displacementBias = data.displacementBias;
   }
 
-  return materialData;
+  return newData;
 }
 
-},{"../core/shader":112,"../lib/three":151,"../utils/":174}],158:[function(_dereq_,module,exports){
-var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":5}],159:[function(_dereq_,module,exports){
+},{"../core/shader":111,"../lib/three":150,"../utils/":172}],157:[function(_dereq_,module,exports){
+var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
+},{"browserify-css":5}],158:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":5}],160:[function(_dereq_,module,exports){
+},{"browserify-css":5}],159:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -78394,14 +77779,10 @@ module.exports.System = registerSystem('camera', {
     // Set up default camera.
     defaultCameraEl = document.createElement('a-entity');
     defaultCameraEl.setAttribute('camera', {active: true});
-    defaultCameraEl.setAttribute('position', {
-      x: 0,
-      y: constants.DEFAULT_CAMERA_HEIGHT,
-      z: 0
-    });
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
+    defaultCameraEl.object3D.position.set(0, constants.DEFAULT_CAMERA_HEIGHT, 0);
 
     defaultCameraEl.addEventListener('object3dset', function (evt) {
       if (evt.detail.type !== 'camera') { return; }
@@ -78560,7 +77941,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":94,"../core/system":113}],161:[function(_dereq_,module,exports){
+},{"../constants/":94,"../core/system":112}],160:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -78700,44 +78081,16 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":103,"../core/system":113,"../lib/three":151}],162:[function(_dereq_,module,exports){
-var registerSystem = _dereq_('../core/system').registerSystem;
-var THREE = _dereq_('../lib/three');
-
-/**
- * glTF model system.
- *
- * Configures glTF loading options. Models using glTF compression require that a Draco decoder be
- * provided externally.
- *
- * @param {string} dracoDecoderPath - Base path from which to load Draco decoder library.
- */
-module.exports.System = registerSystem('gltf-model', {
-  schema: {
-    dracoDecoderPath: {default: ''}
-  },
-
-  init: function () {
-    var path = this.data.dracoDecoderPath;
-    THREE.DRACOLoader.setDecoderPath(path);
-    this.dracoLoader = path ? new THREE.DRACOLoader() : null;
-  },
-
-  getDRACOLoader: function () {
-    return this.dracoLoader;
-  }
-});
-
-},{"../core/system":113,"../lib/three":151}],163:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../core/system":112,"../lib/three":150}],161:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
-_dereq_('./gltf-model');
 _dereq_('./light');
 _dereq_('./material');
 _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
-},{"./camera":160,"./geometry":161,"./gltf-model":162,"./light":164,"./material":165,"./shadow":166,"./tracked-controls":167}],164:[function(_dereq_,module,exports){
+
+},{"./camera":159,"./geometry":160,"./light":162,"./material":163,"./shadow":164,"./tracked-controls":165}],162:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -78823,7 +78176,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":94,"../core/system":113,"../utils/bind":168}],165:[function(_dereq_,module,exports){
+},{"../constants/":94,"../core/system":112,"../utils/bind":166}],163:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -79228,7 +78581,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":113,"../lib/three":151,"../utils/":174,"../utils/material":175}],166:[function(_dereq_,module,exports){
+},{"../core/system":112,"../lib/three":150,"../utils/":172,"../utils/material":173}],164:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -79276,7 +78629,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":113,"../lib/three":151}],167:[function(_dereq_,module,exports){
+},{"../core/system":112,"../lib/three":150}],165:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var utils = _dereq_('../utils');
 
@@ -79290,7 +78643,7 @@ module.exports.System = registerSystem('tracked-controls', {
 
     this.controllers = [];
 
-    this.updateControllerList();
+    this.updateControllerList(navigator.getGamepads && navigator.getGamepads());
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
     if (!navigator.getVRDisplays) { return; }
@@ -79303,24 +78656,21 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   tick: function () {
-    if (navigator.userAgent.indexOf('Chrome') !== -1) {
-      // Call getGamepads for Chrome for it to update. Not sure if needed in future.
-      navigator.getGamepads && navigator.getGamepads();
-    }
-    this.throttledUpdateControllerList();
+    var gamepads;
+    // Call getGamepads for Chrome.
+    gamepads = navigator.getGamepads && navigator.getGamepads();
+    this.throttledUpdateControllerList(gamepads);
   },
 
   /**
    * Update controller list.
    */
-  updateControllerList: function () {
+  updateControllerList: function (gamepads) {
     var controllers = this.controllers;
     var gamepad;
-    var gamepads;
     var i;
     var prevCount;
 
-    gamepads = navigator.getGamepads && navigator.getGamepads();
     if (!gamepads) { return; }
 
     prevCount = controllers.length;
@@ -79338,7 +78688,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":113,"../utils":174}],168:[function(_dereq_,module,exports){
+},{"../core/system":112,"../utils":172}],166:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -79355,7 +78705,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],169:[function(_dereq_,module,exports){
+},{}],167:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -79453,7 +78803,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":170,"object-assign":25}],170:[function(_dereq_,module,exports){
+},{"./debug":168,"object-assign":25}],168:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -79550,7 +78900,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32,"debug":8,"object-assign":25}],171:[function(_dereq_,module,exports){
+},{"_process":32,"debug":8,"object-assign":25}],169:[function(_dereq_,module,exports){
 (function (process){
 var vrDisplay;
 
@@ -79689,7 +79039,7 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32}],172:[function(_dereq_,module,exports){
+},{"_process":32}],170:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -79751,7 +79101,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],173:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -79767,7 +79117,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],174:[function(_dereq_,module,exports){
+},{}],172:[function(_dereq_,module,exports){
 /* global location */
 
 /* Centralized place to reference utilities since utils is exposed to the user. */
@@ -80094,7 +79444,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":168,"./coordinates":169,"./debug":170,"./device":171,"./entity":172,"./forceCanvasResizeSafariMobile":173,"./material":175,"./object-pool":176,"./split":177,"./src-loader":178,"./styleParser":179,"./tracked-controls":180,"deep-assign":10,"object-assign":25}],175:[function(_dereq_,module,exports){
+},{"./bind":166,"./coordinates":167,"./debug":168,"./device":169,"./entity":170,"./forceCanvasResizeSafariMobile":171,"./material":173,"./object-pool":174,"./split":175,"./src-loader":176,"./styleParser":177,"./tracked-controls":178,"deep-assign":10,"object-assign":25}],173:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -80249,7 +79599,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":151}],176:[function(_dereq_,module,exports){
+},{"../lib/three":150}],174:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -80324,12 +79674,12 @@ module.exports.createPool = function createPool (objectFactory) {
 
 function clearObject (obj) {
   var key;
-  if (!obj || obj.constructor !== Object) { return; }
+  if (!(obj.constructor === Object)) { return; }
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
 
-},{}],177:[function(_dereq_,module,exports){
+},{}],175:[function(_dereq_,module,exports){
 /**
  * String split with cached result.
  */
@@ -80346,7 +79696,7 @@ module.exports.split = (function () {
   };
 })();
 
-},{}],178:[function(_dereq_,module,exports){
+},{}],176:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -80505,25 +79855,20 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":170}],179:[function(_dereq_,module,exports){
-/**
- * Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5").
- * Some code adapted from `style-attr` (https://github.com/joshwnj/style-attr)
- * by Josh Johnston (MIT License).
- */
-var DASH_REGEX = /-([a-z])/g;
+},{"./debug":168}],177:[function(_dereq_,module,exports){
+/* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
+var styleParser = _dereq_('style-attr');
 
 /**
- * Deserialize style-like string into an object of properties.
+ * Deserializes style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
- * @param {object} obj - Reused object for object pooling.
  * @returns {object} Property data.
  */
-module.exports.parse = function (value, obj) {
+module.exports.parse = function (value) {
   var parsedData;
   if (typeof value !== 'string') { return value; }
-  parsedData = styleParse(value, obj);
+  parsedData = styleParser.parse(value);
   // The style parser returns an object { "" : "test"} when fed a string
   if (parsedData['']) { return value; }
   return transformKeysToCamelCase(parsedData);
@@ -80537,7 +79882,7 @@ module.exports.parse = function (value, obj) {
  */
 module.exports.stringify = function (data) {
   if (typeof data === 'string') { return data; }
-  return styleStringify(data);
+  return styleParser.stringify(data);
 };
 
 /**
@@ -80547,7 +79892,8 @@ module.exports.stringify = function (data) {
  * @return {string} CamelCased string.
  */
 function toCamelCase (str) {
-  return str.replace(DASH_REGEX, upperCase);
+  return str.replace(/-([a-z])/g, camelCase);
+  function camelCase (g) { return g[1].toUpperCase(); }
 }
 module.exports.toCamelCase = toCamelCase;
 
@@ -80559,106 +79905,17 @@ module.exports.toCamelCase = toCamelCase;
  * @return {object} The object with keys camelCased.
  */
 function transformKeysToCamelCase (obj) {
-  var camelKey;
-  var key;
-  for (key in obj) {
-    camelKey = toCamelCase(key);
-    if (key === camelKey) { continue; }
-    obj[camelKey] = obj[key];
-    delete obj[key];
-  }
-  return obj;
+  var keys = Object.keys(obj);
+  var camelCaseObj = {};
+  keys.forEach(function (key) {
+    var camelCaseKey = toCamelCase(key);
+    camelCaseObj[camelCaseKey] = obj[key];
+  });
+  return camelCaseObj;
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-/**
- * Split a string into chunks matching `<key>: <value>`
- */
-var getKeyValueChunks = (function () {
-  var chunks = [];
-  var hasUnclosedUrl = /url\([^)]+$/;
-
-  return function getKeyValueChunks (raw) {
-    var chunk = '';
-    var nextSplit;
-    var offset = 0;
-    var sep = ';';
-
-    chunks.length = 0;
-
-    while (offset < raw.length) {
-      nextSplit = raw.indexOf(sep, offset);
-      if (nextSplit === -1) { nextSplit = raw.length; }
-
-      chunk += raw.substring(offset, nextSplit);
-
-      // data URIs can contain semicolons, so make sure we get the whole thing
-      if (hasUnclosedUrl.test(chunk)) {
-        chunk += ';';
-        offset = nextSplit + 1;
-        continue;
-      }
-
-      chunks.push(chunk.trim());
-      chunk = '';
-      offset = nextSplit + 1;
-    }
-
-    return chunks;
-  };
-})();
-
-/**
- * Convert a style attribute string to an object.
- *
- * @param {object} str - Attribute string.
- * @param {object} obj - Object to reuse as a base, else a new one will be allocated.
- */
-function styleParse (str, obj) {
-  var chunks;
-  var i;
-  var item;
-  var pos;
-  var key;
-  var val;
-
-  obj = obj || {};
-
-  chunks = getKeyValueChunks(str);
-  for (i = 0; i < chunks.length; i++) {
-    item = chunks[i];
-    if (!item) { continue; }
-    // Split with `.indexOf` rather than `.split` because the value may also contain colons.
-    pos = item.indexOf(':');
-    key = item.substr(0, pos).trim();
-    val = item.substr(pos + 1).trim();
-    obj[key] = val;
-  }
-  return obj;
-}
-
-/**
- * Convert an object into an attribute string
- **/
-function styleStringify (obj) {
-  var key;
-  var keyCount = 0;
-  var i = 0;
-  var str = '';
-
-  for (key in obj) { keyCount++; }
-
-  for (key in obj) {
-    str += (key + ': ' + obj[key]);
-    if (i < keyCount - 1) { str += '; '; }
-    i++;
-  }
-  return str;
-}
-
-function upperCase (str) { return str[1].toUpperCase(); }
-
-},{}],180:[function(_dereq_,module,exports){
+},{"style-attr":35}],178:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2;  // Number of hands in a pair. Should always be 2.
@@ -80838,7 +80095,7 @@ module.exports.onButtonEvent = function (id, evtName, component, hand) {
   }
 };
 
-},{"../constants":94}],181:[function(_dereq_,module,exports){
+},{"../constants":94}],179:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -81099,7 +80356,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],182:[function(_dereq_,module,exports){
+},{}],180:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -81554,7 +80811,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],183:[function(_dereq_,module,exports){
+},{}],181:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81616,7 +80873,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],184:[function(_dereq_,module,exports){
+},{}],182:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81692,6 +80949,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":183}]},{},[149])(149)
+},{"./util.js":181}]},{},[148])(148)
 });
 //# sourceMappingURL=aframe-master.js.map

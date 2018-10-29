@@ -1183,6 +1183,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             let assetsElement = document.createElement('a-assets');
             aframeObj.appendChild(assetsElement);
             aframeObj.setAttribute('scene-utils', "");
+            //aframeObj.setAttribute('loading-screen', "backgroundColor: black");
             self.state.scenes[node.ID] = aframeObj;
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
 

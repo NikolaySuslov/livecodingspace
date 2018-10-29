@@ -58,14 +58,14 @@ module.exports = AFRAME.registerComponent('nav-agent', {
         var position = this.el.object3D.position;
         this.group = this.group || this.system.getGroup(position);
         this.path = this.system.getPath(position, vDest.copy(data.destination), this.group) || [];
-        el.emit('navigation-start');
+        el.emit('nav-start');
       }
 
       // If no path is found, exit.
       if (!this.path.length) {
         console.warn('[nav] Unable to find path to %o.', data.destination);
         this.el.setAttribute('nav-agent', { active: false });
-        el.emit('navigation-end');
+        el.emit('nav-end');
         return;
       }
 
@@ -84,7 +84,7 @@ module.exports = AFRAME.registerComponent('nav-agent', {
         // After discarding the last waypoint, exit pathfinding.
         if (!this.path.length) {
           this.el.setAttribute('nav-agent', { active: false });
-          el.emit('navigation-end');
+          el.emit('nav-end');
           return;
         }
 
@@ -134,7 +134,7 @@ module.exports = AFRAME.registerComponent('nav-mesh', {
   init: function init() {
     this.system = this.el.sceneEl.systems.nav;
     this.hasLoadedNavMesh = false;
-    this.el.addEventListener('object3dset', this.loadNavMesh.bind(this));
+    this.el.addEventListener('model-loaded', this.loadNavMesh.bind(this));
   },
 
   play: function play() {
