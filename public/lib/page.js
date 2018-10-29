@@ -449,7 +449,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     this._hashbang = false;
 
     // bound functions
-    this._onclick = this._onclick.bind(this);
+    this.clickHandler = this.clickHandler.bind(this);
     this._onpopstate = this._onpopstate.bind(this);
 
     this.configure(options);
@@ -480,9 +480,9 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     }
 
     if (this._click) {
-      _window.document.addEventListener(clickEvent, this._onclick, false);
+      _window.document.addEventListener(clickEvent, this.clickHandler, false);
     } else if(hasDocument) {
-      _window.document.removeEventListener(clickEvent, this._onclick, false);
+      _window.document.removeEventListener(clickEvent, this.clickHandler, false);
     }
 
     if(this._hashbang && hasWindow && !hasHistory) {
@@ -514,7 +514,13 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     var base = this._base;
     if(!!base) return base;
     var loc = hasWindow && this._window && this._window.location;
-    return (hasWindow && this._hashbang && loc && loc.protocol === 'file:') ? loc.pathname : base;
+
+    if(hasWindow && this._hashbang && loc && loc.protocol === 'file:') {
+      base = loc.pathname;
+      base = base.substring(0, base.lastIndexOf('/'));
+    }
+
+    return base;
   };
 
   /**
@@ -579,7 +585,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     this._running = false;
 
     var window = this._window;
-    hasDocument && window.document.removeEventListener(clickEvent, this._onclick, false);
+    hasDocument && window.document.removeEventListener(clickEvent, this.clickHandler, false);
     hasWindow && window.removeEventListener('popstate', this._onpopstate, false);
     hasWindow && window.removeEventListener('hashchange', this._onpopstate, false);
   };
@@ -740,7 +746,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
    */
 
   /* jshint +W054 */
-  Page.prototype._onclick = function(e) {
+  Page.prototype.clickHandler = function(e) {
     if (1 !== this._which(e)) return;
 
     if (e.metaKey || e.ctrlKey || e.shiftKey) return;
@@ -815,7 +821,9 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
 
     if (this._hashbang) path = path.replace('#!', '');
 
-    if (pageBase && orig === path) return;
+    if (pageBase && orig === path && (!isLocation || this._window.location.protocol !== 'file:')) {
+      return;
+    }
 
     e.preventDefault();
     this.show(orig);
@@ -829,7 +837,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
   Page.prototype._onpopstate = (function () {
     var loaded = false;
     if ( ! hasWindow ) {
-      return;
+      return function () {};
     }
     if (hasDocument && document.readyState === 'complete') {
       loaded = true;
@@ -943,6 +951,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     pageFn.exit = pageInstance.exit.bind(pageInstance);
     pageFn.configure = pageInstance.configure.bind(pageInstance);
     pageFn.sameOrigin = pageInstance.sameOrigin.bind(pageInstance);
+    pageFn.clickHandler = pageInstance.clickHandler.bind(pageInstance);
 
     pageFn.create = createPage;
 
@@ -1049,7 +1058,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
   function Context(path, state, pageInstance) {
     var _page = this.page = pageInstance || page;
     var window = _page._window;
-    var hashbang = _page.hashbang;
+    var hashbang = _page._hashbang;
 
     var pageBase = _page._getBase();
     if ('/' === path[0] && 0 !== path.indexOf(pageBase)) path = pageBase + (hashbang ? '#!' : '') + path;
