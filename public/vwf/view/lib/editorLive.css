@@ -7,11 +7,17 @@
   height: 625px
 }
 
+#propEditorWindow {
+  height: 560px;
+  width: 680px;
+}
+
 .draggable {
   top: 200px;
   left: 400px;
-    z-index: 4;
-    background-color: rgba(230, 230, 230, 0.95);
+  z-index: 4;
+  background-color: rgba(230, 230, 230, 0.95);
+  opacity: 0.95;
   }
   
   .draggable.is-pointer-down {
