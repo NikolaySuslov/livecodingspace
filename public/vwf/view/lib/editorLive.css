@@ -3,6 +3,10 @@
   flex-direction: row;
 }
 
+#codeEditorWindow {
+  height: 625px
+}
+
 .draggable {
   top: 200px;
   left: 400px;
@@ -22,6 +26,7 @@
     left: 100px;
   }
 
+  
 
   .propGrid.max-width {
     max-width: 400px;

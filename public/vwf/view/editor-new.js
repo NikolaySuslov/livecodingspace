@@ -3749,8 +3749,8 @@ define([
                 for (var i = 0, len = draggableElems.length; i < len; i++) {
                     var draggableElem = draggableElems[i];
                     var draggie = new Draggabilly(draggableElem, {
-                        handle: '.handle',
-                        containment: true
+                        handle: '.handle'
+                        //containment: true
                     });
                     draggies.push(draggie);
                 }
