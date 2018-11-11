@@ -13,8 +13,8 @@
 }
 
 .draggable {
-  top: 200px;
-  left: 400px;
+  top: 100px;
+  left: 480px;
   z-index: 4;
   background-color: rgba(230, 230, 230, 0.95);
   opacity: 0.95;

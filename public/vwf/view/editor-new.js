@@ -3734,6 +3734,7 @@ define([
             $cell: true,
             $type: "div",
             id: elementID,
+            style: 'position: absolute;',
             class: 'draggable',
             $init: function () {
                 // let draggie = new Draggabilly('.draggable', {
