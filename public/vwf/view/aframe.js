@@ -91,13 +91,44 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
             if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
-                this.nodes[childID] = { 
-                    id: childID, 
+                this.nodes[childID] = {
+                    id: childID,
                     extends: childExtendsID,
                     // lastTransformStep: 0,
                     // lastAnimationStep: 0 
                 };
             }
+
+            if (node.aframeObj.nodeName == "IMG") {
+
+                let elID = '#' + node.aframeObj.getAttribute('id');
+                let elem = document.querySelector(elID);
+                elem.addEventListener("load", function (event) {
+                    console.log("IMAGE src finish loading... " + elID);
+
+                    Object.entries(self.state.nodes).forEach(el => {
+                        let material = el[1].aframeObj.getAttribute('material');
+                        if (material) {
+                            if (material.src) {
+                                if (material.src !== "") {
+                                    // console.log("my: " + src);
+                                    let src = '#' + material.src.id;
+                                    if (src == elID) {
+                                        let materialID = vwf.find(el[0], 'material');
+                                        self.kernel.callMethod(materialID, "updateSrc", [elID])
+                                    }
+                                }
+                            }
+                        }
+    
+                    })
+
+
+                });
+
+                //console.log('IMG: ' + node.aframeObj.getAttribute('id'));
+            }
+
 
             // if(this.state.nodes[childID]) {
             //     this.nodes[childID] = {id:childID,extends:childExtendsID};
@@ -116,8 +147,8 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            if (node.extendsID == "http://vwf.example.com/aframe/gearvrcontroller.vwf"){
-                    console.log("gearVR controller initialized")
+            if (node.extendsID == "http://vwf.example.com/aframe/gearvrcontroller.vwf") {
+                console.log("gearVR controller initialized")
             }
 
 
@@ -140,7 +171,7 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            
+
 
 
         },
@@ -175,21 +206,21 @@ define(["module", "vwf/view"], function (module, view) {
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
                     let sound = el[1].aframeObj.getAttribute('sound');
-                    if(sound) {
-                   
+                    if (sound) {
+
                         let soundID = vwf.find(el[0], 'sound');
                         self.kernel.callMethod(soundID, "refreshSrc", [elID])
 
-                    // if (sound.src !== ""){
-                    //     let src = '#' + sound.src.id;
-                    //     if (src == elID){
-                    //         let soundID = vwf.find(el[0], 'sound');
-                    //         self.kernel.callMethod(soundID, "updateSrc", [elID])
-                    //     }
-                        
-                    // }
+                        // if (sound.src !== ""){
+                        //     let src = '#' + sound.src.id;
+                        //     if (src == elID){
+                        //         let soundID = vwf.find(el[0], 'sound');
+                        //         self.kernel.callMethod(soundID, "updateSrc", [elID])
+                        //     }
 
-                }
+                        // }
+
+                    }
 
                 })
             }
@@ -201,19 +232,18 @@ define(["module", "vwf/view"], function (module, view) {
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
                     let material = el[1].aframeObj.getAttribute('material');
-                    if(material) {
-                   
-                    if (material.src){
-                        if (material.src !== ""){
-                       // console.log("my: " + src);
-                        let src = '#' + material.src.id;
-                        if (src == elID){
-                            let materialID = vwf.find(el[0], 'material');
-                            self.kernel.callMethod(materialID, "updateSrc", [elID])
+                    if (material) {
+                        if (material.src) {
+                            if (material.src !== "") {
+                                // console.log("my: " + src);
+                                let src = '#' + material.src.id;
+                                if (src == elID) {
+                                    let materialID = vwf.find(el[0], 'material');
+                                    self.kernel.callMethod(materialID, "updateSrc", [elID])
+                                }
+                            }
                         }
                     }
-                    }
-                }
 
                 })
             }
@@ -224,20 +254,20 @@ define(["module", "vwf/view"], function (module, view) {
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 Object.entries(this.state.nodes).forEach(el => {
                     let material = el[1].aframeObj.getAttribute('material');
-                    if(material) {
-                   
-                if (material.src){
-                    if (material.src !== ""){
-                       // console.log("my: " + src);
-                        let src = '#' + material.src.id;
-                        if (src == elID){
-                            let materialID = vwf.find(el[0], 'material');
-                            self.kernel.callMethod(materialID, "updateSrc", [elID])
+                    if (material) {
+
+                        if (material.src) {
+                            if (material.src !== "") {
+                                // console.log("my: " + src);
+                                let src = '#' + material.src.id;
+                                if (src == elID) {
+                                    let materialID = vwf.find(el[0], 'material');
+                                    self.kernel.callMethod(materialID, "updateSrc", [elID])
+                                }
+
+                            }
                         }
-                        
                     }
-                }
-                }
                 })
             }
 
@@ -248,29 +278,29 @@ define(["module", "vwf/view"], function (module, view) {
                 Object.entries(this.state.nodes).forEach(el => {
                     let src = el[1].aframeObj.getAttribute('src');
                     let mtl = el[1].aframeObj.getAttribute('mtl');
-                    if (src){
-                       // console.log("my: " + src);
+                    if (src) {
+                        // console.log("my: " + src);
                         if (src == elID)
-                        self.kernel.callMethod(el[0], "updateModel", [elID])
+                            self.kernel.callMethod(el[0], "updateModel", [elID])
                     }
-                    if (mtl){
-                       // console.log("my: " + mtl);
+                    if (mtl) {
+                        // console.log("my: " + mtl);
                         if (mtl == elID)
-                        self.kernel.callMethod(el[0], "updateModelMtl", [elID])
+                            self.kernel.callMethod(el[0], "updateModelMtl", [elID])
                     }
                 })
 
             }
-            
+
             //  if (node.aframeObj.nodeName == "A-BOX" && propertyName == 'color') {
-                
+
             //     console.log("sat color");
             //     let materialName = '/' + node.name + '/material';
             //     let materialID = vwf.find('', materialName)[0];
             //     if (materialID) {
 
             //         vwf.setProperty(materialID, propertyName, propertyValue);
-                    
+
             //     }  
 
             // }
@@ -295,8 +325,7 @@ define(["module", "vwf/view"], function (module, view) {
             // }
         },
 
-        deletedNode: function(childID)
-        {
+        deletedNode: function (childID) {
             delete this.nodes[childID];
         },
 
@@ -318,7 +347,7 @@ define(["module", "vwf/view"], function (module, view) {
                     "properties": {
                         "localUrl": '',
                         "remoteUrl": '',
-                        "displayName": 'Avatar '+ randId(),
+                        "displayName": 'Avatar ' + randId(),
                         "sharing": { audio: true, video: true },
                         "selectMode": false,
                         "position": "0 1.6 0"
@@ -327,38 +356,38 @@ define(["module", "vwf/view"], function (module, view) {
 
                 if (!self.state.nodes[avatarName]) {
 
-                if(_LCSUSER.is){
-                    _LCSUSER.get('profile').once(res => {
-                        var myNode = null;
-                        if (res.avatarNode) {
-                            myNode = JSON.parse(res.avatarNode);
-                        }
-                        newNode.properties.displayName = res.alias;
+                    if (_LCSUSER.is) {
+                        _LCSUSER.get('profile').once(res => {
+                            var myNode = null;
+                            if (res.avatarNode) {
+                                myNode = JSON.parse(res.avatarNode);
+                            }
+                            newNode.properties.displayName = res.alias;
 
                             vwf_view.kernel.createChild(nodeID, avatarName, newNode);
                             vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
                             //"/../assets/avatars/male/avatar1.gltf"
-                        
 
-                        //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
-                    })
-                } else {
 
-                    vwf_view.kernel.createChild(nodeID, avatarName, newNode);
-                    vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
-                    //"/../assets/avatars/male/avatar1.gltf"
+                            //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
+                        })
+                    } else {
+
+                        vwf_view.kernel.createChild(nodeID, avatarName, newNode);
+                        vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
+                        //"/../assets/avatars/male/avatar1.gltf"
+                    }
                 }
-            }
 
 
-                    // if(_LCSUSER.is){
-                    //     _LCSUSER.get('profile').get('alias').once(res => {
-                    //         vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
-                    //     })
-                    // }
+                // if(_LCSUSER.is){
+                //     _LCSUSER.get('profile').get('alias').once(res => {
+                //         vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
+                //     })
+                // }
 
-              
-                
+
+
 
             }
 
@@ -372,29 +401,29 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (eventName == "clickEvent") {
 
-               if (self.kernel.moniker() == eventParameters[0]){
+                if (self.kernel.moniker() == eventParameters[0]) {
 
                     let avatar = self.nodes[avatarName];
                     let mode = vwf.getProperty(avatarName, 'selectMode');
 
-                    if(mode) {
+                    if (mode) {
                         console.log("allow to click!!!")
                         vwf_view.kernel.setProperty(avatarName, 'selectMode', false);
 
                         let editorDriver = vwf.views["vwf/view/editor-new"];
-                        if (editorDriver){
+                        if (editorDriver) {
                             let selectSwitch = document.querySelector('#selectNodeSwitch');
                             const selectSwitchComp = new mdc.iconToggle.MDCIconToggle(selectSwitch); //new mdc.select.MDCIconToggle
                             selectSwitchComp.on = false;
 
                             let currentNodeDIV = document.querySelector('#currentNode');
                             if (currentNodeDIV) currentNodeDIV._setNode(nodeID);
-                            
+
 
                         }
                     }
-               }
-                
+                }
+
 
             }
         },
@@ -414,39 +443,39 @@ define(["module", "vwf/view"], function (module, view) {
                 updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
             }
 
-           // console.log(vwfTime);
+            // console.log(vwfTime);
             //lerpTick ();
         },
 
-        calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
-    
+        calledMethod: function (nodeID, methodName, methodParameters, methodValue) {
+
             var node = this.state.nodes[nodeID];
 
             if (!(node && node.aframeObj)) {
                 return;
             }
 
-       
-            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf"){
-                if (methodName == "setCameraToActive"){
-                    if (methodParameters[0] == vwf.moniker_){
-                    console.log("set active");
-                    let offsetComp = node.aframeObj.getAttribute('viewoffset');
-                    if (offsetComp) {
-                        let offsetCompID = vwf.find(nodeID, 'viewoffset');
-                        self.kernel.callMethod(offsetCompID, "setParams", []);
+
+            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf") {
+                if (methodName == "setCameraToActive") {
+                    if (methodParameters[0] == vwf.moniker_) {
+                        console.log("set active");
+                        let offsetComp = node.aframeObj.getAttribute('viewoffset');
+                        if (offsetComp) {
+                            let offsetCompID = vwf.find(nodeID, 'viewoffset');
+                            self.kernel.callMethod(offsetCompID, "setParams", []);
+                        }
+                        node.aframeObj.setAttribute('camera', 'active', true);
                     }
-                    node.aframeObj.setAttribute('camera', 'active', true);
                 }
             }
-        }
 
-            if(methodName == "createGooglePoly"){
+            if (methodName == "createGooglePoly") {
 
 
             }
 
-            
+
         }
 
 
@@ -461,13 +490,13 @@ define(["module", "vwf/view"], function (module, view) {
     function getWorldRotation(el) {
 
 
-        var worldQuat =  new THREE.Quaternion();
+        var worldQuat = new THREE.Quaternion();
         el.object3D.getWorldQuaternion(worldQuat);
-         
+
         //console.log(worldQuat);
         let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
         let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
-        THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+            THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)));
 
         return rotation
     }
@@ -489,8 +518,8 @@ define(["module", "vwf/view"], function (module, view) {
             el.object3D.getWorldPosition(position);
 
             let rotation = getWorldRotation(el);
-           
-           // console.log(rotation);
+
+            // console.log(rotation);
             //let rotation = el.getAttribute('rotation');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -499,8 +528,8 @@ define(["module", "vwf/view"], function (module, view) {
             // let currentPosition = node.aframeObj.getAttribute('position');
             // let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && lastPosition  && lastRotation) {
-            if (compareCoordinates(position, lastPosition, delta) || Math.abs(rotation.y - lastRotation.y) > delta) {
+            if (position && rotation && lastPosition && lastRotation) {
+                if (compareCoordinates(position, lastPosition, delta) || Math.abs(rotation.y - lastRotation.y) > delta) {
                     console.log("not equal!!")
                     vwf_view.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
                 }
@@ -525,7 +554,7 @@ define(["module", "vwf/view"], function (module, view) {
         let el = document.querySelector(aSelector);
         if (el) {
             //let position = el.object3D.getWorldPosition() //el.getAttribute('position');
-            
+
             let position = new THREE.Vector3();
             el.object3D.getWorldPosition(position);
 
@@ -536,7 +565,7 @@ define(["module", "vwf/view"], function (module, view) {
             let lastRotation = self.nodes[avatarName].selfTickRotation;
             let lastPosition = self.nodes[avatarName].selfTickPosition;
 
-           // let currentPosition = node.aframeObj.getAttribute('position');
+            // let currentPosition = node.aframeObj.getAttribute('position');
             //let currentRotation = node.aframeObj.getAttribute('rotation');
 
             if (position && rotation && lastRotation && lastPosition) {
@@ -546,7 +575,7 @@ define(["module", "vwf/view"], function (module, view) {
                 }
             }
 
-          
+
             //vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
 
             self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
@@ -562,31 +591,31 @@ define(["module", "vwf/view"], function (module, view) {
 
         let avatarEl = document.createElement('a-entity');
         avatarEl.setAttribute('id', 'avatarControlParent');
-        
+
 
         if (AFRAME.utils.device.isGearVR()) {
             avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
             //avatarEl.setAttribute('position', '0 0 0');
         }
-       
+
         //avatarEl.setAttribute('position', '0 1.6 0');
 
         let controlEl = document.createElement('a-camera');
 
         controlEl.setAttribute('id', 'avatarControl');
         //controlEl.setAttribute('wasd-controls', {});
-        controlEl.setAttribute('look-controls', {pointerLockEnabled: false});
-       //controlEl.setAttribute('gamepad-controls', {'controller': 0});
-        
-       
+        controlEl.setAttribute('look-controls', { pointerLockEnabled: false });
+        //controlEl.setAttribute('gamepad-controls', {'controller': 0});
+
+
 
         //controlEl.setAttribute('gearvr-controls',{});
-        
-       // controlEl.setAttribute('camera', 'near', 0.51);
 
-       
-    //controlEl.setAttribute('position', '0 0 0');
-   
+        // controlEl.setAttribute('camera', 'near', 0.51);
+
+
+        //controlEl.setAttribute('position', '0 0 0');
+
 
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
@@ -594,7 +623,7 @@ define(["module", "vwf/view"], function (module, view) {
         cursorEl.setAttribute('raycaster', 'objects', '.intersectable');
         cursorEl.setAttribute('raycaster', 'showLine', false);
 
-        if (AFRAME.utils.device.isGearVR()) {}
+        if (AFRAME.utils.device.isGearVR()) { }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
         // cursorEl.setAttribute('raycaster', 'showLine', true);
@@ -627,7 +656,7 @@ define(["module", "vwf/view"], function (module, view) {
 
     }
 
-    function createWMRVR (nodeID, nodeName) { 
+    function createWMRVR(nodeID, nodeName) {
 
         var newNode = {
             "id": nodeName,
@@ -648,20 +677,20 @@ define(["module", "vwf/view"], function (module, view) {
 
     function createGearVRController(nodeID, nodeName) {
 
-            var newNode = {
-                "id": nodeName,
-                "uri": nodeName,
-                "extends": "http://vwf.example.com/aframe/gearvrcontroller.vwf",
-                "properties": {
-                }
+        var newNode = {
+            "id": nodeName,
+            "uri": nodeName,
+            "extends": "http://vwf.example.com/aframe/gearvrcontroller.vwf",
+            "properties": {
             }
+        }
 
-            if (!self.state.nodes[nodeName]) {
+        if (!self.state.nodes[nodeName]) {
 
-                vwf_view.kernel.createChild(nodeID, nodeName, newNode);
-                vwf_view.kernel.callMethod(nodeName, "createController", []);
-                //"/../assets/controller/gearvr.gltf"
-            }
+            vwf_view.kernel.createChild(nodeID, nodeName, newNode);
+            vwf_view.kernel.callMethod(nodeName, "createController", []);
+            //"/../assets/controller/gearvr.gltf"
+        }
     }
 
     function createAvatar(nodeID) {
@@ -696,8 +725,9 @@ define(["module", "vwf/view"], function (module, view) {
         gearvr.setAttribute('id', 'gearvrcontrol');
         gearvr.setAttribute('gearvr-controls', {
             'hand': 'right',
-        'model': true        });
-       // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
+            'model': true
+        });
+        // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
 
         gearvr.setAttribute('gearvrcontrol', {});
         avatarControl.appendChild(gearvr);
@@ -714,7 +744,7 @@ define(["module", "vwf/view"], function (module, view) {
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
         wmrvr.setAttribute('windows-motion-controls', '');
         wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
-        wmrvr.setAttribute('wmrvrcontrol', {'hand': hand});
+        wmrvr.setAttribute('wmrvrcontrol', { 'hand': hand });
         avatarControl.appendChild(wmrvr);
     }
 

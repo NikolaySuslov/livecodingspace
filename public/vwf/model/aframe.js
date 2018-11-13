@@ -1201,9 +1201,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             let assets = document.querySelector('a-assets');
             if (assets){
-
+                let elID = "item-"+GUID();
                 aframeObj = document.createElement('img');
-                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('id', elID);
                 aframeObj.setAttribute('src', "");
                 aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
