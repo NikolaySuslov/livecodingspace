@@ -147,7 +147,7 @@ define(["module", "vwf/view"], function (module, view) {
         },
 
         satProperty: function (nodeId, propertyName, propertyValue) {
-            var selfs = this;
+            //var selfs = this;
 
             var node = this.state.nodes[nodeId];
 
@@ -202,12 +202,11 @@ define(["module", "vwf/view"], function (module, view) {
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 let itemElem = document.querySelector(elID);
 
-                
-
                 itemElem.addEventListener("load", function(event) {
                     console.log("resources finished loading!");
 
-                    Object.entries(selfs.state.nodes).forEach(el => {
+
+                    Object.entries(self.state.nodes).forEach(el => {
                         let material = el[1].aframeObj.getAttribute('material');
                         if (material) {
                             if (material.src) {
@@ -216,7 +215,7 @@ define(["module", "vwf/view"], function (module, view) {
                                     let src = '#' + material.src.id;
                                     if (src == elID) {
                                         let materialID = vwf.find(el[0], 'material');
-                                        selfs.kernel.callMethod(materialID, "updateSrc", [elID])
+                                        self.kernel.callMethod(materialID, "updateSrc", [elID])
                                     }
                                 }
                             }

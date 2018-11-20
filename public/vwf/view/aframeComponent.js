@@ -96,13 +96,29 @@ define(["module", "vwf/view"], function (module, view) {
                             return;
                         }
 
-                        if (node.name == "material" && propertyName == 'repeat') {
+                        if (node.name == "material") {
 
-                           let srcID = node.aframeObj.el.getAttribute('material').src.id;
-                           let elID = '#'+ srcID;
-                           if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
+                            if (propertyName == 'repeat') {
 
-                        }
+                                let src = node.aframeObj.el.getAttribute('material').src;
+                                if (src) {
+                                    let srcID = src.id;
+                                    let elID = '#'+ srcID;
+                                    if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
+                                }
+                               
+     
+                             }
+
+                             if (propertyName == 'src') {
+
+                                console.log("set src for: " + nodeId)
+
+                             }
+
+                        } 
+
+                        
             // if (node.name == "material" && propertyName == 'color') {
     
             //     console.log("sat color on material");
