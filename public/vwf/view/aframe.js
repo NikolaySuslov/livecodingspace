@@ -99,36 +99,6 @@ define(["module", "vwf/view"], function (module, view) {
                 };
             }
 
-            if (node.aframeObj.nodeName == "IMG") {
-
-                let elID = '#' + node.aframeObj.getAttribute('id');
-                let elem = document.querySelector(elID);
-                elem.addEventListener("load", function (event) {
-                    console.log("IMAGE src finish loading... " + elID);
-
-                    Object.entries(self.state.nodes).forEach(el => {
-                        let material = el[1].aframeObj.getAttribute('material');
-                        if (material) {
-                            if (material.src) {
-                                if (material.src !== "") {
-                                    // console.log("my: " + src);
-                                    let src = '#' + material.src.id;
-                                    if (src == elID) {
-                                        let materialID = vwf.find(el[0], 'material');
-                                        self.kernel.callMethod(materialID, "updateSrc", [elID])
-                                    }
-                                }
-                            }
-                        }
-    
-                    })
-
-
-                });
-
-                //console.log('IMG: ' + node.aframeObj.getAttribute('id'));
-            }
-
 
             // if(this.state.nodes[childID]) {
             //     this.nodes[childID] = {id:childID,extends:childExtendsID};
@@ -228,24 +198,55 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (node.aframeObj.nodeName == "IMG" && propertyName == 'itemSrc') {
 
-                //console.log("sat new item");
+
                 let elID = '#' + node.aframeObj.getAttribute('id');
-                Object.entries(this.state.nodes).forEach(el => {
-                    let material = el[1].aframeObj.getAttribute('material');
-                    if (material) {
-                        if (material.src) {
-                            if (material.src !== "") {
-                                // console.log("my: " + src);
-                                let src = '#' + material.src.id;
-                                if (src == elID) {
-                                    let materialID = vwf.find(el[0], 'material');
-                                    self.kernel.callMethod(materialID, "updateSrc", [elID])
+                let itemElem = document.querySelector(elID);
+
+                
+
+                itemElem.addEventListener("load", function(event) {
+                    console.log("resources finished loading!");
+
+                    Object.entries(selfs.state.nodes).forEach(el => {
+                        let material = el[1].aframeObj.getAttribute('material');
+                        if (material) {
+                            if (material.src) {
+                                if (material.src !== "") {
+                                    // console.log("my: " + src);
+                                    let src = '#' + material.src.id;
+                                    if (src == elID) {
+                                        let materialID = vwf.find(el[0], 'material');
+                                        selfs.kernel.callMethod(materialID, "updateSrc", [elID])
+                                    }
                                 }
                             }
                         }
-                    }
+    
+                    })
 
-                })
+
+
+                  });
+
+
+                //console.log("sat new item");
+               
+                // Object.entries(this.state.nodes).forEach(el => {
+                //     let material = el[1].aframeObj.getAttribute('material');
+                //     if (material) {
+                //         if (material.src) {
+                //             if (material.src !== "") {
+                //                 // console.log("my: " + src);
+                //                 let src = '#' + material.src.id;
+                //                 if (src == elID) {
+                //                     let materialID = vwf.find(el[0], 'material');
+                //                     self.kernel.callMethod(materialID, "updateSrc", [elID])
+                //                 }
+                //             }
+                //         }
+                //     }
+
+                // })
             }
 
             if (node.aframeObj.nodeName == "VIDEO" && propertyName == 'itemSrc') {
