@@ -202,7 +202,7 @@ define(["module", "vwf/view"], function (module, view) {
                 let elID = '#' + node.aframeObj.getAttribute('id');
                 let itemElem = document.querySelector(elID);
 
-                itemElem.addEventListener("load", function(event) {
+               // itemElem.addEventListener("load", function(event) {
                     //console.log("resources finished loading!");
 
                     Object.entries(self.state.nodes).forEach(el => {
@@ -227,7 +227,7 @@ define(["module", "vwf/view"], function (module, view) {
 
 
 
-                  });
+                //  });
 
 
                 //console.log("sat new item");
