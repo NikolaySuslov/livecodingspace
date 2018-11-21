@@ -203,15 +203,17 @@ define(["module", "vwf/view"], function (module, view) {
                 let itemElem = document.querySelector(elID);
 
                 itemElem.addEventListener("load", function(event) {
-                    console.log("resources finished loading!");
-
+                    //console.log("resources finished loading!");
 
                     Object.entries(self.state.nodes).forEach(el => {
                         let material = el[1].aframeObj.getAttribute('material');
                         if (material) {
-                            if (material.src) {
+                            if (!material.src) {
+                                let materialID = vwf.find(el[0], 'material');
+                                self.kernel.callMethod(materialID, "refreshSrc",[]);
+                            }
+                            else if (material.src) {
                                 if (material.src !== "") {
-                                    // console.log("my: " + src);
                                     let src = '#' + material.src.id;
                                     if (src == elID) {
                                         let materialID = vwf.find(el[0], 'material');

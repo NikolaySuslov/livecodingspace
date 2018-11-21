@@ -100,21 +100,18 @@ define(["module", "vwf/view"], function (module, view) {
 
                             if (propertyName == 'repeat') {
 
-                                let src = node.aframeObj.el.getAttribute('material').src;
-                                if (src) {
-                                    let srcID = src.id;
-                                    let elID = '#'+ srcID;
-                                    if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
-                                }
+                                self.kernel.callMethod(nodeId, "refreshSrc", []);
+
+                                // let src = node.aframeObj.el.getAttribute('material').src;
+                                // if (src) {
+                                //     let srcID = src.id;
+                                //     let elID = '#'+ srcID;
+                                //     if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
+                                // }
                                
      
                              }
 
-                             if (propertyName == 'src') {
-
-                                console.log("set src for: " + nodeId)
-
-                             }
 
                         } 
 

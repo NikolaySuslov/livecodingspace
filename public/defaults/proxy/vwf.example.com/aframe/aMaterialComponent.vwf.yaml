@@ -43,6 +43,7 @@ properties:
   wireframe-linewidth:
   src:
 methods:
+  refreshSrc:
   updateSrc:
     parameters:
       - srcID

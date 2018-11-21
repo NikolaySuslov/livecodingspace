@@ -6,3 +6,13 @@ this.updateSrc = function(srcID){
     }
     
 }
+
+this.refreshSrc = function(){
+
+    let mySrcID = this.src;
+    if (mySrcID) {
+        this.src = "";
+        this.src = mySrcID;
+    }
+    
+}
