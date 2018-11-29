@@ -72,7 +72,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                         "type": "component",
                         "properties": {
-                            "enabled": true
+                            "enabled": false
                         }
                     },
                     "visual": {
@@ -228,7 +228,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
-            "enabled": true
+            "enabled": false
         }
     }
 
@@ -268,7 +268,8 @@ this.followAvatarControl = function (position, rotation) {
     // this.rotation = AFRAME.utils.coordinates.stringify(rotation);
 //debugger;
 
-    this.position = AFRAME.utils.coordinates.stringify(position);
+   // this.position = AFRAME.utils.coordinates.stringify(position);
+   this.position = position;
     let myRot = AFRAME.utils.coordinates.parse(this.rotation);
     let myHeadRot = AFRAME.utils.coordinates.parse(this.avatarNode.myHead.rotation);
     let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);

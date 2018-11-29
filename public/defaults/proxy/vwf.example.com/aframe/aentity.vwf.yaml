@@ -2,8 +2,19 @@
 --- 
 extends: http://vwf.example.com/aframe/node.vwf
 type: "a-entity"
+implements:
+- http://vwf.example.com/animation/animation.vwf
+- http://vwf.example.com/animation/animationNode.vwf
 properties:
   position:
+    set: |
+      var position = this.translationFromValue( value ); // parse incoming value
+      if ( ! goog.vec.Vec3.equals( this.position || goog.vec.Vec3.create(), position ) ) {
+        this.position = position;
+        this.positionChanged( position);
+      }  
+    get: |
+      return this.position || goog.vec.Vec3.create();
   rotation:
   scale:
   clickable:
@@ -11,6 +22,8 @@ properties:
   visible:
   edit:
   osc:
+events:
+  positionChanged:
 methods:
   setGizmoMode:
     parameters:
@@ -21,5 +34,8 @@ methods:
       - nodeID
   worldRotation:
   worldPosition:
+  translationFromValue:
+    parameters:
+      - propertyValue
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

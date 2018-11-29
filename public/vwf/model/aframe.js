@@ -195,6 +195,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 node.aframeObj = createAFrameObject(node);
                 addNodeToHierarchy(node);
 
+                if (isAEntityDefinition(node.prototypes))
+                    updateStoredTransform( node );
+
                 //notifyDriverOfPrototypeAndBehaviorProps();
                 //  }
 
@@ -353,7 +356,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     switch (propertyName) {
 
                         case "position":
-                            this.state.setAFrameProperty('position', propertyValue, aframeObject);
+
+                        var position = goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            node.transform.position = position;
+                            value = propertyValue;
+                            node.storedTransformDirty = true; 
+                            //setTransformsDirty( threeObject );
+                            //this.state.setAFrameProperty('position', propertyValue, aframeObject);
                             break;
 
                         case "rotation":
@@ -820,11 +829,19 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     switch (propertyName) {
 
                         case "position":
-                            var pos = aframeObject.getAttribute('position');
-                            if (pos !== undefined) {
-                                value = pos//[pos.x, pos.y, pos.z]//AFRAME.utils.coordinates.stringify(pos);
+                            // var pos = aframeObject.getAttribute('position');
+                            // if (pos !== undefined) {
+                            //     value = pos//[pos.x, pos.y, pos.z]//AFRAME.utils.coordinates.stringify(pos);
+                            // }
+
+                            if ( node.storedTransformDirty ) {
+                                updateStoredTransform( node );
                             }
+
+                            //value = goog.vec.Vec3.clone(node.transform.position);
+                            value =  node.transform.position;
                             break;
+
                         case "scale":
                             var scale = aframeObject.getAttribute('scale');
                             if (scale !== undefined) {
@@ -1313,6 +1330,28 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
     }
+
+
+
+    function updateStoredTransform( node ) {
+        
+        if ( node && node.aframeObj) {
+            // Add a local model-side transform that can stay pure even if the view changes the
+            // transform on the threeObject - this already happened in creatingNode for those nodes that
+            // didn't need to load a model
+            node.transform = {};
+
+            let pos = node.aframeObj.object3D.position;
+            node.transform.position = goog.vec.Vec3.createFromValues(pos.x, pos.y, pos.z);
+
+            //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
+            node.transform.rotation = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.rotation);
+            node.storedTransformDirty = false;             
+        }
+      
+    }    
+
+
 
 
     function getPrototypes(kernel, extendsID) {

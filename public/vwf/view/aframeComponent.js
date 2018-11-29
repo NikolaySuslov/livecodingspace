@@ -173,7 +173,7 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-       
+    
             if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
                 if (methodName == "stopSound"){
 
@@ -212,7 +212,7 @@ define(["module", "vwf/view"], function (module, view) {
         self.lastRealTick = now;
  
         //reset - loading can cause us to get behind and always but up against the max prediction value
-       // self.tickTime = 0;
+        self.tickTime = 0;
 
        let interNodes = Object.entries(self.nodes).filter(node => 
         node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
@@ -220,7 +220,7 @@ define(["module", "vwf/view"], function (module, view) {
        interNodes.forEach(node => {
            let nodeID = node[0];
         if ( self.state.nodes[nodeID] ) {      
-            self.nodes[nodeID].tickTime = 0;
+           // self.nodes[nodeID].tickTime = 0;
             if(!self.nodes[nodeID].interpolate)
             {
                 self.nodes[nodeID].interpolate = {

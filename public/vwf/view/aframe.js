@@ -155,6 +155,11 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            if (propertyName == 'position')
+               {
+                receiveModelTransformChanges( nodeId, propertyValue );
+               }
+
             // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
             //     //console.log("sat new item");
@@ -169,6 +174,11 @@ define(["module", "vwf/view"], function (module, view) {
             //     })
 
             // }
+
+            // if ( propertyName == "position" ) {
+            //     receiveModelTransformChanges( nodeId, propertyValue );
+            // }
+
 
             if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
@@ -263,6 +273,18 @@ define(["module", "vwf/view"], function (module, view) {
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
+
+            if ( eventName == "changingTransformFromView" ) {
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+
+                // If the transform property was initially updated by this view....
+                if ( clientThatSatProperty == me ) {
+                    var node = this.state.nodes[ nodeID ];
+                    node.ignoreNextTransformUpdate = true;
+                }
+            }
+
             //var avatarID = vwf_view.kernel.find("", avatarName)
 
             var avatarName = 'avatar-' + self.kernel.moniker();
@@ -377,6 +399,7 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
             // console.log(vwfTime);
+
             //lerpTick ();
         },
 
@@ -388,6 +411,34 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+
+            switch(methodName) {
+                case "translateBy":
+                case "translateTo":
+                // No need for rotateBy or rotateTo because they call the quaternion methods
+                case "quaterniateBy":
+                case "quaterniateTo":
+                case "scaleBy":
+                case "scaleTo":
+                // No need for transformBy or worldTransformBy because they call transformTo and worldTransformTo
+                case "transformTo":
+                case "worldTransformTo":
+                    // If the duration of the transform is 0, set the transforms to their final value so it doesn't interpolate
+                    if(methodParameters.length < 2 || methodParameters[1] == 0) {
+
+                        // let compDriver = vwf.views["vwf/view/aframeComponent"];
+                        // if (compDriver) {
+
+
+                        //     compDriver.nodes[nodeID].interpolate.position.lastTick = compDriver.getPosition(nodeID);
+                        //     compDriver.nodes[nodeID].interpolate.position.selfTick = goog.vec.Vec3.clone(compDriver.nodes[nodeID].lastTickTransform);
+
+                     
+                    //}
+                    break;
+            }
+
+        }
 
             if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf") {
                 if (methodName == "setCameraToActive") {
@@ -413,6 +464,53 @@ define(["module", "vwf/view"], function (module, view) {
 
 
     });
+
+
+      // Receive Model Transform Changes algorithm 
+    // 1.0 If (own view changes) then IGNORE (only if no external changes have occurred since the user’s view 
+    //       requested this change – otherwise, will need to treat like 1.1 or 1.2)
+    // 1.1 Elseif (other external changes and no outstanding own view changes) then ADOPT
+    // 1.2 Else Interpolate to the model’s transform (conflict b/w own view and external sourced model changes)
+
+    function receiveModelTransformChanges(nodeID, propertyValue ) {
+
+        var node = self.state.nodes[ nodeID ];
+
+        // If the node does not exist in the state's list of nodes, then this update is from a prototype and we
+        // should ignore it
+        if ( !node ) {
+            return;
+        }
+
+         // If the transform property was initially updated by this view....
+         if ( node.ignoreNextTransformUpdate ) {
+            node.outstandingTransformRequests.shift();
+            node.ignoreNextTransformUpdate = false;
+        } else {
+           // adoptTransform( node, transformMatrix );
+           setAFrameProperty ('position', propertyValue, node.aframeObj)
+        }
+
+
+
+
+    }
+
+
+    function setAFrameProperty (propertyName, propertyValue, aframeObject) {
+        //console.log(propertyValue);
+                if (propertyValue.hasOwnProperty('x')) {
+                    aframeObject.setAttribute(propertyName, propertyValue)
+                } else
+                    if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
+                        aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
+                    } 
+                    
+                    else if (typeof propertyValue === 'string') {
+                        aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                    }
+        
+            }
 
 
     function compareCoordinates(a, b, delta) {
