@@ -206,21 +206,31 @@ define(["module", "vwf/view"], function (module, view) {
     });
 
     function lerpTick () {
-        var now = performance.now();
-        self.realTickDif = now - self.lastRealTick;
+        // var now = performance.now();
+        // self.realTickDif = now - self.lastRealTick;
 
-        self.lastRealTick = now;
+        // self.lastRealTick = now;
  
         //reset - loading can cause us to get behind and always but up against the max prediction value
-        self.tickTime = 0;
+       // self.tickTime = 0;
 
        let interNodes = Object.entries(self.nodes).filter(node => 
         node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
 
        interNodes.forEach(node => {
            let nodeID = node[0];
-        if ( self.state.nodes[nodeID] ) {      
-           // self.nodes[nodeID].tickTime = 0;
+        if ( self.state.nodes[nodeID] ) {    
+            
+            if(!self.nodes[nodeID].lastRealTick)
+                self.nodes[nodeID].lastRealTick = performance.now();
+
+            var now = performance.now();
+            self.nodes[nodeID].realTickDif = now - self.nodes[nodeID].lastRealTick;
+            self.nodes[nodeID].lastRealTick = now;
+     
+            self.nodes[nodeID].tickTime = 0;
+            //console.log(self.nodes[nodeID].realTickDif);
+
             if(!self.nodes[nodeID].interpolate)
             {
                 self.nodes[nodeID].interpolate = {
@@ -260,8 +270,12 @@ define(["module", "vwf/view"], function (module, view) {
     }
 
     function getPosition(id) {
-        let p = new THREE.Vector3();
-        let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
+        // let p = new THREE.Vector3();
+        // let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
+        let p = self.state.nodes[id].aframeObj.el.object3D.position;
+        let pos =  goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+
+
         //let pos = self.state.nodes[id].aframeObj.el.getAttribute('position');
         //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
         

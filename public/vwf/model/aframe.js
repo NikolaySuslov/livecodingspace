@@ -373,6 +373,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         this.state.setAFrameProperty('scale', propertyValue, aframeObject);
                             break;
 
+
+                        case "animationTimeUpdated":
+                                node.storedTransformDirty = true; 
+                        break;
+
                         case "clickable":
                             if (propertyValue) {
                                 aframeObject.setAttribute('class', 'intersectable');
