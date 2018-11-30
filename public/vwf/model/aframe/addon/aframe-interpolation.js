@@ -69,6 +69,15 @@ AFRAME.registerComponent('interpolation', {
 
   },
 
+  tock: function(t, dt){
+    if (this.node) {
+      if (this.enabled && this.node.interpolate) {
+        this.restoreTransforms();
+      }
+
+    }
+  },
+
   matCmp: function (a,b,delta) {
     for(var i =0; i < 2; i++) {
         if(Math.abs(a[i] - b[i]) > delta)
@@ -125,11 +134,17 @@ AFRAME.registerComponent('interpolation', {
 
     var step = (this.node.tickTime) / (this.node.realTickDif);
     step = Math.min(step, 1);
+    //step = Math.min(1, .2 * (deltaTime / 16.6)) //Math.min(step, 1);
     deltaTime = Math.min(deltaTime, this.node.realTickDif)
     this.node.tickTime += deltaTime || 0;
 
+    
     this.interpolatePosition(step);
     //this.interpolateRotation(step);
+
+    // if (this.node.tickTime == 0){
+    //   this.restoreTransforms();
+    // }
 
   },
   radians: function (degrees) {
@@ -191,6 +206,8 @@ AFRAME.registerComponent('interpolation', {
           goog.vec.Vec3.create()
         );
 
+        console.log(this.node.id);
+        console.log(step + ' : ' + interp);
 
         // var lastV = (new THREE.Vector3()).copy(last);
         // var nowV = (new THREE.Vector3()).copy(now);
@@ -208,9 +225,9 @@ AFRAME.registerComponent('interpolation', {
     }
   },
 
-  setTransform: function (vec) {
-    let interp = goog.vec.Vec3.clone(vec);
-    this.el.object3D.position.set(interp[0], interp[1], interp[2]);
+  setTransform: function (interp) {
+    let vec = goog.vec.Vec3.clone(interp);
+    this.el.object3D.position.set(vec[0], vec[1], vec[2]);
 },
 
   pause: function () { },

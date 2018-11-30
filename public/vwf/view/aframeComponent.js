@@ -146,6 +146,12 @@ define(["module", "vwf/view"], function (module, view) {
 
         },
 
+        tocked: function (vwfTime) {
+
+           // lerpTock ();
+
+        },
+
 
         gotProperty: function (nodeId, propertyName, propertyValue) {
             var selfs = this;
@@ -205,6 +211,35 @@ define(["module", "vwf/view"], function (module, view) {
 
     });
 
+    function lerpTock () {
+
+       let interNodes = Object.entries(self.nodes).filter(node => 
+        node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
+
+       interNodes.forEach(node => {
+           let nodeID = node[0];
+        if ( self.state.nodes[nodeID] ) {    
+
+            if(self.nodes[nodeID].interpolate)
+            {
+                let positionModel = self.nodes[nodeID].interpolate.positionModel;
+
+                if (positionModel) {
+                    let currentPosition = getPosition(nodeID);
+                    if ( !goog.vec.Vec3.equals( currentPosition, positionModel) ){
+                        self.state.nodes[nodeID].aframeObj.el.object3D.position.set(positionModel[0], positionModel[1], positionModel[2]);
+                        
+                    }
+                }
+               
+            }
+
+        }
+       })
+
+    }
+
+
     function lerpTick () {
         // var now = performance.now();
         // self.realTickDif = now - self.lastRealTick;
@@ -238,6 +273,7 @@ define(["module", "vwf/view"], function (module, view) {
                     'rotation': {}
                 }
             }
+
             self.nodes[nodeID].interpolate.position.lastTick = (self.nodes[nodeID].interpolate.position.selfTick);
             self.nodes[nodeID].interpolate.position.selfTick = getPosition(nodeID);
 
@@ -272,7 +308,7 @@ define(["module", "vwf/view"], function (module, view) {
     function getPosition(id) {
         // let p = new THREE.Vector3();
         // let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
-        let p = self.state.nodes[id].aframeObj.el.object3D.position;
+        let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.position);
         let pos =  goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
 
 

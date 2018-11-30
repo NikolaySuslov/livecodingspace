@@ -488,7 +488,10 @@ define(["module", "vwf/view"], function (module, view) {
             node.ignoreNextTransformUpdate = false;
         } else {
            // adoptTransform( node, transformMatrix );
-           setAFrameProperty ('position', propertyValue, node.aframeObj)
+           var pos = goog.vec.Vec3.clone( propertyValue );
+           node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
+           
+           //setAFrameProperty ('position', propertyValue, node.aframeObj)
         }
 
 

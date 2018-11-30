@@ -357,9 +357,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "position":
 
-                        var position = goog.vec.Vec3.createFromArray( propertyValue || [] );
-                            node.transform.position = position;
-                            value = propertyValue;
+                        var position = translationFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            node.transform.position = goog.vec.Vec3.clone(position);
+                            //value = propertyValue;
                             node.storedTransformDirty = true; 
                             //setTransformsDirty( threeObject );
                             //this.state.setAFrameProperty('position', propertyValue, aframeObject);
@@ -839,12 +839,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             //     value = pos//[pos.x, pos.y, pos.z]//AFRAME.utils.coordinates.stringify(pos);
                             // }
 
+                            if (node.transform.position) {
+
                             if ( node.storedTransformDirty ) {
                                 updateStoredTransform( node );
                             }
 
-                            //value = goog.vec.Vec3.clone(node.transform.position);
-                            value =  node.transform.position;
+                            value = goog.vec.Vec3.clone(node.transform.position);
+                            //value =  node.transform.position;
+                        }
                             break;
 
                         case "scale":
@@ -1337,6 +1340,21 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
     }
 
 
+    function translationFromValue ( propertyValue ) {
+
+        var value = goog.vec.Vec3.create();
+      if (propertyValue.hasOwnProperty('x')) {
+          value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y,  propertyValue.z)
+      } 
+      else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
+          value = goog.vec.Vec3.createFromArray(propertyValue);}
+      else if (typeof propertyValue === 'string') {
+          let val = AFRAME.utils.coordinates.parse(propertyValue);
+          value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+          }
+  
+      return value
+        }
 
     function updateStoredTransform( node ) {
         
@@ -1346,7 +1364,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             // didn't need to load a model
             node.transform = {};
 
-            let pos = node.aframeObj.object3D.position;
+            //let pos = node.aframeObj.object3D.position;
+            let pos = (new THREE.Vector3()).copy(node.aframeObj.object3D.position);
             node.transform.position = goog.vec.Vec3.createFromValues(pos.x, pos.y, pos.z);
 
             //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
