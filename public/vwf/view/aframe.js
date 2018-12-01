@@ -305,7 +305,7 @@ define(["module", "vwf/view"], function (module, view) {
                         "displayName": 'Avatar ' + randId(),
                         "sharing": { audio: true, video: true },
                         "selectMode": false,
-                        "position": "0 1.6 0"
+                        "position": [0, 1.6, 0]
                     }
                 }
 
@@ -534,6 +534,7 @@ define(["module", "vwf/view"], function (module, view) {
 
         return rotation
     }
+
 
     function updateAvatarPosition() {
 

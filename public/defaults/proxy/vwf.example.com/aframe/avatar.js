@@ -63,7 +63,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
             "myHead": {
                 "extends": "http://vwf.example.com/aframe/aentity.vwf",
                 "properties": {
-                    "position": "0 1.6 0.7",
+                    "position": [0, 1.6, 0.7],
                     "visible": true
                 },
                 children: {
@@ -99,7 +99,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                         "id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
-                            "position": "0 0 -0.7",
+                            "position": [0, 0, -0.7],
                             "look-controls-enabled": false,
                             "wasd-controls-enabled": false,
                             "user-height": 0
@@ -228,7 +228,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
         "type": "component",
         "properties": {
-            "enabled": false
+            "enabled": true
         }
     }
 
@@ -269,7 +269,8 @@ this.followAvatarControl = function (position, rotation) {
 //debugger;
 
    // this.position = AFRAME.utils.coordinates.stringify(position);
-   this.position = position;
+    this.position = goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
+
     let myRot = AFRAME.utils.coordinates.parse(this.rotation);
     let myHeadRot = AFRAME.utils.coordinates.parse(this.avatarNode.myHead.rotation);
     let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);

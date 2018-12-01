@@ -196,7 +196,7 @@ AFRAME.registerComponent('interpolation', {
 
     if (last && now) {
 
-      let comp = this.matCmp(last, now, this.deltaPos);
+      let comp = this.vecCmp(last, now, this.deltaPos);
 
       if (!comp) {
 
@@ -206,8 +206,8 @@ AFRAME.registerComponent('interpolation', {
           goog.vec.Vec3.create()
         );
 
-        console.log(this.node.id);
-        console.log(step + ' : ' + interp);
+       // console.log(this.node.id);
+        //console.log(step + ' : ' + interp);
 
         // var lastV = (new THREE.Vector3()).copy(last);
         // var nowV = (new THREE.Vector3()).copy(now);

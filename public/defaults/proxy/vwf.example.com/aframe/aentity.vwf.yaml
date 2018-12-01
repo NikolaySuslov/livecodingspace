@@ -9,7 +9,9 @@ properties:
   position:
     set: |
       var position = this.translationFromValue( value ); // parse incoming value
-      if ( ! goog.vec.Vec3.equals( this.position || goog.vec.Vec3.create(), position ) ) {
+      if(!position || !this.position){
+        this.position = goog.vec.Vec3.create();
+      } else if ( ! goog.vec.Vec3.equals( this.position || goog.vec.Vec3.create(), position ) ) {
         this.position = position;
         this.positionChanged( position);
       }  
