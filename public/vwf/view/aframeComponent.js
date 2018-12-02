@@ -33,6 +33,22 @@ define(["module", "vwf/view"], function (module, view) {
                         else {
                             this.rootSelector = options;
                         }
+
+                        
+
+        this.resetInterpolation = function(nodeID, propertyName){
+           
+            if(propertyName == 'position') {
+                self.nodes[nodeID].interpolate.position.lastTick = getPosition(nodeID);
+                self.nodes[nodeID].interpolate.position.selfTick =  goog.vec.Vec3.clone(self.nodes[nodeID].interpolate.position.lastTick);
+            }
+
+            if(propertyName == 'rotation') {
+            self.nodes[nodeID].interpolate.rotation.lastTick = getRotation(nodeID);
+            self.nodes[nodeID].interpolate.rotation.selfTick = self.nodes[nodeID].interpolate.rotation.lastTick;
+            }
+
+        }
          
         },
 
@@ -57,6 +73,21 @@ define(["module", "vwf/view"], function (module, view) {
                     extends:childExtendsID,
                     entityID: this.state.nodes[childID].parentID
                 };
+
+                let entityID = this.state.nodes[childID].parentID;
+                let viewDriver = vwf.views["vwf/view/aframe"];
+                let entityNode = Object.entries(viewDriver.nodes).find(el => 
+                    el[1].id == entityID
+                  )[1];
+
+                  if(!entityNode.components) 
+                    entityNode.components = {}
+
+            
+                    entityNode.components[this.state.nodes[childID].name] = childID;
+                  //console.log(entityNode);
+
+
             } 
             // else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
             //     this.nodes[childID] = {
@@ -299,6 +330,7 @@ define(["module", "vwf/view"], function (module, view) {
 
 
     }
+
 
     function getRotation(id) {
         let r = new THREE.Euler();

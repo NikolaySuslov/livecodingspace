@@ -420,29 +420,20 @@ define(["module", "vwf/view"], function (module, view) {
             switch(methodName) {
                 case "translateBy":
                 case "translateTo":
+                    //resetInterpolationFromViewDriver(nodeID, methodParameters, 'position')
+                    break;
                 // No need for rotateBy or rotateTo because they call the quaternion methods
                 case "quaterniateBy":
                 case "quaterniateTo":
+                    //resetInterpolationFromViewDriver(nodeID, methodParameters, 'rotation')
+                    break;
                 case "scaleBy":
                 case "scaleTo":
                 // No need for transformBy or worldTransformBy because they call transformTo and worldTransformTo
                 case "transformTo":
                 case "worldTransformTo":
-                    // If the duration of the transform is 0, set the transforms to their final value so it doesn't interpolate
-                    if(methodParameters.length < 2 || methodParameters[1] == 0) {
-
-                        // let compDriver = vwf.views["vwf/view/aframeComponent"];
-                        // if (compDriver) {
-
-
-                        //     compDriver.nodes[nodeID].interpolate.position.lastTick = compDriver.getPosition(nodeID);
-                        //     compDriver.nodes[nodeID].interpolate.position.selfTick = goog.vec.Vec3.clone(compDriver.nodes[nodeID].lastTickTransform);
-
-                     
-                    //}
-                    break;
-            }
-
+                  //resetInterpolationFromViewDriver(nodeID, methodParameters, 'rotation')
+                  break;
         }
 
             if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf") {
@@ -469,6 +460,23 @@ define(["module", "vwf/view"], function (module, view) {
 
 
     });
+
+
+    function resetInterpolationFromViewDriver(nodeID, methodParameters, propertyName) {
+
+        if(methodParameters.length < 2 || methodParameters[1] == 0) {
+
+            let viewNode = self.nodes[nodeID];
+
+            if(viewNode.components.interpolation){
+             let interID = viewNode.components.interpolation;
+             let viewComponentDriver = vwf.views["vwf/view/aframeComponent"];
+             viewComponentDriver.resetInterpolation(interID, propertyName);
+            }
+
+
+    }
+}
 
 
       // Receive Model Transform Changes algorithm 

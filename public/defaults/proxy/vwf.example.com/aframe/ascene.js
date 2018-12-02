@@ -528,10 +528,12 @@ this.createPrimitive = function (type, params, name, node, avatar) {
 
     var position = "0 0 0";
 
-    var nodeName = name;
-    if (!nodeName) {
-        nodeName = this.GUID();
-    }
+    var displayName = name;
+
+    let nodeName = this.GUID();
+    // if (!nodeName) {
+    //     nodeName = this.GUID();
+    // }
 
     if (avatar) {
 
@@ -586,6 +588,9 @@ this.createPrimitive = function (type, params, name, node, avatar) {
 
     if (newNode) {
         newNode.properties.position = position;
+        if (displayName) {
+            newNode.properties.displayName = displayName;
+        }
         this.children.create(nodeName, newNode, function( child ) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });

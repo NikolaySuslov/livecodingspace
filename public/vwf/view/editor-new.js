@@ -401,6 +401,26 @@ define([
                 ]
             }
 
+            function getUniqueDisplayName(newname, addcount) {
+                if (!addcount) addcount = 0;
+                if (!newname) newname = 'Object';
+                newname = newname.replace(/[0-9]*$/g, "");
+                var nodes = self.nodes; //vwf.models.object.objects;
+                var count = 1 + addcount;
+                for (var i in nodes) {
+                    if (nodes[i].id !== 0) {
+                        if (nodes[i].id !== "" && nodes[i].properties.length !== 0) {
+                            let thisname = vwf.getProperty(nodes[i].ID, 'displayName') || '';
+                            console.log(thisname);
+                            if (thisname.replace(/[0-9]*$/g, "") == newname)
+                                count++;
+                        }
+                    }
+                }
+                return newname + count;
+            }
+
+            
             function make3DPrimitiveList() {
                 let nodeNames = ['Plane', 'Cube', 'Sphere', 'Cylinder', 'Cone', 'Text'];
                 return nodeNames.map(el => {
@@ -411,7 +431,8 @@ define([
                         onclickfunc: function () {
                             let avatarID = 'avatar-' + vwf.moniker_;
                             //let cubeName = self.GUID();
-                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), null, null, null, avatarID])
+                            let displayName = getUniqueDisplayName.call(self, el.toLowerCase());
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), null, displayName, null, avatarID])
                         }
                     })
                 })
@@ -427,7 +448,8 @@ define([
                         onclickfunc: function () {
                             let avatarID = 'avatar-' + vwf.moniker_;
                             //let cubeName = self.GUID();
-                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", el.toLowerCase(), null, null, avatarID])
+                            let displayName = getUniqueDisplayName.call(self, el.toLowerCase());
+                            vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", el.toLowerCase(), displayName, null, avatarID])
                         }
                     })
                 })

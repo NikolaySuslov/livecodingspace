@@ -1,3 +1,8 @@
+this.getChildByName = function(name){
+    let nodes = this.children.filter(el=>el.displayName == name);
+    return nodes[0]
+}
+
 this.setGizmoMode = function (mode) {
     if (this.gizmo) {
         this.gizmo.properties.mode = mode

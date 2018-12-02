@@ -50,5 +50,7 @@ methods:
   translationFromValue:
     parameters:
       - propertyValue
+  getChildByName:
+      - name
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

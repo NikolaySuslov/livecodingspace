@@ -2,6 +2,8 @@
 --- 
 extends: http://vwf.example.com/aframe/node.vwf
 type: "a-scene"
+implements:
+- http://vwf.example.com/aframe/aentity.vwf
 properties:
   assets:
   color:
