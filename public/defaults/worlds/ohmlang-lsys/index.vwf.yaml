@@ -43,6 +43,10 @@ children:
             lsys: ''
             readyForDraw: true
         children:
+            interpolation:
+                extends: http://vwf.example.com/aframe/interpolation-component.vwf
+                properties:
+                    enabled: true
             material:
                 extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
                 properties:
@@ -180,18 +184,18 @@ children:
                 parameters:
                     - step
                 body: |
-                    let pos = Object.assign({}, this.drawNode.position);
-                    var x0 = pos.x;
-                    var y0 = pos.y;
+                    let pos = this.drawNode.position;
+                    var x0 = pos[0];
+                    var y0 = pos[1];
                     var xx = Math.sin(this.angleInRadians);
                     var yy = Math.cos(this.angleInRadians);
-                    let startPosition = Object.assign({}, this.drawNode.position);
-                    let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos.z};
+                    let startPosition = {x: pos[0], y: pos[1], z:pos[2]};
+                    let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos[2]};
                     var drawPath = this.drawNode.linepath.path;
                     drawPath.push(startPosition);
                     drawPath.push(endPosition);
                     vwf_view.kernel.setProperty(this.drawNode.linepath.id, 'path', drawPath);
-                    this.drawNode.position = endPosition;
+                    this.drawNode.position = [endPosition.x, endPosition.y, endPosition.z];
             setTurtleParams:
                 parameters:
                     - val

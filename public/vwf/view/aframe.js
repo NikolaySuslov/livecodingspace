@@ -156,8 +156,13 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
             if (propertyName == 'position')
+            {
+                receiveModelTransformChanges( nodeId, 'position', propertyValue );
+            }
+            
+            if (propertyName == 'rotation')
                {
-                receiveModelTransformChanges( nodeId, propertyValue );
+                receiveModelTransformChanges( nodeId, 'rotation', propertyValue );
                }
 
             // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
@@ -472,7 +477,7 @@ define(["module", "vwf/view"], function (module, view) {
     // 1.1 Elseif (other external changes and no outstanding own view changes) then ADOPT
     // 1.2 Else Interpolate to the model’s transform (conflict b/w own view and external sourced model changes)
 
-    function receiveModelTransformChanges(nodeID, propertyValue ) {
+    function receiveModelTransformChanges(nodeID, propertyName, propertyValue ) {
 
         var node = self.state.nodes[ nodeID ];
 
@@ -488,8 +493,22 @@ define(["module", "vwf/view"], function (module, view) {
             node.ignoreNextTransformUpdate = false;
         } else {
            // adoptTransform( node, transformMatrix );
-           var pos = goog.vec.Vec3.clone( propertyValue );
-           node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
+
+           if(propertyName == 'position') {
+            let pos = goog.vec.Vec3.clone( propertyValue );
+            node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
+           } else if (propertyName == 'rotation') {
+            let rot = goog.vec.Vec3.clone( propertyValue );
+
+            node.aframeObj.object3D.rotation.set(
+                THREE.Math.degToRad(rot[0]),
+                THREE.Math.degToRad(rot[1]),
+                THREE.Math.degToRad(rot[2])
+            )
+            //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
+           }
+
+          
            
            //setAFrameProperty ('position', propertyValue, node.aframeObj)
         }
@@ -535,6 +554,26 @@ define(["module", "vwf/view"], function (module, view) {
         return rotation
     }
 
+
+    // function updateAvatarPosition() {
+    //     let avatarName = 'avatar-' + self.kernel.moniker();
+    //     var node = self.state.nodes[avatarName];
+    //     if (!node) return;
+    //     if (!node.aframeObj) return;
+
+    //     let el = document.querySelector('#avatarControl');
+    //     if (el) {
+    //         //let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
+
+    //         let position = new THREE.Vector3();
+    //         el.object3D.getWorldPosition(position);
+
+    //         let rotation = getWorldRotation(el);
+    //         vwf_view.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
+    //     }
+
+
+    // }
 
     function updateAvatarPosition() {
 

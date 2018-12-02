@@ -72,7 +72,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
                         "type": "component",
                         "properties": {
-                            "enabled": false
+                            "enabled": true
                         }
                     },
                     "visual": {
@@ -271,11 +271,22 @@ this.followAvatarControl = function (position, rotation) {
    // this.position = AFRAME.utils.coordinates.stringify(position);
     this.position = goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
 
-    let myRot = AFRAME.utils.coordinates.parse(this.rotation);
-    let myHeadRot = AFRAME.utils.coordinates.parse(this.avatarNode.myHead.rotation);
-    let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);
+    let myRot = goog.vec.Vec3.clone(this.rotation);
+    let myHeadRot = goog.vec.Vec3.clone(this.avatarNode.myHead.rotation);
+    let myBodyRot = goog.vec.Vec3.clone(this.avatarNode.myBody.rotation);
 
-    this.rotation = [myRot.x, rotation.y, myRot.z];
+    //let myRot = AFRAME.utils.coordinates.parse(this.rotation);
+    //let myHeadRot = AFRAME.utils.coordinates.parse(this.avatarNode.myHead.rotation);
+    //let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);
+
+    //   if(myRot[0] == null || myRot[2] == null) {
+    //     debugger
+    // }
+
+    this.rotation = [myRot[0], rotation.y, myRot[2]];
+    //this.rotation = [myRot.x, rotation.y, myRot.z];
+
+
 
     // let myRot = this.avatarBodyModel.rotation;
     // this.avatarBodyModel.rotation = [myRot.x, -rotation.y, myRot.z];
@@ -284,7 +295,8 @@ this.followAvatarControl = function (position, rotation) {
 
     //this.avatarNameNode.rotation = [myRot.x, myRot.y, rotation.z]; 
 
-    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
+    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot[1], rotation.z];
+    //this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
     
     // this.avatarNode.myCursor.rotation = [rotation.x, myHeadRot.y, rotation.z];
 

@@ -60,7 +60,8 @@ AFRAME.registerComponent('interpolation', {
 
     if (this.enabled && this.node && this.node.interpolate) {
       this.setInterpolatedTransforms(timepassed);
-      //this.restoreTransforms();
+
+     // this.restoreTransforms();
 
     }
     this.lastTime = now;
@@ -78,14 +79,16 @@ AFRAME.registerComponent('interpolation', {
     }
   },
 
-  matCmp: function (a,b,delta) {
-    for(var i =0; i < 2; i++) {
-        if(Math.abs(a[i] - b[i]) > delta)
-            return false;
-    }
-    
-    return true;
-},
+  vecCmpThreeJS: function (a, b, delta) {
+
+    let distance = a.distanceTo(b);
+    //let distance = goog.vec.Vec3.distance(a,b);
+     if (distance > delta) {
+       return false;
+     }
+ 
+     return true;
+   },
 
   vecCmp: function (a, b, delta) {
 
@@ -102,10 +105,21 @@ AFRAME.registerComponent('interpolation', {
 
     var now = this.node.interpolate.position.selfTick;
 
-    if (now && this.node.needTransformRestore) {
+    if (now && this.node.needPositionRestore) {
       let pos = goog.vec.Vec3.clone(now);
       this.el.object3D.position.set(pos[0], pos[1], pos[2]);
-      this.node.needTransformRestore = false;
+      this.node.needPositionRestore = false;
+    }
+
+    var rNow = this.node.interpolate.rotation.selfTick;
+
+    if(rNow && this.node.needRotationRestore) {
+      let r = new THREE.Euler();
+      let rot = r.copy(rNow);
+
+      this.el.object3D.rotation.set(rot.x, rot.y, rot.z)
+      this.node.needRotationRestore = false;
+
     }
 
 
@@ -140,7 +154,7 @@ AFRAME.registerComponent('interpolation', {
 
     
     this.interpolatePosition(step);
-    //this.interpolateRotation(step);
+    this.interpolateRotation(step);
 
     // if (this.node.tickTime == 0){
     //   this.restoreTransforms();
@@ -159,7 +173,7 @@ AFRAME.registerComponent('interpolation', {
 
     if (last && now) {
 
-      let comp = this.vecCmp(last.toVector3(), now.toVector3(), this.deltaRot);
+      let comp = this.vecCmpThreeJS(last.toVector3(), now.toVector3(), this.deltaRot);
 
       if (!comp) {
 
@@ -183,8 +197,9 @@ AFRAME.registerComponent('interpolation', {
         THREE.Quaternion.slerp(lastV, nowV, q, step || 0);
         let interp = e.setFromQuaternion(q, 'YXZ');
 
-        this.el.object3D.rotation.set(interp.x, interp.y, interp.z);
-        this.node.needTransformRestore = true;
+        //this.el.object3D.rotation.set(interp.x, interp.y, interp.z);
+        this.setRotation(interp);
+        this.node.needRotationRestore = true;
       }
     }
   },
@@ -218,17 +233,22 @@ AFRAME.registerComponent('interpolation', {
 
         //this.el.object3D.position.set(interp.x, interp.y, interp.z);
        
-        this.setTransform(interp);
-        
-        this.node.needTransformRestore = true;
+        this.setPosition(interp);
+        this.node.needPositionRestore = true;
       }
     }
   },
 
-  setTransform: function (interp) {
+  setPosition: function (interp) {
     let vec = goog.vec.Vec3.clone(interp);
     this.el.object3D.position.set(vec[0], vec[1], vec[2]);
 },
+
+setRotation: function (interp) {
+  let vec = (new THREE.Euler()).copy(interp);
+  this.el.object3D.rotation.set(vec.x, vec.y, vec.z);
+},
+
 
   pause: function () { },
   play: function () { }

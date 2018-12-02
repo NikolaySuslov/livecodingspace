@@ -52,14 +52,18 @@ define(["module", "vwf/view"], function (module, view) {
 
 
             if(this.state.nodes[childID]) {
-                this.nodes[childID] = {id:childID,extends:childExtendsID};
-            } 
-            else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
                 this.nodes[childID] = {
                     id:childID,
-                    extends:childExtendsID
+                    extends:childExtendsID,
+                    entityID: this.state.nodes[childID].parentID
                 };
-            }
+            } 
+            // else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
+            //     this.nodes[childID] = {
+            //         id:childID,
+            //         extends:childExtendsID
+            //     };
+            // }
           
         },
 

@@ -195,8 +195,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 node.aframeObj = createAFrameObject(node);
                 addNodeToHierarchy(node);
 
-                if (isAEntityDefinition(node.prototypes))
-                    updateStoredTransform( node );
+                if (isAEntityDefinition(node.prototypes)) {
+                    //updateStoredTransform( node );
+                    updateStoredTransformFor(node,'position');
+                    updateStoredTransformFor(node,'rotation');
+                }
 
                 //notifyDriverOfPrototypeAndBehaviorProps();
                 //  }
@@ -357,16 +360,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "position":
 
-                        var position = translationFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                        var position = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.position = goog.vec.Vec3.clone(position);
                             //value = propertyValue;
-                            node.storedTransformDirty = true; 
+                            node.transform.storedPositionDirty = true; 
                             //setTransformsDirty( threeObject );
                             //this.state.setAFrameProperty('position', propertyValue, aframeObject);
                             break;
 
                         case "rotation":
-                            this.state.setAFrameProperty('rotation', propertyValue, aframeObject);
+
+                            var rotation = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            node.transform.rotation = goog.vec.Vec3.clone(rotation);
+                            //value = propertyValue;
+                            node.transform.storedRotationDirty = true; 
+
+                            //this.state.setAFrameProperty('rotation', propertyValue, aframeObject);
                             break;
 
                         case "scale":
@@ -375,7 +384,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                         case "animationTimeUpdated":
-                                node.storedTransformDirty = true; 
+                                if (node.transform) {
+                                    node.transform.storedPositionDirty = true; 
+                                    node.transform.storedRotationDirty = true;
+                                }
+                                
                         break;
 
                         case "clickable":
@@ -841,14 +854,33 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                             if (node.transform.position) {
 
-                            if ( node.storedTransformDirty ) {
-                                updateStoredTransform( node );
+                            if ( node.transform.storedPositionDirty ) {
+                                updateStoredTransformFor( node, 'position' );
                             }
 
                             value = goog.vec.Vec3.clone(node.transform.position);
                             //value =  node.transform.position;
                         }
                             break;
+
+                        case "rotation":
+
+                        if (node.transform.rotation) {
+
+                            if ( node.transform.storedRotationDirty ) {
+                                updateStoredTransformFor( node, 'rotation' );
+                            }
+
+                            value = goog.vec.Vec3.clone(node.transform.rotation);
+
+                            // var rot = aframeObject.getAttribute('rotation');
+                            // if (rot !== undefined) {
+                            //     value = rot//AFRAME.utils.coordinates.stringify(rot);
+                            // }
+                        }
+
+                            break;
+
 
                         case "scale":
                             var scale = aframeObject.getAttribute('scale');
@@ -857,12 +889,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             }
                             break;
 
-                        case "rotation":
-                            var rot = aframeObject.getAttribute('rotation');
-                            if (rot !== undefined) {
-                                value = rot//AFRAME.utils.coordinates.stringify(rot);
-                            }
-                            break;
+                      
 
                         case "clickable":
                             value = node.events.clickable;
@@ -1340,7 +1367,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
     }
 
 
-    function translationFromValue ( propertyValue ) {
+    function setFromValue ( propertyValue ) {
 
         var value = goog.vec.Vec3.create();
       if (propertyValue.hasOwnProperty('x')) {
@@ -1375,6 +1402,36 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
       
     }    
 
+
+    function updateStoredTransformFor( node, propertyName ) {
+        
+        if ( node && node.aframeObj) {
+            // Add a local model-side transform that can stay pure even if the view changes the
+            // transform on the threeObject - this already happened in creatingNode for those nodes that
+            // didn't need to load a model
+            if(!node.transform)
+                node.transform = {};
+
+            if (propertyName == 'position'){
+                let pos = (new THREE.Vector3()).copy(node.aframeObj.object3D.position);
+                node.transform.position = goog.vec.Vec3.createFromValues(pos.x, pos.y, pos.z);
+                node.transform.storedPositionDirty = false; 
+            }
+           
+            if (propertyName == 'rotation'){
+               // let rot = (new THREE.Vector3()).copy(node.aframeObj.object3D.rotation);
+               let rot = node.aframeObj.getAttribute('rotation');
+                node.transform.rotation = goog.vec.Vec3.createFromValues(rot.x, rot.y, rot.z);
+                node.transform.storedRotationDirty = false;   
+            }
+
+            //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
+
+            // node.transform.rotation = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.rotation);
+            // node.storedTransformDirty = false;             
+        }
+      
+    }   
 
 
 

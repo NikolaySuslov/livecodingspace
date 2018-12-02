@@ -120,12 +120,12 @@ children:
       intersectEventMethod:
         body: |
           if (this.clickable) {
-          this.rotation = "0 -90 0"
+          this.rotation = [0, -90, 0]
             }
       clearIntersectEventMethod:
         body: |
           if (this.clickable) {
-          this.rotation = "0 -30 0"
+          this.rotation = [0, -30, 0]
             }
       generateColor:
         body: |
@@ -181,8 +181,8 @@ children:
           run:
             body: |
               var time = vwf.now;
-              let pos = AFRAME.utils.coordinates.parse(this.position);
-              this.position = [pos.x, pos.y, Math.sin(time)]
+              let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);
+              this.position = [pos[0], pos[1], Math.sin(time)]
               this.future( 0.01 ).run();  // schedule the next step
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
