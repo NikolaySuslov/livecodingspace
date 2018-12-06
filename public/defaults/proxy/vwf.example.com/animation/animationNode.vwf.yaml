@@ -105,13 +105,13 @@ methods:
       - duration
       - frame
     body: |
-      var rotation = this.rotationFromValue( rotation );
-      var deltaQuaternion = goog.vec.Quaternion.fromAngleAxis(
-        rotation[3] * Math.PI / 180,
-        goog.vec.Vec3.createFromValues( rotation[0], rotation[1], rotation[2] ),
-        goog.vec.Quaternion.create()
-      );
-      this.quaterniateBy( deltaQuaternion, duration, frame ); //@ sourceURL=node3.animation.rotateBy.vwf
+       let rotationValue = this.translationFromValue(rotation);
+       let deltaQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+          (THREE.Math.degToRad(rotationValue[0])),
+          (THREE.Math.degToRad(rotationValue[1])),
+          (THREE.Math.degToRad(rotationValue[2])), 'YXZ'
+        ));
+        this.quaterniateBy( deltaQuaternion, duration, frame ); //@ sourceURL=node3.animation.rotateBy.vwf
 
   ## Rotate to given rotation over duration.
   ## 
@@ -127,12 +127,12 @@ methods:
       - rotation
       - duration
     body: |
-      var rotation = this.rotationFromValue( rotation );
-      var stopQuaternion = goog.vec.Quaternion.fromAngleAxis(
-        rotation[3] * Math.PI / 180,
-        goog.vec.Vec3.createFromValues( rotation[0], rotation[1], rotation[2] ),
-        goog.vec.Quaternion.create()
-      );
+      let rotationValue = this.translationFromValue(rotation);
+      let stopQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+          (THREE.Math.degToRad(rotationValue[0])),
+          (THREE.Math.degToRad(rotationValue[1])),
+          (THREE.Math.degToRad(rotationValue[2])), 'YXZ'
+        ));
       this.quaterniateTo( stopQuaternion, duration ); //@ sourceURL=node3.animation.rotateTo.vwf
 
   ## Rotate by given quaternion over duration.
@@ -151,34 +151,38 @@ methods:
       - duration
       - frame
     body: |
-      this.startQuaternionSIM = this.quaternion || goog.vec.Quaternion.createFromValues( 0, 0, 0, 1 );
-      var deltaQuaternion = this.quaternionFromValue( quaternion );
+      this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+          (THREE.Math.degToRad(this.rotation[0])),
+          (THREE.Math.degToRad(this.rotation[1])),
+          (THREE.Math.degToRad(this.rotation[2])), 'YXZ'
+        ));
+      var deltaQuaternion = (new THREE.Quaternion).copy(quaternion);
       if ( ! frame || frame == "rotated" ) {
-        this.stopQuaternionSIM = goog.vec.Quaternion.concat(
-          deltaQuaternion,
-          this.startQuaternionSIM,
-          goog.vec.Quaternion.create()
-        );
+        this.stopQuaternionSIM = (new THREE.Quaternion()).multiplyQuaternions(deltaQuaternion,  this.startQuaternionSIM);
       } else if ( frame == "scaled" ) {
-        this.stopQuaternionSIM = goog.vec.Quaternion.concat(
-          this.startQuaternionSIM,
-          deltaQuaternion,
-          goog.vec.Quaternion.create()
-        );
+        this.stopQuaternionSIM = (new THREE.Quaternion()).multiplyQuaternions(this.startQuaternionSIM, deltaQuaternion);
       }
+      //this.stopQuaternionSIM = (new THREE.Quaternion()).copy(quaternion);
       if(duration > 0) {
         this.animationDuration = duration;
         this.animationUpdate = function(time, duration) {
-          this.quaternion = goog.vec.Quaternion.slerp(
-            this.startQuaternionSIM, this.stopQuaternionSIM,
-            time >= duration ? 1 : time / duration,
-            goog.vec.Quaternion.create()
-          );
+
+          let q = new THREE.Quaternion();
+          let e = new THREE.Euler();
+          let step = (time >= duration) ? 1 : time / duration;
+
+          THREE.Quaternion.slerp(this.startQuaternionSIM, this.stopQuaternionSIM, q, step || 0);
+          let interp = e.setFromQuaternion(q, 'YXZ');
+          this.rotation = [THREE.Math.radToDeg(interp.x), THREE.Math.radToDeg(interp.y), THREE.Math.radToDeg(interp.z)];
         }
         this.animationPlay(0, duration);
       }
       else {
-        this.quaternion = this.stopQuaternionSIM;
+        let eE = new THREE.Euler();
+        let eQ = (new THREE.Quaternion).copy(this.stopQuaternionSIM);
+        let interpE = eE.setFromQuaternion(eQ, 'YXZ');
+        this.rotation = [THREE.Math.radToDeg(interpE.x),THREE.Math.radToDeg(interpE.y), THREE.Math.radToDeg(interpE.z)];
+        //this.quaternion = this.stopQuaternionSIM;
       } //@ sourceURL=node3.animation.quaterniateBy.vwf
 
   ## Rotate to given quaternion over duration.
@@ -195,21 +199,32 @@ methods:
       - quaternion
       - duration
     body: |
-      this.startQuaternionSIM = this.quaternion || goog.vec.Quaternion.createFromValues( 0, 0, 0, 1 );
-      this.stopQuaternionSIM = this.quaternionFromValue( quaternion );
+      this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+          (THREE.Math.degToRad(this.rotation[0])),
+          (THREE.Math.degToRad(this.rotation[1])),
+          (THREE.Math.degToRad(this.rotation[2])), 'YXZ'
+        ));
+      this.stopQuaternionSIM = (new THREE.Quaternion).copy(quaternion);
       if(duration > 0) {
         this.animationDuration = duration;
         this.animationUpdate = function(time, duration) {
-          this.quaternion = goog.vec.Quaternion.slerp(
-            this.startQuaternionSIM, this.stopQuaternionSIM,
-            duration == 0 ? duration : time / duration,
-            goog.vec.Quaternion.create()
-          );
+
+          let q = new THREE.Quaternion();
+          let e = new THREE.Euler();
+          let step = (time >= duration) ? 1 : time / duration;
+
+          THREE.Quaternion.slerp(this.startQuaternionSIM, this.stopQuaternionSIM, q, step || 0);
+          let interp = e.setFromQuaternion(q, 'YXZ');
+          this.rotation = [THREE.Math.radToDeg(interp.x), THREE.Math.radToDeg(interp.y), THREE.Math.radToDeg(interp.z)];
         }
         this.animationPlay(0, duration);
       }
       else {
-        this.quaternion = this.stopQuaternionSIM;
+        let eE = new THREE.Euler();
+        let eQ = (new THREE.Quaternion).copy(this.stopQuaternionSIM);
+        let interpE = eE.setFromQuaternion(eQ, 'YXZ');
+        this.rotation = [THREE.Math.radToDeg(interpE.x),THREE.Math.radToDeg(interpE.y), THREE.Math.radToDeg(interpE.z)];
+        //this.quaternion = this.stopQuaternionSIM;
       } //@ sourceURL=node3.animation.quaterniateTo.vwf
 
   ## Scale by given scale over duration.

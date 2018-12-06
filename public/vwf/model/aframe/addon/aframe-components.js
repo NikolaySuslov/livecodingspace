@@ -131,6 +131,14 @@ AFRAME.registerComponent('gizmo', {
 
                     break;
                 case 'rotate':
+                // let q = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+                //     (object.rotation.x),
+                //     (object.rotation.y),
+                //     (object.rotation.z), 'XYZ'
+                //   ));
+                // let angle = (new THREE.Euler()).setFromQuaternion(q, 'YXZ');
+
+                // vwf_view.kernel.setProperty(object.el.id, 'rotation', [THREE.Math.radToDeg(angle.x), THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)])
                     vwf_view.kernel.setProperty(object.el.id, 'rotation',
                         [THREE.Math.radToDeg(object.rotation.x), THREE.Math.radToDeg(object.rotation.y), THREE.Math.radToDeg(object.rotation.z)])
 

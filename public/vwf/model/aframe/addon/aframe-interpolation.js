@@ -182,20 +182,20 @@ AFRAME.registerComponent('interpolation', {
         let lastV = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
           (last.x),
           (last.y),
-          (last.z), 'YXZ'
+          (last.z), last.order//'YXZ'
         ));
 
         let nowV = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
           (now.x),
           (now.y),
-          (now.z), 'YXZ'
+          (now.z), last.order//'YXZ'
         ));
 
         let q = new THREE.Quaternion();
         let e = new THREE.Euler();
 
         THREE.Quaternion.slerp(lastV, nowV, q, step || 0);
-        let interp = e.setFromQuaternion(q, 'YXZ');
+        let interp = e.setFromQuaternion(q, last.order); //'YXZ');
 
         //this.el.object3D.rotation.set(interp.x, interp.y, interp.z);
         this.setRotation(interp);
