@@ -54,37 +54,52 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
-                createAvatarControl(scene);
-                createAvatar.call(this, childID);
 
+
+                let prepairAvatar = new Promise((resolve, reject) => {
+
+                    function cb() {
+                        resolve("ok");
+                    }    
+                    createAvatarControl(scene, cb);
+                  });
+
+
+                  prepairAvatar.then(res=>{
+                   // console.log(res);
+                    createAvatar.call(self, childID);
+
+                    if (this.gearvr == true) {
+                        console.log("CREATE GEARVR HERE!!");
+                        if (AFRAME.utils.device.isGearVR()) {
+                            let nodeName = 'gearvr-' + self.kernel.moniker();
+                            createGearVRControls();
+                            createGearVRController.call(self, childID, nodeName);
+                        }
+                    }
+
+
+                    if (this.wmrright == true) {
+                        console.log("CREATE WMR RIGHT HERE!!");
+                        if (AFRAME.utils.device.checkHasPositionalTracking()) {
+                            let nodeName = 'wmrvr-right-' + self.kernel.moniker();
+                            createWMRVRControls('right');
+                            createWMRVR.call(this, childID, nodeName);
+                        }
+                    }
+    
+                    if (this.wmrleft == true) {
+                        console.log("CREATE WMR LEFT HERE!!");
+                        if (AFRAME.utils.device.checkHasPositionalTracking()) {
+                            let nodeName = 'wmrvr-left-' + self.kernel.moniker();
+                            createWMRVRControls('left');
+                            createWMRVR.call(this, childID, nodeName);
+                        }
+                    }
+
+                  })
                 // this.state.appInitialized  = true;
 
-                if (this.gearvr == true) {
-                    console.log("CREATE GEARVR HERE!!");
-                    if (AFRAME.utils.device.isGearVR()) {
-                        let nodeName = 'gearvr-' + self.kernel.moniker();
-                        createGearVRControls();
-                        createGearVRController.call(this, childID, nodeName);
-                    }
-                }
-
-                if (this.wmrright == true) {
-                    console.log("CREATE WMR RIGHT HERE!!");
-                    if (AFRAME.utils.device.checkHasPositionalTracking()) {
-                        let nodeName = 'wmrvr-right-' + self.kernel.moniker();
-                        createWMRVRControls('right');
-                        createWMRVR.call(this, childID, nodeName);
-                    }
-                }
-
-                if (this.wmrleft == true) {
-                    console.log("CREATE WMR LEFT HERE!!");
-                    if (AFRAME.utils.device.checkHasPositionalTracking()) {
-                        let nodeName = 'wmrvr-left-' + self.kernel.moniker();
-                        createWMRVRControls('left');
-                        createWMRVR.call(this, childID, nodeName);
-                    }
-                }
 
                 document.body.appendChild(scene); //append is not working in Edge browser
 
@@ -555,14 +570,14 @@ define(["module", "vwf/view"], function (module, view) {
 
     }
 
-    function getWorldRotation(el) {
+    function getWorldRotation(el, order) {
 
 
         var worldQuat = new THREE.Quaternion();
         el.object3D.getWorldQuaternion(worldQuat);
 
         //console.log(worldQuat);
-        let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+        let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, order);
         let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
             THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)));
 
@@ -606,7 +621,7 @@ define(["module", "vwf/view"], function (module, view) {
             let position = new THREE.Vector3();
             el.object3D.getWorldPosition(position);
 
-            let rotation = getWorldRotation(el);
+            let rotation = getWorldRotation(el, 'YXZ');
 
             // console.log(rotation);
             //let rotation = el.getAttribute('rotation');
@@ -647,7 +662,7 @@ define(["module", "vwf/view"], function (module, view) {
             let position = new THREE.Vector3();
             el.object3D.getWorldPosition(position);
 
-            let rotation = getWorldRotation(el);
+            let rotation = getWorldRotation(el, 'XYZ');
 
             //let rotation = el.getAttribute('rotation');
 
@@ -674,7 +689,7 @@ define(["module", "vwf/view"], function (module, view) {
     }
 
 
-    function createAvatarControl(aScene) {
+    function createAvatarControl(aScene, cb) {
 
         let avatarName = 'avatar-' + self.kernel.moniker();
 
@@ -722,6 +737,8 @@ define(["module", "vwf/view"], function (module, view) {
         aScene.appendChild(avatarEl);
 
         controlEl.setAttribute('camera', 'active', true);
+
+        cb();
 
         // let gearVRControlsEl = document.createElement('a-entity');
         // gearVRControlsEl.setAttribute('id', 'gearvr-'+avatarName);

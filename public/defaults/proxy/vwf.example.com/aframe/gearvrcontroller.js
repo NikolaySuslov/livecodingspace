@@ -104,8 +104,11 @@ this.createController = function (modelSrc) {
 this.updateVRControl = function(position, rotation){
 
     
-    this.position = position;
-    this.rotation = rotation;
+    this.position = goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
+    this.rotation = goog.vec.Vec3.createFromValues(rotation.x, rotation.y, rotation.z);
+
+    // this.position = position;
+    // this.rotation = rotation;
    // this.handVRNode.controller.pointer.rotationText.value = rotation.x.toString() + rotation.y.toString() + rotation.z.toString();
 
 }
