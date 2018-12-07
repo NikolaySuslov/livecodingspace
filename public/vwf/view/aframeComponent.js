@@ -246,35 +246,6 @@ define(["module", "vwf/view"], function (module, view) {
 
     });
 
-    function lerpTock () {
-
-       let interNodes = Object.entries(self.nodes).filter(node => 
-        node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
-
-       interNodes.forEach(node => {
-           let nodeID = node[0];
-        if ( self.state.nodes[nodeID] ) {    
-
-            if(self.nodes[nodeID].interpolate)
-            {
-                let positionModel = self.nodes[nodeID].interpolate.positionModel;
-
-                if (positionModel) {
-                    let currentPosition = getPosition(nodeID);
-                    if ( !goog.vec.Vec3.equals( currentPosition, positionModel) ){
-                        self.state.nodes[nodeID].aframeObj.el.object3D.position.set(positionModel[0], positionModel[1], positionModel[2]);
-                        
-                    }
-                }
-               
-            }
-
-        }
-       })
-
-    }
-
-
     function lerpTick () {
         // var now = performance.now();
         // self.realTickDif = now - self.lastRealTick;
@@ -305,7 +276,8 @@ define(["module", "vwf/view"], function (module, view) {
             {
                 self.nodes[nodeID].interpolate = {
                     'position': {},
-                    'rotation': {}
+                    'rotation': {},
+                    'scale': {}
                 }
             }
 
@@ -314,6 +286,9 @@ define(["module", "vwf/view"], function (module, view) {
 
             self.nodes[nodeID].interpolate.rotation.lastTick = (self.nodes[nodeID].interpolate.rotation.selfTick);
             self.nodes[nodeID].interpolate.rotation.selfTick = getRotation(nodeID);
+
+            self.nodes[nodeID].interpolate.scale.lastTick = (self.nodes[nodeID].interpolate.scale.selfTick);
+            self.nodes[nodeID].interpolate.scale.selfTick = getScale(nodeID);
             //console.log(self.nodes[nodeID].interpolate.rotation.selfTick);
             //self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
             //self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
@@ -352,6 +327,19 @@ define(["module", "vwf/view"], function (module, view) {
         //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
         
         return pos;
+    }
+
+    function getScale(id) {
+        // let p = new THREE.Vector3();
+        // let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
+        let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.scale);
+        let data =  goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+
+
+        //let pos = self.state.nodes[id].aframeObj.el.getAttribute('position');
+        //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
+        
+        return data;
     }
 
 });

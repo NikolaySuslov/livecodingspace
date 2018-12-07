@@ -242,7 +242,7 @@ methods:
       - duration
     body: |
       this.startScaleSIM = this.scale || goog.vec.Vec3.createFromValues( 1, 1, 1 );
-      var deltaScale = this.scaleFromValue( scale );
+      var deltaScale = this.translationFromValue( scale );
       this.stopScaleSIM = goog.vec.Vec3.createFromValues(
         this.startScaleSIM[0] * deltaScale[0],
         this.startScaleSIM[1] * deltaScale[1],
@@ -278,7 +278,7 @@ methods:
       - duration
     body: |
       this.startScaleSIM = this.scale || goog.vec.Vec3.createFromValues( 1, 1, 1 );
-      this.stopScaleSIM = this.scaleFromValue( scale );
+      this.stopScaleSIM = this.translationFromValue( scale );
       if(duration > 0) {
         this.animationDuration = duration;
         this.animationUpdate = function(time, duration) {

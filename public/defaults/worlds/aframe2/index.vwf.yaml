@@ -50,7 +50,7 @@ children:
       mtl: "#plane-mtl"
       position: "-1.2 1.7 -2.5"
       rotation: "0 -45 0"
-      scale: "0.5 0.5 0.5"
+      scale: [0.5, 0.5, 0.5]
     children:
       shadow:
         extends: http://vwf.example.com/aframe/shadowComponent.vwf

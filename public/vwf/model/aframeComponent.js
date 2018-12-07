@@ -557,6 +557,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             case "deltaRot":
                                 parentNodeAF.setAttribute(aframeObject.compName, 'deltaRot', propertyValue);
                                 break;
+                            
+                            case "deltaScale":
+                                parentNodeAF.setAttribute(aframeObject.compName, 'deltaScale', propertyValue);
+                                break;
 
                             default:
                                 value = undefined;
@@ -870,6 +874,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "deltaRot":
                             value = parentNodeAF.getAttribute(aframeObject.compName).deltaRot;
+                            break;
+                        
+                        case "deltaScale":
+                            value = parentNodeAF.getAttribute(aframeObject.compName).deltaScale;
                             break;
 
                     }

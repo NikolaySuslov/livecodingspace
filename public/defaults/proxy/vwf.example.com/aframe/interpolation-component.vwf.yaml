@@ -6,3 +6,4 @@ properties:
   enabled:
   deltaPos:
   deltaRot:
+  deltaScale:

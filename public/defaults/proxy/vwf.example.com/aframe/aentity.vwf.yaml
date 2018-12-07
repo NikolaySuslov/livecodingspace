@@ -29,6 +29,16 @@ properties:
     get: |
       return this.rotation || goog.vec.Vec3.create();
   scale:
+    set: |
+      var scale = this.translationFromValue( value ); // parse incoming value
+      if(!scale || !this.scale){
+        this.scale = goog.vec.Vec3.create();
+      } else if ( ! goog.vec.Vec3.equals( this.scale || goog.vec.Vec3.create(), scale ) ) {
+        this.scale = scale;
+        this.scaleChanged( scale);
+      }  
+    get: |
+      return this.scale || goog.vec.Vec3.create();
   clickable:
   displayName:
   visible:
@@ -36,7 +46,8 @@ properties:
   osc:
 events:
   positionChanged:
-  rotationChanged:  
+  rotationChanged:
+  scaleChanged:
 methods:
   setGizmoMode:
     parameters:

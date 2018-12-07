@@ -165,6 +165,11 @@ define(["module", "vwf/view"], function (module, view) {
                 receiveModelTransformChanges( nodeId, 'rotation', propertyValue );
                }
 
+               if (propertyName == 'scale')
+               {
+                receiveModelTransformChanges( nodeId, 'scale', propertyValue );
+               }
+
             // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
             //     //console.log("sat new item");
@@ -514,8 +519,10 @@ define(["module", "vwf/view"], function (module, view) {
                 THREE.Math.degToRad(rot[2])
             )
             //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
+           } else if (propertyName == 'scale') {
+            let scale = goog.vec.Vec3.clone( propertyValue );
+            node.aframeObj.object3D.scale.set(scale[0], scale[1], scale[2]);
            }
-
           
            
            //setAFrameProperty ('position', propertyValue, node.aframeObj)
