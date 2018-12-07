@@ -44,30 +44,35 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             onchange: obj.change
                         },
                         {
-                            $type: "label",
-                            class: "mdc-floating-label",
-                            for: obj.id,
-                            $text: obj.label
-                        },
-                        {
                             $type: "div",
                             class: "mdc-notched-outline",
                             $components:[
                                 {
-                                    $type: "svg",
+                                    $type: "div",
+                                    class: "mdc-notched-outline__leading"
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-notched-outline__notch",
                                     $components:[
                                         {
-                                            $type: "path",
-                                            class: "mdc-notched-outline__path"
+                                            $type: "label",
+                                            class: "mdc-floating-label",
+                                            for: obj.id,
+                                            $text: obj.label
                                         }
-                                    ]
-                                }
                             ]
-                        },
-                        {
-                            $type: "div",
-                            class: "mdc-notched-outline__idle"
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-notched-outline__trailing"
+                                }
+
+                            ]
                         }
+                       
+                        
+                      
                     ]
                     //onclick: obj.onclick
                 }
