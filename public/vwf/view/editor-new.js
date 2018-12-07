@@ -4021,6 +4021,9 @@ define([
 
         //console.log(selectedText);
         //var sceneID = self.kernel.application();
+       //let node = self.nodes[nodeID];
+
+
         let scriptText = 'console.log(' + selectedText + ');'
         self.kernel.execute(nodeID, scriptText);
 
