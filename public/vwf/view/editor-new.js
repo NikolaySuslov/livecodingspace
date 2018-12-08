@@ -2091,7 +2091,14 @@ define([
                                                                         currentNode = vwf_view.kernel.find("", "/")[0];
                                                                     }
 
-                                                                    vwf.views["vwf/view/aframe"].nodes[currentNode].liveBindings = {};
+
+                                                                    if (isAFrameEntity(currentNode)) {
+                                                                        vwf.views["vwf/view/aframe"].nodes[currentNode].liveBindings = {};
+                                                                    } else if(isAFrameComponent(currentNode)) {
+                                                                        vwf.views["vwf/view/aframeComponent"].nodes[currentNode].liveBindings = {};
+                                                                    }
+
+                                                                    
 
                                                                     document.querySelector('#liveCodeEditor')._setNode(currentNode);
                                                                     //createAceEditor(self, currentNode);
@@ -3869,8 +3876,6 @@ define([
     // -- getChildByName --------------------------------------------------------------------
 
 
-
-
     function getChildByName(node, childName) {
         var childNode = undefined;
         for (var i = 0; i < node.children.length && childNode === undefined; i++) {
@@ -3911,6 +3916,30 @@ define([
 
     }
 
+    function isAFrameComponent(nodeID) {
+        let node = self.nodes[nodeID];
+        let nodeProtos = getPrototypes(self.kernel, node.extendsID);
+
+
+            if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
+                return true
+            }
+        
+
+        return false
+    }
+
+    function isAFrameEntity(nodeID) {
+        let node = self.nodes[nodeID];
+        let nodeProtos = getPrototypes(self.kernel, node.extendsID);
+
+            if (nodeProtos.includes('http://vwf.example.com/aframe/node.vwf')) {
+                return true
+            }
+        
+
+        return false
+    }
 
 
     function getPrototypes(kernel, extendsID) {
@@ -4077,6 +4106,20 @@ define([
 
     }
 
+    function codeEditorPrintitConsole (editor, nodeID) {
+        var selectedText = editor.getSession().doc.getTextRange(editor.selection.getRange());
+
+        if (selectedText == "") {
+
+            var currline = editor.getSelectionRange().start.row;
+            var selectedText = editor.session.getLine(currline);
+
+        }
+  
+        let scriptText = 'console.log(' + selectedText + ');'
+        self.kernel.execute(nodeID, scriptText);
+
+    }
 
 
 

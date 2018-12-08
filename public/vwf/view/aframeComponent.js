@@ -71,7 +71,8 @@ define(["module", "vwf/view"], function (module, view) {
                 this.nodes[childID] = {
                     id:childID,
                     extends:childExtendsID,
-                    entityID: this.state.nodes[childID].parentID
+                    entityID: this.state.nodes[childID].parentID,
+                    liveBindings: {}
                 };
 
                 let entityID = this.state.nodes[childID].parentID;
@@ -171,9 +172,65 @@ define(["module", "vwf/view"], function (module, view) {
 
         },
 
-        // firedEvent: function (nodeID, eventName, eventParameters) {
-        // },
+        firedEvent: function (nodeID, eventName, eventParameters) {
 
+            var node = this.state.nodes[nodeID];
+                
+            if (!(node)) {
+                return;
+            }
+
+            if ( eventName == "printIt" ) {
+            
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+               
+
+                // If the transform property was initially updated by this view....
+                if ( clientThatSatProperty == me) {
+
+
+                let selectedText = eventParameters[0];
+                let printText = _app.helpers.replaceSubStringALL(selectedText,'this','me');
+
+                if (!self.nodes[nodeID].liveBindings){
+                    self.nodes[nodeID].liveBindings = {}
+                }
+
+                //let bindObject = self.nodes[nodeID].liveBindings;
+                let bindString = 'vwf.views["vwf/view/aframeComponent"].nodes["'+ nodeID + '"].liveBindings';
+                let sender = JSON.stringify(eventParameters[1]);
+            
+                let scriptText = 'let binding = '+ bindString +'; binding.me = this; binding.sender = '+ sender +'; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
+                vwf_view.kernel.execute(nodeID, scriptText);
+
+            }
+
+            }
+
+        },
+
+        executed: function (nodeID, scriptText, scriptType) {
+
+            var node = this.state.nodes[nodeID];
+                
+            if (!(node)) {
+                return;
+            }
+
+            if (scriptText.includes('var print')){
+                let print = self.nodes[nodeID].liveBindings.print;
+
+                let me = self.kernel.moniker();
+                let sender = self.nodes[nodeID].liveBindings.sender;
+
+                if (me == sender) {
+                    let data = JSON.stringify(print); //lively.lang.obj.inspect(print); 
+                    self.kernel.fireEvent(nodeID, "printEvent", [data]);
+                }
+            }
+
+    },
 
         ticked: function (vwfTime) {
 

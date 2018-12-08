@@ -127,6 +127,11 @@ define(["module", "vwf/view"], function (module, view) {
 
         executed: function (nodeID, scriptText, scriptType) {
 
+            var node = this.state.nodes[nodeID];
+                
+            if (!(node)) {
+                return;
+            }
                 
                 if (scriptText.includes('var print')){
                     let print = self.nodes[nodeID].liveBindings.print;
@@ -316,6 +321,12 @@ define(["module", "vwf/view"], function (module, view) {
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
+
+            var node = this.state.nodes[nodeID];
+                
+            if (!(node)) {
+                return;
+            }
 
             if ( eventName == "printIt" ) {
             
