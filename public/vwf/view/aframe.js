@@ -109,6 +109,7 @@ define(["module", "vwf/view"], function (module, view) {
                 this.nodes[childID] = {
                     id: childID,
                     extends: childExtendsID,
+                    liveBindings: {}
                     // lastTransformStep: 0,
                     // lastAnimationStep: 0 
                 };
@@ -121,6 +122,23 @@ define(["module", "vwf/view"], function (module, view) {
             // else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj.object3D instanceof THREE.Object3D) {
             //     this.nodes[childID] = {id:childID,extends:childExtendsID};
             // }
+
+        },
+
+        executed: function (nodeID, scriptText, scriptType) {
+
+                
+                if (scriptText.includes('var print')){
+                    let print = self.nodes[nodeID].liveBindings.print;
+
+                    let me = self.kernel.moniker();
+                    let sender = self.nodes[nodeID].liveBindings.sender;
+
+                    if (me == sender) {
+                        let data = JSON.stringify(print); //lively.lang.obj.inspect(print); 
+                        self.kernel.fireEvent(nodeID, "printEvent", [data]);
+                    }
+                }
 
         },
 
@@ -298,6 +316,36 @@ define(["module", "vwf/view"], function (module, view) {
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
+
+            if ( eventName == "printIt" ) {
+            
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+               
+
+                // If the transform property was initially updated by this view....
+                if ( clientThatSatProperty == me) {
+
+
+                let selectedText = eventParameters[0];
+                let printText = _app.helpers.replaceSubStringALL(selectedText,'this','me');
+
+                if (!self.nodes[nodeID].liveBindings){
+                    self.nodes[nodeID].liveBindings = {}
+                }
+
+                //let bindObject = self.nodes[nodeID].liveBindings;
+                let bindString = 'vwf.views["vwf/view/aframe"].nodes["'+ nodeID + '"].liveBindings';
+                let sender = JSON.stringify(eventParameters[1]);
+            
+                let scriptText = 'let binding = '+ bindString +'; binding.me = this; binding.sender = '+ sender +'; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
+                vwf_view.kernel.execute(nodeID, scriptText);
+
+            }
+
+            }
+
+
 
             if ( eventName == "changingTransformFromView" ) {
                 var clientThatSatProperty = self.kernel.client();

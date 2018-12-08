@@ -2090,6 +2090,9 @@ define([
                                                                     if (currentNode == '') {
                                                                         currentNode = vwf_view.kernel.find("", "/")[0];
                                                                     }
+
+                                                                    vwf.views["vwf/view/aframe"].nodes[currentNode].liveBindings = {};
+
                                                                     document.querySelector('#liveCodeEditor')._setNode(currentNode);
                                                                     //createAceEditor(self, currentNode);
                                                                     document.querySelector('#codeEditorWindow').style.visibility = 'visible';
@@ -3722,7 +3725,38 @@ define([
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
+            var node = this.nodes[nodeID];
+            if (node) {
+              
+                if (eventName == 'printEvent'){
 
+                    var clientThatSatProperty = self.kernel.client();
+                    var me = self.kernel.moniker();
+                   
+    
+                    // If the transform property was initially updated by this view....
+                    if ( clientThatSatProperty == me) {
+    
+
+                    let editor = document.querySelector("#aceEditor").env.editor;
+                    if(editor){
+
+                        var cursorPosition = editor.getCursorPosition();
+                        var selectedText = editor.getSession().doc.getTextRange(editor.selection.getRange());
+
+                        if (selectedText !== "") {
+                            cursorPosition = editor.selection.getRange().end;
+                        }
+                        let data = eventParameters[0];//JSON.stringify(eventParameters[0]);
+                        editor.session.insert(cursorPosition, data);
+                    }
+                    //console.log(eventParameters);
+                
+                }
+            }
+
+
+            }
         },
 
         executed: function (nodeID, scriptText, scriptType) {
@@ -3796,7 +3830,11 @@ define([
                     $text: "X",
                     onclick: function (e) {
                         //self.currentNodeID = m.ID;
+                        if( elementID == 'codeEditorWindow'){
+                            //self.nodes[currentNode].liveBindings = {};
+                    }
                         document.querySelector('#' + elementID).style.visibility = 'hidden';
+
                     }
 
                 },
@@ -4021,11 +4059,21 @@ define([
 
         //console.log(selectedText);
         //var sceneID = self.kernel.application();
-       //let node = self.nodes[nodeID];
+       //vwf.views["vwf/view/editor-new"].nodes[this.id].liveBindings
+        //let node = self.nodes[nodeID];
+        let me = self.kernel.moniker();
+        vwf_view.kernel.fireEvent(nodeID, 'printIt', [selectedText, me]);
+
+    //     let printText = _app.helpers.replaceSubStringALL(selectedText,'this','me');
+    //     let bindString = 'vwf.views["vwf/view/aframe"].nodes["'+ nodeID + '"].liveBindings';
+
+    //    let scriptText = 'let binding = '+ bindString +'; binding.me = this; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
+    //    vwf_view.kernel.execute(nodeID, scriptText);
 
 
-        let scriptText = 'console.log(' + selectedText + ');'
-        self.kernel.execute(nodeID, scriptText);
+
+        // let scriptText = 'console.log(' + selectedText + ');'
+        // self.kernel.execute(nodeID, scriptText);
 
     }
 
