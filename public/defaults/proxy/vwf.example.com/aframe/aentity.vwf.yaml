@@ -48,7 +48,15 @@ events:
   positionChanged:
   rotationChanged:
   scaleChanged:
+  sendOSC:
+  intersectEvent:
+  clearIntersectEvent:
 methods:
+  intersectEventMethod:
+  clearIntersectEventMethod:
+  sendOSC:
+    parameters:
+      - msg
   setGizmoMode:
     parameters:
       - mode

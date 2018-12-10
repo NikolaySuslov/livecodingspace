@@ -108,8 +108,6 @@ children:
           receive: true
     events:
       clickEvent:
-      intersectEvent:
-      clearIntersectEvent:
     methods:
       clickEventMethod:
         body: |
@@ -138,12 +136,6 @@ children:
       - |
         this.clickEvent = function(){
           this.clickEventMethod();
-         }
-         this.intersectEvent = function(){
-          this.intersectEventMethod();
-         }
-         this.clearIntersectEvent = function(){
-          this.clearIntersectEventMethod();
          }
   sphere:
     extends: http://vwf.example.com/aframe/asphere.vwf

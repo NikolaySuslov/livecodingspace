@@ -49,3 +49,35 @@ this.showCloseGizmo = function () {
     //   value :
     //   goog.vec.Vec3.create();
   };
+
+  this.sendOSC = function(msg){
+        //sending OSC msg
+
+        vwf_view.kernel.fireEvent(this.id, "sendOSC", [msg]);
+
+        // if (_OSCManager.port !== null) {
+        //     _OSCManager.port.send(msg);
+        // }
+    
+        //on driver side
+    
+  }
+
+  this.intersectEvent = function(){
+    //this.intersectEventMethod();
+   }
+   this.clearIntersectEvent = function(){
+    //this.clearIntersectEventMethod();
+   }
+
+  this.intersectEventMethod = function(){
+
+        //intersect method
+  }
+
+
+    this.clearIntersectEventMethod = function(){
+        
+         //clearIntersect method
+
+    }

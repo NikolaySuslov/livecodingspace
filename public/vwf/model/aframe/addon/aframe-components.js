@@ -199,9 +199,12 @@ AFRAME.registerComponent('raycaster-listener', {
 
 
                 } else {
-                    console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
+                    
                     //evt.detail.intersection.object.el.id
-                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent")
+                    if (evt.detail.el.id.includes(vwf_view.kernel.moniker())) {
+                    console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
+                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent",  [vwf_view.kernel.moniker()]);
+                    }
                 }
 
                 self.casters[evt.target.id] = evt.target;
@@ -220,7 +223,9 @@ AFRAME.registerComponent('raycaster-listener', {
                 if (self.intersected) {
                     console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.target.id] !== undefined)) {
-                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
+                        if (evt.detail.el.id.includes(vwf_view.kernel.moniker())) {
+                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent", [vwf_view.kernel.moniker()])
+                        }
                     }
                     delete self.casters[evt.target.id]
                 } else { }

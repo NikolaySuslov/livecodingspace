@@ -23,11 +23,71 @@ define(["module", "vwf/view", "vwf/view/oscjs/dist/osc-module"], function(module
 
 		},
 
+		firedEvent: function (nodeID, eventName, eventParameters) {
+         
+              
+                if (eventName == 'sendOSC'){
+
+				var clientThatSatProperty = self.kernel.client();
+				var me = self.kernel.moniker();
+
+
+				// If the transform property was initially updated by this view....
+				if (clientThatSatProperty == me) {
+
+
+					if (self.osc !== null) {
+						if (this.getStatus() == 1) {
+							self.port.send(eventParameters[0]);
+							console.log('send: ' + eventParameters[0]);
+						}
+					}
+				}
+
+
+
+				}
+			
+		},
+
+
 		/*
 		 * Receives incoming messages
 		 */
-		// calledMethod: function(id, name, params) {
-		// },
+		calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+	
+
+
+			// if (methodName == "sendOSC") {
+			// 	if (self.osc !== null) {
+			// 		if (this.getStatus() == 1) {
+			// 			self.port.send(methodParameters[0]);
+			// 			console.log('send: ' + methodParameters);
+			// 		}
+			// 	}
+				
+			// }
+
+
+			if (methodName == "sendOSCBundle") {
+
+				if (self.osc !== null) {
+					if (this.getStatus() == 1) {
+						self.port.send({
+							timeTag: self.osc.timeTag(1), // Schedules this bundle 60 seconds from now.
+							packets: [methodParameters[0]]
+						}
+						);
+						console.log('send: ' + methodParameters[0]);
+					}
+				}
+				//console.log("send OSC!!!");
+
+			}
+
+            
+        },
+
 		
 		setOSCHostAndPort: function(h,p) {
 
@@ -63,8 +123,8 @@ define(["module", "vwf/view", "vwf/view/oscjs/dist/osc-module"], function(module
 		},
 
 		getStatus: function() {
-			if (this.port){
-			return this.port.socket.readyState
+			if (self.port){
+			return self.port.socket.readyState
 			} 
 			return 3
 		}

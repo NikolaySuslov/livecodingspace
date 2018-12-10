@@ -438,6 +438,37 @@ define(["module", "vwf/view"], function (module, view) {
             //     vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
             // }
 
+            if (eventName == "intersectEvent") {
+
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+
+                // If the transform property was initially updated by this view....
+                if ( clientThatSatProperty == me ) {
+
+                if ( me == eventParameters[0]) {
+                    vwf_view.kernel.callMethod(nodeID, "intersectEventMethod", [])
+                }
+            }
+
+            }
+
+
+            if (eventName == "clearIntersectEvent") {
+
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+
+                // If the transform property was initially updated by this view....
+                if ( clientThatSatProperty == me ) {
+
+                if ( me == eventParameters[0]) {
+                    vwf_view.kernel.callMethod(nodeID, "clearIntersectEventMethod", [])
+                }
+            }
+
+            }
+
             if (eventName == "clickEvent") {
 
                 if (self.kernel.moniker() == eventParameters[0]) {

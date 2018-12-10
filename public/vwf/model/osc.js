@@ -109,21 +109,21 @@ define( [ "module", "vwf/model" ], function( module, model ) {
 
         callingMethod: function( nodeID, methodName, methodParameters ) {
 
-            if (methodName == 'sendOSC') {
+            // if (methodName == 'sendOSC') {
 
-                if (this.osc == null) {
-                    this.osc = _OSCManager;
-                }
+            //     if (this.osc == null) {
+            //         this.osc = _OSCManager;
+            //     }
 
-                // var msg = {
-                //     address: "/hello/from/oscjs",
-                //     args: [Math.random()]
-                // };
-                this.osc.port.send(methodParameters);
+            //     // var msg = {
+            //     //     address: "/hello/from/oscjs",
+            //     //     args: [Math.random()]
+            //     // };
+            //     this.osc.port.send(methodParameters);
 
-                console.log('send: ' + methodParameters);
+            //     console.log('send: ' + methodParameters);
 
-            }
+            // }
 
         },
 
