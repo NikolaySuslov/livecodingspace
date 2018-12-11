@@ -364,7 +364,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         var position = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.position = goog.vec.Vec3.clone(position);
                             //value = propertyValue;
-                            node.transform.storedpositionDirty = true; 
+                            node.transform.storedPositionDirty = true; 
                             //setTransformsDirty( threeObject );
                             //this.state.setAFrameProperty('position', propertyValue, aframeObject);
                             break;
@@ -374,7 +374,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             var rotation = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.rotation = goog.vec.Vec3.clone(rotation);
                             //value = propertyValue;
-                            node.transform.storedrotationDirty = true; 
+                            node.transform.storedRotationDirty = true; 
 
                             //this.state.setAFrameProperty('rotation', propertyValue, aframeObject);
                             break;
@@ -384,7 +384,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         var scale = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                         node.transform.scale = goog.vec.Vec3.clone(scale);
                         //value = propertyValue;
-                        node.transform.storedscaleDirty = true; 
+                        node.transform.storedScaleDirty = true; 
                         //setTransformsDirty( threeObject );
                         //this.state.setAFrameProperty('position', propertyValue, aframeObject);
 
@@ -394,9 +394,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "animationTimeUpdated":
                                 if (node.transform) {
-                                    node.transform.storedpositionDirty = true; 
-                                    node.transform.storedrotationDirty = true;
-                                    node.transform.storedscaleDirty = true;
+                                    node.transform.storedPositionDirty = true; 
+                                    node.transform.storedRotationDirty = true;
+                                    node.transform.storedScaleDirty = true;
                                 }
                                 
                         break;
@@ -869,7 +869,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                             if (node.transform.position) {
 
-                            if ( node.transform.storedpositionDirty ) {
+                            if ( node.transform.storedPositionDirty ) {
                                 updateStoredTransformFor( node, 'position' );
                             }
 
@@ -882,7 +882,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         if (node.transform.rotation) {
 
-                            if ( node.transform.storedrotationDirty ) {
+                            if ( node.transform.storedRotationDirty ) {
                                 updateStoredTransformFor( node, 'rotation' );
                             }
 
@@ -901,7 +901,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         if (node.transform.scale) {
 
-                            if ( node.transform.storedscaleDirty ) {
+                            if ( node.transform.storedScaleDirty ) {
                                 updateStoredTransformFor( node, 'scale' );
                             }
 
@@ -1479,7 +1479,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             if (propertyName == 'scale'){
                 let scale = (new THREE.Vector3()).copy(node.aframeObj.object3D.scale);
                 node.transform.scale = goog.vec.Vec3.createFromValues(scale.x, scale.y, scale.z);
-                node.transform.storedPositionDirty = false; 
+                node.transform.storedScaleDirty = false; 
             }
 
             //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
