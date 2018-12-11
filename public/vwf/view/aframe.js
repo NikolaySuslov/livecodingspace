@@ -193,6 +193,11 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            if (propertyName == 'ownedBy')
+            {
+                //debugger;
+            }
+
             if (propertyName == 'position')
             {
                 receiveModelTransformChanges( nodeId, 'position', propertyValue );

@@ -410,6 +410,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             node.events.clickable = propertyValue;
                             break;
 
+
+                        case "ownedBy":
+                                aframeObject.setAttribute('ownedby', propertyValue);
+                            break;
+
                         case "visible":
                             aframeObject.setAttribute('visible', propertyValue);
                             break;
@@ -926,6 +931,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         //         value = aframeObject.getAttribute('wasd-controls').enabled;
                         //     }
                         //     break;
+
+                        case "ownedBy":
+                            value = aframeObject.getAttribute('ownedby');
+                            break;
+
 
                         case "visible":
                             value = aframeObject.getAttribute('visible');

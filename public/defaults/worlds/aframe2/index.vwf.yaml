@@ -154,6 +154,14 @@ children:
           position: "2 -0.75 0"
           depth: 1
         children:
+          raycaster:
+            extends: http://vwf.example.com/aframe/raycasterComponent.vwf
+            type: "component"
+            properties:
+              recursive: false
+              interval: 1000
+              far: 3
+              objects: ".intersectable"      
           material:
             extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
             properties:

@@ -1867,6 +1867,37 @@ define([
                                             //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
                                         }
                                     }),
+                                    self.widgets.floatActionButton({
+                                        label: "priority_high",
+                                        styleClass: "mdc-fab--mini",
+                                        onclickfunc: function () {
+                                            var nodeID = document.querySelector('#currentNode')._currentNode;
+                                            let node = self.nodes[nodeID];
+                                            //vwf_view.kernel.deleteChild(node.parentID, node.name);
+
+                                            let me = self.kernel.moniker();
+                                            vwf_view.kernel.setProperty(nodeID, 'ownedBy', me);
+
+                                            // let me = self.kernel.moniker();
+                                            // let viewDriver = vwf.views["vwf/view/aframe"];
+                                            // let nodeComponents = viewDriver.nodes[nodeID].components;
+                                            // let raycasterID = Object.entries(nodeComponents).find(el => 
+                                            //     el[0] == 'raycaster'
+                                            //   )[1];
+                                            //  if (raycasterID){
+                                            //     vwf_view.kernel.setProperty(raycasterID, 'ownedby', me);
+                                            //  }
+                                            //   else {
+                                            //       console.log("no raycaster component on: " + nodeID);
+                                            //   }
+
+
+                                            //let nodeComponents = node.components
+                                           
+                                            //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
+                                        }
+                                    }),
+
                                     saveGUI
 
                                 ]

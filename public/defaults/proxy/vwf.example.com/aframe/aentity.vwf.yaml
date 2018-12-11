@@ -44,6 +44,7 @@ properties:
   visible:
   edit:
   osc:
+  ownedBy:
 events:
   positionChanged:
   rotationChanged:
