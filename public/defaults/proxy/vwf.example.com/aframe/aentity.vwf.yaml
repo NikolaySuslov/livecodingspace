@@ -16,11 +16,7 @@ properties:
         this.positionChanged( position);
       }  
     get: |
-      if (this.position.hasOwnProperty('x')) {
-        return goog.vec.Vec3.createFromValues(this.position.x, this.position.y,  this.position.z);
-      } else {
-        return this.position || goog.vec.Vec3.create();
-      }
+      return this.position || goog.vec.Vec3.create();
   rotation:
     set: |
       var rotation = this.translationFromValue( value ); // parse incoming value
@@ -31,11 +27,7 @@ properties:
         this.rotationChanged( rotation);
       }  
     get: |
-      if (this.rotation.hasOwnProperty('x')) {
-        return goog.vec.Vec3.createFromValues(this.rotation.x, this.rotation.y,  this.rotation.z);
-      } else {
-        return this.rotation || goog.vec.Vec3.create();
-      }
+      return this.rotation || goog.vec.Vec3.create();
   scale:
     set: |
       var scale = this.translationFromValue( value ); // parse incoming value
@@ -46,11 +38,7 @@ properties:
         this.scaleChanged( scale);
       }  
     get: |
-      if (this.scale.hasOwnProperty('x')) {
-        return goog.vec.Vec3.createFromValues(this.scale.x, this.scale.y, this.scale.z);
-      } else {
-        return this.scale || goog.vec.Vec3.create();
-      }
+      return this.scale || goog.vec.Vec3.create();
   clickable:
   displayName:
   visible:
