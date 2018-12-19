@@ -682,17 +682,14 @@ define(["module", "vwf/view"], function (module, view) {
         if (!node) return;
         if (!node.aframeObj) return;
 
-        let el = document.querySelector('#avatarControl');
+       let el = document.querySelector('#avatarControl');
         if (el) {
             //let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
 
             let position = new THREE.Vector3();
             el.object3D.getWorldPosition(position);
 
-            let rotation = getWorldRotation(el, 'YXZ');
-
-            // console.log(rotation);
-            //let rotation = el.getAttribute('rotation');
+            let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
             let lastPosition = self.nodes[avatarName].selfTickPosition;
