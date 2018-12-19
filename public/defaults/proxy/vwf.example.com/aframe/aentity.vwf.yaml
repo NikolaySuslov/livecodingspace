@@ -71,6 +71,10 @@ methods:
     parameters:
       - propertyValue
   getChildByName:
+    parameters:
       - name
+  setOwner:
+    parameters:
+      - propertyValue
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

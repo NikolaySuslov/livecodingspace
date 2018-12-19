@@ -75,7 +75,22 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
                                 }
                     
-                        }
+                        },
+                   setFromValue: function ( propertyValue ) {
+
+                            var value = goog.vec.Vec3.create();
+                          if (propertyValue.hasOwnProperty('x')) {
+                              value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y,  propertyValue.z)
+                          } 
+                          else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
+                              value = goog.vec.Vec3.createFromArray(propertyValue);}
+                          else if (typeof propertyValue === 'string') {
+                              let val = AFRAME.utils.coordinates.parse(propertyValue);
+                              value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+                              }
+                      
+                          return value
+                            }
             };
 
             this.state.kernel = this.kernel.kernel.kernel;
@@ -361,7 +376,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "position":
 
-                        var position = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                        var position = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.position = goog.vec.Vec3.clone(position);
                             //value = propertyValue;
                             node.transform.storedPositionDirty = true; 
@@ -371,7 +386,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "rotation":
 
-                            var rotation = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            var rotation = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.rotation = goog.vec.Vec3.clone(rotation);
                             //value = propertyValue;
                             node.transform.storedRotationDirty = true; 
@@ -381,7 +396,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "scale":
 
-                        var scale = setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                        var scale = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                         node.transform.scale = goog.vec.Vec3.clone(scale);
                         //value = propertyValue;
                         node.transform.storedScaleDirty = true; 
@@ -1395,22 +1410,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
     }
 
-
-    function setFromValue ( propertyValue ) {
-
-        var value = goog.vec.Vec3.create();
-      if (propertyValue.hasOwnProperty('x')) {
-          value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y,  propertyValue.z)
-      } 
-      else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
-          value = goog.vec.Vec3.createFromArray(propertyValue);}
-      else if (typeof propertyValue === 'string') {
-          let val = AFRAME.utils.coordinates.parse(propertyValue);
-          value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
-          }
-  
-      return value
-        }
 
     function updateStoredTransform( node ) {
         

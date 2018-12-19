@@ -95,6 +95,7 @@ children:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
         properties:
           color: "#3c7249"
+          transparent: true
       raycaster-listener:
         extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
         type: "component"
@@ -118,12 +119,12 @@ children:
       intersectEventMethod:
         body: |
           if (this.clickable) {
-          this.rotation = [0, -90, 0]
+          this.material.opacity = 0.7
             }
       clearIntersectEventMethod:
         body: |
           if (this.clickable) {
-          this.rotation = [0, -30, 0]
+          this.material.opacity = 1.0
             }
       generateColor:
         body: |
@@ -159,9 +160,9 @@ children:
             type: "component"
             properties:
               recursive: false
-              interval: 1000
-              far: 3
-              objects: ".intersectable"      
+              interval: 10
+              far: 2
+              objects: ".intersectable"  
           material:
             extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
             properties:

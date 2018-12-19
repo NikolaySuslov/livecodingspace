@@ -68,6 +68,7 @@ define(["module", "vwf/view"], function (module, view) {
                   prepairAvatar.then(res=>{
                    // console.log(res);
                     createAvatar.call(self, childID);
+                    postLoadAction.call(self, childID);
 
                     if (this.gearvr == true) {
                         console.log("CREATE GEARVR HERE!!");
@@ -99,7 +100,6 @@ define(["module", "vwf/view"], function (module, view) {
 
                   })
                 // this.state.appInitialized  = true;
-
 
                 document.body.appendChild(scene); //append is not working in Edge browser
 
@@ -160,6 +160,26 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
+            if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+                
+            var clientThatSatProperty = self.kernel.client();
+            var me = self.kernel.moniker();
+           
+
+            // If the transform property was initially updated by this view....
+            if ( clientThatSatProperty == me) {
+                self.kernel.callMethod(childID,"setOwner",[me]);
+            } 
+        }
+
+
+            // if (propertyName == 'ownedBy')
+            // {
+            //     // if (!node.aframeObj.el.getAttribute('ownedBy')){
+
+            //     // }
+            // }
+
         },
 
         createdProperty: function (nodeId, propertyName, propertyValue) {
@@ -191,11 +211,6 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (!(node && node.aframeObj)) {
                 return;
-            }
-
-            if (propertyName == 'ownedBy')
-            {
-                //debugger;
             }
 
             if (propertyName == 'position')
@@ -376,6 +391,16 @@ define(["module", "vwf/view"], function (module, view) {
 
             //var avatarID = vwf_view.kernel.find("", avatarName)
 
+            if (eventName == "postLoadAction") {
+
+                Object.entries(self.state.nodes).forEach(el => {
+                    if (el[1].prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+                        vwf_view.kernel.callMethod(el[0],"setOwner",[self.kernel.moniker()]);
+                    }
+
+                    });
+             }
+
             var avatarName = 'avatar-' + self.kernel.moniker();
 
             if (eventName == "createAvatar") {
@@ -421,6 +446,10 @@ define(["module", "vwf/view"], function (module, view) {
                         vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
                         //"/../assets/avatars/male/avatar1.gltf"
                     }
+
+                    //
+                    
+
                 }
 
 
@@ -617,11 +646,13 @@ define(["module", "vwf/view"], function (module, view) {
         } else {
            // adoptTransform( node, transformMatrix );
 
-           if(propertyName == 'position') {
-            let pos = goog.vec.Vec3.clone( propertyValue );
+           let prop = self.state.setFromValue(propertyValue); 
+
+           if(propertyName == 'position') {  
+            let pos = goog.vec.Vec3.clone( prop );
             node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
            } else if (propertyName == 'rotation') {
-            let rot = goog.vec.Vec3.clone( propertyValue );
+            let rot = goog.vec.Vec3.clone( prop );
 
             node.aframeObj.object3D.rotation.set(
                 THREE.Math.degToRad(rot[0]),
@@ -630,7 +661,7 @@ define(["module", "vwf/view"], function (module, view) {
             )
             //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
            } else if (propertyName == 'scale') {
-            let scale = goog.vec.Vec3.clone( propertyValue );
+            let scale = goog.vec.Vec3.clone( prop);
             node.aframeObj.object3D.scale.set(scale[0], scale[1], scale[2]);
            }
           
@@ -892,6 +923,11 @@ define(["module", "vwf/view"], function (module, view) {
             vwf_view.kernel.callMethod(nodeName, "createController", []);
             //"/../assets/controller/gearvr.gltf"
         }
+    }
+
+    function postLoadAction(nodeID) {
+
+        vwf_view.kernel.fireEvent(nodeID, "postLoadAction")
     }
 
     function createAvatar(nodeID) {
