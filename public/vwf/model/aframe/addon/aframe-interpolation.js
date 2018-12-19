@@ -53,7 +53,7 @@ AFRAME.registerComponent('interpolation', {
     //console.log(timepassed);
 
     if (!this.node) {
-      let interNode = Object.entries(this.driver.state.nodes).find(el => 
+      let interNode = Object.entries(this.driver.state.nodes).find(el =>
         el[1].parentID == this.el.id && el[1].extendsID == "http://vwf.example.com/aframe/interpolation-component.vwf"
       );
       this.node = this.driver.nodes[interNode[0]];
@@ -63,16 +63,16 @@ AFRAME.registerComponent('interpolation', {
     if (this.enabled && this.node && this.node.interpolate) {
       this.setInterpolatedTransforms(timepassed);
 
-     // this.restoreTransforms();
+      // this.restoreTransforms();
 
     }
     this.lastTime = now;
 
-    
+
 
   },
 
-  tock: function(t, dt){
+  tock: function (t, dt) {
     if (this.node) {
       if (this.enabled && this.node.interpolate) {
         this.restoreTransforms();
@@ -85,17 +85,17 @@ AFRAME.registerComponent('interpolation', {
 
     let distance = a.distanceTo(b);
     //let distance = goog.vec.Vec3.distance(a,b);
-     if (distance > delta) {
-       return false;
-     }
- 
-     return true;
-   },
+    if (distance > delta) {
+      return false;
+    }
+
+    return true;
+  },
 
   vecCmp: function (a, b, delta) {
 
-   // let distance = a.distanceTo(b);
-   let distance = goog.vec.Vec3.distance(a,b);
+    // let distance = a.distanceTo(b);
+    let distance = goog.vec.Vec3.distance(a, b);
     if (distance > delta) {
       return false;
     }
@@ -105,9 +105,9 @@ AFRAME.registerComponent('interpolation', {
 
   restoreTransforms: function () {
 
-      this.restorePositionTransforms();
-      this.restoreRotationTransforms();
-      this.restoreScaleTransforms();
+    this.restorePositionTransforms();
+    this.restoreRotationTransforms();
+    this.restoreScaleTransforms();
   },
 
   restorePositionTransforms: function () {
@@ -126,7 +126,7 @@ AFRAME.registerComponent('interpolation', {
 
     var now = this.node.interpolate.rotation.selfTick;
 
-    if(now && this.node.needRotationRestore) {
+    if (now && this.node.needRotationRestore) {
       let r = new THREE.Euler();
       let rot = r.copy(now);
 
@@ -136,18 +136,18 @@ AFRAME.registerComponent('interpolation', {
     }
   },
 
-    restoreScaleTransforms: function () {
+  restoreScaleTransforms: function () {
 
-      var now = this.node.interpolate.scale.selfTick;
-  
-      if (now && this.node.needScaleRestore) {
-        let pos = goog.vec.Vec3.clone(now);
-        this.el.object3D.scale.set(pos[0], pos[1], pos[2]);
-        this.node.needScaleRestore = false;
-      }
-  
-    },
-  
+    var now = this.node.interpolate.scale.selfTick;
+
+    if (now && this.node.needScaleRestore) {
+      let pos = goog.vec.Vec3.clone(now);
+      this.el.object3D.scale.set(pos[0], pos[1], pos[2]);
+      this.node.needScaleRestore = false;
+    }
+
+  },
+
 
   setInterpolatedTransforms: function (deltaTime) {
 
@@ -157,7 +157,7 @@ AFRAME.registerComponent('interpolation', {
     deltaTime = Math.min(deltaTime, this.node.realTickDif)
     this.node.tickTime += deltaTime || 0;
 
-    
+
     this.interpolatePosition(step);
     this.interpolateRotation(step);
     this.interpolateScale(step);
@@ -221,12 +221,12 @@ AFRAME.registerComponent('interpolation', {
 
       if (!comp) {
 
-       var interp = goog.vec.Vec3.lerp(
+        var interp = goog.vec.Vec3.lerp(
           last, now,
           step || 0,
           goog.vec.Vec3.create()
         );
-       
+
         this.setPosition(interp);
         this.node.needPositionRestore = true;
       }
@@ -244,12 +244,12 @@ AFRAME.registerComponent('interpolation', {
 
       if (!comp) {
 
-       var interp = goog.vec.Vec3.lerp(
+        var interp = goog.vec.Vec3.lerp(
           last, now,
           step || 0,
           goog.vec.Vec3.create()
         );
-       
+
         this.setScale(interp);
         this.node.needScaleRestore = true;
       }
@@ -259,17 +259,17 @@ AFRAME.registerComponent('interpolation', {
   setPosition: function (interp) {
     let vec = goog.vec.Vec3.clone(interp);
     this.el.object3D.position.set(vec[0], vec[1], vec[2]);
-},
+  },
 
-setRotation: function (interp) {
-  let vec = (new THREE.Euler()).copy(interp);
-  this.el.object3D.rotation.set(vec.x, vec.y, vec.z);
-},
+  setRotation: function (interp) {
+    let vec = (new THREE.Euler()).copy(interp);
+    this.el.object3D.rotation.set(vec.x, vec.y, vec.z);
+  },
 
-setScale: function (interp) {
-  let vec = goog.vec.Vec3.clone(interp);
-  this.el.object3D.scale.set(vec[0], vec[1], vec[2]);
-},
+  setScale: function (interp) {
+    let vec = goog.vec.Vec3.clone(interp);
+    this.el.object3D.scale.set(vec[0], vec[1], vec[2]);
+  },
 
 
   pause: function () { },

@@ -25,31 +25,31 @@ define(["module", "vwf/view"], function (module, view) {
             this.lastRealTick = performance.now();
 
             this.state.appInitialized = false;
-            
-                        if (typeof options == "object") {
-            
-                            this.rootSelector = options["application-root"];
-                        }
-                        else {
-                            this.rootSelector = options;
-                        }
 
-                        
+            if (typeof options == "object") {
 
-        this.resetInterpolation = function(nodeID, propertyName){
-           
-            if(propertyName == 'position') {
-                self.nodes[nodeID].interpolate.position.lastTick = getPosition(nodeID);
-                self.nodes[nodeID].interpolate.position.selfTick =  goog.vec.Vec3.clone(self.nodes[nodeID].interpolate.position.lastTick);
+                this.rootSelector = options["application-root"];
+            }
+            else {
+                this.rootSelector = options;
             }
 
-            if(propertyName == 'rotation') {
-            self.nodes[nodeID].interpolate.rotation.lastTick = getRotation(nodeID);
-            self.nodes[nodeID].interpolate.rotation.selfTick = self.nodes[nodeID].interpolate.rotation.lastTick;
+
+
+            this.resetInterpolation = function (nodeID, propertyName) {
+
+                if (propertyName == 'position') {
+                    self.nodes[nodeID].interpolate.position.lastTick = getPosition(nodeID);
+                    self.nodes[nodeID].interpolate.position.selfTick = goog.vec.Vec3.clone(self.nodes[nodeID].interpolate.position.lastTick);
+                }
+
+                if (propertyName == 'rotation') {
+                    self.nodes[nodeID].interpolate.rotation.lastTick = getRotation(nodeID);
+                    self.nodes[nodeID].interpolate.rotation.selfTick = self.nodes[nodeID].interpolate.rotation.lastTick;
+                }
+
             }
 
-        }
-         
         },
 
         // initializedNode: function( nodeID, childID ) {
@@ -67,52 +67,52 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
-            if(this.state.nodes[childID]) {
+            if (this.state.nodes[childID]) {
                 this.nodes[childID] = {
-                    id:childID,
-                    extends:childExtendsID,
+                    id: childID,
+                    extends: childExtendsID,
                     entityID: this.state.nodes[childID].parentID,
                     liveBindings: {}
                 };
 
                 let entityID = this.state.nodes[childID].parentID;
                 let viewDriver = vwf.views["vwf/view/aframe"];
-                let entityNode = Object.entries(viewDriver.nodes).find(el => 
+                let entityNode = Object.entries(viewDriver.nodes).find(el =>
                     el[1].id == entityID
-                  )[1];
+                )[1];
 
-                  if(!entityNode.components) 
+                if (!entityNode.components)
                     entityNode.components = {}
 
-            
-                    entityNode.components[this.state.nodes[childID].name] = childID;
-                  //console.log(entityNode);
+
+                entityNode.components[this.state.nodes[childID].name] = childID;
+                //console.log(entityNode);
 
 
-            } 
+            }
             // else if (this.state.nodes[childID] && this.state.nodes[childID].aframeObj) {
             //     this.nodes[childID] = {
             //         id:childID,
             //         extends:childExtendsID
             //     };
             // }
-          
+
         },
 
-        initializedNode: function( nodeID, childID ) {
-            
-                        var node = this.state.nodes[childID];
+        initializedNode: function (nodeID, childID) {
 
-                        if (!node) {
-                            return;
-                        }
+            var node = this.state.nodes[childID];
 
-                        if (this.nodes[childID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
-                            console.log(vwf.getProperty(childID, 'isPlaying'));
-                            self.kernel.callMethod(childID, "playSound");
-                    }
+            if (!node) {
+                return;
+            }
 
-                    },
+            if (this.nodes[childID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf") {
+                console.log(vwf.getProperty(childID, 'isPlaying'));
+                self.kernel.callMethod(childID, "playSound");
+            }
+
+        },
 
         createdProperty: function (nodeId, propertyName, propertyValue) {
             return this.satProperty(nodeId, propertyName, propertyValue);
@@ -125,86 +125,68 @@ define(["module", "vwf/view"], function (module, view) {
 
 
         satProperty: function (nodeId, propertyName, propertyValue) {
-           
-            var node = this.state.nodes[ nodeId ];
-            
-                        if ( !( node && node.aframeObj ) ) {
-                            return;
-                        }
 
-                        if (node.name == "material") {
+            var node = this.state.nodes[nodeId];
 
-                            if (propertyName == 'repeat') {
+            if (!(node && node.aframeObj)) {
+                return;
+            }
 
-                                self.kernel.callMethod(nodeId, "refreshSrc", []);
+            if (node.name == "material") {
 
-                                // let src = node.aframeObj.el.getAttribute('material').src;
-                                // if (src) {
-                                //     let srcID = src.id;
-                                //     let elID = '#'+ srcID;
-                                //     if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
-                                // }
-                               
-     
-                             }
+                if (propertyName == 'repeat') {
+
+                    self.kernel.callMethod(nodeId, "refreshSrc", []);
+
+                    // let src = node.aframeObj.el.getAttribute('material').src;
+                    // if (src) {
+                    //     let srcID = src.id;
+                    //     let elID = '#'+ srcID;
+                    //     if(srcID) self.kernel.callMethod(nodeId, "updateSrc", [elID])
+                    // }
 
 
-                        } 
+                }
 
-                        
-            // if (node.name == "material" && propertyName == 'color') {
-    
-            //     console.log("sat color on material");
-            //     // let nodeColor = vwf.getProperty(node.parentID, propertyName);
-             
 
-            // }             
+            }
 
-            // switch (propertyName) {
-            //     case "color":
-            //         if (propertyValue) {
-            //            // self.kernel.callMethod (nodeId, 'initLang');
-            //           // console.log("sat color "+ propertyValue)
-            //         }
-            //         break;
-            // }
-            
 
         },
 
         firedEvent: function (nodeID, eventName, eventParameters) {
 
             var node = this.state.nodes[nodeID];
-                
+
             if (!(node)) {
                 return;
             }
 
-            if ( eventName == "printIt" ) {
-            
+            if (eventName == "printIt") {
+
                 var clientThatSatProperty = self.kernel.client();
                 var me = self.kernel.moniker();
-               
+
 
                 // If the transform property was initially updated by this view....
-                if ( clientThatSatProperty == me) {
+                if (clientThatSatProperty == me) {
 
 
-                let selectedText = eventParameters[0];
-                let printText = _app.helpers.replaceSubStringALL(selectedText,'this','me');
+                    let selectedText = eventParameters[0];
+                    let printText = _app.helpers.replaceSubStringALL(selectedText, 'this', 'me');
 
-                if (!self.nodes[nodeID].liveBindings){
-                    self.nodes[nodeID].liveBindings = {}
+                    if (!self.nodes[nodeID].liveBindings) {
+                        self.nodes[nodeID].liveBindings = {}
+                    }
+
+                    //let bindObject = self.nodes[nodeID].liveBindings;
+                    let bindString = 'vwf.views["vwf/view/aframeComponent"].nodes["' + nodeID + '"].liveBindings';
+                    let sender = JSON.stringify(eventParameters[1]);
+
+                    let scriptText = 'let binding = ' + bindString + '; binding.me = this; binding.sender = ' + sender + '; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
+                    vwf_view.kernel.execute(nodeID, scriptText);
+
                 }
-
-                //let bindObject = self.nodes[nodeID].liveBindings;
-                let bindString = 'vwf.views["vwf/view/aframeComponent"].nodes["'+ nodeID + '"].liveBindings';
-                let sender = JSON.stringify(eventParameters[1]);
-            
-                let scriptText = 'let binding = '+ bindString +'; binding.me = this; binding.sender = '+ sender +'; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
-                vwf_view.kernel.execute(nodeID, scriptText);
-
-            }
 
             }
 
@@ -213,34 +195,34 @@ define(["module", "vwf/view"], function (module, view) {
         executed: function (nodeID, scriptText, scriptType) {
 
             var node = this.state.nodes[nodeID];
-                
+
             if (!(node)) {
                 return;
             }
 
-            if (scriptText.includes('var print')){
+            if (scriptText.includes('var print')) {
                 let print = self.nodes[nodeID].liveBindings.print;
 
                 let me = self.kernel.moniker();
                 let sender = self.nodes[nodeID].liveBindings.sender;
 
                 if (me == sender) {
-                    let data = JSON.stringify(print); //lively.lang.obj.inspect(print); 
+                    let data = lively.lang.obj.inspect(print); //JSON.stringify(print); 
                     self.kernel.fireEvent(nodeID, "printEvent", [data]);
                 }
             }
 
-    },
+        },
 
         ticked: function (vwfTime) {
 
-            lerpTick ();
+            lerpTick();
 
         },
 
         tocked: function (vwfTime) {
 
-           // lerpTock ();
+            // lerpTock ();
 
         },
 
@@ -263,7 +245,7 @@ define(["module", "vwf/view"], function (module, view) {
 
         },
 
-        calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+        calledMethod: function (nodeID, methodName, methodParameters, methodValue) {
 
             var node = this.state.nodes[nodeID];
 
@@ -271,9 +253,9 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-    
-            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
-                if (methodName == "stopSound"){
+
+            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf") {
+                if (methodName == "stopSound") {
 
                     console.log("stop sound");
                     node.aframeObj.el.components.sound.stopSound();
@@ -281,7 +263,7 @@ define(["module", "vwf/view"], function (module, view) {
                     //node.aframeObj.stopSound();
                 }
 
-                if (methodName == "playSound"){
+                if (methodName == "playSound") {
 
                     console.log("play sound");
                     node.aframeObj.el.components.sound.playSound();
@@ -289,7 +271,7 @@ define(["module", "vwf/view"], function (module, view) {
                     //node.aframeObj.stopSound();
                 }
 
-                if (methodName == "pauseSound"){
+                if (methodName == "pauseSound") {
 
                     console.log("pause sound");
                     node.aframeObj.el.components.sound.pauseSound();
@@ -303,63 +285,53 @@ define(["module", "vwf/view"], function (module, view) {
 
     });
 
-    function lerpTick () {
+    function lerpTick() {
         // var now = performance.now();
         // self.realTickDif = now - self.lastRealTick;
 
         // self.lastRealTick = now;
- 
+
         //reset - loading can cause us to get behind and always but up against the max prediction value
-       // self.tickTime = 0;
+        // self.tickTime = 0;
 
-       let interNodes = Object.entries(self.nodes).filter(node => 
-        node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
+        let interNodes = Object.entries(self.nodes).filter(node =>
+            node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
 
-       interNodes.forEach(node => {
-           let nodeID = node[0];
-        if ( self.state.nodes[nodeID] ) {    
-            
-            if(!self.nodes[nodeID].lastRealTick)
-                self.nodes[nodeID].lastRealTick = performance.now();
+        interNodes.forEach(node => {
+            let nodeID = node[0];
+            if (self.state.nodes[nodeID]) {
 
-            var now = performance.now();
-            self.nodes[nodeID].realTickDif = now - self.nodes[nodeID].lastRealTick;
-            self.nodes[nodeID].lastRealTick = now;
-     
-            self.nodes[nodeID].tickTime = 0;
-            //console.log(self.nodes[nodeID].realTickDif);
+                if (!self.nodes[nodeID].lastRealTick)
+                    self.nodes[nodeID].lastRealTick = performance.now();
 
-            if(!self.nodes[nodeID].interpolate)
-            {
-                self.nodes[nodeID].interpolate = {
-                    'position': {},
-                    'rotation': {},
-                    'scale': {}
+                var now = performance.now();
+                self.nodes[nodeID].realTickDif = now - self.nodes[nodeID].lastRealTick;
+                self.nodes[nodeID].lastRealTick = now;
+
+                self.nodes[nodeID].tickTime = 0;
+                //console.log(self.nodes[nodeID].realTickDif);
+
+                if (!self.nodes[nodeID].interpolate) {
+                    self.nodes[nodeID].interpolate = {
+                        'position': {},
+                        'rotation': {},
+                        'scale': {}
+                    }
                 }
+
+                self.nodes[nodeID].interpolate.position.lastTick = (self.nodes[nodeID].interpolate.position.selfTick);
+                self.nodes[nodeID].interpolate.position.selfTick = getPosition(nodeID);
+
+                self.nodes[nodeID].interpolate.rotation.lastTick = (self.nodes[nodeID].interpolate.rotation.selfTick);
+                self.nodes[nodeID].interpolate.rotation.selfTick = getRotation(nodeID);
+
+                self.nodes[nodeID].interpolate.scale.lastTick = (self.nodes[nodeID].interpolate.scale.selfTick);
+                self.nodes[nodeID].interpolate.scale.selfTick = getScale(nodeID);
+                //console.log(self.nodes[nodeID].interpolate.rotation.selfTick);
+                //self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
+                //self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
             }
-
-            self.nodes[nodeID].interpolate.position.lastTick = (self.nodes[nodeID].interpolate.position.selfTick);
-            self.nodes[nodeID].interpolate.position.selfTick = getPosition(nodeID);
-
-            self.nodes[nodeID].interpolate.rotation.lastTick = (self.nodes[nodeID].interpolate.rotation.selfTick);
-            self.nodes[nodeID].interpolate.rotation.selfTick = getRotation(nodeID);
-
-            self.nodes[nodeID].interpolate.scale.lastTick = (self.nodes[nodeID].interpolate.scale.selfTick);
-            self.nodes[nodeID].interpolate.scale.selfTick = getScale(nodeID);
-            //console.log(self.nodes[nodeID].interpolate.rotation.selfTick);
-            //self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
-            //self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
-        }
-       })
-
-        // for ( var nodeID in interNodes ) {
-        //     if ( self.state.nodes[nodeID] ) {      
-        //         self.nodes[nodeID].tickTime = 0;
-        //         self.nodes[nodeID].lastTickTransform = self.nodes[nodeID].selfTickTransform;
-        //         self.nodes[nodeID].selfTickTransform = getTransform(nodeID);
-        //     }
-        // }
-
+        })
 
     }
 
@@ -369,7 +341,7 @@ define(["module", "vwf/view"], function (module, view) {
         let rot = r.copy(self.state.nodes[id].aframeObj.el.object3D.rotation);
         //let rot = self.state.nodes[id].aframeObj.el.getAttribute('rotation');
         //let interp = (new THREE.Vector3()).fromArray(Object.values(rot))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
-        
+
         return rot;
     }
 
@@ -377,12 +349,12 @@ define(["module", "vwf/view"], function (module, view) {
         // let p = new THREE.Vector3();
         // let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
         let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.position);
-        let pos =  goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+        let pos = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
 
 
         //let pos = self.state.nodes[id].aframeObj.el.getAttribute('position');
         //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
-        
+
         return pos;
     }
 
@@ -390,12 +362,12 @@ define(["module", "vwf/view"], function (module, view) {
         // let p = new THREE.Vector3();
         // let pos = p.copy(self.state.nodes[id].aframeObj.el.object3D.position);
         let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.scale);
-        let data =  goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+        let data = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
 
 
         //let pos = self.state.nodes[id].aframeObj.el.getAttribute('position');
         //let interp = (new THREE.Vector3()).fromArray(Object.values(pos))//goog.vec.Mat4.clone(self.state.nodes[id].threeObject.matrix.elements);
-        
+
         return data;
     }
 

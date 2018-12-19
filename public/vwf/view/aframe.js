@@ -60,13 +60,13 @@ define(["module", "vwf/view"], function (module, view) {
 
                     function cb() {
                         resolve("ok");
-                    }    
+                    }
                     createAvatarControl(scene, cb);
-                  });
+                });
 
 
-                  prepairAvatar.then(res=>{
-                   // console.log(res);
+                prepairAvatar.then(res => {
+                    // console.log(res);
                     createAvatar.call(self, childID);
                     postLoadAction.call(self, childID);
 
@@ -88,7 +88,7 @@ define(["module", "vwf/view"], function (module, view) {
                             createWMRVR.call(this, childID, nodeName);
                         }
                     }
-    
+
                     if (this.wmrleft == true) {
                         console.log("CREATE WMR LEFT HERE!!");
                         if (AFRAME.utils.device.checkHasPositionalTracking()) {
@@ -98,7 +98,7 @@ define(["module", "vwf/view"], function (module, view) {
                         }
                     }
 
-                  })
+                })
                 // this.state.appInitialized  = true;
 
                 document.body.appendChild(scene); //append is not working in Edge browser
@@ -128,22 +128,22 @@ define(["module", "vwf/view"], function (module, view) {
         executed: function (nodeID, scriptText, scriptType) {
 
             var node = this.state.nodes[nodeID];
-                
+
             if (!(node)) {
                 return;
             }
-                
-                if (scriptText.includes('var print')){
-                    let print = self.nodes[nodeID].liveBindings.print;
 
-                    let me = self.kernel.moniker();
-                    let sender = self.nodes[nodeID].liveBindings.sender;
+            if (scriptText.includes('var print')) {
+                let print = self.nodes[nodeID].liveBindings.print;
 
-                    if (me == sender) {
-                        let data = JSON.stringify(print); //lively.lang.obj.inspect(print); 
-                        self.kernel.fireEvent(nodeID, "printEvent", [data]);
-                    }
+                let me = self.kernel.moniker();
+                let sender = self.nodes[nodeID].liveBindings.sender;
+
+                if (me == sender) {
+                    let data = JSON.stringify(print); //lively.lang.obj.inspect(print); 
+                    self.kernel.fireEvent(nodeID, "printEvent", [data]);
                 }
+            }
 
         },
 
@@ -161,16 +161,16 @@ define(["module", "vwf/view"], function (module, view) {
 
 
             if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
-                
-            var clientThatSatProperty = self.kernel.client();
-            var me = self.kernel.moniker();
-           
 
-            // If the transform property was initially updated by this view....
-            if ( clientThatSatProperty == me) {
-                self.kernel.callMethod(childID,"setOwner",[me]);
-            } 
-        }
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
+
+
+                // If the transform property was initially updated by this view....
+                if (clientThatSatProperty == me) {
+                    self.kernel.callMethod(childID, "setOwner", [me]);
+                }
+            }
 
 
             // if (propertyName == 'ownedBy')
@@ -213,20 +213,17 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            if (propertyName == 'position')
-            {
-                receiveModelTransformChanges( nodeId, 'position', propertyValue );
+            if (propertyName == 'position') {
+                receiveModelTransformChanges(nodeId, 'position', propertyValue);
             }
-            
-            if (propertyName == 'rotation')
-               {
-                receiveModelTransformChanges( nodeId, 'rotation', propertyValue );
-               }
 
-               if (propertyName == 'scale')
-               {
-                receiveModelTransformChanges( nodeId, 'scale', propertyValue );
-               }
+            if (propertyName == 'rotation') {
+                receiveModelTransformChanges(nodeId, 'rotation', propertyValue);
+            }
+
+            if (propertyName == 'scale') {
+                receiveModelTransformChanges(nodeId, 'scale', propertyValue);
+            }
 
             // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
@@ -303,24 +300,6 @@ define(["module", "vwf/view"], function (module, view) {
 
             }
 
-            //  if (node.aframeObj.nodeName == "A-BOX" && propertyName == 'color') {
-
-            //     console.log("sat color");
-            //     let materialName = '/' + node.name + '/material';
-            //     let materialID = vwf.find('', materialName)[0];
-            //     if (materialID) {
-
-            //         vwf.setProperty(materialID, propertyName, propertyValue);
-
-            //     }  
-
-            // }
-
-            // if (propertyName == 'position') {
-            //     this.nodes[nodeId].lastTransformStep = vwf.time();
-            // }
-
-
             // var aframeObject = node.aframeObj;
             // switch (propertyName) {
             //     case "clickable":
@@ -343,48 +322,48 @@ define(["module", "vwf/view"], function (module, view) {
         firedEvent: function (nodeID, eventName, eventParameters) {
 
             var node = this.state.nodes[nodeID];
-                
+
             if (!(node)) {
                 return;
             }
 
-            if ( eventName == "printIt" ) {
-            
+            if (eventName == "printIt") {
+
                 var clientThatSatProperty = self.kernel.client();
                 var me = self.kernel.moniker();
-               
+
 
                 // If the transform property was initially updated by this view....
-                if ( clientThatSatProperty == me) {
+                if (clientThatSatProperty == me) {
 
 
-                let selectedText = eventParameters[0];
-                let printText = _app.helpers.replaceSubStringALL(selectedText,'this','me');
+                    let selectedText = eventParameters[0];
+                    let printText = _app.helpers.replaceSubStringALL(selectedText, 'this', 'me');
 
-                if (!self.nodes[nodeID].liveBindings){
-                    self.nodes[nodeID].liveBindings = {}
+                    if (!self.nodes[nodeID].liveBindings) {
+                        self.nodes[nodeID].liveBindings = {}
+                    }
+
+                    //let bindObject = self.nodes[nodeID].liveBindings;
+                    let bindString = 'vwf.views["vwf/view/aframe"].nodes["' + nodeID + '"].liveBindings';
+                    let sender = JSON.stringify(eventParameters[1]);
+
+                    let scriptText = 'let binding = ' + bindString + '; binding.me = this; binding.sender = ' + sender + '; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
+                    vwf_view.kernel.execute(nodeID, scriptText);
+
                 }
 
-                //let bindObject = self.nodes[nodeID].liveBindings;
-                let bindString = 'vwf.views["vwf/view/aframe"].nodes["'+ nodeID + '"].liveBindings';
-                let sender = JSON.stringify(eventParameters[1]);
-            
-                let scriptText = 'let binding = '+ bindString +'; binding.me = this; binding.sender = '+ sender +'; lively.vm.syncEval("var print = ' + printText + '",{topLevelVarRecorder: binding});';
-                vwf_view.kernel.execute(nodeID, scriptText);
-
-            }
-
             }
 
 
 
-            if ( eventName == "changingTransformFromView" ) {
+            if (eventName == "changingTransformFromView") {
                 var clientThatSatProperty = self.kernel.client();
                 var me = self.kernel.moniker();
 
                 // If the transform property was initially updated by this view....
-                if ( clientThatSatProperty == me ) {
-                    var node = this.state.nodes[ nodeID ];
+                if (clientThatSatProperty == me) {
+                    var node = this.state.nodes[nodeID];
                     node.ignoreNextTransformUpdate = true;
                 }
             }
@@ -395,11 +374,11 @@ define(["module", "vwf/view"], function (module, view) {
 
                 Object.entries(self.state.nodes).forEach(el => {
                     if (el[1].prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
-                        vwf_view.kernel.callMethod(el[0],"setOwner",[self.kernel.moniker()]);
+                        vwf_view.kernel.callMethod(el[0], "setOwner", [self.kernel.moniker()]);
                     }
 
-                    });
-             }
+                });
+            }
 
             var avatarName = 'avatar-' + self.kernel.moniker();
 
@@ -448,7 +427,7 @@ define(["module", "vwf/view"], function (module, view) {
                     }
 
                     //
-                    
+
 
                 }
 
@@ -464,13 +443,6 @@ define(["module", "vwf/view"], function (module, view) {
 
             }
 
-            // if (eventName == "setAvatarRotation") {
-            //     vwf_view.kernel.setProperty(avatarName, "rotation", [eventParameters.x, eventParameters.y, eventParameters.z]);
-            // }
-
-            //  if (eventName == "setAvatarPosition") {
-            //     vwf_view.kernel.setProperty(avatarName, "position", [eventParameters.x, eventParameters.y, eventParameters.z]);
-            // }
 
             if (eventName == "intersectEvent") {
 
@@ -478,12 +450,12 @@ define(["module", "vwf/view"], function (module, view) {
                 var me = self.kernel.moniker();
 
                 // If the transform property was initially updated by this view....
-                if ( clientThatSatProperty == me ) {
+                if (clientThatSatProperty == me) {
 
-                if ( me == eventParameters[0]) {
-                    vwf_view.kernel.callMethod(nodeID, "intersectEventMethod", [])
+                    if (me == eventParameters[0]) {
+                        vwf_view.kernel.callMethod(nodeID, "intersectEventMethod", [])
+                    }
                 }
-            }
 
             }
 
@@ -494,12 +466,12 @@ define(["module", "vwf/view"], function (module, view) {
                 var me = self.kernel.moniker();
 
                 // If the transform property was initially updated by this view....
-                if ( clientThatSatProperty == me ) {
+                if (clientThatSatProperty == me) {
 
-                if ( me == eventParameters[0]) {
-                    vwf_view.kernel.callMethod(nodeID, "clearIntersectEventMethod", [])
+                    if (me == eventParameters[0]) {
+                        vwf_view.kernel.callMethod(nodeID, "clearIntersectEventMethod", [])
+                    }
                 }
-            }
 
             }
 
@@ -547,8 +519,6 @@ define(["module", "vwf/view"], function (module, view) {
                 updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
             }
 
-            // console.log(vwfTime);
-
             //lerpTick ();
         },
 
@@ -561,7 +531,7 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
-            switch(methodName) {
+            switch (methodName) {
                 case "translateBy":
                 case "translateTo":
                     //resetInterpolationFromViewDriver(nodeID, methodParameters, 'position')
@@ -576,9 +546,9 @@ define(["module", "vwf/view"], function (module, view) {
                 // No need for transformBy or worldTransformBy because they call transformTo and worldTransformTo
                 case "transformTo":
                 case "worldTransformTo":
-                  //resetInterpolationFromViewDriver(nodeID, methodParameters, 'rotation')
-                  break;
-        }
+                    //resetInterpolationFromViewDriver(nodeID, methodParameters, 'rotation')
+                    break;
+            }
 
             if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf") {
                 if (methodName == "setCameraToActive") {
@@ -594,10 +564,8 @@ define(["module", "vwf/view"], function (module, view) {
                 }
             }
 
-            if (methodName == "createGooglePoly") {
-
-
-            }
+            // if (methodName == "createGooglePoly") {
+            // }
 
 
         }
@@ -608,87 +576,62 @@ define(["module", "vwf/view"], function (module, view) {
 
     function resetInterpolationFromViewDriver(nodeID, methodParameters, propertyName) {
 
-        if(methodParameters.length < 2 || methodParameters[1] == 0) {
+        if (methodParameters.length < 2 || methodParameters[1] == 0) {
 
             let viewNode = self.nodes[nodeID];
-
-            if(viewNode.components.interpolation){
-             let interID = viewNode.components.interpolation;
-             let viewComponentDriver = vwf.views["vwf/view/aframeComponent"];
-             viewComponentDriver.resetInterpolation(interID, propertyName);
+            if (viewNode.components.interpolation) {
+                let interID = viewNode.components.interpolation;
+                let viewComponentDriver = vwf.views["vwf/view/aframeComponent"];
+                viewComponentDriver.resetInterpolation(interID, propertyName);
             }
-
-
+        }
     }
-}
 
 
-      // Receive Model Transform Changes algorithm 
+    // Receive Model Transform Changes algorithm 
     // 1.0 If (own view changes) then IGNORE (only if no external changes have occurred since the user’s view 
     //       requested this change – otherwise, will need to treat like 1.1 or 1.2)
     // 1.1 Elseif (other external changes and no outstanding own view changes) then ADOPT
     // 1.2 Else Interpolate to the model’s transform (conflict b/w own view and external sourced model changes)
 
-    function receiveModelTransformChanges(nodeID, propertyName, propertyValue ) {
+    function receiveModelTransformChanges(nodeID, propertyName, propertyValue) {
 
-        var node = self.state.nodes[ nodeID ];
+        var node = self.state.nodes[nodeID];
 
         // If the node does not exist in the state's list of nodes, then this update is from a prototype and we
         // should ignore it
-        if ( !node ) {
+        if (!node) {
             return;
         }
 
-         // If the transform property was initially updated by this view....
-         if ( node.ignoreNextTransformUpdate ) {
+        // If the transform property was initially updated by this view....
+        if (node.ignoreNextTransformUpdate) {
             node.outstandingTransformRequests.shift();
             node.ignoreNextTransformUpdate = false;
         } else {
-           // adoptTransform( node, transformMatrix );
+            // adoptTransform( node, transformMatrix );
 
-           let prop = self.state.setFromValue(propertyValue); 
+            let prop = self.state.setFromValue(propertyValue);
 
-           if(propertyName == 'position') {  
-            let pos = goog.vec.Vec3.clone( prop );
-            node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
-           } else if (propertyName == 'rotation') {
-            let rot = goog.vec.Vec3.clone( prop );
+            if (propertyName == 'position') {
+                let pos = goog.vec.Vec3.clone(prop);
+                node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
+            } else if (propertyName == 'rotation') {
+                let rot = goog.vec.Vec3.clone(prop);
 
-            node.aframeObj.object3D.rotation.set(
-                THREE.Math.degToRad(rot[0]),
-                THREE.Math.degToRad(rot[1]),
-                THREE.Math.degToRad(rot[2])
-            )
-            //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
-           } else if (propertyName == 'scale') {
-            let scale = goog.vec.Vec3.clone( prop);
-            node.aframeObj.object3D.scale.set(scale[0], scale[1], scale[2]);
-           }
-          
-           
-           //setAFrameProperty ('position', propertyValue, node.aframeObj)
-        }
-
-
-
-
-    }
-
-
-    function setAFrameProperty (propertyName, propertyValue, aframeObject) {
-        //console.log(propertyValue);
-                if (propertyValue.hasOwnProperty('x')) {
-                    aframeObject.setAttribute(propertyName, propertyValue)
-                } else
-                    if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
-                        aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
-                    } 
-                    
-                    else if (typeof propertyValue === 'string') {
-                        aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
-                    }
-        
+                node.aframeObj.object3D.rotation.set(
+                    THREE.Math.degToRad(rot[0]),
+                    THREE.Math.degToRad(rot[1]),
+                    THREE.Math.degToRad(rot[2])
+                )
+                //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
+            } else if (propertyName == 'scale') {
+                let scale = goog.vec.Vec3.clone(prop);
+                node.aframeObj.object3D.scale.set(scale[0], scale[1], scale[2]);
             }
+
+        }
+    }
 
 
     function compareCoordinates(a, b, delta) {
@@ -697,7 +640,6 @@ define(["module", "vwf/view"], function (module, view) {
     }
 
     function getWorldRotation(el, order) {
-
 
         var worldQuat = new THREE.Quaternion();
         el.object3D.getWorldQuaternion(worldQuat);
@@ -986,7 +928,7 @@ define(["module", "vwf/view"], function (module, view) {
     }
 
 
-    function updateMaterial(node){
+    function updateMaterial(node) {
 
         let elID = '#' + node.aframeObj.getAttribute('id');
         Object.entries(self.state.nodes).forEach(el => {
@@ -994,7 +936,7 @@ define(["module", "vwf/view"], function (module, view) {
             if (material) {
                 if (!material.src) {
                     let materialID = vwf.find(el[0], 'material');
-                    self.kernel.callMethod(materialID, "refreshSrc",[]);
+                    self.kernel.callMethod(materialID, "refreshSrc", []);
                 }
                 else if (material.src) {
                     if (material.src !== "") {

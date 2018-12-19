@@ -66,50 +66,51 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 },
                 setAFrameProperty: function (propertyName, propertyValue, aframeObject) {
                     //console.log(propertyValue);
-                            if (propertyValue.hasOwnProperty('x')) {
-                                aframeObject.setAttribute(propertyName, propertyValue)
-                            } else
-                                if (Array.isArray(propertyValue)) {
-                                    aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
-                                } else if (typeof propertyValue === 'string') {
-                                    aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
-                                }
-                    
-                        },
-                   setFromValue: function ( propertyValue ) {
+                    if (propertyValue.hasOwnProperty('x')) {
+                        aframeObject.setAttribute(propertyName, propertyValue)
+                    } else
+                        if (Array.isArray(propertyValue)) {
+                            aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
+                        } else if (typeof propertyValue === 'string') {
+                            aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                        }
 
-                            var value = goog.vec.Vec3.create();
-                          if (propertyValue.hasOwnProperty('x')) {
-                              value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y,  propertyValue.z)
-                          } 
-                          else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array ) {
-                              value = goog.vec.Vec3.createFromArray(propertyValue);}
-                          else if (typeof propertyValue === 'string') {
-                              let val = AFRAME.utils.coordinates.parse(propertyValue);
-                              value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
-                              }
-                      
-                          return value
-                            }
+                },
+                setFromValue: function (propertyValue) {
+
+                    var value = goog.vec.Vec3.create();
+                    if (propertyValue.hasOwnProperty('x')) {
+                        value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y, propertyValue.z)
+                    }
+                    else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array) {
+                        value = goog.vec.Vec3.createFromArray(propertyValue);
+                    }
+                    else if (typeof propertyValue === 'string') {
+                        let val = AFRAME.utils.coordinates.parse(propertyValue);
+                        value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+                    }
+
+                    return value
+                }
             };
 
             this.state.kernel = this.kernel.kernel.kernel;
 
             this.aframeDef = {
-                'A-BOX':    [
+                'A-BOX': [
                     'depth', 'height', 'segments-depth',
                     'segments-height', 'segments-width',
                     'width'],
 
                 'A-SPHERE': [
-                    'phi-length', 'phi-start', 'radius', 
+                    'phi-length', 'phi-start', 'radius',
                     'segments-depth',
                     'segments-height', 'segments-width',
                     'theta-length', 'theta-start'
                 ],
 
                 'A-CYLINDER': [
-                   'height', 'radius',
+                    'height', 'radius',
                     'open-ended', 'radius-bottom', 'radius-top',
                     'segments-height', 'segments-radial',
                     'theta-length', 'theta-start'
@@ -123,36 +124,36 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 ],
 
                 'A-PLANE': [
-                    'height', 'segments-height', 'segments-width','width'
+                    'height', 'segments-height', 'segments-width', 'width'
                 ],
 
                 'A-TEXT': [
-                        'align', 'alpha-test', 'anchor',
-                        'baseline', 'color', 'font',
-                        'font-image', 'height',
-                        'letter-spacing', 'line-height',
-                        'opacity', 'shader',
-                        'side', 'tab-size',
-                        'transparent', 'value',
-                        'white-space', 'width',
-                        'wrap-count', 'wrap-pixels',
-                        'z-offset'
-                    ],
+                    'align', 'alpha-test', 'anchor',
+                    'baseline', 'color', 'font',
+                    'font-image', 'height',
+                    'letter-spacing', 'line-height',
+                    'opacity', 'shader',
+                    'side', 'tab-size',
+                    'transparent', 'value',
+                    'white-space', 'width',
+                    'wrap-count', 'wrap-pixels',
+                    'z-offset'
+                ],
 
                 'A-SKY': [
-                    'phi-length', 'phi-start', 'radius','segments-height',
+                    'phi-length', 'phi-start', 'radius', 'segments-height',
                     'segments-width',
                     'theta-length', 'theta-start',
-                    ],
+                ],
 
                 'A-LIGHT': [
                     'angle', 'color', 'decay', 'distance',
                     'ground-color', 'intensity', 'penumbra',
                     'type', 'target'
-                    ]
+                ]
             }
-           
-            
+
+
 
         },
 
@@ -212,9 +213,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 if (isAEntityDefinition(node.prototypes)) {
                     //updateStoredTransform( node );
-                    updateStoredTransformFor(node,'position');
-                    updateStoredTransformFor(node,'rotation');
-                    updateStoredTransformFor(node,'scale');
+                    updateStoredTransformFor(node, 'position');
+                    updateStoredTransformFor(node, 'rotation');
+                    updateStoredTransformFor(node, 'scale');
                 }
 
                 //notifyDriverOfPrototypeAndBehaviorProps();
@@ -259,30 +260,30 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         // -- callingMethod ------------------------------------------------------------------------
 
-        callingMethod: function( nodeID, methodName, methodParameters ) {
+        callingMethod: function (nodeID, methodName, methodParameters) {
 
             var node = this.state.nodes[nodeID];
 
-            if(!node) return;
+            if (!node) return;
 
-            if (node && node.aframeObj ) {
+            if (node && node.aframeObj) {
 
                 if (methodName == 'lookAt') {
-                    console.log('lookAt: ' +  methodParameters[0]);
+                    console.log('lookAt: ' + methodParameters[0]);
                     let target = methodParameters[0];
                     node.aframeObj.object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
                     let newRotation = node.aframeObj.getAttribute('rotation');
-                    self.kernel.setProperty(nodeID, "rotation", {x: 0, y: newRotation.y, z: 0}); 
+                    self.kernel.setProperty(nodeID, "rotation", { x: 0, y: newRotation.y, z: 0 });
                 }
 
                 if (methodName == 'worldRotation') {
 
-                    var worldQuat =  new THREE.Quaternion();
-                    node.aframeObj.object3D.getWorldQuaternion(worldQuat); 
+                    var worldQuat = new THREE.Quaternion();
+                    node.aframeObj.object3D.getWorldQuaternion(worldQuat);
 
                     let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
                     let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
-                    THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z) ));
+                        THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)));
                     return rotation
 
                 }
@@ -298,7 +299,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             }
 
-           
+
         },
 
 
@@ -316,25 +317,25 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 if (!childNode) return;
 
 
-            if (childNode !== undefined) {
+                if (childNode !== undefined) {
 
-                if (childNode.children) {
+                    if (childNode.children) {
 
-                    for (var i = 0; i < childNode.children.length; i++) {
-                        this.deletingNode(childNode.children[i]);
+                        for (var i = 0; i < childNode.children.length; i++) {
+                            this.deletingNode(childNode.children[i]);
+                        }
                     }
+
+                    if (childNode.aframeObj !== undefined) {
+                        // removes and destroys object
+                        childNode.aframeObj.parentNode.removeChild(childNode.aframeObj);
+                        childNode.aframeObj = undefined;
+                    }
+
+                    delete this.state.nodes[nodeID];
                 }
 
-                if (childNode.aframeObj !== undefined) {
-                    // removes and destroys object
-                    childNode.aframeObj.parentNode.removeChild(childNode.aframeObj);
-                    childNode.aframeObj = undefined;
-                }
-
-                delete this.state.nodes[nodeID];
             }
-
-        }
         },
 
 
@@ -376,10 +377,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "position":
 
-                        var position = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            var position = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.position = goog.vec.Vec3.clone(position);
                             //value = propertyValue;
-                            node.transform.storedPositionDirty = true; 
+                            node.transform.storedPositionDirty = true;
                             //setTransformsDirty( threeObject );
                             //this.state.setAFrameProperty('position', propertyValue, aframeObject);
                             break;
@@ -389,32 +390,32 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             var rotation = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
                             node.transform.rotation = goog.vec.Vec3.clone(rotation);
                             //value = propertyValue;
-                            node.transform.storedRotationDirty = true; 
+                            node.transform.storedRotationDirty = true;
 
                             //this.state.setAFrameProperty('rotation', propertyValue, aframeObject);
                             break;
 
                         case "scale":
 
-                        var scale = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
-                        node.transform.scale = goog.vec.Vec3.clone(scale);
-                        //value = propertyValue;
-                        node.transform.storedScaleDirty = true; 
-                        //setTransformsDirty( threeObject );
-                        //this.state.setAFrameProperty('position', propertyValue, aframeObject);
+                            var scale = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
+                            node.transform.scale = goog.vec.Vec3.clone(scale);
+                            //value = propertyValue;
+                            node.transform.storedScaleDirty = true;
+                            //setTransformsDirty( threeObject );
+                            //this.state.setAFrameProperty('position', propertyValue, aframeObject);
 
-                        //this.state.setAFrameProperty('scale', propertyValue, aframeObject);
+                            //this.state.setAFrameProperty('scale', propertyValue, aframeObject);
                             break;
 
 
                         case "animationTimeUpdated":
-                                if (node.transform) {
-                                    node.transform.storedPositionDirty = true; 
-                                    node.transform.storedRotationDirty = true;
-                                    node.transform.storedScaleDirty = true;
-                                }
-                                
-                        break;
+                            if (node.transform) {
+                                node.transform.storedPositionDirty = true;
+                                node.transform.storedRotationDirty = true;
+                                node.transform.storedScaleDirty = true;
+                            }
+
+                            break;
 
                         case "clickable":
                             if (propertyValue) {
@@ -427,7 +428,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                         case "ownedBy":
-                                aframeObject.setAttribute('ownedby', propertyValue);
+                            aframeObject.setAttribute('ownedby', propertyValue);
                             break;
 
                         case "visible":
@@ -470,11 +471,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "itemID":
                             aframeObject.setAttribute('id', propertyValue);
-                        break;
+                            break;
 
                         case "itemSrc":
                             aframeObject.setAttribute('src', propertyValue);
-                        break;
+                            break;
 
                         default:
                             value = undefined;
@@ -489,11 +490,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "itemID":
                             aframeObject.setAttribute('id', propertyValue);
-                        break;
+                            break;
 
                         case "itemSrc":
                             aframeObject.setAttribute('src', propertyValue);
-                        break;
+                            break;
 
                         // case "width":
                         //     aframeObject.width = propertyValue;
@@ -516,11 +517,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "itemID":
                             aframeObject.setAttribute('id', propertyValue);
-                        break;
+                            break;
 
                         case "itemSrc":
                             aframeObject.setAttribute('src', propertyValue);
-                        break;
+                            break;
 
                         default:
                             value = undefined;
@@ -535,11 +536,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         case "itemID":
                             aframeObject.setAttribute('id', propertyValue);
-                        break;
+                            break;
 
                         case "itemSrc":
                             aframeObject.setAttribute('src', propertyValue);
-                        break;
+                            break;
 
                         default:
                             value = undefined;
@@ -563,7 +564,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
                             value = undefined;
                     })
-                   
+
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-SCENE") {
@@ -572,12 +573,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     switch (propertyName) {
 
                         case "color":
-                        aframeObject.setAttribute('background', {'color': propertyValue} );
-                        break;
+                            aframeObject.setAttribute('background', { 'color': propertyValue });
+                            break;
 
                         case "transparent":
-                        aframeObject.setAttribute('background', {'transparent': propertyValue} );
-                        break;
+                            aframeObject.setAttribute('background', { 'transparent': propertyValue });
+                            break;
 
                         // case "fog":
                         //     aframeObject.setAttribute('fog', propertyValue);
@@ -591,28 +592,28 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             var assetsElement = document.querySelector('a-assets');
                             if (propertyValue) {
 
-                                let path =  JSON.parse(localStorage.getItem('lcs_app')).path.public_path;
+                                let path = JSON.parse(localStorage.getItem('lcs_app')).path.public_path;
                                 let worldName = path.slice(1);
                                 let dbPath = propertyValue.split(".").join("_");
-                                
+
 
                                 _LCS_WORLD_USER.get('worlds').get(worldName).get(dbPath).once().then(response => {
                                     if (response) {
 
-                                    console.log(JSON.parse(response.file));
-                                    let assets = JSON.parse(response.file);
-                                    for (var prop in assets) {
-                                        var elm = document.createElement(assets[prop].tag);
-                                        elm.setAttribute('id', prop);
-                                        elm.setAttribute('src', assets[prop].src);
-                                        assetsElement.appendChild(elm);
+                                        console.log(JSON.parse(response.file));
+                                        let assets = JSON.parse(response.file);
+                                        for (var prop in assets) {
+                                            var elm = document.createElement(assets[prop].tag);
+                                            elm.setAttribute('id', prop);
+                                            elm.setAttribute('src', assets[prop].src);
+                                            assetsElement.appendChild(elm);
+
+                                        }
+
 
                                     }
-
-
-                                     }
                                 });
-                    
+
 
                                 // httpGetJson(propertyValue).then(function (response) {
                                 //     console.log(JSON.parse(response));
@@ -639,9 +640,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
-   
-   
-                
+
+
+
 
 
                 if (value === undefined && aframeObject.nodeName == "A-BOX") {
@@ -672,7 +673,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         default:
                             value = undefined;
-                            break; 
+                            break;
 
                     }
 
@@ -815,11 +816,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('user-height', propertyValue);
                             break;
 
-                            case "look-controls-enabled":
+                        case "look-controls-enabled":
                             aframeObject.setAttribute('look-controls-enabled', propertyValue);
                             break;
 
-                            case "wasd-controls-enabled":
+                        case "wasd-controls-enabled":
                             aframeObject.setAttribute('wasd-controls-enabled', propertyValue);
                             break;
 
@@ -884,51 +885,51 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                             if (node.transform.position) {
 
-                            if ( node.transform.storedPositionDirty ) {
-                                updateStoredTransformFor( node, 'position' );
-                            }
+                                if (node.transform.storedPositionDirty) {
+                                    updateStoredTransformFor(node, 'position');
+                                }
 
-                            value = goog.vec.Vec3.clone(node.transform.position);
-                            //value =  node.transform.position;
-                        }
+                                value = goog.vec.Vec3.clone(node.transform.position);
+                                //value =  node.transform.position;
+                            }
                             break;
 
                         case "rotation":
 
-                        if (node.transform.rotation) {
+                            if (node.transform.rotation) {
 
-                            if ( node.transform.storedRotationDirty ) {
-                                updateStoredTransformFor( node, 'rotation' );
+                                if (node.transform.storedRotationDirty) {
+                                    updateStoredTransformFor(node, 'rotation');
+                                }
+
+                                value = goog.vec.Vec3.clone(node.transform.rotation);
+
+                                // var rot = aframeObject.getAttribute('rotation');
+                                // if (rot !== undefined) {
+                                //     value = rot//AFRAME.utils.coordinates.stringify(rot);
+                                // }
                             }
-
-                            value = goog.vec.Vec3.clone(node.transform.rotation);
-
-                            // var rot = aframeObject.getAttribute('rotation');
-                            // if (rot !== undefined) {
-                            //     value = rot//AFRAME.utils.coordinates.stringify(rot);
-                            // }
-                        }
 
                             break;
 
 
                         case "scale":
 
-                        if (node.transform.scale) {
+                            if (node.transform.scale) {
 
-                            if ( node.transform.storedScaleDirty ) {
-                                updateStoredTransformFor( node, 'scale' );
+                                if (node.transform.storedScaleDirty) {
+                                    updateStoredTransformFor(node, 'scale');
+                                }
+
+                                value = goog.vec.Vec3.clone(node.transform.scale);
+                                // var scale = aframeObject.getAttribute('scale');
+                                // if (scale !== undefined) {
+                                //     value = scale//AFRAME.utils.coordinates.stringify(scale);
+                                // }
                             }
-
-                            value = goog.vec.Vec3.clone(node.transform.scale);
-                            // var scale = aframeObject.getAttribute('scale');
-                            // if (scale !== undefined) {
-                            //     value = scale//AFRAME.utils.coordinates.stringify(scale);
-                            // }
-                        }
                             break;
 
-                      
+
 
                         case "clickable":
                             value = node.events.clickable;
@@ -959,81 +960,81 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
-               
+
 
                 if (value === undefined && aframeObject.nodeName == "A-ASSET-ITEM") {
 
                     switch (propertyName) {
-                        
+
                         case "itemID":
                             value = aframeObject.getAttribute('id');
-                        break;
-                    
+                            break;
+
                         case "itemSrc":
                             value = aframeObject.getAttribute('src');
-                        break;
+                            break;
 
-                      
+
                     }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "IMG") {
 
                     switch (propertyName) {
-                        
+
                         case "itemID":
                             value = aframeObject.getAttribute('id');
-                        break;
-                    
+                            break;
+
                         case "itemSrc":
                             value = aframeObject.getAttribute('src');
-                        break;
+                            break;
 
                         case "width":
                             value = aframeObject.width;
-                        break;
+                            break;
 
                         case "height":
                             value = aframeObject.height;
-                        break;
-                      
+                            break;
+
                     }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "AUDIO") {
 
                     switch (propertyName) {
-                        
+
                         case "itemID":
                             value = aframeObject.getAttribute('id');
-                        break;
-                    
+                            break;
+
                         case "itemSrc":
                             value = aframeObject.getAttribute('src');
-                        break;
+                            break;
                     }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "VIDEO") {
 
                     switch (propertyName) {
-                        
+
                         case "itemID":
                             value = aframeObject.getAttribute('id');
-                        break;
-                    
+                            break;
+
                         case "itemSrc":
                             value = aframeObject.getAttribute('src');
-                        break;
+                            break;
 
                         case "videoWidth":
-                        value = aframeObject.videoWidth;
-                        break;
+                            value = aframeObject.videoWidth;
+                            break;
 
                         case "videoHeight":
                             value = aframeObject.videoHeight;
-                        break;
-                      
+                            break;
+
                     }
                 }
 
@@ -1043,23 +1044,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         // case "fog":
                         //     value = aframeObject.getAttribute('fog');
                         //     break;
-                        
+
                         case "color":
-                        if (aframeObject.getAttribute('background')) {
-                            value = aframeObject.getAttribute('background').color;
-                        }
+                            if (aframeObject.getAttribute('background')) {
+                                value = aframeObject.getAttribute('background').color;
+                            }
                             break;
 
                         case "transparent":
-                        if (aframeObject.getAttribute('background')) {
-                            value = aframeObject.getAttribute('background').transparent;
-                        }
+                            if (aframeObject.getAttribute('background')) {
+                                value = aframeObject.getAttribute('background').transparent;
+                            }
                             break;
                     }
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-SKY") {
-                    
+
                     self.aframeDef['A-SKY'].forEach(element => {
                         if (element == propertyName) {
                             value = aframeObject.getAttribute(element);
@@ -1068,7 +1069,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
-               
+
 
                 if (value === undefined && aframeObject.nodeName == "A-LIGHT") {
 
@@ -1080,11 +1081,11 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                     switch (propertyName) {
                         case "castShadow":
-                        value = aframeObject.getAttribute('light').castShadow;
+                            value = aframeObject.getAttribute('light').castShadow;
                             break;
 
                         case "shadowCameraVisible":
-                        value = aframeObject.getAttribute('light').shadowCameraVisible;
+                            value = aframeObject.getAttribute('light').shadowCameraVisible;
                             break;
 
                     }
@@ -1092,17 +1093,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-BOX") {
-    
+
                     self.aframeDef['A-BOX'].forEach(element => {
                         if (element == propertyName) {
                             value = aframeObject.getAttribute(element);
                         }
                     })
-            }
+                }
 
                 if (value === undefined && aframeObject.nodeName == "A-PLANE") {
 
-                   self.aframeDef['A-PLANE'].forEach(element => {
+                    self.aframeDef['A-PLANE'].forEach(element => {
                         if (element == propertyName) {
                             value = aframeObject.getAttribute(element);
                         }
@@ -1211,20 +1212,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
                 if (value === undefined && aframeObject.nodeName == "A-SUN-SKY") {
-                    
-                    
-                                        switch (propertyName) {
-                                            case "sunPosition":
-                                                value = aframeObject.getAttribute('material').sunPosition;
-                                                break;
-                                        }
-                    
-                                        //    switch (propertyName) {
-                                        //         case "active":
-                                        //             value = aframeObject.getAttribute('camera').active;
-                                        //             break;
-                                        //         }
-                                    }
+
+
+                    switch (propertyName) {
+                        case "sunPosition":
+                            value = aframeObject.getAttribute('material').sunPosition;
+                            break;
+                    }
+
+                    //    switch (propertyName) {
+                    //         case "active":
+                    //             value = aframeObject.getAttribute('camera').active;
+                    //             break;
+                    //         }
+                }
 
                 if (value === undefined && aframeObject.nodeName == "A-COLLADA-MODEL") {
 
@@ -1249,13 +1250,13 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                 if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
-                    
-                                        switch (propertyName) {
-                                            case "src":
-                                                value = aframeObject.getAttribute('src');
-                                                break;
-                                        }
-                                    }
+
+                    switch (propertyName) {
+                        case "src":
+                            value = aframeObject.getAttribute('src');
+                            break;
+                    }
+                }
 
 
 
@@ -1284,20 +1285,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
-            if (assets){
+            if (assets) {
 
                 aframeObj = document.createElement('a-asset-item');
-                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('id', "item-" + GUID());
                 aframeObj.setAttribute('src', "");
                 aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
             }
-        
+
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-image-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
-            if (assets){
-                let elID = "item-"+GUID();
+            if (assets) {
+                let elID = "item-" + GUID();
                 aframeObj = document.createElement('img');
                 aframeObj.setAttribute('id', elID);
                 aframeObj.setAttribute('src', "");
@@ -1308,10 +1309,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-audio-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
-            if (assets){
+            if (assets) {
 
                 aframeObj = document.createElement('audio');
-                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('id', "item-" + GUID());
                 aframeObj.setAttribute('src', "");
                 aframeObj.setAttribute('crossorigin', "anonymous");
                 assets.appendChild(aframeObj);
@@ -1321,10 +1322,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-video-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
-            if (assets){
+            if (assets) {
 
                 aframeObj = document.createElement('video');
-                aframeObj.setAttribute('id', "item-"+GUID());
+                aframeObj.setAttribute('id', "item-" + GUID());
                 aframeObj.setAttribute('src', "");
                 aframeObj.setAttribute('crossorigin', "anonymous");
                 aframeObj.setAttribute('autoplay', "");
@@ -1344,7 +1345,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acursor.vwf")) {
             aframeObj = document.createElement('a-cursor');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-sun-sky.vwf")) {
-                aframeObj = document.createElement('a-sun-sky');
+            aframeObj = document.createElement('a-sun-sky');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/abox.vwf")) {
             aframeObj = document.createElement('a-box');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aplane.vwf")) {
@@ -1359,7 +1360,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-collada-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
             aframeObj = document.createElement('a-obj-model');
-         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
             aframeObj = document.createElement('a-sphere');
@@ -1369,15 +1370,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-entity');
         }
 
-        if (aframeObj.nodeName !== "A-ASSET-ITEM" && 
-            aframeObj.nodeName !== "IMG" && 
+        if (aframeObj.nodeName !== "A-ASSET-ITEM" &&
+            aframeObj.nodeName !== "IMG" &&
             aframeObj.nodeName !== "AUDIO" &&
             aframeObj.nodeName !== "VIDEO"
-        ){
+        ) {
             aframeObj.setAttribute('id', node.ID);
         }
 
-       
+
         return aframeObj;
     }
 
@@ -1395,10 +1396,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     //console.info( "Adding child: " + childID + " to " + nodeID );
                     if (node.aframeObj.nodeName !== "A-ASSET-ITEM" &&
                         node.aframeObj.nodeName !== "IMG" &&
-                      node.aframeObj.nodeName !== "AUDIO" &&
-                      node.aframeObj.nodeName !== "VIDEO"
-                    ){
-                    parent.aframeObj.appendChild(node.aframeObj);
+                        node.aframeObj.nodeName !== "AUDIO" &&
+                        node.aframeObj.nodeName !== "VIDEO"
+                    ) {
+                        parent.aframeObj.appendChild(node.aframeObj);
                     }
                 }
             }
@@ -1411,9 +1412,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
     }
 
 
-    function updateStoredTransform( node ) {
-        
-        if ( node && node.aframeObj) {
+    function updateStoredTransform(node) {
+
+        if (node && node.aframeObj) {
             // Add a local model-side transform that can stay pure even if the view changes the
             // transform on the threeObject - this already happened in creatingNode for those nodes that
             // didn't need to load a model
@@ -1425,60 +1426,38 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
             node.transform.rotation = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.rotation);
-            node.storedTransformDirty = false;             
+            node.storedTransformDirty = false;
         }
-      
-    }    
+
+    }
 
 
-    // function updateStoredTransformFor( node, propertyName ) { 
+    function updateStoredTransformFor(node, propertyName) {
 
-    //     if ( node && node.aframeObj) {
-    //         // Add a local model-side transform that can stay pure even if the view changes the
-    //         // transform on the threeObject - this already happened in creatingNode for those nodes that
-    //         // didn't need to load a model
-    //         if(!node.transform)
-    //             node.transform = {};
-
-    //         if (propertyName == 'position' || propertyName == 'rotation' || propertyName == 'scale') {
-
-    //             let data = (new THREE.Vector3()).copy(node.aframeObj.object3D[propertyName]);
-    //             node.transform[propertyName] = goog.vec.Vec3.createFromValues(data.x, data.y, data.z);
-    //             node.transform['stored' + propertyName + 'Dirty'] = false; 
-    //             //node.transform.storedPositionDirty = false;
-    //         }
-
-    //     }
-
-
-   // }
-
-    function updateStoredTransformFor( node, propertyName ) {
-        
-        if ( node && node.aframeObj) {
+        if (node && node.aframeObj) {
             // Add a local model-side transform that can stay pure even if the view changes the
             // transform on the threeObject - this already happened in creatingNode for those nodes that
             // didn't need to load a model
-            if(!node.transform)
+            if (!node.transform)
                 node.transform = {};
 
-            if (propertyName == 'position'){
+            if (propertyName == 'position') {
                 let pos = (new THREE.Vector3()).copy(node.aframeObj.object3D.position);
                 node.transform.position = goog.vec.Vec3.createFromValues(pos.x, pos.y, pos.z);
-                node.transform.storedPositionDirty = false; 
-            }
-           
-            if (propertyName == 'rotation'){
-               // let rot = (new THREE.Vector3()).copy(node.aframeObj.object3D.rotation);
-               let rot = node.aframeObj.getAttribute('rotation');
-                node.transform.rotation = goog.vec.Vec3.createFromValues(rot.x, rot.y, rot.z);
-                node.transform.storedRotationDirty = false;   
+                node.transform.storedPositionDirty = false;
             }
 
-            if (propertyName == 'scale'){
+            if (propertyName == 'rotation') {
+                // let rot = (new THREE.Vector3()).copy(node.aframeObj.object3D.rotation);
+                let rot = node.aframeObj.getAttribute('rotation');
+                node.transform.rotation = goog.vec.Vec3.createFromValues(rot.x, rot.y, rot.z);
+                node.transform.storedRotationDirty = false;
+            }
+
+            if (propertyName == 'scale') {
                 let scale = (new THREE.Vector3()).copy(node.aframeObj.object3D.scale);
                 node.transform.scale = goog.vec.Vec3.createFromValues(scale.x, scale.y, scale.z);
-                node.transform.storedScaleDirty = false; 
+                node.transform.storedScaleDirty = false;
             }
 
             //node.transform.position = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.position);
@@ -1486,8 +1465,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             // node.transform.rotation = AFRAME.utils.coordinates.stringify(node.aframeObj.object3D.rotation);
             // node.storedTransformDirty = false;             
         }
-      
-    }   
+
+    }
 
 
 
@@ -1521,8 +1500,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
         return found;
     }
-
-
 
 
 
