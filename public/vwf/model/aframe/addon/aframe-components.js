@@ -16,12 +16,34 @@ AFRAME.registerComponent('scene-utils', {
         const sceneEnterVR = (e) => {
 
             //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
+            let avatarEl = document.querySelector('#avatarControlParent');
+            if (AFRAME.utils.device.isGearVR()) {
+
+            } else if (AFRAME.utils.device.isMobile()) {
+                avatarEl.setAttribute('position', '0 0 0')
+            } else {
+                avatarEl.setAttribute('position', '0 1.6 0');
+            }
+
+            // if (!AFRAME.utils.device.isGearVR() && !AFRAME.utils.device.isMobile()) {
+            //     avatarEl.setAttribute('position', '0 1.6 0');
+            // }
 
         }
 
         const sceneExitVR = (e) => {
 
             //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
+            let avatarEl = document.querySelector('#avatarControlParent');
+
+            if (AFRAME.utils.device.isGearVR()) {
+
+            } else if (AFRAME.utils.device.isMobile()) {
+                avatarEl.setAttribute('position', '0 1.6 0');
+            } else {
+                avatarEl.setAttribute('position', '0 0 0');
+            }
+
         }
 
         this.el.sceneEl.addEventListener('enter-vr', sceneEnterVR);
@@ -131,14 +153,14 @@ AFRAME.registerComponent('gizmo', {
 
                     break;
                 case 'rotate':
-                // let q = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
-                //     (object.rotation.x),
-                //     (object.rotation.y),
-                //     (object.rotation.z), 'XYZ'
-                //   ));
-                // let angle = (new THREE.Euler()).setFromQuaternion(q, 'YXZ');
+                    // let q = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+                    //     (object.rotation.x),
+                    //     (object.rotation.y),
+                    //     (object.rotation.z), 'XYZ'
+                    //   ));
+                    // let angle = (new THREE.Euler()).setFromQuaternion(q, 'YXZ');
 
-                // vwf_view.kernel.setProperty(object.el.id, 'rotation', [THREE.Math.radToDeg(angle.x), THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)])
+                    // vwf_view.kernel.setProperty(object.el.id, 'rotation', [THREE.Math.radToDeg(angle.x), THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)])
                     vwf_view.kernel.setProperty(object.el.id, 'rotation',
                         [THREE.Math.radToDeg(object.rotation.x), THREE.Math.radToDeg(object.rotation.y), THREE.Math.radToDeg(object.rotation.z)])
 
@@ -203,9 +225,9 @@ AFRAME.registerComponent('raycaster-listener', {
                     console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
                     //evt.detail.intersection.object.el.id
 
-                let ownedby = evt.detail.el.getAttribute('ownedby');
-                if(ownedby == self.me || (evt.detail.el.id.includes(self.me)))  { //if (evt.detail.el.id.includes(self.me)) {
-                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent",  [self.me]);
+                    let ownedby = evt.detail.el.getAttribute('ownedby');
+                    if (ownedby == self.me || (evt.detail.el.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
+                        vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent", [self.me]);
                     }
                 }
 
@@ -226,8 +248,8 @@ AFRAME.registerComponent('raycaster-listener', {
                     console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.target.id] !== undefined)) {
                         let ownedby = evt.detail.el.getAttribute('ownedby');
-                if(ownedby == self.me || (evt.detail.el.id.includes(self.me))) {  //if (evt.detail.el.id.includes(self.me)) {
-                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent", [vwf_view.kernel.moniker()])
+                        if (ownedby == self.me || (evt.detail.el.id.includes(self.me))) {  //if (evt.detail.el.id.includes(self.me)) {
+                            vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent", [vwf_view.kernel.moniker()])
                         }
                     }
                     delete self.casters[evt.target.id]
