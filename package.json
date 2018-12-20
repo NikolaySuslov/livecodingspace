@@ -12,14 +12,14 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
-    "cors": "^2.8.4",
+    "cors": "^2.8.5",
     "express": "^4.16.3",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
     "optimist": "0.6.1",
     "winston": "3.1.0",
-    "socket.io": "2.1.1",
+    "socket.io": "2.2.0",
     "lcs-reflector": "0.0.3"
   },
   "scripts": {
