@@ -546,7 +546,7 @@ class App {
 
     _LCSDB.on('auth',
       async function (ack) {
-        if (ack.pub) {
+        if (ack.sea.pub) {
           document.querySelector("#profile")._status = "User: " + _LCSUSER.is.alias //+' pub: ' + _LCSUSER.is.pub;
           document.querySelector("#profile").$update();
         }
@@ -912,13 +912,11 @@ class App {
     //       console.log('world files loaded');
     //       vwf.ready( vwf.application, loadObj)
     //     }
-    //   }, {wait: 200});
+    //   });
     // }
-    // }, {wait: 200});
-
+    // });
 
     return loadObj
-
   }
 
   // LookupSaveRevisions takes the public path and the name of a save, and provides
@@ -1630,7 +1628,7 @@ class App {
 
 
     db.get('worlds').once().map().once((val, index)=>{
-      db.get('documents').get(index).once().map().once((res, datI)=>{
+      db.get('documents').get(index).once().map().load((res, datI)=>{
 
         var doc = {};
 
@@ -1713,7 +1711,7 @@ class App {
     }
 
     db.get('worlds').once().map().once((val, index)=>{
-      db.get('worlds').get(index).get('info_json').once(res=>{
+      db.get('worlds').get(index).get('info_json').load(res=>{
         
        var doc = {};
 

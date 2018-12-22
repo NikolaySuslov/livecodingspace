@@ -282,7 +282,7 @@ class IndexApp {
 
         _LCSDB.on('auth', (ack) => {
 
-            if (ack.pub) {
+            if (ack.sea.pub) {
 
                 let alias = _LCSUSER.is.alias;
                 let userEl = document.querySelector('#userGUI');
@@ -394,7 +394,7 @@ class IndexApp {
                                 "label": 'Sign OUT',
                                 "onclick": function (e) {
                                     _LCSUSER.leave().then(ack => {
-                                        if (ack.ok == 0) {
+                                        if (ack.pub) {
                                             window.sessionStorage.removeItem('alias');
                                             window.sessionStorage.removeItem('tmp');
                                             window.location.reload(true);
@@ -560,7 +560,7 @@ class IndexApp {
                                                                 console.log(ack.err)
                                                                 return ack.err
                                                             };
-                                                            if (ack.pub) {
+                                                            if (ack.sea.pub) {
                                                                 _LCSUSER.auth(alias, pass);
                                                                 _LCSDB.get('users').get(alias).put({
                                                                     'alias': alias,

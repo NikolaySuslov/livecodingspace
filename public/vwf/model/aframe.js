@@ -597,11 +597,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 let dbPath = propertyValue.split(".").join("_");
 
 
-                                _LCS_WORLD_USER.get('worlds').get(worldName).get(dbPath).once().then(response => {
+                                _LCS_WORLD_USER.get('worlds').get(worldName).get(dbPath).get('file').load(response => {
                                     if (response) {
-
-                                        console.log(JSON.parse(response.file));
-                                        let assets = JSON.parse(response.file);
+                                        console.log(JSON.parse(response));
+                                        let assets = JSON.parse(response);
                                         for (var prop in assets) {
                                             var elm = document.createElement(assets[prop].tag);
                                             elm.setAttribute('id', prop);
@@ -612,7 +611,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
                                     }
-                                });
+                                },{wait: 200});
 
 
                                 // httpGetJson(propertyValue).then(function (response) {

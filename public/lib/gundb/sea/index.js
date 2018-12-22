@@ -34,6 +34,8 @@
       Gun.node.is(msg.put, function(val, key, node){ c++; // for each property on the node
         // TODO: consider async/await use here...
         SEA.verify(val, false, function(data){ c--; // false just extracts the plain data.
+          var tmp = data;
+          data = SEA.opt.unpack(data, key, node);
           node[key] = val = data; // transform to plain value.
           if(d && !c && (c = -1)){ to.next(msg) }
         });
@@ -111,9 +113,9 @@
             return each.end({err: "Account must match!"});
           }
           check['user'+soul+key] = 1;
-          if(user && (user = user._) && user.sea && pub === user.pub){
+          if(user && user.is && pub === user.is.pub){
             //var id = Gun.text.random(3);
-            SEA.sign(val, user.sea, function(data){ var rel;
+            SEA.sign([soul, key, val, Gun.state.is(node, key)], (user._).sea, function(data){ var rel;
               if(u === data){ return each.end({err: SEA.err || 'Pub signature fail.'}) }
               if(rel = Gun.val.link.is(val)){
                 (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
@@ -126,6 +128,7 @@
             return;
           }
           SEA.verify(val, pub, function(data){ var rel, tmp;
+            data = SEA.opt.unpack(data, key, node);
             if(u === data){ // make sure the signature matches the account it claims to be on.
               return each.end({err: "Unverified data."}); // reject any updates that are signed with a mismatched account.
             }
@@ -146,10 +149,11 @@
           return s;
         }
         each.any = function(val, key, node, soul, user){ var tmp, pub;
-          if(!user || !(user = user._) || !(user = user.sea)){
+          if(!user || !user.is){
             if(tmp = relpub(soul)){
               check['any'+soul+key] = 1;
               SEA.verify(val, pub = tmp, function(data){ var rel;
+                data = SEA.opt.unpack(data, key, node);
                 if(u === data){ return each.end({err: "Mismatched owner on '" + key + "'."}) } // thanks @rogowski !
                 if((rel = Gun.val.link.is(data)) && pub === relpub(rel)){
                   (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
@@ -187,20 +191,19 @@
             //});
             return;
           }
-          var pub = tmp;
-          if(pub !== user.pub){
+          if(!msg.I || (pub = tmp) !== (user.is||noop).pub){
             each.any(val, key, node, soul);
             return;
           }
           /*var other = Gun.obj.map(at.sea.own[soul], function(v, p){
-            if(user.pub !== p){ return p }
+            if((user.is||{}).pub !== p){ return p }
           });
           if(other){
             each.any(val, key, node, soul);
             return;
           }*/
           check['any'+soul+key] = 1;
-          SEA.sign(val, user, function(data){
+          SEA.sign([soul, key, val, Gun.state.is(node, key)], (user._).sea, function(data){
             if(u === data){ return each.end({err: 'My signature fail.'}) }
             node[key] = data;
             check['any'+soul+key] = 0;
@@ -210,7 +213,7 @@
         each.end = function(ctx){ // TODO: Can't you just switch this to each.end = cb?
           if(each.err){ return }
           if((each.err = ctx.err) || ctx.no){
-            console.log('NO!', each.err, msg.put);
+            console.log('NO!', each.err, msg.put); // 451 mistmached data FOR MARTTI
             return;
           }
           if(!each.end.ed){ return }
@@ -225,5 +228,17 @@
       }
       to.next(msg); // pass forward any data we do not know how to handle or process (this allows custom security protocols).
     }
+    SEA.opt.unpack = function(data, key, node){
+      if(u === data){ return }
+      var tmp = data, soul = Gun.node.soul(node), s = Gun.state.is(node, key);
+      if(tmp && 4 === tmp.length && soul === tmp[0] && key === tmp[1] && s === tmp[3]){
+        return tmp[2];
+      }
+      if(s < SEA.opt.shuffle_attack){
+        return data;
+      }
+    }
+    SEA.opt.shuffle_attack = 1546329600000; // Jan 1, 2019
+    var noop = {}, u;
 
   

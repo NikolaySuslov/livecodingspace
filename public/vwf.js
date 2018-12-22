@@ -469,120 +469,133 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             let appName = JSON.parse(localStorage.getItem('lcs_app')).path.application.split(".").join("_");
             let dbPath = appName + '_config_yaml';
            
-            _LCS_WORLD_USER.get('worlds').get(path.slice(1)).get(dbPath).once().then(res => {
+            _LCS_WORLD_USER.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(res => {
+                
+                var conf = "";
+
                 if (res) {
-                    let config = YAML.parse(res.file);
-                    return config
-                } else {
-                    return ""
-                }
-            })
-            .then(function(configLibraries) {
-                if(configLibraries && typeof configLibraries == "object") {
-                    if (typeof configLibraries.configuration == "object") {
-                        applicationConfig = configLibraries.configuration;
-                    }
-                    Object.keys(configLibraries).forEach(function(libraryType) {
-                        if(libraryType == 'info' && configLibraries[libraryType]["title"])
-                        {
-                            //jQuery('title').html(configLibraries[libraryType]["title"]);
-                            document.querySelector('title').innerHTML = configLibraries[libraryType]["title"]
+                    let config = YAML.parse(res);
+                    conf = config
+                } 
+
+                let confPromise = new Promise((resolve, reject) => {
+                      resolve(conf); 
+                  });
+                  
+                  confPromise.then(function(configLibraries) {
+                    if(configLibraries && typeof configLibraries == "object") {
+                        if (typeof configLibraries.configuration == "object") {
+                            applicationConfig = configLibraries.configuration;
                         }
-                        if(!userLibraries[libraryType]) {
-                            userLibraries[libraryType] = {};
-                        }
-                        // Merge libraries from config file and URL together. Check for incompatible
-                        // libraries, and disable them.
-                        Object.keys(configLibraries[libraryType]).forEach(function(libraryName) {
-                            var disabled = false;
-                            if(requireArray[libraryName] && requireArray[libraryName].disabledBy) {
-                                for(var i=0; i<requireArray[libraryName].disabledBy.length; i++) {
-                                    Object.keys(userLibraries).forEach(function(userLibraryType) {
-                                        Object.keys(userLibraries[userLibraryType]).forEach(function(userLibraryName) {
-                                            if(requireArray[libraryName].disabledBy[i] == userLibraryName) {
-                                                disabled = true;
-                                            }
+                        Object.keys(configLibraries).forEach(function(libraryType) {
+                            if(libraryType == 'info' && configLibraries[libraryType]["title"])
+                            {
+                                //jQuery('title').html(configLibraries[libraryType]["title"]);
+                                document.querySelector('title').innerHTML = configLibraries[libraryType]["title"]
+                            }
+                            if(!userLibraries[libraryType]) {
+                                userLibraries[libraryType] = {};
+                            }
+                            // Merge libraries from config file and URL together. Check for incompatible
+                            // libraries, and disable them.
+                            Object.keys(configLibraries[libraryType]).forEach(function(libraryName) {
+                                var disabled = false;
+                                if(requireArray[libraryName] && requireArray[libraryName].disabledBy) {
+                                    for(var i=0; i<requireArray[libraryName].disabledBy.length; i++) {
+                                        Object.keys(userLibraries).forEach(function(userLibraryType) {
+                                            Object.keys(userLibraries[userLibraryType]).forEach(function(userLibraryName) {
+                                                if(requireArray[libraryName].disabledBy[i] == userLibraryName) {
+                                                    disabled = true;
+                                                }
+                                            })
                                         })
-                                    })
-                                }
-                            }
-                            if(!disabled) {
-                                if(userLibraries[libraryType][libraryName] == undefined) {
-                                    userLibraries[libraryType][libraryName] = configLibraries[libraryType][libraryName];
-                                }
-                                else if(typeof userLibraries[libraryType][libraryName] == "object" && typeof configLibraries[libraryType][libraryName] == "object") {
-                                    userLibraries[libraryType][libraryName] = Object.assign({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
-                                    // userLibraries[libraryType][libraryName] = jQuery.extend({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
-                                }
-                            }
-                        });
-                    });
-                }
-            }).then(function(){
-                Object.keys(userLibraries).forEach(function(libraryType) {
-                    if(initializers[libraryType]) {
-                        Object.keys(userLibraries[libraryType]).forEach(function(libraryName) {
-                            if(requireArray[libraryName]) {
-                                requireArray[libraryName].active = true;
-                                initializers[libraryType][libraryName].active = true;
-                                if(userLibraries[libraryType][libraryName] && userLibraries[libraryType][libraryName] != "") {
-                                    if(typeof initializers[libraryType][libraryName].parameters == "object") {
-                                        
-                                        initializers[libraryType][libraryName].parameters = Object.assign({}, initializers[libraryType][libraryName].parameters, userLibraries[libraryType][libraryName]);
-                                        // initializers[libraryType][libraryName].parameters = jQuery.extend({}, initializers[libraryType][libraryName].parameters,
-                                        //     userLibraries[libraryType][libraryName]);
-                                    }
-                                    else {
-                                        initializers[libraryType][libraryName].parameters = userLibraries[libraryType][libraryName];
                                     }
                                 }
-                                if(requireArray[libraryName].linkedLibraries) {
-                                    for(var i=0; i<requireArray[libraryName].linkedLibraries.length; i++) {
-                                        requireArray[requireArray[libraryName].linkedLibraries[i]].active = true;
+                                if(!disabled) {
+                                    if(userLibraries[libraryType][libraryName] == undefined) {
+                                        userLibraries[libraryType][libraryName] = configLibraries[libraryType][libraryName];
+                                    }
+                                    else if(typeof userLibraries[libraryType][libraryName] == "object" && typeof configLibraries[libraryType][libraryName] == "object") {
+                                        userLibraries[libraryType][libraryName] = Object.assign({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
+                                        // userLibraries[libraryType][libraryName] = jQuery.extend({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
                                     }
                                 }
-                            }
+                            });
                         });
                     }
-                });
-
-                // Load default renderer if no other librarys specified
-                if(Object.keys(userLibraries["model"]).length == 0 && Object.keys(userLibraries["view"]).length == 0) {
-                    // requireArray["vwf/model/threejs"].active = true;
-                    // requireArray["vwf/view/threejs"].active = true;
-                    // requireArray["vwf/model/threejs/three"].active = true;
-                    // requireArray["vwf/model/threejs/js/loaders/ColladaLoader"].active = true;
-                    // requireArray["vwf/model/threejs/js/loaders/gltf/glTF-parser"].active = true;
-                    // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoader"].active = true;
-                    // requireArray["vwf/model/threejs/js/loaders/gltf/glTFAnimation"].active = true;
-                    // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoaderUtils"].active = true;
-                    // requireArray["vwf/model/threejs/js/stereo/DeviceOrientationControls"].active = true;
-                    // requireArray["vwf/model/threejs/js/stereo/OrbitControls"].active = true;
-                    // requireArray["vwf/model/threejs/js/stereo/StereoEffect"].active = true;
-                    // initializers["model"]["vwf/model/threejs"].active = true;
-                    // initializers["view"]["vwf/view/threejs"].active = true;
-                }
-
-                require( requireConfig, getActiveLibraries(requireArray, false), function( ready ) {
-
-                    ready( async function() {
-
-                        // Merge any application configuration settings into the configuration
-                        // object.
-
-                        require( "vwf/configuration" ).instance = require( "vwf/utility" ).merge(
-                            {}, require( "vwf/configuration" ).instance, applicationConfig );
-
-                        // With the scripts loaded, we must initialize the framework. vwf.initialize()
-                        // accepts three parameters: a world specification, model configuration parameters,
-                        // and view configuration parameters.
-
-                        await vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
-
+                }).then(function(){
+                    Object.keys(userLibraries).forEach(function(libraryType) {
+                        if(initializers[libraryType]) {
+                            Object.keys(userLibraries[libraryType]).forEach(function(libraryName) {
+                                if(requireArray[libraryName]) {
+                                    requireArray[libraryName].active = true;
+                                    initializers[libraryType][libraryName].active = true;
+                                    if(userLibraries[libraryType][libraryName] && userLibraries[libraryType][libraryName] != "") {
+                                        if(typeof initializers[libraryType][libraryName].parameters == "object") {
+                                            
+                                            initializers[libraryType][libraryName].parameters = Object.assign({}, initializers[libraryType][libraryName].parameters, userLibraries[libraryType][libraryName]);
+                                            // initializers[libraryType][libraryName].parameters = jQuery.extend({}, initializers[libraryType][libraryName].parameters,
+                                            //     userLibraries[libraryType][libraryName]);
+                                        }
+                                        else {
+                                            initializers[libraryType][libraryName].parameters = userLibraries[libraryType][libraryName];
+                                        }
+                                    }
+                                    if(requireArray[libraryName].linkedLibraries) {
+                                        for(var i=0; i<requireArray[libraryName].linkedLibraries.length; i++) {
+                                            requireArray[requireArray[libraryName].linkedLibraries[i]].active = true;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+    
+                    // Load default renderer if no other librarys specified
+                    if(Object.keys(userLibraries["model"]).length == 0 && Object.keys(userLibraries["view"]).length == 0) {
+                        // requireArray["vwf/model/threejs"].active = true;
+                        // requireArray["vwf/view/threejs"].active = true;
+                        // requireArray["vwf/model/threejs/three"].active = true;
+                        // requireArray["vwf/model/threejs/js/loaders/ColladaLoader"].active = true;
+                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTF-parser"].active = true;
+                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoader"].active = true;
+                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFAnimation"].active = true;
+                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoaderUtils"].active = true;
+                        // requireArray["vwf/model/threejs/js/stereo/DeviceOrientationControls"].active = true;
+                        // requireArray["vwf/model/threejs/js/stereo/OrbitControls"].active = true;
+                        // requireArray["vwf/model/threejs/js/stereo/StereoEffect"].active = true;
+                        // initializers["model"]["vwf/model/threejs"].active = true;
+                        // initializers["view"]["vwf/view/threejs"].active = true;
+                    }
+    
+                    require( requireConfig, getActiveLibraries(requireArray, false), function( ready ) {
+    
+                        ready( async function() {
+    
+                            // Merge any application configuration settings into the configuration
+                            // object.
+    
+                            require( "vwf/configuration" ).instance = require( "vwf/utility" ).merge(
+                                {}, require( "vwf/configuration" ).instance, applicationConfig );
+    
+                            // With the scripts loaded, we must initialize the framework. vwf.initialize()
+                            // accepts three parameters: a world specification, model configuration parameters,
+                            // and view configuration parameters.
+    
+                            await vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
+    
+                        } );
+    
                     } );
+                })
 
-                } );
-            })
+
+                  
+
+            },{wait: 200})
+
+
+            
 
             // jQuery.getJSON("admin/config", function(configLibraries) {
             // }).always(function(jqXHR, textStatus) { 
@@ -818,7 +831,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             //await _app.getApplicationState();
             await _app.getApplicationState()
-                .then(res => self.ready( application, res))
+                .then(res => {self.ready( application, res)})
 
         };
 
@@ -4831,22 +4844,9 @@ if ( ! childComponent.source ) {
                 let fetchUrl =  remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) );
                 let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_") + '_yaml';
 
-                let worldName = dbName.split('/')[0];
-                var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
+                const parseComp = async function(f) {
 
-                var fileName = "";
-
-                if(dbName.includes("vwf_example_com")){
-                    userDB = window._LCS_SYS_USER.get('proxy');
-                    fileName = dbName;
-                } else {
-                   fileName = dbName.replace(worldName + '/', "");
-                }
-      
-
-                userDB.get(fileName).once(async function(res) {
-
-                    let result = YAML.parse(res.file);
+                    let result = YAML.parse(f);
 
                     let nativeObject = result;
                     // console.log(nativeObject);
@@ -4864,7 +4864,39 @@ if ( ! childComponent.source ) {
  
                      }
 
-                }, {wait: 200})
+                }
+
+
+            var fileName = "";
+
+                if(dbName.includes("vwf_example_com")){
+                    //userDB = await window._LCS_SYS_USER.get('proxy').then();
+                   fileName = dbName;
+                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(r=>{
+                       //console.log(r);
+                       parseComp(r);
+
+                   },{wait:200});
+
+                } else {
+                    let worldName = dbName.split('/')[0];
+                    //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
+                   fileName = dbName.replace(worldName + '/', "");
+                   window._LCS_WORLD_USER.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                    //console.log(r);
+                    parseComp(r);
+
+                },{wait:200});
+                }
+
+                //console.log(source);
+
+                //userDB.get(fileName).once(async function(res) {
+
+            
+                    
+
+               // }, {wait: 1000})
             }
 
         };
@@ -4890,21 +4922,9 @@ if ( ! childComponent.source ) {
                 let fetchUrl = remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) );
                 let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_");
 
+                const parseComp = async function(res) {
 
-                let worldName = dbName.split('/')[0];
-                var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
-                var fileName = "";
-
-                if(dbName.includes("vwf_example_com")){
-                    userDB = window._LCS_SYS_USER.get('proxy');
-                    fileName = dbName
-                } else {
-                    fileName = dbName.replace(worldName + '/', "");
-                }
-
-                userDB.get(fileName).once(async function(res) {
-
-                    let scriptText = res.file;
+                    let scriptText = res;
 
                     try {
                         await callback_async( scriptText );
@@ -4916,7 +4936,32 @@ if ( ! childComponent.source ) {
                         errback_async( error );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                     }
-                }, {wait: 200})
+                }
+
+
+
+                let worldName = dbName.split('/')[0];
+                //var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
+                var fileName = "";
+
+                if(dbName.includes("vwf_example_com")){
+                    //userDB = window._LCS_SYS_USER.get('proxy');
+                    fileName = dbName;
+                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(r=>{
+                        //console.log(r);
+                        parseComp(r);
+                    },{wait: 200});
+ 
+                } else {
+                    fileName = dbName.replace(worldName + '/', "");
+                    window._LCS_WORLD_USER.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                        //console.log(r);
+                        parseComp(r);
+    
+                    },{wait: 200});
+                }
+
+               // userDB.get(fileName).once(, {wait: 1000})
             }
 
         };
