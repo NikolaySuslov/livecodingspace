@@ -123,7 +123,7 @@ class App {
   }
 
   initUser() {
-    _LCSUSER.recall({ sessionStorage: 1 });
+    _LCSUSER.recall({ sessionStorage: true });
   }
 
 
@@ -1048,7 +1048,7 @@ class App {
   async getProtoWorldFiles(userPub, worldName, date) {
 
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
     let worldObj = {};
     for (var doc in worldFileNames) {
@@ -1096,7 +1096,7 @@ class App {
     };
 
     let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
     for (var doc in worldFileNames) {
 

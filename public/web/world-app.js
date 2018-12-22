@@ -103,7 +103,6 @@ class WorldApp {
     //             document.querySelector('#worldActionsGUI')._refresh();
             
     //     })
-
         let self = this;
         let user = this.userAlias;
         let space = this.worldName;

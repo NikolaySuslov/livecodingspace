@@ -1,9 +1,3 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.page = factory());
-}(this, (function () { 'use strict';
-
 var isarray = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
 };
@@ -433,7 +427,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
    * The page instance
    * @api private
    */
-  function Page() {
+  function Page(options) {
     // public things
     this.callbacks = [];
     this.exits = [];
@@ -441,6 +435,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     this.len = 0;
 
     // private things
+    this._dispatch = true;
     this._decodeURLComponents = true;
     this._base = '';
     this._strict = false;
@@ -450,6 +445,8 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     // bound functions
     this.clickHandler = this.clickHandler.bind(this);
     this._onpopstate = this._onpopstate.bind(this);
+
+    this.configure(options);
   }
 
   /**
@@ -463,6 +460,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     var opts = options || {};
 
     this._window = opts.window || (hasWindow && window);
+    this._dispatch = opts.dispatch !== false;
     this._decodeURLComponents = opts.decodeURLComponents !== false;
     this._popstate = opts.popstate !== false && hasWindow;
     this._click = opts.click !== false && hasDocument;
@@ -513,6 +511,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
 
     if(hasWindow && this._hashbang && loc && loc.protocol === 'file:') {
       base = loc.pathname;
+      base = base.substring(0, base.lastIndexOf('/'));
     }
 
     return base;
@@ -545,10 +544,9 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
    */
 
   Page.prototype.start = function(options) {
-    var opts = options || {};
-    this.configure(opts);
+    this.configure(options);
 
-    if (false === opts.dispatch) return;
+    if (!this._dispatch) return;
     this._running = true;
 
     var url;
@@ -565,7 +563,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
       }
     }
 
-    this.replace(url, null, true, opts.dispatch);
+    this.replace(url, null, true, this._dispatch);
   };
 
   /**
@@ -581,7 +579,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     this._running = false;
 
     var window = this._window;
-    this._click && window.document.removeEventListener(clickEvent, this.clickHandler, false);
+    hasDocument && window.document.removeEventListener(clickEvent, this.clickHandler, false);
     hasWindow && window.removeEventListener('popstate', this._onpopstate, false);
     hasWindow && window.removeEventListener('hashchange', this._onpopstate, false);
   };
@@ -602,7 +600,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
       prev = this.prevContext;
     this.prevContext = ctx;
     this.current = ctx.path;
-    if (false !== dispatch) this.dispatch(ctx, prev);
+    if (this._dispatch) this.dispatch(ctx, prev);
     if (false !== ctx.handled && false !== push) ctx.pushState();
     return ctx;
   };
@@ -925,7 +923,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
   /**
    * Create a new `page` instance and function
    */
-  function createPage() {
+  function createPage(options) {
     var pageInstance = new Page();
 
     function pageFn(/* args */) {
@@ -1191,10 +1189,6 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
 
   var globalPage = createPage();
   var page_js = globalPage;
-  var default_1 = globalPage;
+  page.default = globalPage;
 
-page_js.default = default_1;
-
-return page_js;
-
-})));
+export default page_js;
