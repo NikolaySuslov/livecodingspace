@@ -27,6 +27,12 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
     <script src="/lib/gundb/lib/not.js"></script>
     <script src="/lib/gundb/lib/open.js"></script>
     <script src="/lib/gundb/lib/load.js"></script>
+
+    <script src="/lib/gundb/lib/radix.js"></script>
+    <script src="/lib/gundb/lib/radisk.js"></script>
+    <script src="/lib/gundb/lib/store.js"></script>
+    <script src="/lib/gundb/lib/rindexed.js"></script>
+
     <!-- <script src="/gun/as.js"></script>
   <script src="/gun/nts.js"></script> -->
 
@@ -72,6 +78,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
     <link rel="stylesheet" type="text/css" href="/lib/index.css" />
 
     <script type="module">
+        localStorage.clear();
         import { App } from '/app.js';
         window.onload = new App;
     </script>

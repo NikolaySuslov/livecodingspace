@@ -75,7 +75,10 @@ class App {
 
     const dbConnection = new Promise((resolve, reject) => {
 
-      this.db = Gun(this.dbHost);
+      const opt = { peers: this.dbHost, localStorage: false, store: null }
+      opt.store = RindexedDB(opt);
+      this.db = Gun(opt);
+
       this.user = this.db.user();
       window._LCSDB = this.db;
       window._LCSUSER = this.user;
@@ -123,7 +126,7 @@ class App {
   }
 
   initUser() {
-    _LCSUSER.recall({ sessionStorage: true });
+    this.db.user().recall({ sessionStorage: 1 });
   }
 
 
@@ -1133,7 +1136,8 @@ class App {
             class: "mdc-button mdc-button--raised mdc-card__action",
             $text: "Go to new cloned World!",
             onclick: function (e) {
-              window.location.pathname = '/' + userName + '/' + worldID + '/about'
+              let myName = _LCSUSER.is.alias;
+              window.location.pathname = '/' + myName + '/' + worldID + '/about'
             }
           }
         ]
