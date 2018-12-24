@@ -99,10 +99,11 @@ class WorldApp {
 
     //  _LCSDB.on('auth',
     //     function (ack) {
-
+    //         if(ack.pub)
     //             document.querySelector('#worldActionsGUI')._refresh();
             
-    //     })
+    //     });
+
         let self = this;
         let user = this.userAlias;
         let space = this.worldName;
@@ -155,7 +156,7 @@ class WorldApp {
                 //    } 
             },
             $init: function () {
-                if (_LCSUSER.is) {
+                if (_LCSDB.user().is) {
                     this._refresh();
                 }
             },
@@ -169,8 +170,8 @@ class WorldApp {
                 //     return
                 // }
 
-                if (_LCSUSER.is) {
-                    if (_LCSUSER.is.alias == desc.userAlias) {
+                if (_LCSDB.user().is) {
+                    if (_LCSDB.user().is.alias == desc.userAlias) {
                         userGUI.push(
                             {
                                 $type: "a",

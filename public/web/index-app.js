@@ -165,14 +165,12 @@ class IndexApp {
 
     async getWorldsStatesListForUser(userAlias) {
 
-        let self = this;
         let worldsGUI = [];
 
 
-        let worlds = self.createWorldsGUI(userAlias, 'allStates' );
+        let worlds = this.createWorldsGUI(userAlias, 'allStates' );
 
-        await _app.getAllStateWorldsInfoForUser(userAlias,
-            function (data) {
+        await _app.getAllStateWorldsInfoForUser(userAlias, function (data) {
             let doc = document.querySelector("#allStates_" + userAlias);
             if (doc) {
                 Object.assign(doc._states, data);
@@ -181,7 +179,6 @@ class IndexApp {
         }
             );
             worldsGUI.push(worlds);
-
         // Object.entries(data).forEach(el => {
 
         //     let worlds = this.createWorldsGUI(userAlias, el[0]);
@@ -284,7 +281,7 @@ class IndexApp {
 
             if (ack.sea.pub) {
 
-                let alias = _LCSUSER.is.alias;
+                let alias = _LCSDB.user().is.alias;
                 let userEl = document.querySelector('#userGUI');
                 userEl._status = 'Welcome ' + alias + '!';
                 //userEl.style.backgroundColor = '#e6e6e6';   
@@ -292,16 +289,16 @@ class IndexApp {
                 // document.querySelector('#worldGUI').$update();
                 // document.querySelector('#main').$update();
 
-                _LCSUSER.get('profile').once(function (data) { console.log(data) })
+                _LCSDB.user().get('profile').once(function (data) { console.log(data) })
 
                 let el = document.getElementById("loginGUI");
                 if (el) {
                     el.remove();
                 }
 
-                _LCSUSER.get('profile').not(function (key) {
+                _LCSDB.user().get('profile').not(function (key) {
                     let profile = { 'alias': alias };
-                    _LCSUSER.get('profile').put(profile);
+                    _LCSDB.user().get('profile').put(profile);
                 })
 
                 let actionsGUI = document.querySelector('#worldActionsGUI');
@@ -318,7 +315,7 @@ class IndexApp {
 
                 //this.getAppDetailsFromUserDB();
             }
-            console.log(_LCSUSER.is);
+            console.log(_LCSDB.user().is);
         });
     }
 
@@ -360,7 +357,7 @@ class IndexApp {
                 ];
 
                 var guiUser = [];
-                if (_LCSUSER.is) {
+                if (_LCSDB.user().is) {
                     guiUser = []
                 }
 
@@ -387,13 +384,13 @@ class IndexApp {
             $update: function () {
 
                 var gui = {};
-                if (_LCSUSER.is) {
+                if (_LCSDB.user().is) {
                     gui = [
                         window._app.widgets.buttonRaised(
                             {
                                 "label": 'Sign OUT',
                                 "onclick": function (e) {
-                                    _LCSUSER.leave().then(ack => {
+                                    _LCSDB.user().leave().then(ack => {
                                         if (ack.pub) {
                                             window.sessionStorage.removeItem('alias');
                                             window.sessionStorage.removeItem('tmp');
@@ -422,7 +419,7 @@ class IndexApp {
                                 "label": 'My World protos',
                                 "onclick": function (e) {
                                     e.preventDefault();
-                                    let alias = _LCSUSER.is.alias;
+                                    let alias = _LCSDB.user().is.alias;
                                     //window.location.pathname = '/' + alias + '/worlds/protos'
                                     page('/' + alias + '/worlds/protos');
                                     //_app.indexApp.getWorldsProtosFromUserDB(alias);
@@ -433,7 +430,7 @@ class IndexApp {
                                 "label": 'My World states',
                                 "onclick": function (e) {
                                     e.preventDefault();
-                                    let alias = _LCSUSER.is.alias;
+                                    let alias = _LCSDB.user().is.alias;
                                     // window.location.pathname = '/' + alias + '/worlds/states'
                                     page('/' + alias + '/worlds/states');
                                     // page.redirect('/' + alias + '/worlds/states');
@@ -553,19 +550,20 @@ class IndexApp {
                                                     }).show();
                                                 } else {
                                                     //
-                                                    _LCSUSER.create(alias, pass,
+                                                    _LCSDB.user().create(alias, pass,
                                                         (ack) => {
                                                             if (!ack.wait) { }
                                                             if (ack.err) {
                                                                 console.log(ack.err)
                                                                 return ack.err
                                                             };
-                                                            if (ack.sea.pub) {
-                                                                _LCSUSER.auth(alias, pass);
-                                                                _LCSDB.get('users').get(alias).put({
+                                                            if (ack.pub) {
+                                                                let users = _LCSDB.get('users');
+                                                                    users.get(alias).put({
                                                                     'alias': alias,
                                                                     'pub': ack.pub
                                                                 });
+                                                                _LCSDB.user().auth(alias, pass);
                                                             }
                                                         });
                                                 }
@@ -580,7 +578,7 @@ class IndexApp {
                                             "label": 'Sign IN',
                                             "onclick": function (e) {
                                                 e.preventDefault();
-                                                _LCSUSER.auth(this._aliasField.value, this._passField.value, ack => {
+                                                _LCSDB.user().auth(this._aliasField.value, this._passField.value, ack => {
 
                                                     if (ack.err) {
                                                         new Noty({
@@ -749,9 +747,7 @@ class IndexApp {
             },
             $components: [],
             _updateCard: function () {
-
                 let desc = this._worldInfo;
-
 
                 if (!desc || Object.keys(desc).length == 0) {
                     return {
@@ -938,7 +934,9 @@ class IndexApp {
                     $type: "div",
                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                     $components: [
+                       
                         card
+
                         //self.createWorldCard(data[1].userAlias, data[1].worldName, data[0])
                         //this._worldCardDef(appInfo)
                     ]
@@ -946,6 +944,13 @@ class IndexApp {
                 //console.log(data);
             },
             $update: function () {
+                let cards = Object.entries(this._states)
+                .filter(el => Object.keys(el[1]).length !== 0)
+                .sort(function (el1, el2) {
+                    return parseInt(el2[1].created) - parseInt(el1[1].created)
+                })
+                .map(this._makeWorldCard);
+
                 this.$components = [
                     {
                         $type: "div",
@@ -970,12 +975,7 @@ class IndexApp {
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
-                                $components: Object.entries(this._states)
-                                    .filter(el => Object.keys(el[1]).length !== 0)
-                                    .sort(function (el1, el2) {
-                                        return parseInt(el2[1].created) - parseInt(el1[1].created)
-                                    })
-                                    .map(this._makeWorldCard)
+                                $components: cards
                             }
                         ]
 

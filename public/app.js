@@ -88,7 +88,7 @@ class App {
       _LCSDB.get('lcs/app').get('pub').once(res => {
 
         if (res) {
-          window._LCS_SYS_USER = this.db.user(res);
+          window._LCS_SYS_USER = _LCSDB.user(res);
         }
       });
 
@@ -126,7 +126,7 @@ class App {
   }
 
   initUser() {
-    this.db.user().recall({ sessionStorage: 1 });
+    _LCSDB.user().recall({ sessionStorage: 1 });
   }
 
 
@@ -160,7 +160,7 @@ class App {
     console.log(filterProxyFiles);
 
     var origin = window.location.origin;
-    //var userPub = _LCSUSER.is.pub;
+    //var userPub = this.db.user().is.pub;
 
     let proxyObj = {};
 
@@ -191,7 +191,8 @@ class App {
     console.log(proxyObj);
 
     Object.keys(proxyObj).forEach(res => {
-      _LCSDB.user().get('proxy').get(res).put(proxyObj[res]);
+      let proxy = _LCSDB.user().get('proxy');
+      proxy.get(res).put(proxyObj[res]);
     })
 
   }
@@ -216,7 +217,7 @@ class App {
         var entryName = url.replace(window.location.origin + '/defaults/worlds/', "").split(".").join("_");
 
         let worldName = entryName.split("/")[0];
-        let userPub = _LCSUSER.is.pub;
+        let userPub = _LCSDB.user().is.pub;
 
         let worldFile = await fetch(url, { method: 'get' });
         let worldSource = await worldFile.text();
@@ -284,7 +285,7 @@ class App {
   async loadEmptyDefaultProto() {
 
     //empty proto world
-    let userPub = _LCSUSER.is.pub;
+    let userPub = _LCSDB.user().is.pub;
     let worldsObj = {};
     let emptyWorld = {
 
@@ -408,7 +409,7 @@ class App {
     _LCSDB.on('auth',
       async function (ack) {
 
-        if (_LCSUSER.is) {
+        if (_LCSDB.user().is) {
 
           let setPubKey = {
 
@@ -425,7 +426,7 @@ class App {
                 $text: "Set app PUB key",
                 onclick: function (e) {
                   console.log("admin action");
-                  _LCSDB.get('lcs/app').get('pub').put(_LCSUSER.is.pub);
+                  _LCSDB.get('lcs/app').get('pub').put(_LCSDB.user().is.pub);
                 }
               }
             ]
@@ -440,7 +441,7 @@ class App {
             adminComponents.push(setPubKey);
           }
 
-          if (_LCSUSER.is.pub == defaultPub) {
+          if (_LCSDB.user().is.pub == defaultPub) {
 
             let loadEmpty = {
               $cell: true,
@@ -550,7 +551,7 @@ class App {
     _LCSDB.on('auth',
       async function (ack) {
         if (ack.sea.pub) {
-          document.querySelector("#profile")._status = "User: " + _LCSUSER.is.alias //+' pub: ' + _LCSUSER.is.pub;
+          document.querySelector("#profile")._status = "User: " + _LCSDB.user().is.alias //+' pub: ' + this.db.user().is.pub;
           document.querySelector("#profile").$update();
         }
       })
@@ -571,7 +572,7 @@ class App {
           {
             $type: "h1",
             class: "mdc-typography--headline4",
-            $text: this._status //"Profile for: " + _LCSUSER.is.alias
+            $text: this._status //"Profile for: " + this.db.user().is.alias
           }
         ]
       }
@@ -611,9 +612,9 @@ class App {
     _LCSDB.on('auth',
       async function (ack) {
 
-        if (_LCSUSER.is) {
+        if (_LCSDB.user().is) {
 
-          if (_LCSUSER.is.alias == user) {
+          if (_LCSDB.user().is.alias == user) {
 
             var worldType = 'worlds';
             var file = fileOriginal;
@@ -622,7 +623,7 @@ class App {
               file = _app.helpers.replaceSubStringALL(fileOriginal, "~", '/');
             }
 
-            let worldFile = await _LCSUSER.get(worldType).get(worldName).get(file).once().then();
+            let worldFile = await _LCSDB.user().get(worldType).get(worldName).get(file).once().then();
             if (worldFile) {
               console.log(worldFile.file);
 
@@ -665,10 +666,20 @@ class App {
                       console.log("save new info");
                       let editor = document.querySelector("#aceEditor").env.editor;
                       let newInfo = editor.getValue();
-                      _LCSUSER.get(worldType).get(worldName).get(file).get('file').put(newInfo, res => {
+                      _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, res => {
                         if (res) {
+
+                          let noty = new Noty({
+                            text: 'Saved!',
+                            timeout: 2000,
+                            theme: 'mint',
+                            layout: 'bottomRight',
+                            type: 'success'
+                          });
+                          noty.show();
+
                           let modified = new Date().valueOf();
-                          _LCSUSER.get(worldType).get(worldName).get(file).get('modified').put(modified);
+                          _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
                         }
                       })
                     }
@@ -1088,7 +1099,7 @@ class App {
     //let modified = new Date().valueOf();
     console.log('clone: ' + worldName + 'to: ' + worldID);
 
-    let newOwner = _LCSUSER.is.pub;
+    let newOwner = _LCSDB.user().is.pub;
     let created = new Date().valueOf();
 
     let worldObj = {
@@ -1113,9 +1124,15 @@ class App {
     }
     console.log(worldObj);
 
-    for (const obj of Object.keys(worldObj)) {
-      await _LCSUSER.get('worlds').get(worldID).get(obj).put(worldObj[obj]).then();
-    }
+    // for (const obj of Object.keys(worldObj)) {
+    //   let myWorlds = _LCSDB.user().get('worlds');
+    //   let myNewWorld = myWorlds.get(worldID);
+    //   myNewWorld.get(obj).put(worldObj[obj]);
+    // }
+
+    let myWorlds = _LCSDB.user().get('worlds');
+    let myNewWorld = myWorlds.get(worldID);
+    myNewWorld.put(worldObj);
 
     _app.hideProgressBar();
     console.log('CLONED!!!');
@@ -1136,7 +1153,7 @@ class App {
             class: "mdc-button mdc-button--raised mdc-card__action",
             $text: "Go to new cloned World!",
             onclick: function (e) {
-              let myName = _LCSUSER.is.alias;
+              let myName = _LCSDB.user().is.alias;
               window.location.pathname = '/' + myName + '/' + worldID + '/about'
             }
           }
@@ -1148,7 +1165,7 @@ class App {
     //page()
 
     // Object.keys(worldObj).forEach(el => {
-    //   _LCSUSER.get('worlds').get(worldID).get(el).put(worldObj[el]);
+    //   this.db.user().get('worlds').get(worldID).get(el).put(worldObj[el]);
     // })
 
 
@@ -1156,11 +1173,11 @@ class App {
 
   async cloneWorldState(filename) {
 
-    let myWorldProtos = await _LCSUSER.get('worlds').once().then();
+    let myWorldProtos = await _LCSDB.user().get('worlds').once().then();
     let userName = this.helpers.worldUser;
     let userPub = await _LCSDB.get('users').get(userName).get('pub').once().then();
     let protoUserRoot = this.helpers.getRoot(true).root;
-    //let myName = _LCSUSER.is.alias;
+    //let myName = this.db.user().is.alias;
 
     //let proto = Object.keys(myWorldProtos).filter(el => el == protoUserRoot);
 
@@ -1171,7 +1188,7 @@ class App {
     if (protosKeys.includes(protoUserRoot)) {
 
       let userProtoFiles = await this.getProtoWorldFiles(userPub, protoUserRoot);
-      let myProtoFiles = await this.getProtoWorldFiles(_LCSUSER.is.pub, protoUserRoot);
+      let myProtoFiles = await this.getProtoWorldFiles(_LCSDB.user().is.pub, protoUserRoot);
 
       let hashUP = await this.helpers.sha256(JSON.stringify(userProtoFiles));
       let hashMP = await this.helpers.sha256(JSON.stringify(myProtoFiles));
@@ -1265,7 +1282,7 @@ class App {
       console.log(json);
     }
 
-    //var documents = _LCSUSER.get('documents');
+    //var documents = this.db.user().get('documents');
 
     var saveRevision = new Date().valueOf();
 
@@ -1283,7 +1300,7 @@ class App {
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
 
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    _LCSUSER.get('documents').get(root).get(docName).put(stateForStore, res => {
+    _LCSDB.user().get('documents').get(root).get(docName).put(stateForStore, res => {
 
       if (res) {
 
@@ -1298,13 +1315,13 @@ class App {
       }
     });
 
-    _LCSUSER.get('worlds').get(root).get('info_json').once(res => {
+    _LCSDB.user().get('worlds').get(root).get('info_json').once(res => {
 
       if (res) {
 
         let modified = saveRevision;
-        let newOwner = _LCSUSER.is.pub;
-        let userName = _LCSUSER.is.alias;
+        let newOwner = _LCSDB.user().is.pub;
+        let userName = _LCSDB.user().is.alias;
 
         let obj = {
           'parent': userName + '/' + root,
@@ -1317,21 +1334,21 @@ class App {
 
         let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
 
-        _LCSUSER.get('documents').get(root).get(docInfoName).not(res => {
-          _LCSUSER.get('documents').get(root).get(docInfoName).put(obj);
+        _LCSDB.user().get('documents').get(root).get(docInfoName).not(res => {
+          _LCSDB.user().get('documents').get(root).get(docInfoName).put(obj);
         });
 
-        _LCSUSER.get('documents').get(root).get(docInfoName).get('created').not(res => {
-          _LCSUSER.get('documents').get(root).get(docInfoName).get('created').put(modified);
+        _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').not(res => {
+          _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').put(modified);
         });
 
-        _LCSUSER.get('documents').get(root).get(docInfoName).get('modified').put(modified);
+        _LCSDB.user().get('documents').get(root).get(docInfoName).get('modified').put(modified);
 
       }
     });
 
     var docNameRev = 'savestate_' + saveRevision.toString() + '/' + root + '/' + filename + '_vwf_json';
-    _LCSUSER.get('documents').get(root).get(docName).get('revs').get(docNameRev).put(stateForStore)
+    _LCSDB.user().get('documents').get(root).get(docName).get('revs').get(docNameRev).put(stateForStore)
       .path("revision").put(saveRevision);
 
 
@@ -1377,12 +1394,12 @@ class App {
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
 
     // let configName = 'savestate_/' + root + '/' + filename + '_config_vwf_json';
-    // let documentSaveConfigState = _LCSUSER.get(configName).put(configStateForStore);
+    // let documentSaveConfigState = this.db.user().get(configName).put(configStateForStore);
     // //documents.path(root).set(documentSaveConfigState);
 
     // let configNameRev = 'savestate_' + saveRevision.toString() + '/' + root + '/' + filename + '_config_vwf_json';
-    // _LCSUSER.get(configNameRev).put(configStateForStore);
-    // _LCSUSER.get(configNameRev).path("revision").put(saveRevision);
+    // this.db.user().get(configNameRev).put(configStateForStore);
+    // this.db.user().get(configNameRev).path("revision").put(saveRevision);
 
     //documentSaveConfigState.path('revs').set(documentSaveStateRevision);
 
@@ -1462,31 +1479,31 @@ class App {
 
   async deleteWorldState(worldName, indexState) {
 
-    let revs = await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').once().then();
+    let revs = await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').once().then();
     if (revs) {
       for (const el of Object.keys(revs)) {
         if (el !== '_') {
-          let doc = await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).once().then();
+          let doc = await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).once().then();
           for (const rev of Object.keys(doc)) {
             if (rev !== '_') {
-              await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).then();
+              await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).then();
             }
           }
-          await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).then();
+          await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).then();
         }
       }
     }
 
     // clear all state params
-    let stateDoc = await _LCSUSER.get('documents').get(worldName).get(indexState).once().then();
+    let stateDoc = await _LCSDB.user().get('documents').get(worldName).get(indexState).once().then();
     for (const state of Object.keys(stateDoc)) {
       if (state !== '_' && state !== 'revs') {
-        await _LCSUSER.get('documents').get(worldName).get(indexState).get(state).put(null).then();
+        await _LCSDB.user().get('documents').get(worldName).get(indexState).get(state).put(null).then();
       }
     }
 
-    await _LCSUSER.get('documents').get(worldName).get(indexState).get('revs').put(null).then();
-    await _LCSUSER.get('documents').get(worldName).get(indexState).put(null).then();
+    await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').put(null).then();
+    await _LCSDB.user().get('documents').get(worldName).get(indexState).put(null).then();
 
   }
 
@@ -1498,9 +1515,9 @@ class App {
       //TODO check for states (ask for deleting all states first...)
       //delete states
 
-      let documents = await _LCSUSER.get('documents').once().then();
+      let documents = await _LCSDB.user().get('documents').once().then();
       if (documents) {
-        let states = await _LCSUSER.get('documents').get(worldName).once().then();
+        let states = await _LCSDB.user().get('documents').get(worldName).once().then();
         if (states) {
           for (const st of Object.keys(states)) {
             if (st !== '_') {
@@ -1513,31 +1530,31 @@ class App {
         }
       }
 
-      let worldFiles = await _LCSUSER.get('worlds').get(worldName).once().then();
+      let worldFiles = await _LCSDB.user().get('worlds').get(worldName).once().then();
       if (worldFiles) {
         for (const el of Object.keys(worldFiles)) {
           if (el !== '_') {
-            let doc = await _LCSUSER.get('worlds').get(worldName).get(el).once().then();
+            let doc = await _LCSDB.user().get('worlds').get(worldName).get(el).once().then();
             if (doc) {
               if (doc.file) {
                 for (const fEl of Object.keys(doc)) {
                   if (fEl !== '_') {
-                    await _LCSUSER.get('worlds').get(worldName).get(el).get(fEl).put(null).then();
+                    await _LCSDB.user().get('worlds').get(worldName).get(el).get(fEl).put(null).then();
                   }
                 }
-                await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then();
+                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).then();
               } else {
-                await _LCSUSER.get('worlds').get(worldName).get(el).put(null).then()
+                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).then()
               }
             }
           }
         }
       }
 
-      //  _LCSUSER.get('worlds').get(worldName).map((res, index) => {
+      //  this.db.user().get('worlds').get(worldName).map((res, index) => {
 
       //       if(typeof res == 'object'){
-      //         _LCSUSER.get('worlds').get(worldName).get(index)
+      //         this.db.user().get('worlds').get(worldName).get(index)
       //         .get('file').put("null")
       //         .back(1)
       //         .get('modified').put("null")
@@ -1545,11 +1562,11 @@ class App {
       //         .get('created').put("null")
       //         .back(1).put("null")
       //       } else {
-      //         _LCSUSER.get('worlds').get(worldName).get(index).put("null")
+      //         this.db.user().get('worlds').get(worldName).get(index).put("null")
       //       }
       //  })
 
-      await _LCSUSER.get('worlds').get(worldName).put(null).then();
+      await _LCSDB.user().get('worlds').get(worldName).put(null).then();
 
     } else if (type == 'state') {
 
@@ -1625,15 +1642,23 @@ class App {
 
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == userAlias)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == userAlias)
+        db = _LCSDB.user();
     }
 
 
-    db.get('worlds').once().map().once((val, index)=>{
-      db.get('documents').get(index).once().map().load((res, datI)=>{
+   // db.get('worlds').once().map().once((val, index)=>{
 
+      //db.get('documents').get(index).once().map().load((res, datI)=>{
+
+    let myWorlds = await db.get('documents').once().then();
+
+    if (myWorlds) {
+
+    Object.keys(myWorlds).filter(el => el!=='_').forEach(w=>{
+
+      db.get('documents').get(w).once().map().once((res, datI)=>{
         var doc = {};
 
          if (datI.includes('_info_vwf_json')){
@@ -1654,7 +1679,7 @@ class App {
               }
   
               doc = {
-                'worldName': index + '/load/' + saveName,
+                'worldName': w + '/load/' + saveName,
                 'created': res.created ? res.created : res.modified,
                 'modified': res.modified,
                 'type': 'saveState',
@@ -1668,7 +1693,12 @@ class App {
          if (Object.keys(doc).length !== 0)
             cb({[doc.worldName]: doc})
       })
+
+
     })
+  
+  }
+    //})
   }
 
 
@@ -1678,9 +1708,9 @@ class App {
 
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == userAlias)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == userAlias)
+        db = _LCSDB.user();
     }
 
     var states = {};
@@ -1709,9 +1739,9 @@ class App {
 
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == userAlias)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == userAlias)
+        db = _LCSDB.user();
     }
 
     db.get('worlds').once().map().once((val, index)=>{
@@ -1756,9 +1786,9 @@ class App {
 
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == userAlias)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == userAlias)
+        db = _LCSDB.user();
     }
 
     var worlds = {};
@@ -1785,9 +1815,9 @@ class App {
 
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == userAlias)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == userAlias)
+        db = _LCSDB.user();
     }
 
     var states = {};
@@ -1815,9 +1845,9 @@ class App {
     let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
     var db = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == user)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == user)
+        db = _LCSDB.user();
     }
 
     var info = {};
@@ -1860,19 +1890,19 @@ class App {
     //get space for user
 
     let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
-    var db = _LCSDB.user(userPub);
+    var userdb = _LCSDB.user(userPub);
 
-    if (_LCSUSER.is) {
-      if (_LCSUSER.is.alias == user)
-        db = _LCSUSER;
+    if (_LCSDB.user().is) {
+      if (_LCSDB.user().is.alias == user)
+      userdb = _LCSDB.user();
     }
 
     var info = {};
 
 
-    let world = await db.get('worlds').get(space).once().then();
+    let world = await userdb.get('worlds').get(space).once().then();
     if (world) {
-      let res = await db.get('worlds').get(space).get('info_json').once().then();
+      let res = await userdb.get('worlds').get(space).get('info_json').once().then();
 
         if (res && res !== 'null') {
 
