@@ -4824,8 +4824,7 @@ a.mdc-list-item {
   /* @noflip */
   padding-right: 56px;
 }
-
-.mdc-menu__selection-group-icon {
+.mdc-menu__selection-group .mdc-menu__selection-group-icon {
   /* @noflip */
   left: 16px;
   /* @noflip */
@@ -4833,7 +4832,7 @@ a.mdc-list-item {
   display: none;
   position: absolute;
 }
-[dir=rtl] .mdc-menu__selection-group-icon, .mdc-menu__selection-group-icon[dir=rtl] {
+[dir=rtl] .mdc-menu__selection-group .mdc-menu__selection-group-icon, .mdc-menu__selection-group .mdc-menu__selection-group-icon[dir=rtl] {
   /* @noflip */
   left: initial;
   /* @noflip */
@@ -4871,7 +4870,7 @@ a.mdc-list-item {
   opacity: 0;
   overflow: auto;
   will-change: transform, opacity;
-  z-index: 4;
+  z-index: 8;
 }
 [dir=rtl] .mdc-menu-surface, .mdc-menu-surface[dir=rtl] {
   /* @noflip */
@@ -8251,6 +8250,9 @@ a.mdc-list-item {
 }
 .mdc-text-field--fullwidth:not(.mdc-text-field--textarea) .mdc-text-field__input {
   padding: 0;
+}
+.mdc-text-field--fullwidth.mdc-text-field--textarea .mdc-text-field__input {
+  resize: vertical;
 }
 
 .mdc-text-field--fullwidth.mdc-text-field--invalid:not(.mdc-text-field--disabled):not(.mdc-text-field--textarea) {

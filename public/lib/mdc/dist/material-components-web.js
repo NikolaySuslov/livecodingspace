@@ -4241,7 +4241,7 @@ var MDCNotchedOutline = function (_MDCComponent) {
     }
 
     /**
-      * Updates outline selectors and SVG path to open notch.
+      * Updates classes and styles to open the notch to the specified width.
       * @param {number} notchWidth The notch width in the outline.
       */
 
@@ -4252,7 +4252,7 @@ var MDCNotchedOutline = function (_MDCComponent) {
     }
 
     /**
-     * Updates the outline selectors to close notch and return it to idle state.
+     * Updates classes and styles to close the notch.
      */
 
   }, {
@@ -20915,8 +20915,19 @@ var MDCSlider = function (_MDCComponent) {
     key: 'initialSyncWithDOM',
     value: function initialSyncWithDOM() {
       var origValueNow = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_VALUENOW));
-      this.min = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_VALUEMIN)) || this.min;
-      this.max = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_VALUEMAX)) || this.max;
+      var min = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_VALUEMIN)) || this.min;
+      var max = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_VALUEMAX)) || this.max;
+
+      // min and max need to be set in the right order to avoid throwing an error
+      // when the new min is greater than the default max.
+      if (min >= this.max) {
+        this.max = max;
+        this.min = min;
+      } else {
+        this.min = min;
+        this.max = max;
+      }
+
       this.step = parseFloat(this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].STEP_DATA_ATTR)) || this.step;
       this.value = origValueNow || this.value;
       this.disabled = this.root_.hasAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_DISABLED) && this.root_.getAttribute(__WEBPACK_IMPORTED_MODULE_1__constants__["c" /* strings */].ARIA_DISABLED) !== 'false';
@@ -26398,7 +26409,10 @@ var MDCTextFieldFoundation = function (_MDCFoundation) {
   }, {
     key: 'setValue',
     value: function setValue(value) {
-      this.getNativeInput_().value = value;
+      // Prevent Safari from moving the caret to the end of the input when the value has not changed.
+      if (this.getValue() !== value) {
+        this.getNativeInput_().value = value;
+      }
       var isValid = this.isValid();
       this.styleValidity_(isValid);
       if (this.adapter_.hasLabel()) {
