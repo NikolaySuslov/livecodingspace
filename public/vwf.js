@@ -328,7 +328,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         "vwf/model/aframe/addon/THREE.MeshLine"
                     ]
                     }
-                    
+
                 }
             };
 

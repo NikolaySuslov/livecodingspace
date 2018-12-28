@@ -25,6 +25,20 @@ define(["module", "vwf/view"], function (module, view) {
             // this.lastRealTick = performance.now();
 
             this.state.appInitialized = false;
+            this.state.showMobileJoystick = function(){
+                let controlEl = document.querySelector('#avatarControl');
+                if(controlEl){
+                controlEl.setAttribute("virtual-gamepad-controls", {});
+                controlEl.addEventListener("move", setJoystickMoveInput);
+                }
+            }
+            this.state.hideMobileJoystick = function(){
+                let controlEl = document.querySelector('#avatarControl');
+                if(controlEl){
+                controlEl.removeAttribute("virtual-gamepad-controls");
+                controlEl.removeEventListener("move", setJoystickMoveInput);
+                }
+            }
 
             if (options === undefined) { options = {}; }
 
@@ -754,6 +768,56 @@ define(["module", "vwf/view"], function (module, view) {
     }
 
 
+     function getMovementVector(el, vel) {
+        var directionVector = new THREE.Vector3(0, 0, 0);
+        var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
+    
+        
+          var rotation = el.getAttribute('rotation');
+          var velocity = vel;
+    
+          directionVector.copy(velocity);
+          directionVector.multiplyScalar(0.05);
+    
+          // Absolute.
+          if (!rotation) { return directionVector; }
+    
+          //xRotation = this.data.fly ? rotation.x : 0;
+    
+          // Transform direction relative to heading.
+          rotationEuler.set(THREE.Math.degToRad(0), THREE.Math.degToRad(rotation.y), 0);
+          directionVector.applyEuler(rotationEuler);
+          return directionVector;
+      }
+
+    function setJoystickMoveInput (event) {
+        const axes = event.detail.axis;
+        //console.log(axes);
+        let el = document.querySelector('#avatarControl');
+        let position = new THREE.Vector3();
+        el.object3D.getWorldPosition(position);
+        let vel = new THREE.Vector3(axes[0], 0, -axes[1]);
+        el.object3D.position.add(getMovementVector(el,vel));
+    }
+
+    function setJoystickRotateY (event) {
+        const val = event.detail.value;
+        //console.log(val);
+        let el = document.querySelector('#avatarControl');
+        let rotation = el.object3D.rotation;
+        el.object3D.rotation.y += (-val)+rotation.y;
+        //el.object3D.rotation.set(rotation.x,-val+rotation.y, rotation.z)
+    }
+
+    function setJoystickRotateX (event) {
+        const val = event.detail.value;
+        //console.log(val);
+        let el = document.querySelector('#avatarControl');
+        let rotation = el.object3D.rotation;
+        el.object3D.rotation.x += val+rotation.x;
+        //el.object3D.rotation.set(val+rotation.x, rotation.y, rotation.z)
+    }
+
     function createAvatarControl(aScene, cb) {
 
         let avatarName = 'avatar-' + self.kernel.moniker();
@@ -776,7 +840,14 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.setAttribute('look-controls', { pointerLockEnabled: false });
         //controlEl.setAttribute('gamepad-controls', {'controller': 0});
 
-
+        if (AFRAME.utils.device.isMobile()) {
+            //self.state.showMobileJoystick()
+            controlEl.setAttribute("virtual-gamepad-controls", {});
+            controlEl.addEventListener("move", setJoystickMoveInput);
+        }
+        //controlEl.addEventListener("rotateY", setJoystickRotateY);
+        //controlEl.addEventListener("rotateX", setJoystickRotateX);
+        
 
         //controlEl.setAttribute('gearvr-controls',{});
 

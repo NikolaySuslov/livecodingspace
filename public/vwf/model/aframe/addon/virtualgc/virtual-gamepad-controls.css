@@ -1,0 +1,44 @@
+.touchZone {
+  position: absolute;
+  height: 20vh;
+  bottom: 0;
+}
+
+.touchZone.left {
+  left: 0;
+  right: 55%;
+}
+
+.touchZone.right {
+  left: 55%;
+  right: 0;
+}
+
+.mockJoystickContainer {
+  position: absolute;
+  height: 0;
+  left: 0;
+  right: 0;
+  bottom: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.mockJoystick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+  background-color: rgba(255,255,255,0.5);
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.mockJoystick.inner {
+  width: 50px;
+  height: 50px;
+}

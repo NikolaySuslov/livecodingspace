@@ -488,53 +488,48 @@ define([
                         $type: "div",
                         class: "mdc-layout-grid__inner",
                         $components: [
-
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
-
-                                    self.widgets.buttonStroked(
-                                        {
-                                            "label": "Go forward",
-                                            "onclick": function (e) {
-
-                                                function getMovementVector(el) {
-                                                    var directionVector = new THREE.Vector3(0, 0, 0);
-                                                    var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
-
-                                                    var rotation = el.getAttribute('rotation');
-                                                    var velocity = new THREE.Vector3(0, 0, -0.5);
-                                                    var xRotation;
-
-                                                    directionVector.copy(velocity);
-                                                    directionVector.multiplyScalar(1.0);
-
-                                                    // Absolute.
-                                                    if (!rotation) { return directionVector; }
-
-                                                    xRotation = 0;
-
-                                                    // Transform direction relative to heading.
-                                                    rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
-                                                    directionVector.applyEuler(rotationEuler);
-                                                    return directionVector;
-
-                                                }
-
-                                                let el = document.querySelector('#avatarControl');
-
-                                                let currentPosition = el.getAttribute('position');
-                                                let movementVector = getMovementVector(el);
-                                                let position = {};
-
-                                                position.x = currentPosition.x + movementVector.x;
-                                                position.y = currentPosition.y + movementVector.y;
-                                                position.z = currentPosition.z + movementVector.z;
-                                                el.setAttribute('position', position);
-
+                                    self.widgets.icontoggle({
+                                        'id': "mobile_joystick",
+                                        'label': 'visibility',
+                                        'on': JSON.stringify({ "content": "gamepad", "label": "Show" }),
+                                        'off': JSON.stringify({ "content": "gamepad", "label": "Hide" }),
+                                        'state': false,
+                                        'init': function () {
+                                            this._driver = vwf.views["vwf/view/aframe"];
+                                            this._comp = new mdc.iconToggle.MDCIconToggle(this);
+                                            mdc.iconToggle.MDCIconToggle.attachTo(this);
+                                            if (document.getElementsByClassName('touchZone').length > 0){
+                                                this._comp.on = true;
+                                                this.style.color = "#3e7e40";
+                                            } else {
+                                                this._comp.on = false;
+                                                this.style.color = "#333333";
                                             }
-                                        }),
+                                            
+
+                                                this.addEventListener('MDCIconToggle:change', (e) => {
+                                                    let chkAttr = e.detail.isOn;
+                                                    let driver = e.target._driver;
+                                                    if (chkAttr) {
+                                                    driver.state.showMobileJoystick();
+                                                    this.style.color = "#3e7e40";
+                                                   // this.classList.add('mdc-icon-toggle--enabled');
+                                                        console.log("on");
+    
+                                                    } else {
+                                                        driver.state.hideMobileJoystick();
+                                                        this.style.color = "#333333";
+                                                        //this.classList.add('mdc-icon-toggle--disabled');
+                                                        console.log("off")
+                                                    }
+
+                                                });
+                                        }
+                                    }),
                                     self.widgets.divider
 
                                 ]
@@ -1868,7 +1863,7 @@ define([
                                         }
                                     }),
                                     self.widgets.floatActionButton({
-                                        label: "priority_high",
+                                        label: "person",
                                         styleClass: "mdc-fab--mini",
                                         onclickfunc: function () {
                                             var nodeID = document.querySelector('#currentNode')._currentNode;
