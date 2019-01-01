@@ -327,6 +327,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         "vwf/model/aframe/addon/TransformControls",
                         "vwf/model/aframe/addon/THREE.MeshLine"
                     ]
+                    },
+                    "vwf/view/arjs/aframe-ar": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
                     }
 
                 }
@@ -368,6 +371,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     active: false 
                 },
 
+
                 { library: "vwf/model/aframeComponent", active: true },
 
                 { library: "vwf/kernel/view", active: true },
@@ -383,6 +387,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "vwf/view/ohm", active: true },
                 { library: "vwf/view/osc", active: true },
 
+                { library: "vwf/view/aframe-arjs", 
+                linkedLibraries: [ "vwf/model/aframe/aframe-master"],
+                active: false
+            },
+
                 
                  { library: "vwf/view/aframe", active: true },
                 { library: "vwf/model/aframe/aframe-master", active: false },
@@ -393,6 +402,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "vwf/model/aframe/addon/BVHLoader", active: false },
                 { library: "vwf/model/aframe/addon/TransformControls", active: false },
                 { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
+                
                 
                 
                 { library: "vwf/model/aframe/addon/SkyShader", active: false },
@@ -432,6 +442,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                      { library: "vwf/view/ohm", active: true },
                      { library: "vwf/view/osc", active: true },
+                     { library: "vwf/view/aframe-arjs", active: false },
 
                     { library: "vwf/view/webrtc", active: true}
 
@@ -477,6 +488,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     let config = YAML.parse(res);
                     conf = config
                 } 
+
+                let manualSettings = localStorage.getItem('lcs_app_manual_settings');
+                if(manualSettings){
+                    let manualConf = JSON.parse(manualSettings);
+                    conf.model = manualConf.model;
+                    conf.view = manualConf.view;
+                }
 
                 let confPromise = new Promise((resolve, reject) => {
                       resolve(conf); 

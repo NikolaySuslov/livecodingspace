@@ -1,0 +1,14 @@
+{
+        "info": {
+            "en": {
+                "title": "Simple AR app",
+                "imgUrl": "/defaults/worlds/aframe/webimg.jpg",
+                "text": "Example application showing Virtual World Framework & A-Frame integration in AR"
+            },
+            "ru": {
+                "title": "Мир VWF & A-Frame в AR",
+                "imgUrl": "/defaults/worlds/aframe/webimg.jpg",
+                "text": "Пример распределенного приложения, показывающего возможности интеграции Virtual World Framework & A-Frame"
+            }
+        }
+}

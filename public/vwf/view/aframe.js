@@ -227,6 +227,23 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
+            // if (propertyName == 'arjs') {
+            //     if(propertyValue) {
+            //         node.aframeObj.setAttribute('arjs', {trackingMethod: "best", sourceType: "webcam", debugUIEnabled: "true"});
+
+            //     // let sceneEl = document.querySelector('a-scene');
+            //     // let marker = document.createElement('a-marker-camera');
+            //     // marker.setAttribute('preset', 'hiro');
+            //     // sceneEl.appendChild(marker);
+            //         //<a-marker-camera preset='hiro'></a-marker-camera>
+
+            //     } else {
+            //         if(node.aframeObj.getAttribute('arjs')){
+            //             node.aframeObj.removeAttribute('arjs')
+            //         }
+            //     }
+            // }
+
             if (propertyName == 'position') {
                 receiveModelTransformChanges(nodeId, 'position', propertyValue);
             }
@@ -574,6 +591,8 @@ define(["module", "vwf/view"], function (module, view) {
                             self.kernel.callMethod(offsetCompID, "setParams", []);
                         }
                         node.aframeObj.setAttribute('camera', 'active', true);
+
+						document.querySelector('a-scene').emit('makeActiveCamera');
                     }
                 }
             }
@@ -873,6 +892,19 @@ define(["module", "vwf/view"], function (module, view) {
         aScene.appendChild(avatarEl);
 
         controlEl.setAttribute('camera', 'active', true);
+
+
+        // let arControl = document.createElement('a-entity');
+        // arControl.setAttribute('id', 'arControlParent');
+        // arControl.setAttribute('camera', {
+        //     active: true,
+        //     "look-controls-enabled": false,
+        //     "wasd-controls-enabled": false,
+        //     "user-height": 0
+        // });
+        // aScene.appendChild(arControl);
+
+
 
         cb();
 

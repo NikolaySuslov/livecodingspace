@@ -640,10 +640,6 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
-
-
-
-
                 if (value === undefined && aframeObject.nodeName == "A-BOX") {
                     value = propertyValue;
 
@@ -849,6 +845,27 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
                     }
                 }
+
+                if (value === undefined && aframeObject.nodeName == "A-ANCHOR") {
+                    value = propertyValue;
+
+                    switch (propertyName) {
+                        case "changeMatrixMode":
+                            aframeObject.setAttribute('arjs-anchor', 'changeMatrixMode', propertyValue);
+                            break;
+
+                        case 'hit-testing-enabled':
+                            aframeObject.setAttribute('hit-testing-enabled', propertyValue);
+                        break;
+
+                        default:
+                            value = undefined;
+                            break;
+
+                    }
+                    
+                }
+
 
             }
             return value;
@@ -1257,6 +1274,19 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+                if (value === undefined && aframeObject.nodeName == "A-ANCHOR") {
+
+                    switch (propertyName) {
+                        case "changeMatrixMode":
+                            value = aframeObject.getAttribute('arjs-anchor').changeMatrixMode;
+                            break;
+                        case "hit-testing-enabled":
+                            value = aframeObject.getAttribute('hit-testing-enabled');
+                            break;
+                    }
+
+                }
+
 
 
             }
@@ -1279,6 +1309,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             let assetsElement = document.createElement('a-assets');
             aframeObj.appendChild(assetsElement);
             aframeObj.setAttribute('scene-utils', "");
+            //aframeObj.setAttribute('embedded', {});
             //aframeObj.setAttribute('loading-screen', "backgroundColor: black");
             self.state.scenes[node.ID] = aframeObj;
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
@@ -1335,11 +1366,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
             aframeObj = document.createElement('a-sky');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
-            aframeObj = document.createElement('a-camera');
-            aframeObj.setAttribute('camera', 'active', false);
-
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/alight.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-arjs-anchor.vwf")) {
+            aframeObj = document.createElement('a-anchor');
+        
+        }  else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/alight.vwf")) {
             aframeObj = document.createElement('a-light');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acursor.vwf")) {
             aframeObj = document.createElement('a-cursor');
@@ -1365,6 +1395,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             aframeObj = document.createElement('a-sphere');
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aanimation.vwf")) {
             aframeObj = document.createElement('a-animation');
+        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
+            aframeObj = document.createElement('a-camera');
+            aframeObj.setAttribute('camera', 'active', false);
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
             aframeObj = document.createElement('a-entity');
         }

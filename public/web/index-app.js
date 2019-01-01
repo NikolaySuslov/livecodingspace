@@ -62,6 +62,8 @@ class IndexApp {
 
     }
 
+    
+
     initHTML() {
 
         let self = this;
@@ -663,9 +665,11 @@ class IndexApp {
                                         {
                                             $type: "a",
                                             $text: m[0],
-                                            target: "_blank",
-                                            href: window.location.protocol + "//" + window.location.host + "/" + m[1].user + m[0],
+                                            //target: "_blank",
+                                           // href: window.location.protocol + "//" + window.location.host + "/" + m[1].user + m[0],
                                             onclick: function (e) {
+                                                self.checkForManualSettings();
+                                                window.location.pathname = "/" + m[1].user + m[0];
                                                 //self.refresh();
                                             }
                                         },
@@ -784,9 +788,12 @@ class IndexApp {
                     $type: "a",
                     class: "mdc-button mdc-button--raised mdc-card__action ",
                     $text: self.language.t('start'),//"Start new",
-                    target: "_blank",
-                    href: "/" + desc.userAlias + '/' + desc.worldName,
+                    //target: "_blank",
+                    //href: "/" + desc.userAlias + '/' + desc.worldName,
                     onclick: function (e) {
+                            self.checkForManualSettings();
+                            window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
+                           
                         //self.refresh();
                     }
                 });
@@ -987,6 +994,35 @@ class IndexApp {
         }
 
         return worldCards
+    }
+
+
+    checkForManualSettings() {
+        console.log("check for manual settings");
+                            let manualSettings = localStorage.getItem('lcs_app_manual_settings');
+                            if(manualSettings){
+                                localStorage.removeItem('lcs_app_manual_settings');
+                            }
+                          
+                            let el = document.querySelector('#runWorldGUI');
+                            if (el) {
+                                if (el._settingsSwitch.checked){
+                                    console.log("NEED TO LOAD MANUAL SETTINGS!!");
+
+                                let arSettings = {
+                                    model:{
+                                        'vwf/model/aframe': null
+                                }, 
+                                    view:{
+                                        'vwf/view/aframe' : null,
+                                        'vwf/view/aframe-arjs': null,
+                                        'vwf/view/editor-new': null
+                                }
+                            }
+
+                                    localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
+                                } 
+                            }
     }
 
 

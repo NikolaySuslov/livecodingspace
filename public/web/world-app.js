@@ -136,6 +136,33 @@ class WorldApp {
         }
 
 
+        let runWorldGUI = {
+            id: "runWorldGUI",
+            $type: "div",
+            _settingsSwitch: null,
+            $components: [
+                {
+                    $type: "div",
+                    $text: "Settings for start:"
+                },
+                _cellWidgets.switch({
+                    'id': 'arjsView',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      this._switch.checked = false;
+                      this._settingsSwitch = this._switch;
+                    }
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-forceReplace',
+                    $text: 'AR'
+                  }
+            ]
+
+        }
+
         let actionsGUI = {
             $cell: true,
             id: "worldActionsGUI",
@@ -310,7 +337,9 @@ class WorldApp {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                                     $components: [
-                                        worldCardGUI
+                                        worldCardGUI,
+                                        {$type: 'p'},
+                                        runWorldGUI
                                     ]
                                 },
                                 {

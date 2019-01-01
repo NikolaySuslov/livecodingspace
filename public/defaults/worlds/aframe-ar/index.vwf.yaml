@@ -1,0 +1,56 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  transparent: true
+children:
+  arcamera:
+    extends: http://vwf.example.com/aframe/acamera.vwf
+    properties:
+      look-controls-enabled: false
+      wasd-controls-enabled: false
+      user-height: 0
+  aranchor:
+    extends: http://vwf.example.com/aframe/a-arjs-anchor.vwf
+    properties:
+      hit-testing-enabled: true
+      changeMatrixMode: "cameraTransformMatrix"
+    children:
+      sphere:
+        extends: http://vwf.example.com/aframe/asphere.vwf
+        properties:
+          position: "0 0 0"
+          radius: 1
+        children:
+          material:
+            extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+            properties:
+              color: "#e0e014"
+              wireframe: true
+          box2:
+            extends: http://vwf.example.com/aframe/abox.vwf
+            properties:
+              position: "0 0.5 0"
+              depth: 1
+            children:
+              material:
+                extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+                properties:
+                  color: "#2167a5"
+              interpolation:
+                extends: http://vwf.example.com/aframe/interpolation-component.vwf
+                properties:
+                  enabled: true
+            methods:
+              run:
+                body: |
+                  var time = vwf.now;
+                  let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);
+                  this.rotation = [rot[0], rot[1], Math.sin(time)*100];
+                  this.future( 0.05 ).run();  // schedule the next step
+methods:
+  initialize:
+    body: |
+      let runBox = vwf_view.kernel.find("", "/aranchor/sphere/box2")[0];
+      vwf_view.kernel.callMethod(runBox, "run");
