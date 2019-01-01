@@ -43,7 +43,7 @@ define(["module", "vwf/view", "vwf/view/arjs/signals/signals", "vwf/view/arjs/af
 			if (self.viewDriver.state.scenes[childID]) {
 				let scene = self.viewDriver.state.scenes[childID];
 				scene.setAttribute('embedded', {});
-				scene.setAttribute('arjs', {trackingMethod: "best", sourceType: "webcam", debugUIEnabled: "false"});
+				scene.setAttribute('arjs', {trackingMethod: "best", sourceType: "webcam", debugUIEnabled: "true"});
 			}
 
 			if (self.viewDriver.state.nodes[childID].extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
