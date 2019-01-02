@@ -858,6 +858,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute('hit-testing-enabled', propertyValue);
                         break;
 
+                        case 'preset':
+                        aframeObject.setAttribute('preset', propertyValue);
+                        break;
+
+                        case 'markerType':
+                        aframeObject.setAttribute('type', propertyValue);
+                        break;
+
+                        case 'markerValue':
+                        aframeObject.setAttribute('velue', propertyValue);
+                        break;
+
                         default:
                             value = undefined;
                             break;
@@ -1283,6 +1295,19 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "hit-testing-enabled":
                             value = aframeObject.getAttribute('hit-testing-enabled');
                             break;
+                        case "preset":
+                            value = aframeObject.getAttribute('preset');
+                            break;
+
+                        case 'markerType':
+                            value = aframeObject.getAttribute('type');
+                            break;
+    
+                        case 'markerValue':
+                            value = aframeObject.getAttribute('value');
+                            break;
+
+
                     }
 
                 }

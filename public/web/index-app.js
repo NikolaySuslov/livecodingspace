@@ -1015,7 +1015,7 @@ class IndexApp {
                                 }, 
                                     view:{
                                         'vwf/view/aframe' : null,
-                                        'vwf/view/aframe-arjs': null
+                                        'vwf/view/aframe-ar-driver': null
                                         //'vwf/view/editor-new': null
                                 }
                             }

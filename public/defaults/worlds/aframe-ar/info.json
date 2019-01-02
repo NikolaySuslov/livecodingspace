@@ -8,7 +8,7 @@
             "ru": {
                 "title": "Мир VWF & A-Frame в AR",
                 "imgUrl": "/defaults/worlds/aframe/webimg.jpg",
-                "text": "Пример распределенного приложения, показывающего возможности интеграции Virtual World Framework & A-Frame"
+                "text": "Пример распределенного приложения, показывающего возможности интеграции Virtual World Framework & A-Frame в дополненной реальности"
             }
         }
 }

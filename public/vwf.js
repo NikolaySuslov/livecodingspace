@@ -387,7 +387,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "vwf/view/ohm", active: true },
                 { library: "vwf/view/osc", active: true },
 
-                { library: "vwf/view/aframe-arjs", 
+                { library: "vwf/view/aframe-ar-driver", 
                 linkedLibraries: [ "vwf/model/aframe/aframe-master"],
                 active: false
             },
@@ -442,7 +442,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                      { library: "vwf/view/ohm", active: true },
                      { library: "vwf/view/osc", active: true },
-                     { library: "vwf/view/aframe-arjs", active: false },
+                     { library: "vwf/view/aframe-ar-driver", active: false },
 
                     { library: "vwf/view/webrtc", active: true}
 

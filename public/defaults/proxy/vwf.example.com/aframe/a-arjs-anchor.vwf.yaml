@@ -5,3 +5,6 @@ type: "a-anchor"
 properties:
   hit-testing-enabled:
   changeMatrixMode:
+  preset:
+  markerType:
+  markerValue:
