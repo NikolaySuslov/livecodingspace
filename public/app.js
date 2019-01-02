@@ -192,7 +192,8 @@ class App {
 
     Object.keys(proxyObj).forEach(res => {
       let proxy = _LCSDB.user().get('proxy');
-      proxy.get(res).put(proxyObj[res]);
+      let newDoc = proxy.get(res);
+      newDoc.put(proxyObj[res]);
     })
 
   }
