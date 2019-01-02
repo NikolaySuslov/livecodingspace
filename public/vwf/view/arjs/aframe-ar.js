@@ -4187,7 +4187,7 @@ THREE.WebAR.updateCameraMeshOrientation = function(vrDisplay, cameraMesh) {
 */
 THREE.WebAR.createVRSeeThroughCamera = function(vrDisplay, near, far) {
   var camera = new THREE.PerspectiveCamera( 60, 
-    window.visualViewport.width / window.visualViewport.height, near, far );
+    window.innerWidth / window.innerHeight, near, far );
   if (vrDisplay) {
     THREE.WebAR.resizeVRSeeThroughCamera(vrDisplay, camera);
   }
@@ -4200,9 +4200,9 @@ THREE.WebAR.createVRSeeThroughCamera = function(vrDisplay, near, far) {
 * @param {THREE.Camera} camera The ThreeJS camera instance to update its projection matrix depending on the current device orientation and see through camera properties.
 */
 THREE.WebAR.resizeVRSeeThroughCamera = function(vrDisplay, camera) {
-  camera.aspect = window.visualViewport.width / window.visualViewport.height;
+  camera.aspect = window.innerWidth / window.innerHeight;
   if (vrDisplay) {
-    var windowWidthBiggerThanHeight = window.visualViewport.width > window.visualViewport.height;
+    var windowWidthBiggerThanHeight = window.innerWidth > window.innerHeight;
     var seeThroughCamera = vrDisplay.getSeeThroughCamera();
     if (seeThroughCamera) {
       var cameraWidthBiggerThanHeight = 
@@ -6092,8 +6092,8 @@ ARjs.Source.prototype.domElementHeight = function(){
 
 ARjs.Source.prototype.onResizeElement = function(){
 	var _this = this
-	var screenWidth = window.visualViewport.width
-	var screenHeight = window.visualViewport.height
+	var screenWidth = window.innerWidth
+	var screenHeight = window.innerHeight
 
 	// sanity check
 	console.assert( arguments.length === 0 )
@@ -6146,7 +6146,7 @@ ARjs.Source.prototype.copyElementSizeTo = function(otherElement){
 
 ARjs.Source.prototype.copyElementSizeTo = function(otherElement){
 
-	if (window.visualViewport.width > window.visualViewport.height)
+	if (window.innerWidth > window.innerHeight)
 	{
 		//landscape
 		otherElement.style.width = this.domElement.style.width
@@ -6158,7 +6158,7 @@ ARjs.Source.prototype.copyElementSizeTo = function(otherElement){
 		//portrait
 		otherElement.style.height = this.domElement.style.height
 		otherElement.style.width = (parseInt(otherElement.style.height) * 4/3)+"px";
-		otherElement.style.marginLeft = ((window.visualViewport.width- parseInt(otherElement.style.width))/2)+"px";
+		otherElement.style.marginLeft = ((window.innerWidth- parseInt(otherElement.style.width))/2)+"px";
 		otherElement.style.marginTop = 0;
 	}
 
@@ -6207,7 +6207,7 @@ ARjs.Source.prototype.onResize	= function(arToolkitContext, renderer, camera){
 
 		this.copyElementSizeTo(arToolkitContext.arucoContext.canvas)	
 	}else if( trackingBackend === 'tango' ){
-		renderer.setSize( window.visualViewport.width, window.visualViewport.height )
+		renderer.setSize( window.innerWidth, window.innerHeight )
 	}else console.assert(false, 'unhandled trackingBackend '+trackingBackend)
 
 
