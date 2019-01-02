@@ -189,12 +189,20 @@ class App {
       }
     }
     console.log(proxyObj);
+    let proxy = _LCSDB.user().get('proxy');
+    proxy.put(proxyObj);
 
-    Object.keys(proxyObj).forEach(res => {
-      let proxy = _LCSDB.user().get('proxy');
-      let newDoc = proxy.get(res);
-      newDoc.put(proxyObj[res]);
-    })
+    // for (const key of Object.keys(proxyObj)) {
+    //   let proxy = _LCSDB.user().get('proxy');
+    //   let newDoc = proxy.get(key);
+    //   await newDoc.put(proxyObj[key]).then();
+    // }
+
+    // Object.keys(proxyObj).forEach(res => {
+    //   let proxy = _LCSDB.user().get('proxy');
+    //   let newDoc = proxy.get(res);
+    //   newDoc.put(proxyObj[res]);
+    // })
 
   }
 
@@ -252,20 +260,22 @@ class App {
     console.log(worldsObj);
 
     if (replace) {
+       //force replace all default worlds
+      let worlds = _LCSDB.user().get('worlds');
+      worlds.put(worldsObj);
 
-      Object.entries(worldsObj).forEach(res => {
+      // Object.entries(worldsObj).forEach(res => {
 
-        let worldName = res[0];
-        let files = res[1];
-        Object.entries(files).forEach(file => {
+      //   let worldName = res[0];
+      //   let files = res[1];
+      //   Object.entries(files).forEach(file => {
 
-          _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
+      //     _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
 
-        })
-      })
+      //   })
+      // })
     } else {
-      //force replace all default worlds
-
+     
       Object.entries(worldsObj).forEach(res => {
 
         let worldName = res[0];
@@ -520,9 +530,9 @@ class App {
                   $type: "button",
                   class: "mdc-button mdc-button--raised",
                   $text: "Load defaults Proxy",
-                  onclick: function (e) {
+                  onclick: async function (e) {
                     console.log("admin action");
-                    window._app.loadProxyDefaults();
+                    await window._app.loadProxyDefaults();
                   }
                 }
               ]
