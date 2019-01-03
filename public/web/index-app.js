@@ -560,14 +560,16 @@ class IndexApp {
                                                                 return ack.err
                                                             };
                                                             if (ack.pub) {
-                                                                let users = _LCSDB.get('users');
-                                                                    users.get(alias).put({
+                                                                let userObj = {
                                                                     'alias': alias,
                                                                     'pub': ack.pub
-                                                                });
-                                                                _LCSDB.user().auth(alias, pass);
+                                                                };
+                                                                _LCSDB.get('users').get(alias).put(userObj);
+                                                                
                                                             }
+                                                            _LCSDB.user().auth(alias, pass);
                                                         });
+                                                        
                                                 }
                                             }
                                         }),

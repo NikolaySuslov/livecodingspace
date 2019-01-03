@@ -1142,8 +1142,7 @@ class App {
     // }
 
     let myWorlds = _LCSDB.user().get('worlds');
-    let myNewWorld = myWorlds.get(worldID);
-    myNewWorld.put(worldObj);
+    myWorlds.get(worldID).put(worldObj);
 
     _app.hideProgressBar();
     console.log('CLONED!!!');
