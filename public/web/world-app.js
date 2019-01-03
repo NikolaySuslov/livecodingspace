@@ -95,18 +95,10 @@ class WorldApp {
         return worldStatesGUI
     }
 
-    async initWorldGUI() {
 
-    //  _LCSDB.on('auth',
-    //     function (ack) {
-    //         if(ack.pub)
-    //             document.querySelector('#worldActionsGUI')._refresh();
-            
-    //     });
-
+    async makeGUI(userPub){
+        
         let self = this;
-        let userPub = await _LCSDB.get('users').get(this.userAlias).get('pub').then();
-
         let user = {'user': this.userAlias, pub: userPub};
         let space = this.worldName;
         let saveName = this.saveName;
@@ -365,6 +357,28 @@ class WorldApp {
             ]
         })
 
+
+
+    }
+
+
+    async initWorldGUI() {
+
+    //  _LCSDB.on('auth',
+    //     function (ack) {
+    //         if(ack.pub)
+    //             document.querySelector('#worldActionsGUI')._refresh();
+            
+    //     });
+
+        let self = this;
+        await _LCSDB.get('users').get(this.userAlias).get('pub').then(res=>{
+
+            self.makeGUI(res)
+
+        });
+
+       
 
     }
 
