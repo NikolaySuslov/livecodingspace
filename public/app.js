@@ -1840,9 +1840,12 @@ class App {
     return worlds
   }
 
-  async getSaveStates(userAlias, worldName) {
+  async getSaveStates(userInfo, worldName) {
 
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+    //let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+
+    let userPub = userInfo.pub;
+    let userAlias =  userInfo.user;
 
     var db = _LCSDB.user(userPub);
 
@@ -1853,15 +1856,15 @@ class App {
 
     var states = {};
 
-    let documents = await db.get('documents').once().then();
+    let documents = await db.get('documents').then();
     if(documents) {
-    let docs = await db.get('documents').get(worldName).once().then();
+    let docs = await db.get('documents').get(worldName).then();
     if (docs) {
       let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
       if (saves) {
         for (const el of saves) {
           let stateName = el.split('/')[2].replace('_info_vwf_json', "");
-          let info = await this.getStateInfo(userAlias, worldName, stateName);
+          let info = await this.getStateInfo(userInfo, worldName, stateName);
           if (Object.keys(info).length !== 0)
             states[stateName] = info;
         }
@@ -1871,9 +1874,14 @@ class App {
     return states
   }
 
-  async getStateInfo(user, space, saveName, gui) {
+  async getStateInfo(userInfo, space, saveName) {
 
-    let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
+
+    //let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
+
+    let userPub = userInfo.pub;
+    let user =  userInfo.user;
+
     var db = _LCSDB.user(userPub);
 
     if (_LCSDB.user().is) {
@@ -1914,19 +1922,15 @@ class App {
     
     }
     
-    if(gui){
-      gui._worldInfo = info;
-      gui.$update();
-    }
-
     return info
   }
 
 
-  async getWorldInfo(user, space, gui) {
-    //get space for user
+  async getWorldInfo(userInfo, space) {
+    //get space for userA
 
-    let userPub = await _LCSDB.get('users').get(user).get('pub').then();
+    let userPub = userInfo.pub;//await _LCSDB.get('users').get(user).get('pub').then();
+    let user =  userInfo.user;
 
     var userdb = _LCSDB.user(userPub);
 
@@ -1938,9 +1942,9 @@ class App {
     var info = {};
 
 
-    let world = await userdb.get('worlds').get(space).once().then();
+    let world = await userdb.get('worlds').get(space).then();
     if (world) {
-      let res = await userdb.get('worlds').get(space).get('info_json').once().then();
+      let res = await userdb.get('worlds').get(space).get('info_json').then();
 
         if (res && res !== 'null') {
 
@@ -1969,11 +1973,6 @@ class App {
       
     }
 
-    if(gui){
-      gui._worldInfo = info;
-      gui.$update();
-    }
-    
     return info
 
   }

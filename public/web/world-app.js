@@ -105,7 +105,9 @@ class WorldApp {
     //     });
 
         let self = this;
-        let user = this.userAlias;
+        let userPub = await _LCSDB.get('users').get(this.userAlias).get('pub').then();
+
+        let user = {'user': this.userAlias, pub: userPub};
         let space = this.worldName;
         let saveName = this.saveName;
 
@@ -113,19 +115,20 @@ class WorldApp {
         el.setAttribute("id", "aboutWorld");
         document.body.appendChild(el);
 
-        let cardID = user + '_' + space + '_' + (saveName ? saveName : "");
+        let cardID = user.user + '_' + space + '_' + (saveName ? saveName : "");
         let worldCardGUI = _app.indexApp.createWorldCard(cardID, 'full');
         let worldStatesGUI = [];
 
         var info = {};
+        
 
         if (!saveName) {
-            info = await _app.getWorldInfo(user, space, worldCardGUI);
+            info = await _app.getWorldInfo(user, space);
         } else {
-            info = await _app.getStateInfo(user, space, saveName, worldCardGUI);
+            info = await _app.getStateInfo(user, space, saveName);
         }
-        // worldCardGUI._worldInfo = info;
-        // worldCardGUI.$update();
+        worldCardGUI._worldInfo = info;
+        worldCardGUI.$update();
 
         if (!saveName) {
             let statesData = await _app.getSaveStates(user, space);
