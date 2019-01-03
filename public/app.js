@@ -1926,7 +1926,8 @@ class App {
   async getWorldInfo(user, space, gui) {
     //get space for user
 
-    let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
+    let userPub = await _LCSDB.get('users').get(user).get('pub').then();
+
     var userdb = _LCSDB.user(userPub);
 
     if (_LCSDB.user().is) {
