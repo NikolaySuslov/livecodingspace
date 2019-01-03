@@ -1281,7 +1281,8 @@
         return data;
       }
     }
-    SEA.opt.shuffle_attack = 1546329600000; // Jan 1, 2019
+    //SEA.opt.shuffle_attack = 1546329600000; // Jan 1, 2019
+    SEA.opt.shuffle_attack = 1555623324344
     var noop = {}, u;
 
   })(USE, './index');
