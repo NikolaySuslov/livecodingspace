@@ -291,6 +291,14 @@ class IndexApp {
                 // document.querySelector('#worldGUI').$update();
                 // document.querySelector('#main').$update();
 
+                _LCSDB.get('users').get(alias).not(res => {
+                    let userObj = {
+                        alias: alias,
+                        pub: ack.sea.pub
+                    }
+                    _LCSDB.get('users').get(alias).put(userObj);
+                  })
+
                 _LCSDB.user().get('profile').once(function (data) { console.log(data) })
 
                 let el = document.getElementById("loginGUI");

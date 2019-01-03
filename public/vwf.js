@@ -480,7 +480,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             let appName = JSON.parse(localStorage.getItem('lcs_app')).path.application.split(".").join("_");
             let dbPath = appName + '_config_yaml';
            
-            _LCS_WORLD_USER.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(res => {
+            let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+
+            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(res => {
                 
                 var conf = "";
 
@@ -4886,6 +4888,8 @@ if ( ! childComponent.source ) {
 
 
             var fileName = "";
+            let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);    
+                
 
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
@@ -4900,7 +4904,7 @@ if ( ! childComponent.source ) {
                     let worldName = dbName.split('/')[0];
                     //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
                    fileName = dbName.replace(worldName + '/', "");
-                   window._LCS_WORLD_USER.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                   userDB.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
                     //console.log(r);
                     parseComp(r);
 
@@ -4962,6 +4966,8 @@ if ( ! childComponent.source ) {
                 //var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
                 var fileName = "";
 
+                let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);  
+
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
@@ -4972,7 +4978,7 @@ if ( ! childComponent.source ) {
  
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
-                    window._LCS_WORLD_USER.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                    userDB.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
                         //console.log(r);
                         parseComp(r);
     

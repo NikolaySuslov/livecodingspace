@@ -85,6 +85,9 @@ class App {
       window._LCS_SYS_USER = undefined;
       window._LCS_WORLD_USER = undefined;
 
+      _LCSDB.get('lcs/app').load();
+      _LCSDB.get('users').load();
+
       _LCSDB.get('lcs/app').get('pub').once(res => {
 
         if (res) {
@@ -805,10 +808,19 @@ class App {
 
   async setUserPaths(user) {
 
-    await _LCSDB.get('users').get(user).get('pub').once(res => {
+     await _LCSDB.get('users').get(user).get('pub').once(res => {
       if (res)
-        window._LCS_WORLD_USER = _LCSDB.user(res);
+        window._LCS_WORLD_USER = {
+          alias: user,
+          pub: res
+        }   
     }).then();
+
+
+    // await _LCSDB.get('users').get(user).get('pub').once(res => {
+    //   if (res)
+    //     window._LCS_WORLD_USER = _LCSDB.user(res);
+    // }).then();
 
   }
 
@@ -911,8 +923,10 @@ class App {
       if (!dataJson.path['instance']) return undefined;
     }
 
-    let userAlias = await _LCS_WORLD_USER.get('alias').once().then();
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+    //let userAlias = await _LCS_WORLD_USER.get('alias').once().then();
+    // let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
+    let userAlias = _LCS_WORLD_USER.alias;
+    let userPub = _LCS_WORLD_USER.pub;
 
     let loadInfo = await this.getLoadInformation(dataJson);
     let saveInfo = await this.loadSaveObject(loadInfo);
@@ -949,15 +963,18 @@ class App {
   // an empty array).
 
   async lookupSaveRevisions(public_path, save_name) {
+
+    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+
     var result = [];
     var states = [];
     let docName = 'savestate_/' + public_path + '/' + save_name + '_vwf_json';
 
-    let revs = await _LCS_WORLD_USER.get('documents').get(public_path).get(docName).get('revs').once().then();
+    let revs = await userDB.get('documents').get(public_path).get(docName).get('revs').once().then();
     if (revs) {
       for (const res of Object.keys(revs)) {
         if (res !== '_') {
-          let el = await _LCS_WORLD_USER.get('documents').get(public_path).get(docName).get('revs').get(res).once().then();
+          let el = await userDB.get('documents').get(public_path).get(docName).get('revs').get(res).once().then();
           if (el)
             result.push(parseInt(el.revision));
         }
@@ -1010,6 +1027,8 @@ class App {
 
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
 
+    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+
     if (!loadInfo.save_name) {
       return undefined
     }
@@ -1022,7 +1041,7 @@ class App {
 
     let worldName = this.helpers.appPath //loadInfo[ 'application_path' ].slice(1);
 
-    let saveObject = await _LCS_WORLD_USER.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).once().then();
+    let saveObject = await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).once().then();
     let saveInfo = saveObject ? JSON.parse(saveObject.jsonState) : saveObject;
 
     return saveInfo;
@@ -1428,7 +1447,9 @@ class App {
   async loadSavedState(filename, applicationpath, revision) {
     console.log("Loading: " + filename);
 
-    let userName = await _LCS_WORLD_USER.get('alias').once().then();
+    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+
+    let userName = await userDB.get('alias').once().then();
 
     if (revision) {
       window.location.pathname = '/' + userName + applicationpath + '/load/' + filename + '/' + revision + '/';

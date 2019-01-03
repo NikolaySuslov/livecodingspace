@@ -2951,8 +2951,9 @@ define([
                     this.style.visibility = 'hidden';
                     let fileName = 'appui_js';
                     let worldName = self.helpers.getRoot(true).root;//url.split('/')[0];
+                    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-                    _LCS_WORLD_USER.get('worlds').get(worldName).get(fileName).once(res => {
+                    userDB.get('worlds').get(worldName).get(fileName).once(res => {
 
                         this._importScript(res.file);
                     })

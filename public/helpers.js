@@ -93,10 +93,12 @@ class Helpers {
 
     async IsFileExist(path) {
 
+        let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+
         var seperatorFixedPath = path.slice(1);//path.replace(/\//g, '/');
         let worldName = seperatorFixedPath.split('/')[0];
         let fileName = seperatorFixedPath.replace(worldName + '/', "");
-        let doc = await _LCS_WORLD_USER.get('worlds').get(worldName).get(fileName).once().then();
+        let doc = await userDB.get('worlds').get(worldName).get(fileName).once().then();
         if (doc) {
             return true
         }
@@ -105,8 +107,10 @@ class Helpers {
 
     async IsExist(path) {
 
+        let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+        
         var seperatorFixedPath = path.slice(1);//path.replace(/\//g, '/');
-        let doc = await _LCS_WORLD_USER.get('worlds').get(seperatorFixedPath).once().then();
+        let doc = await userDB.get('worlds').get(seperatorFixedPath).once().then();
         if (doc) {
             return true
         }

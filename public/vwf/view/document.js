@@ -56,8 +56,8 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                let appName = JSON.parse(localStorage.getItem('lcs_app')).path.application.split(".").join("_");
                let dbPath = appName + '_html';
               let worldName = path.slice(1);
-   
-               _LCS_WORLD_USER.get('worlds').get(worldName).get(dbPath).once().then(res => {
+              let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+              userDB.get('worlds').get(worldName).get(dbPath).once().then(res => {
                    
                    var responseText = "";
                    
