@@ -120,12 +120,12 @@ class WorldApp {
         var info = {};
 
         if (!saveName) {
-            info = await _app.getWorldInfo(user, space);
+            info = await _app.getWorldInfo(user, space, worldCardGUI);
         } else {
-            info = await _app.getStateInfo(user, space, saveName);
+            info = await _app.getStateInfo(user, space, saveName, worldCardGUI);
         }
-        worldCardGUI._worldInfo = info;
-        worldCardGUI.$update();
+        // worldCardGUI._worldInfo = info;
+        // worldCardGUI.$update();
 
         if (!saveName) {
             let statesData = await _app.getSaveStates(user, space);

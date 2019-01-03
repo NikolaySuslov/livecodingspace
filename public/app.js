@@ -1871,7 +1871,7 @@ class App {
     return states
   }
 
-  async getStateInfo(user, space, saveName) {
+  async getStateInfo(user, space, saveName, gui) {
 
     let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
     var db = _LCSDB.user(userPub);
@@ -1913,11 +1913,17 @@ class App {
         }
     
     }
+    
+    if(gui){
+      gui._worldInfo = info;
+      gui.$update();
+    }
+
     return info
   }
 
 
-  async getWorldInfo(user, space) {
+  async getWorldInfo(user, space, gui) {
     //get space for user
 
     let userPub = await _LCSDB.get('users').get(user).get('pub').once().then();
@@ -1962,6 +1968,11 @@ class App {
       
     }
 
+    if(gui){
+      gui._worldInfo = info;
+      gui.$update();
+    }
+    
     return info
 
   }
