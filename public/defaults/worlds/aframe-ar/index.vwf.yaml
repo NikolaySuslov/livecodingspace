@@ -6,6 +6,18 @@ properties:
   transparent: true
   assets: "assets.json"
 children:
+  light1:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      color: "#BBB"
+  light2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      color: "#FFF"
+      intensity: 0.6
+      position: "-0.5 1 1"
   arcamera:    
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
@@ -18,6 +30,7 @@ children:
     children:
       camera:
         extends: http://vwf.example.com/aframe/acamera.vwf
+        type: "ar"
         properties:
           look-controls-enabled: false
           wasd-controls-enabled: false

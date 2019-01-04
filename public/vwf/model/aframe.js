@@ -1334,6 +1334,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             let assetsElement = document.createElement('a-assets');
             aframeObj.appendChild(assetsElement);
             aframeObj.setAttribute('scene-utils', "");
+            aframeObj.setAttribute('light', 'defaultLightsEnabled', false);
             //aframeObj.setAttribute('embedded', {});
             //aframeObj.setAttribute('loading-screen', "backgroundColor: black");
             self.state.scenes[node.ID] = aframeObj;

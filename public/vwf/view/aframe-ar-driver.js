@@ -47,7 +47,8 @@ define(["module", "vwf/view", "vwf/view/arjs/signals/signals", "vwf/view/arjs/af
 			}
 
 			if (self.viewDriver.state.nodes[childID].extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
-				if(!childID.includes('avatar')){
+				//if(!childID.includes('avatar')){
+				if(node.type == 'ar'){
 					console.log(childID);
 					vwf_view.kernel.callMethod(childID, "setCameraToActive", [vwf.moniker_]);
 				}
@@ -59,6 +60,16 @@ define(["module", "vwf/view", "vwf/view/arjs/signals/signals", "vwf/view/arjs/af
 
 		firedEvent: function (nodeID, eventName, eventParameters) {
 
+			// var node = self.viewDriver.state.nodes[nodeID];
+            // if (!node) {
+            //     return;
+			// }
+
+			// if (eventName == "createAvatar") {
+			// 	let avatarName = 'avatar-' + self.kernel.moniker();
+			// 	vwf_view.kernel.callMethod(avatarName, "showHideAvatar", false);
+            // }
+
 		},
 
 
@@ -66,12 +77,28 @@ define(["module", "vwf/view", "vwf/view/arjs/signals/signals", "vwf/view/arjs/af
 		 * Receives incoming messages
 		 */
 		calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
-	
-        }
+			
+			var node = self.viewDriver.state.nodes[nodeID];
+            if (!node) {
+                return;
+			}
 
-		
+
+			if (methodName == "createAvatarBody") {
+				let avatarName = 'avatar-' + self.kernel.moniker();
+				if (nodeID == avatarName) {
+					vwf_view.kernel.callMethod(nodeID, "showHideAvatar", [false]);
+				}
+
+
+        		}
+
+			
+			}
+
+
+
+
 	})
-
-
 
 });

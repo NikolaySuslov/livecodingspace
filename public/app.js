@@ -1696,7 +1696,7 @@ class App {
 
     Object.keys(myWorlds).filter(el => el!=='_').forEach(w=>{
 
-      db.get('documents').get(w).once().map().once((res, datI)=>{
+      db.get('documents').get(w).map((res, datI)=>{
         var doc = {};
 
          if (datI.includes('_info_vwf_json')){
@@ -1784,8 +1784,8 @@ class App {
         db = _LCSDB.user();
     }
 
-    db.get('worlds').once().map().once((val, index)=>{
-      db.get('worlds').get(index).get('info_json').load(res=>{
+    db.get('worlds').map((val, index)=>{
+     db.get('worlds').get(index).get('info_json').load(res=>{
         
        var doc = {};
 
@@ -1963,6 +1963,7 @@ class App {
             let worldDesc = JSON.parse(res.file);
             let root = Object.keys(worldDesc)[0];
             var appInfo = worldDesc[root]['en'];
+            let settings = worldDesc[root].settings;
 
             let langID = localStorage.getItem('krestianstvo_locale');
             if (langID) {
@@ -1975,7 +1976,8 @@ class App {
               'modified': res.modified,
               'type': 'proto',
               'userAlias': user,
-              'info': appInfo
+              'info': appInfo,
+              'settings': settings
             }
 
           }

@@ -5,6 +5,18 @@ extends: http://vwf.example.com/aframe/ascene.vwf
 properties:
     assets: "assets.json"
 children:
+    light1:
+        extends: http://vwf.example.com/aframe/alight.vwf
+        properties:
+        type: "ambient"
+        color: "#BBB"
+    light2:
+        extends: http://vwf.example.com/aframe/alight.vwf
+        properties:
+        type: "directional"
+        color: "#FFF"
+        intensity: 0.6
+        position: "-0.5 1 1"
     skySun:
         extends: http://vwf.example.com/aframe/aentity.vwf
         children:

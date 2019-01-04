@@ -11,6 +11,18 @@ methods:
       console.log(calc);
       vwf_view.kernel.callMethod(calc, "calcMe");
 children:
+  light1:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      color: "#BBB"
+  light2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      color: "#FFF"
+      intensity: 0.6
+      position: "-0.5 1 1"
   groundPlane:
     extends: http://vwf.example.com/aframe/aplane.vwf
     properties:

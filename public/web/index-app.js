@@ -1016,8 +1016,8 @@ class IndexApp {
                           
                             let el = document.querySelector('#runWorldGUI');
                             if (el) {
-                                if (el._settingsSwitch.checked){
-                                    console.log("NEED TO LOAD MANUAL SETTINGS!!");
+                                if (el._arSwitch.checked){
+                                    console.log("NEED TO LOAD IN AR MODE!!");
 
                                 let arSettings = {
                                     model:{

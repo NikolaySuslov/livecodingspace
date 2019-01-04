@@ -130,33 +130,45 @@ class WorldApp {
             worldStatesGUI.push(worldStates);
         }
 
+        var runWorldGUI = {};
+        let settings = worldCardGUI._worldInfo.settings;
+        if(settings){
+            if (settings.ar){
 
-        let runWorldGUI = {
-            id: "runWorldGUI",
-            $type: "div",
-            _settingsSwitch: null,
-            $components: [
-                {
+                runWorldGUI = {
+                    id: "runWorldGUI",
                     $type: "div",
-                    $text: "Settings for start:"
-                },
-                _cellWidgets.switch({
-                    'id': 'arjsView',
-                    'init': function () {
-                      this._switch = new mdc.switchControl.MDCSwitch(this);
-                      this._switch.checked = false;
-                      this._settingsSwitch = this._switch;
-                    }
-                  }
-                  ),
-                  {
-                    $type: 'label',
-                    for: 'input-forceReplace',
-                    $text: 'AR'
-                  }
-            ]
+                    $init: function(){
+                        console.log(worldCardGUI);
+                    },
+                    _arSwitch: null,
+                    $components: [
+                        {
+                            $type: "div",
+                            $text: "Settings for start:"
+                        },
+                        _cellWidgets.switch({
+                            'id': 'arjsView',
+                            'init': function () {
+                              this._switch = new mdc.switchControl.MDCSwitch(this);
+                              this._switch.checked = false;
+                              this._arSwitch = this._switch;
+                            }
+                          }
+                          ),
+                          {
+                            $type: 'label',
+                            for: 'input-forceReplace',
+                            $text: 'AR'
+                          }
+                    ]
+        
+                }
+            } 
 
         }
+
+        
 
         let actionsGUI = {
             $cell: true,

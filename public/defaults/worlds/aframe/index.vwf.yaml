@@ -23,6 +23,18 @@ children:
           color: "#ECECEC"
           side: "back"
           fog: false
+  light1:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      color: "#BBB"
+  light2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      color: "#FFF"
+      intensity: 0.6
+      position: "-0.5 1 1"
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:
