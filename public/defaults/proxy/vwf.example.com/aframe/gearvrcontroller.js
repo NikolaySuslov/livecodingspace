@@ -31,6 +31,22 @@ this.simpleDef = {
                     "properties":{
                         "color": "green"
                     }
+                },
+                "myRayCaster": {
+                    "extends": "http://vwf.example.com/aframe/aentity.vwf",
+                    "properties": {},
+                    "children": {
+                        "raycaster": {
+                            "extends": "http://vwf.example.com/aframe/raycasterComponent.vwf",
+                            "type": "component",
+                            "properties": {
+                                recursive: false,
+                                interval: 10,
+                                far: 0.5,
+                                objects: ".gearvrcontroller"
+                            }
+                        }
+                    }
                 }
                 // "rotationText": {
                 //     "extends": "http://vwf.example.com/aframe/atext.vwf",

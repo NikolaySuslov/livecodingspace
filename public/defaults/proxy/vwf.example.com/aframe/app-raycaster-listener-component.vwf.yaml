@@ -3,3 +3,4 @@
 extends: http://vwf.example.com/aframe/aentityComponent.vwf
 type: "component"
 properties:
+  class:

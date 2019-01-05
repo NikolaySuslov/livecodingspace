@@ -314,6 +314,30 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     }
                 }
 
+
+                if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+
+
+                        switch (propertyName) {
+
+                            case "class":
+                                parentNodeAF.setAttribute('class', propertyValue);
+                                break;
+
+
+                            default:
+                                value = undefined;
+                                break;
+                        }
+
+
+                    }
+                }
+
                 if (value === undefined && isAShadowDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
@@ -647,6 +671,27 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             value = AFRAME.utils.coordinates.isCoordinates(val) ? AFRAME.utils.coordinates.stringify(val) : val
                         }
                     })
+                }
+
+
+                if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
+                    
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+
+
+                        switch (propertyName) {
+
+                            case "class":
+                                parentNodeAF.getAttribute('class');
+                                break;
+
+
+                            default:
+                                value = undefined;
+                                break;
+                        }
                 }
 
 
@@ -1031,6 +1076,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
         return found;
     }
+
+    function isARayCasterListenerDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] ==  "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf");
+            }
+        }
+        return found;
+    }
+
+   
 
     function isALineDefinition(prototypes) {
         var found = false;

@@ -167,7 +167,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                                     "type": "component",
                                     "properties": {
                                         recursive: false,
-                                        interval: 1000,
+                                        interval: 100,
                                         far: 3,
                                         objects: ".intersectable"
                                     }
