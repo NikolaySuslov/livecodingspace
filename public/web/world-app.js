@@ -159,7 +159,7 @@ class WorldApp {
                           {
                             $type: 'label',
                             for: 'input-forceReplace',
-                            $text: 'AR'
+                            $text: 'Edit mode'
                           }
                     ]
         

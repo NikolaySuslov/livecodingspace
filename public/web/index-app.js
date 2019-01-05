@@ -1017,7 +1017,6 @@ class IndexApp {
                             let el = document.querySelector('#runWorldGUI');
                             if (el) {
                                 if (el._arSwitch.checked){
-                                    console.log("NEED TO LOAD IN AR MODE!!");
 
                                 let arSettings = {
                                     model:{
@@ -1025,8 +1024,7 @@ class IndexApp {
                                 }, 
                                     view:{
                                         'vwf/view/aframe' : null,
-                                        'vwf/view/aframe-ar-driver': null
-                                        //'vwf/view/editor-new': null
+                                        'vwf/view/editor-new': null
                                 }
                             }
 
