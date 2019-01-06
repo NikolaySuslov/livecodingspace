@@ -55,11 +55,13 @@ events:
   clearIntersectEvent:
   hitstartEvent:
   hitendEvent:
+  clickEvent:
 methods:
   intersectEventMethod:
   clearIntersectEventMethod:
   hitstartEventMethod:
   hitendEventMethod:
+  clickEventMethod:
   sendOSC:
     parameters:
       - msg

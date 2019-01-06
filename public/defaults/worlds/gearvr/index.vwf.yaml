@@ -40,21 +40,20 @@ children:
       depth: 1
       height: 1
       width: 1
+      class: "gearvrhit"
     children:    
       material:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
         properties:
           color: "#3c7249"
-      raycaster-listener:
-        extends: http://vwf.example.com/aframe/app-raycaster-listener-component.vwf
+      aabb-collider-listener:
+        extends: http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf
         type: "component"
-        properties:
-          class: "gearvrcontroller"
     methods:
-      intersectEventMethod:
+      hitstartEventMethod:
         body: |
           this.material.opacity = 0.7
-      clearIntersectEventMethod:
+      hitendEventMethod:
         body: |
           this.material.opacity = 1.0
   newSky:

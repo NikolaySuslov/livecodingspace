@@ -132,9 +132,9 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                                         "extends": "http://vwf.example.com/aframe/aabb-collider-component.vwf",
                                         "type": "component",
                                         "properties": {
-                                            debug: true,
+                                            debug: false,
                                             interval: 10,
-                                            objects: ".aabb"
+                                            objects: ".hit"
                                         }
                                     }
                                 }

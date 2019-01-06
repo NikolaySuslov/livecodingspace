@@ -32,6 +32,15 @@ this.simpleDef = {
                         "color": "green"
                     }
                 },
+                "aabb-collider": {
+                    "extends": "http://vwf.example.com/aframe/aabb-collider-component.vwf",
+                    "type": "component",
+                    "properties": {
+                        debug: false,
+                        interval: 10,
+                        objects: ".gearvrhit"
+                    }
+                },
                 "myRayCaster": {
                     "extends": "http://vwf.example.com/aframe/aentity.vwf",
                     "properties": {},

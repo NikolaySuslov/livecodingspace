@@ -64,36 +64,39 @@ this.sendOSC = function (msg) {
 
 }
 
-this.intersectEvent = function () {
-    //this.intersectEventMethod();
-}
-this.clearIntersectEvent = function () {
-    //this.clearIntersectEventMethod();
-}
+// this.clickEvent = function () {
+//     //this.intersectEventMethod();
+// }
+
+// this.intersectEvent = function () {
+//     //this.intersectEventMethod();
+// }
+// this.clearIntersectEvent = function () {
+//     //this.clearIntersectEventMethod();
+// }
+
 
 this.intersectEventMethod = function () {
-
     //intersect method
 }
 
-
 this.clearIntersectEventMethod = function () {
-
     //clearIntersect method
-
 }
 
 this.hitstartEventMethod = function () {
-
     //intersect method
 }
 
 
 this.hitendEventMethod = function () {
-
     //clearIntersect method
-
 }
+
+this.clickEventMethod = function () {
+    //clickEventMethod
+}
+
 
 
 this.setOwner = function (param) {

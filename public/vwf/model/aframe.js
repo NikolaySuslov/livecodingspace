@@ -427,7 +427,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
 
                         case "class":
-                                aframeObject.setAttribute('class', propertyValue);
+                             var newClasses = [];
+                            if (propertyValue.includes(',')){
+                                newClasses = propertyValue.split(',');
+                            } else {
+                                newClasses = propertyValue.split(' ')
+                            }
+                            
+                               // let newClasses = propertyValue.split(','); //trim()
+                                aframeObject.setAttribute('class',"");
+                                newClasses.forEach(el=>{
+                                    aframeObject.classList.add(el.trim());
+                                })
                             break;
 
                         case "ownedBy":
@@ -967,7 +978,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             break;
 
                         case "class":
-                            aframeObject.getAttribute('class');
+                            value = aframeObject.classList.toString();
+                            //aframeObject.getAttribute('class');
                         break;
 
                         // case "look-controls-enabled":

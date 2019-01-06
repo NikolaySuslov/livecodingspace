@@ -501,6 +501,9 @@ define(["module", "vwf/view"], function (module, view) {
                     let avatar = self.nodes[avatarName];
                     let mode = vwf.getProperty(avatarName, 'selectMode');
 
+
+                    vwf_view.kernel.callMethod(nodeID, "clickEventMethod", [])
+
                     if (mode) {
                         console.log("allow to click!!!")
                         vwf_view.kernel.setProperty(avatarName, 'selectMode', false);
@@ -517,6 +520,8 @@ define(["module", "vwf/view"], function (module, view) {
 
                         }
                     }
+
+
                 }
 
 
@@ -867,7 +872,7 @@ define(["module", "vwf/view"], function (module, view) {
         let cursorEl = document.createElement('a-cursor');
         cursorEl.setAttribute('id', 'cursor-' + avatarName);
         cursorEl.setAttribute('raycaster', {});
-        cursorEl.setAttribute('raycaster', 'objects', '.intersectable');
+        cursorEl.setAttribute('raycaster', 'objects', '.clickable');
         cursorEl.setAttribute('raycaster', 'showLine', false);
 
         if (AFRAME.utils.device.isGearVR()) { }

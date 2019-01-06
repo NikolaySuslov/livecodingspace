@@ -58,7 +58,7 @@ this.sphereProto = function () {
         "properties": {
             "displayName": "sphere",
             "radius": 1,
-            "clickable": true
+            "class": "intersectable"
         },
         children: {
             "material": {
@@ -99,7 +99,7 @@ this.cylinderProto = function () {
             "displayName": "cylinder",
             "radius": 1,
             "height": 1,
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "material": {
@@ -141,7 +141,7 @@ this.coneProto = function () {
             "radius-bottom": 1,
             "radius-top": 0.01,
             "height": 1,
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "material": {
@@ -183,7 +183,7 @@ this.textProto = function () {
             "color": "white",
             "value": "Text",
             "side": "double",
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "interpolation":
@@ -218,7 +218,7 @@ this.cubeProto = function () {
             "height": 1,
             "width": 1,
             "depth": 1,
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "interpolation":
@@ -264,7 +264,7 @@ this.lightProto = function (lightType) {
         "properties": {
             "displayName": newLightType,
             "type": newLightType,
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "interpolation":
@@ -348,7 +348,7 @@ this.planeProto = function () {
             "displayName": "plane",
             "height": 1,
             "width": 1,
-            "clickable": true
+            "class": "clickable"
         },
         children: {
             "material": {

@@ -76,7 +76,7 @@ children:
       depth: 2
       height: 1
       width: 1
-      class: "aabb"
+      class: "hit"
     methods:
       hitstartEventMethod:
         body: |
@@ -100,7 +100,7 @@ children:
       depth: 2
       height: 1
       width: 1
-      clickable: true
+      class: "clickable intersectable"
     children:
       material:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
@@ -123,20 +123,14 @@ children:
     methods:
       clickEventMethod:
         body: |
-          if (this.clickable) {
-          let genColor = this.generateColor();
-          this.material.color = genColor 
-            }
+            let genColor = this.generateColor();
+            this.material.color = genColor 
       intersectEventMethod:
         body: |
-          if (this.clickable) {
           this.material.opacity = 0.7
-            }
       clearIntersectEventMethod:
         body: |
-          if (this.clickable) {
           this.material.opacity = 1.0
-            }
       generateColor:
         body: |
           var letters = '0123456789ABCDEF';
@@ -144,11 +138,6 @@ children:
           for (var i = 0; i < 6; i++) {
           color += letters[Math.floor(this.random() * 16)];
           } return color 
-    scripts:
-      - |
-        this.clickEvent = function(){
-          this.clickEventMethod();
-         }
   sphere:
     extends: http://vwf.example.com/aframe/asphere.vwf
     properties:
