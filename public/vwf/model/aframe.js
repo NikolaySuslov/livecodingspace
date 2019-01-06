@@ -426,6 +426,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             node.events.clickable = propertyValue;
                             break;
 
+                        case "class":
+                                aframeObject.setAttribute('class', propertyValue);
+                            break;
 
                         case "ownedBy":
                             aframeObject.setAttribute('ownedby', propertyValue);
@@ -962,6 +965,10 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         case "clickable":
                             value = node.events.clickable;
                             break;
+
+                        case "class":
+                            aframeObject.getAttribute('class');
+                        break;
 
                         // case "look-controls-enabled":
                         //     var look = aframeObject.getAttribute('look-controls-enabled');

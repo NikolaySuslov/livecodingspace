@@ -83,6 +83,19 @@ this.clearIntersectEventMethod = function () {
 
 }
 
+this.hitstartEventMethod = function () {
+
+    //intersect method
+}
+
+
+this.hitendEventMethod = function () {
+
+    //clearIntersect method
+
+}
+
+
 this.setOwner = function (param) {
 
     var clients = this.find("doc('http://vwf.example.com/clients.vwf')")[0];

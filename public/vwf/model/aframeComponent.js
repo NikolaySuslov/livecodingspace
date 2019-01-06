@@ -118,6 +118,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     'A-SOUND': [
                         "autoplay", "distanceModel", "loop", "maxDistance", "on", "poolSize", "refDistance",
                         "rolloffFactor", "src", "volume"
+                    ],
+                    'aabb-collider':[
+                        "collideNonVisible", "debug",  "enabled", "objects", "interval"
                     ]
 
             }
@@ -315,28 +318,23 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
-                if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
-                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+                // if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
+                //     if (aframeObject.el.getAttribute(aframeObject.compName)) {
 
-                        value = propertyValue;
-                        let parentNodeAF = aframeObject.el;
-
-
-                        switch (propertyName) {
-
-                            case "class":
-                                parentNodeAF.setAttribute('class', propertyValue);
-                                break;
+                //         value = propertyValue;
+                //         let parentNodeAF = aframeObject.el;
 
 
-                            default:
-                                value = undefined;
-                                break;
-                        }
+                //         switch (propertyName) {
+
+                //             default:
+                //                 value = undefined;
+                //                 break;
+                //         }
 
 
-                    }
-                }
+                //     }
+                // }
 
                 if (value === undefined && isAShadowDefinition(node.prototypes)) {
                     if (aframeObject.el.getAttribute(aframeObject.compName)) {
@@ -388,6 +386,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         self.aframeComponentDef['A-SOUND'].forEach(element => {
                             element == propertyName ? parentNodeAF.setAttribute('sound', element, propertyValue) :
+                                value = undefined;
+                        })
+                    }
+                }
+
+                if (value === undefined && isAAabbColliderDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+                        //let defs = ['color', 'transparent', 'opacity', 'side'];
+
+                        self.aframeComponentDef['aabb-collider'].forEach(element => {
+                            element == propertyName ? parentNodeAF.setAttribute('aabb-collider', element, propertyValue) :
                                 value = undefined;
                         })
                     }
@@ -674,25 +686,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 }
 
 
-                if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
+                // if (value === undefined && isARayCasterListenerDefinition(node.prototypes)) {
                     
+                //         value = propertyValue;
+                //         let parentNodeAF = aframeObject.el;
 
-                        value = propertyValue;
-                        let parentNodeAF = aframeObject.el;
+                //         switch (propertyName) {
 
-
-                        switch (propertyName) {
-
-                            case "class":
-                                parentNodeAF.getAttribute('class');
-                                break;
-
-
-                            default:
-                                value = undefined;
-                                break;
-                        }
-                }
+                //             default:
+                //                 value = undefined;
+                //                 break;
+                //         }
+                // }
 
 
                 if (value === undefined && isAFogDefinition(node.prototypes)) {
@@ -836,6 +841,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     self.aframeComponentDef['A-SOUND'].forEach(element => {
                         if (element == propertyName) {
                             value = parentNodeAF.getAttribute('sound').element;
+                        }
+
+                    })
+                }
+
+                if (value === undefined && isAAabbColliderDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    self.aframeComponentDef['aabb-collider'].forEach(element => {
+                        if (element == propertyName) {
+                            value = parentNodeAF.getAttribute('aabb-collider').element;
                         }
 
                     })
@@ -1067,6 +1086,18 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
+    function isAAabbColliderDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/aabb-collider-component.vwf");
+            }
+        }
+        return found;
+    }
+
+    
+
     function isARayCasterDefinition(prototypes) {
         var found = false;
         if (prototypes) {
@@ -1087,7 +1118,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
-   
+    function isAAabbColliderListenerDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] ==  "http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf");
+            }
+        }
+        return found;
+    }
 
     function isALineDefinition(prototypes) {
         var found = false;
@@ -1197,6 +1236,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aabb-collider-component.vwf")) {
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "aabb-collider";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
         if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1300,6 +1347,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "raycaster-listener";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf")) {
+
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "aabb-collider-listener";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }

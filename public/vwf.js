@@ -318,6 +318,10 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         deps: [ "vwf/model/aframe/aframe-master" ]
                     },
 
+                    "vwf/model/aframe/kframe/aframe-aabb-collider-component.min": {
+                        deps: [ "vwf/model/aframe/aframe-master" ]
+                    },
+
                     "vwf/model/aframe/addon/aframe-components": {
                         deps: [ "vwf/model/aframe/aframe-master",
                         "vwf/model/aframe/extras/aframe-extras.loaders",
@@ -325,7 +329,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         "vwf/model/aframe/addon/SkyShader",
                         "vwf/model/aframe/addon/BVHLoader",
                         "vwf/model/aframe/addon/TransformControls",
-                        "vwf/model/aframe/addon/THREE.MeshLine"
+                        "vwf/model/aframe/addon/THREE.MeshLine",
+                        "vwf/model/aframe/kframe/aframe-aabb-collider-component.min"
                     ]
                     },
                     "vwf/view/arjs/aframe-ar": {
@@ -365,7 +370,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     "vwf/model/aframe/extras/aframe-extras.controls.min",
                     "vwf/model/aframe/addon/BVHLoader",
                     "vwf/model/aframe/addon/TransformControls",
-                    "vwf/model/aframe/addon/THREE.MeshLine"
+                    "vwf/model/aframe/addon/THREE.MeshLine",
+                    "vwf/model/aframe/kframe/aframe-aabb-collider-component.min"
                        
                  ], 
                     active: false 
@@ -402,6 +408,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "vwf/model/aframe/addon/BVHLoader", active: false },
                 { library: "vwf/model/aframe/addon/TransformControls", active: false },
                 { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
+                { library: "vwf/model/aframe/kframe/aframe-aabb-collider-component.min", active: false },
+                
                 
                 
                 

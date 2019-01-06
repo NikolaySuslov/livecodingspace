@@ -474,9 +474,11 @@ define(["module", "vwf/view"], function (module, view) {
 
             }
 
+            let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect'];
 
-            if (eventName == "intersectEvent") {
-
+            let hitEvent = intersectEvents.filter(el=> el == eventName.slice(0,-5))[0]; //slice Event word
+            if (hitEvent)
+            {
                 var clientThatSatProperty = self.kernel.client();
                 var me = self.kernel.moniker();
 
@@ -484,27 +486,13 @@ define(["module", "vwf/view"], function (module, view) {
                 if (clientThatSatProperty == me) {
 
                     if (me == eventParameters[0]) {
-                        vwf_view.kernel.callMethod(nodeID, "intersectEventMethod", [])
+                        let methodName = eventName +'Method';
+                        vwf_view.kernel.callMethod(nodeID, methodName, [])
                     }
                 }
 
             }
-
-
-            if (eventName == "clearIntersectEvent") {
-
-                var clientThatSatProperty = self.kernel.client();
-                var me = self.kernel.moniker();
-
-                // If the transform property was initially updated by this view....
-                if (clientThatSatProperty == me) {
-
-                    if (me == eventParameters[0]) {
-                        vwf_view.kernel.callMethod(nodeID, "clearIntersectEventMethod", [])
-                    }
-                }
-
-            }
+    
 
             if (eventName == "clickEvent") {
 

@@ -204,6 +204,34 @@ AFRAME.registerComponent('cursor-listener', {
     }
 });
 
+AFRAME.registerComponent('aabb-collider-listener', {
+
+    init: function () {
+
+        let self = this;
+        this.me = vwf_view.kernel.moniker();
+
+        this.el.addEventListener('hitstart', function (evt) {
+            //console.log('Hit start..' + evt);
+            let ownedby = evt.target.getAttribute('ownedby');
+            if (ownedby == self.me || (evt.target.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
+                vwf_view.kernel.fireEvent(evt.target.id, "hitstartEvent", [self.me]);
+            }
+        })
+
+        this.el.addEventListener('hitend', function (evt) {
+            //console.log('Hit end..' + evt);
+            let ownedby = evt.target.getAttribute('ownedby');
+            if (ownedby == self.me || (evt.target.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
+                vwf_view.kernel.fireEvent(evt.target.id, "hitendEvent", [self.me]);
+            }
+        })
+    }
+
+
+
+});
+
 AFRAME.registerComponent('raycaster-listener', {
     init: function () {
 

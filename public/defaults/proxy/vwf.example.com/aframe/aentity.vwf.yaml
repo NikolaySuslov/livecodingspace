@@ -45,6 +45,7 @@ properties:
   edit:
   osc:
   ownedBy:
+  class:
 events:
   positionChanged:
   rotationChanged:
@@ -52,9 +53,13 @@ events:
   sendOSC:
   intersectEvent:
   clearIntersectEvent:
+  hitstartEvent:
+  hitendEvent:
 methods:
   intersectEventMethod:
   clearIntersectEventMethod:
+  hitstartEventMethod:
+  hitendEventMethod:
   sendOSC:
     parameters:
       - msg

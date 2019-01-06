@@ -127,6 +127,15 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                                         "properties":{
                                             "color": myColor
                                         }
+                                    },
+                                    "aabb-collider": {
+                                        "extends": "http://vwf.example.com/aframe/aabb-collider-component.vwf",
+                                        "type": "component",
+                                        "properties": {
+                                            debug: true,
+                                            interval: 10,
+                                            objects: ".aabb"
+                                        }
                                     }
                                 }
                                 

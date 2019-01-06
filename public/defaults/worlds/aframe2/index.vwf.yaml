@@ -76,7 +76,18 @@ children:
       depth: 2
       height: 1
       width: 1
+      class: "aabb"
+    methods:
+      hitstartEventMethod:
+        body: |
+          this.material.opacity = 0.7
+      hitendEventMethod:
+        body: |
+          this.material.opacity = 1.0
     children:
+      aabb-collider-listener:
+        extends: http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf
+        type: "component"
       material:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
         properties:
