@@ -62,7 +62,7 @@ children:
               var time = vwf.now;
               let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);
               this.rotation = [rot[0], rot[1]+2, rot[2]];
-              this.future( 0.05 ).run();  // schedule the next step
+              this.future( 0.05 ).run();
   aranchor2:
     extends: http://vwf.example.com/aframe/a-arjs-anchor.vwf
     properties:

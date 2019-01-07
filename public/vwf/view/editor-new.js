@@ -2551,11 +2551,19 @@ define([
                                 {
 
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1 tooltip",
                                     $components: [
-                                        self.widgets.buttonStroked(
-                                            {
-                                                "label": "Update",
+                                        {
+                                            class: "tooltiptext",
+                                            $type: "span",
+                                            $text: "Update"
+                                        },
+                                        self.widgets.iconButton({
+                                            'label': 'refresh',
+                                            "styleClass": "mdc-button--outlined",
+                                        // self.widgets.buttonStroked(
+                                        //     {
+                                        //         "label": "Update",
                                                 "onclick": function (e) {
                                                     let editor = document.querySelector("#aceEditor").env.editor;
                                                     let evalText = editor.getValue();
@@ -2584,11 +2592,19 @@ define([
                                 {
 
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1 tooltip",
                                     $components: [
-                                        self.widgets.buttonStroked(
-                                            {
-                                                "label": "Call",
+                                        {
+                                            class: "tooltiptext",
+                                            $type: "span",
+                                            $text: "Call It"
+                                        },
+                                        self.widgets.iconButton({
+                                            'label': 'play_arrow',
+                                            "styleClass": "mdc-button--outlined",
+                                        // self.widgets.buttonStroked(
+                                        //     {
+                                        //         "label": "Call",
                                                 "onclick": function (e) {
                                                     var params = [];
 
@@ -2606,8 +2622,39 @@ define([
                                                             }
                                                         }
                                                     };
-                                                    self.kernel.callMethod(this._editorNode, this._methodName, params);
 
+                                                    let editor = document.querySelector("#aceEditor").env.editor;
+                                                    let evalText = editor.getValue();
+                                                    let allLines = editor.selection.doc.getAllLines();
+
+                                                    let search = this._methodName+'(';
+                                                    let findLine = Object.entries(allLines).filter(el=>el[1].includes(search))[0];
+                                                    let position = {
+                                                        row: findLine[0],
+                                                        column: 0
+                                                    };
+                                                    var Range = ace.require("ace/range").Range;
+                                                    let tempString = "//CLICK FOR CALL AGAIN ";
+
+                                                    //TODO: temporal fix for recursive future call from the editor
+                                                    if(findLine[1].includes(search)) {
+                                                        if(findLine[1].includes(tempString)){
+                                                            let newText = findLine[1].replace(tempString, "");
+
+                                                            editor.session.replace(new Range(position.row, 0, position.row, Number.MAX_VALUE), newText);
+                                                            self.kernel.setMethod(this._editorNode, this._methodName,
+                                                                { body: editor.getValue(), type: "application/javascript", parameters: this._method.parameters });
+                                                        } else if(findLine[1].includes("//")) { //startsWith
+                                                        } else {
+
+                                                            let newText = tempString + findLine[1];
+                                                            editor.session.replace(new Range(position.row, 0, position.row, Number.MAX_VALUE), newText);
+                                                            self.kernel.setMethod(this._editorNode, this._methodName,
+                                                                { body: editor.getValue(), type: "application/javascript", parameters: this._method.parameters });
+                                                        }
+
+                                                    }
+                                                    self.kernel.callMethod(this._editorNode, this._methodName, params);
                                                 }
                                             })
                                     ]
@@ -2615,11 +2662,19 @@ define([
                                 {
 
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1 tooltip",
                                     $components: [
-                                        self.widgets.buttonStroked(
-                                            {
-                                                "label": "Do It",
+                                        {
+                                            class: "tooltiptext",
+                                            $type: "span",
+                                            $text: "Do It"
+                                        },
+                                        self.widgets.iconButton({
+                                            'label': 'arrow_forward',
+                                            "styleClass": "mdc-button--outlined",
+                                        // self.widgets.buttonStroked(
+                                        //     {
+                                        //         "label": "Do It",
                                                 "onclick": function (e) {
                                                     let editor = document.querySelector("#aceEditor").env.editor;
                                                     codeEditorDoit.call(self, editor, this._editorNode);
@@ -2630,14 +2685,45 @@ define([
                                 {
 
                                     $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1 tooltip",
                                     $components: [
-                                        self.widgets.buttonStroked(
-                                            {
-                                                "label": "Print It",
+                                        {
+                                            class: "tooltiptext",
+                                            $type: "span",
+                                            $text: "Print It"
+                                        },
+                                        self.widgets.iconButton({
+                                            'label': 'details',
+                                            "styleClass": "mdc-button--outlined",
+                                        // self.widgets.buttonStroked(
+                                        //     {
+                                        //         "label": "Print It",
                                                 "onclick": function (e) {
                                                     let editor = document.querySelector("#aceEditor").env.editor;
                                                     codeEditorPrintit.call(self, editor, this._editorNode);
+                                                }
+                                            })
+                                    ]
+                                },
+                                {
+
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1 tooltip",
+                                    $components: [
+                                        {
+                                            class: "tooltiptext",
+                                            $type: "span",
+                                            $text: "Print It on Console"
+                                        },
+                                        self.widgets.iconButton({
+                                            'label': 'code',
+                                            "styleClass": "mdc-button--outlined",
+                                        // self.widgets.buttonStroked(
+                                        //     {
+                                        //         "label": "Print It on Console",
+                                                "onclick": function (e) {
+                                                    let editor = document.querySelector("#aceEditor").env.editor;
+                                                    codeEditorPrintitInDebugger.call(self, editor, this._editorNode);
                                                 }
                                             })
                                     ]
@@ -4100,6 +4186,22 @@ define([
         //console.log(selectedText);
         //var sceneID = self.kernel.application();
         vwf_view.kernel.execute(nodeID, selectedText);
+
+    }
+
+    function codeEditorPrintitInDebugger(editor, nodeID) {
+        var selectedText = editor.getSession().doc.getTextRange(editor.selection.getRange());
+
+        if (selectedText == "") {
+
+            var currline = editor.getSelectionRange().start.row;
+            var selectedText = editor.session.getLine(currline);
+
+        }
+
+        let scriptText = 'console.log(' + selectedText + ');'
+        self.kernel.execute(nodeID, scriptText);
+
 
     }
 

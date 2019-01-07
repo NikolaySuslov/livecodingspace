@@ -503,8 +503,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             return {
                     $cell: true,
                     $type: "button",
-                    class: "mdc-button" + addClass,
-                    onclick: obj.onclickfunc,
+                    class: "mdc-button " + addClass,
+                    onclick: obj.onclick,
                     $components:[
                         {
                             $cell: true,

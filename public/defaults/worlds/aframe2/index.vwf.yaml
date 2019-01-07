@@ -184,7 +184,7 @@ children:
               var time = vwf.now;
               let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);
               this.position = [pos[0], pos[1], Math.sin(time)]
-              this.future( 0.01 ).run();  // schedule the next step
+              this.future( 0.01 ).run();
   sky:
     extends: http://vwf.example.com/aframe/asky.vwf
     properties:

@@ -83,5 +83,14 @@ methods:
   setOwner:
     parameters:
       - propertyValue
+  updateMethod:
+    parameters:
+      - methodName
+      - methodBody
+      - params
+  callMethod:
+    parameters:
+      - methodName
+      - params
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

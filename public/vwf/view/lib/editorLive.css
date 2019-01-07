@@ -191,13 +191,15 @@
         padding: 5px 0;
         
         /* Position the tooltip */
-        position: absolute;
+        position: fixed;
         z-index: 1;
-        bottom: 100%;
+        margin-top: -40px;
+        /* bottom: 100%;
         left: 50%; 
-        margin-left: -50px; 
+        margin-left: -50px; */
     }
     
     .tooltip:hover .tooltiptext {
         visibility: visible;
     }
+

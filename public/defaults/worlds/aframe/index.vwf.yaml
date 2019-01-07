@@ -123,7 +123,7 @@ children:
               let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);
               this.position = [pos[0], pos[1], Math.sin(time)];
               this.rotation = [rot[0], rot[1], Math.sin(time)*100];
-              this.future( 0.01 ).run();  // schedule the next step
+              this.future( 0.01 ).run();
 methods:
   initialize:
     body: |
