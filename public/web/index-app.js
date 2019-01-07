@@ -279,7 +279,7 @@ class IndexApp {
 
     initUser() {
 
-        _LCSDB.on('auth', (ack) => {
+        _LCSDB.on('auth', function(ack) {
 
             if (ack.sea.pub) {
 
@@ -291,7 +291,7 @@ class IndexApp {
                 // document.querySelector('#worldGUI').$update();
                 // document.querySelector('#main').$update();
 
-                _LCSDB.get('users').get(alias).not(res => {
+                _LCSDB.get('users').get(alias).not(function(res) {
                     let userObj = {
                         alias: alias,
                         pub: ack.sea.pub
@@ -400,7 +400,7 @@ class IndexApp {
                             {
                                 "label": 'Sign OUT',
                                 "onclick": function (e) {
-                                    _LCSDB.user().leave().then(ack => {
+                                    _LCSDB.user().leave().then(function(ack) {
                                         if (ack.pub) {
                                             window.sessionStorage.removeItem('alias');
                                             window.sessionStorage.removeItem('tmp');
@@ -561,7 +561,7 @@ class IndexApp {
                                                 } else {
                                                     //
                                                     _LCSDB.user().create(alias, pass,
-                                                        (ack) => {
+                                                        function(ack) {
                                                             if (!ack.wait) { }
                                                             if (ack.err) {
                                                                 console.log(ack.err)
@@ -590,7 +590,7 @@ class IndexApp {
                                             "label": 'Sign IN',
                                             "onclick": function (e) {
                                                 e.preventDefault();
-                                                _LCSDB.user().auth(this._aliasField.value, this._passField.value, ack => {
+                                                _LCSDB.user().auth(this._aliasField.value, this._passField.value, function(ack) {
 
                                                     if (ack.err) {
                                                         new Noty({

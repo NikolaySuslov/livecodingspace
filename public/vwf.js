@@ -490,7 +490,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
            
             let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(res => {
+            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(function(res) {
                 
                 var conf = "";
 
@@ -4902,7 +4902,7 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
                    fileName = dbName;
-                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(r=>{
+                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(function(r){
                        //console.log(r);
                        parseComp(r);
 
@@ -4912,7 +4912,7 @@ if ( ! childComponent.source ) {
                     let worldName = dbName.split('/')[0];
                     //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
                    fileName = dbName.replace(worldName + '/', "");
-                   userDB.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                   userDB.get('worlds').path(worldName).get(fileName).get('file').load(function(r){
                     //console.log(r);
                     parseComp(r);
 
@@ -4979,14 +4979,14 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
-                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(r=>{
+                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(function(r){
                         //console.log(r);
                         parseComp(r);
                     },{wait: 200});
  
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
-                    userDB.get('worlds').path(worldName).get(fileName).get('file').load(r=>{
+                    userDB.get('worlds').path(worldName).get(fileName).get('file').load(function(r){
                         //console.log(r);
                         parseComp(r);
     

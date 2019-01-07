@@ -88,7 +88,7 @@ class App {
       _LCSDB.get('lcs/app').load();
       _LCSDB.get('users').load();
 
-      _LCSDB.get('lcs/app').get('pub').once(res => {
+      _LCSDB.get('lcs/app').get('pub').once(function(res){
 
         if (res) {
           window._LCS_SYS_USER = _LCSDB.user(res);
@@ -285,7 +285,7 @@ class App {
         let files = res[1];
         Object.entries(files).forEach(file => {
 
-          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(res => {
+          _LCSDB.user().get('worlds').get(worldName).get(file[0]).not(function(res){
             _LCSDB.user().get('worlds').get(worldName).get(file[0]).put(file[1]);
           })
 
@@ -680,7 +680,7 @@ class App {
                       console.log("save new info");
                       let editor = document.querySelector("#aceEditor").env.editor;
                       let newInfo = editor.getValue();
-                      _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, res => {
+                      _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, function(res) {
                         if (res) {
 
                           let noty = new Noty({
@@ -809,7 +809,7 @@ class App {
   async setUserPaths(user) {
 
       let users = await _LCSDB.get('users');
-     await _LCSDB.get('users').get(user).get('pub').once(res => {
+     await _LCSDB.get('users').get(user).get('pub').once(function(res) {
       if (res)
         window._LCS_WORLD_USER = {
           alias: user,
@@ -1334,7 +1334,7 @@ class App {
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
 
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    _LCSDB.user().get('documents').get(root).get(docName).put(stateForStore, res => {
+    _LCSDB.user().get('documents').get(root).get(docName).put(stateForStore, function(res) {
 
       if (res) {
 
@@ -1349,7 +1349,7 @@ class App {
       }
     });
 
-    _LCSDB.user().get('worlds').get(root).get('info_json').once(res => {
+    _LCSDB.user().get('worlds').get(root).get('info_json').once(function(res) {
 
       if (res) {
 
@@ -1368,11 +1368,11 @@ class App {
 
         let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).not(res => {
+        _LCSDB.user().get('documents').get(root).get(docInfoName).not(function(res) {
           _LCSDB.user().get('documents').get(root).get(docInfoName).put(obj);
         });
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').not(res => {
+        _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').not(function(res) {
           _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').put(modified);
         });
 
@@ -1696,7 +1696,7 @@ class App {
 
     Object.keys(myWorlds).filter(el => el!=='_').forEach(w=>{
 
-      db.get('documents').get(w).map((res, datI)=>{
+      db.get('documents').get(w).map(function(res, datI){
         var doc = {};
 
          if (datI.includes('_info_vwf_json')){
@@ -1784,8 +1784,8 @@ class App {
         db = _LCSDB.user();
     }
 
-    db.get('worlds').map((val, index)=>{
-     db.get('worlds').get(index).get('info_json').load(res=>{
+    db.get('worlds').map(function(val, index){
+     db.get('worlds').get(index).get('info_json').load(function(res){
         
        var doc = {};
 

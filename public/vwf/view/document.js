@@ -57,7 +57,7 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                let dbPath = appName + '_html';
               let worldName = path.slice(1);
               let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-              userDB.get('worlds').get(worldName).get(dbPath).once().then(res => {
+              userDB.get('worlds').get(worldName).get(dbPath).once().then(function(res) {
                    
                    var responseText = "";
                    

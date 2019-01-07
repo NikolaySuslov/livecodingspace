@@ -385,7 +385,7 @@ class WorldApp {
 
         let self = this;
        let users =  await _LCSDB.get('users').then();
-        await _LCSDB.get('users').get(this.userAlias).get('pub').then(res=>{
+        await _LCSDB.get('users').get(this.userAlias).get('pub').then(function(res){
 
             self.makeGUI(res)
 

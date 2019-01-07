@@ -611,7 +611,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 let dbPath = propertyValue.split(".").join("_");
 
                                 let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-                                userDB.get('worlds').get(worldName).get(dbPath).get('file').load(response => {
+                                userDB.get('worlds').get(worldName).get(dbPath).get('file').load(function(response) {
                                     if (response) {
                                         console.log(JSON.parse(response));
                                         let assets = JSON.parse(response);
