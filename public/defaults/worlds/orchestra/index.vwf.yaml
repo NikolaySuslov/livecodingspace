@@ -1,0 +1,260 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  transparent: true
+  assets: "assets.json"
+children:
+  assetBG:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg"
+      itemSrc: "/defaults/assets/bg.jpg"
+  assetSky:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "sky"
+      itemSrc: "/defaults/assets/skyes/sky3.jpg"
+  assetBG2:
+    extends: http://vwf.example.com/aframe/a-asset-image-item.vwf
+    properties:
+      itemID: "bg2"
+      itemSrc: "/defaults/assets/checker.jpg"
+  myLight:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "directional"
+      intensity: 0.5
+      position: "0.5 2.0 1.0"
+      castShadow: true
+  myLight2:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "ambient"
+      intensity: 0.5
+  spaceText:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "Collaborative Orchestra"
+      color: "#ddd"
+      position: "-2 2.5 -2"
+  spaceText2:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "Project by LiveCoding.space"
+      color: "#aaa"
+      position: "1 3 -4"
+  globalTransport:
+    extends: http://vwf.example.com/aframe/transport.vwf
+    properties:
+      position: "2 2 -3"
+  bdrum:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "0 0 -3"
+      rotation: "0 0 0"
+      depth: 1
+      height: 1
+      width: 1
+      class: "hit clickable"
+      globalBeat: true
+    methods:
+      changeVisual:
+        body: | 
+              this.material.color = "white";
+              this.scale = "1.1 1.1 1.1";
+              this.future(0.1).resetVisual();
+      resetVisual:
+        body: | 
+              this.material.color = "red";
+              this.scale = "1 1 1";  
+      onGlobalBeat:
+        parameters:
+          - obj
+        body: |
+                let transportNode = this.find('//' + obj.name)[0];
+                let rate = transportNode.animationRate; // 1 by default
+                let drumSeq = [{beat:0, msg: 0}];
+                drumSeq.forEach(el=>{
+                  if(el.beat/rate == obj.beat){
+                    let msg = {
+                        address: "/trigger/sample01",
+                        args: [this.time, 'bd_808', 3]
+                    };
+                    this.sendOSC(msg); 
+                    this.changeVisual();
+                  }
+                })
+      hitstartEventMethod:
+        body: |
+              this.material.opacity = 0.7
+      hitendEventMethod:
+        body: |
+              this.material.opacity = 1.0
+      clickEventMethod:
+        body: |
+              this.globalBeat = !this.globalBeat
+    children:
+      aabb-collider-listener:
+        extends: http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "red"
+  hatt:
+    extends: http://vwf.example.com/aframe/acone.vwf
+    properties:
+      position: "-2 0 -3"
+      rotation: "0 0 0"
+      radius: 0.5
+      height: 1
+      class: "hit clickable"
+      globalBeat: true
+    methods:
+      changeVisual:
+        body: | 
+              this.material.color = "white";
+              this.scale = "1.1 1.1 1.1";
+              this.future(0.1).resetVisual();
+      resetVisual:
+        body: | 
+              this.material.color = "blue";
+              this.scale = "1 1 1";  
+      onGlobalBeat:
+        parameters:
+          - obj
+        body: |
+                let transportNode = this.find('//' + obj.name)[0];
+                let rate = transportNode.animationRate; // 1 by default
+                let drumSeq = [
+                  {beat:0, msg: 0},
+                  {beat:15, msg: 0},
+                  {beat:30, msg: 0},
+                  {beat:45, msg: 0}];
+                drumSeq.forEach(el=>{
+                  if(el.beat/rate == obj.beat){
+                    let msg = {
+                        address: "/trigger/sample02",
+                        args: [this.time, 'drum_cymbal_closed', 0.5]
+                    };
+                    this.sendOSC(msg); 
+                    this.changeVisual();
+                  }
+                })
+      hitstartEventMethod:
+        body: |
+              this.material.opacity = 0.7
+      hitendEventMethod:
+        body: |
+              this.material.opacity = 1.0
+      clickEventMethod:
+        body: |
+              this.globalBeat = !this.globalBeat
+    children:
+      aabb-collider-listener:
+        extends: http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "red"
+  synth:
+    extends: http://vwf.example.com/aframe/asphere.vwf
+    properties:
+      position: "2 0 -3"
+      rotation: "0 0 0"
+      radius: 0.5
+      class: "hit clickable"
+      globalBeat: true
+    methods:
+      changeVisual:
+        body: | 
+              this.material.color = "white";
+              this.scale = "1.1 1.1 1.1";
+              this.future(0.1).resetVisual();
+      resetVisual:
+        body: | 
+              this.material.color = "green";
+              this.scale = "1 1 1";  
+      onGlobalBeat:
+        parameters:
+          - obj
+        body: |
+              let transportNode = this.find('//' + obj.name)[0];
+              let rate = transportNode.animationRate; // 1 by default
+              let drumSeq = [
+                {beat:0, msg: "C3"},
+                {beat:15, msg: "E3"},
+                {beat:30, msg: "G3"},
+                {beat:45, msg: "A3"}];
+              drumSeq.forEach(el=>{
+                if(el.beat/rate == obj.beat){
+                  let msg = {
+                    address: "/trigger/synth01",
+                          args: [this.time, 'pluck', el.msg, 0.1, 0.01]
+                  };
+                  this.sendOSC(msg); 
+                  this.changeVisual();
+                }
+              })
+      hitstartEventMethod:
+        body: |
+              this.material.opacity = 0.7
+      hitendEventMethod:
+        body: |
+              this.material.opacity = 1.0
+      clickEventMethod:
+        body: |
+              this.globalBeat = !this.globalBeat
+    children:
+      aabb-collider-listener:
+        extends: http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf
+        type: "component"
+      cursor-listener:
+        extends: http://vwf.example.com/aframe/app-cursor-listener-component.vwf
+        type: "component"
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#e0e014"
+          wireframe: true
+  sky:
+    extends: http://vwf.example.com/aframe/asky.vwf
+    properties:
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          src: "#sky"
+          side: "back"
+          fog: false
+  groundPlane:
+    extends: http://vwf.example.com/aframe/aplane.vwf
+    properties:
+      height: 50
+      width: 50
+      rotation: "-90 0 0"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          repeat: "10 10"
+          color: "white"
+          src: "#bg2"
+      shadow:
+        extends: http://vwf.example.com/aframe/shadowComponent.vwf
+        properties:
+          receive: true
+methods:
+  initialize:
+    body: |
+          this.globalTransport.init();
+          console.log("INIT TRANSPORT!!!");

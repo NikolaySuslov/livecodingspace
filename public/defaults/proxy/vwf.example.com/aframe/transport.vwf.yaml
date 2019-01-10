@@ -1,0 +1,25 @@
+# avatar
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/aentity.vwf
+type: "transport"
+properties:
+    beat:
+    playing:
+methods:
+    init:
+    simpleVis:
+    animationUpdate:
+        parameters:
+            - time
+            - duration 
+    play:
+    stop:
+    setupTransport:
+    doGlobalBeat:
+        parameters:
+            - time
+            - duration
+            - beat
+scripts:
+- source: "http://vwf.example.com/aframe/transport.js"

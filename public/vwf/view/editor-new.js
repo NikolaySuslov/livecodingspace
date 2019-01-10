@@ -2629,15 +2629,19 @@ define([
 
                                                     let search = this._methodName+'(';
                                                     let findLine = Object.entries(allLines).filter(el=>el[1].includes(search))[0];
-                                                    let position = {
-                                                        row: findLine[0],
-                                                        column: 0
-                                                    };
-                                                    var Range = ace.require("ace/range").Range;
-                                                    let tempString = "//CLICK FOR CALL AGAIN ";
+                                                    
 
                                                     //TODO: temporal fix for recursive future call from the editor
+                                                    if(findLine) {
                                                     if(findLine[1].includes(search)) {
+
+                                                        let position = {
+                                                            row: findLine[0],
+                                                            column: 0
+                                                        };
+                                                        var Range = ace.require("ace/range").Range;
+                                                        let tempString = "//CLICK FOR CALL AGAIN ";
+
                                                         if(findLine[1].includes(tempString)){
                                                             let newText = findLine[1].replace(tempString, "");
 
@@ -2653,6 +2657,7 @@ define([
                                                                 { body: editor.getValue(), type: "application/javascript", parameters: this._method.parameters });
                                                         }
 
+                                                    }
                                                     }
                                                     self.kernel.callMethod(this._editorNode, this._methodName, params);
                                                 }

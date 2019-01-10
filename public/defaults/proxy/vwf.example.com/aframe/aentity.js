@@ -140,3 +140,48 @@ this.updateMethod = function (methodName, methodBody, params) {
 this.callMethod = function(methodName, params){
     vwf_view.kernel.callMethod(this.id, methodName, params)
 }
+
+this.step = function(){
+
+    if (this.stepping){
+        this.do();
+    }
+    
+    let t = this.stepTime ? this.stepTime: 0.05;
+
+    this.future(t).step();
+}
+
+this.onGlobalBeat = function(obj) {
+    //dispatch the beat example send OSC
+    let transportNode = this.find('//' + obj.name)[0];
+    let rate = transportNode.animationRate; // 1 by default
+    let drumSeq = [
+    {beat:0, msg: 0},
+    {beat:30, msg: 0}];
+    drumSeq.forEach(el=>{
+      if(el.beat/rate == obj.beat){
+        let msg = {
+            address: "/trigger/sample01",
+            args: [this.time, 'bd_808', 3]
+        };
+        //for synth {beat:0, msg: "A"}
+        //let msg = {
+        // address: "/trigger/synth01",
+        // args: [this.time, 'piano', el.msg, 0.1, 1]};
+
+        // this.sendOSC(msg); 
+        // this.changeVisual();
+      }
+    })
+
+}
+
+this.changeVisual = function() {
+    //code for changing me
+    this.future(0.1).resetVisual();
+}
+
+this.resetVisual = function() {
+
+}

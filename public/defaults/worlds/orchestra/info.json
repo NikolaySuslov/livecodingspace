@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Collaborative Orchestra for VWF & Sonic Pi",
+            "imgUrl": "/defaults/worlds/aframe2/webimg.jpg",
+            "text": "Example app for making music"
+        },
+        "ru": {
+            "title": "Оркестр",
+            "imgUrl": "/defaults/worlds/aframe2/webimg.jpg",
+            "text": "Пример мира с текстурами и моделями"
+        }
+    }
+}

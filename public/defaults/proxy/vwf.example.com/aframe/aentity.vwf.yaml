@@ -46,6 +46,8 @@ properties:
   osc:
   ownedBy:
   class:
+  stepping:
+  globalBeat:
 events:
   positionChanged:
   rotationChanged:
@@ -92,5 +94,11 @@ methods:
     parameters:
       - methodName
       - params
+  onGlobalBeat:
+    parameters:
+      - obj
+  changeVisual:
+  resetVisual:  
+  step:
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"
