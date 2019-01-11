@@ -615,8 +615,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     if (response) {
 
                                         if (Object.keys(response).length > 0) {
-                                        console.log(JSON.parse(response));
-                                        let assets = JSON.parse(response);
+                                        //console.log(JSON.parse(response));
+
+                                        let assets = (typeof(response) == 'object') ? response: JSON.parse(response);
                                         for (var prop in assets) {
                                             var elm = document.createElement(assets[prop].tag);
                                             elm.setAttribute('id', prop);

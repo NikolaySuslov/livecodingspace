@@ -116,63 +116,9 @@ class WorldApp {
         let worldCardGUI = _app.indexApp.createWorldCard(cardID, 'full');
         let worldStatesGUI = [];
 
-       
+        //var runWorldGUI = {};
 
-        var runWorldGUI = {};
-        let settings = worldCardGUI._worldInfo.settings;
-        if (settings) {
-            if (settings.ar) {
-
-                runWorldGUI = {
-                    id: "runWorldGUI",
-                    $type: "div",
-                    $init: function () {
-                        console.log(worldCardGUI);
-                    },
-                    _arSwitch: null,
-                    _turnArOnSwitch: null,
-                    $components: [
-                        {
-                            $type: "div",
-                            $text: "Settings for start:"
-                        },
-                        _cellWidgets.switch({
-                            'id': 'arjsView',
-                            'init': function () {
-                                this._switch = new mdc.switchControl.MDCSwitch(this);
-                                this._switch.checked = false;
-                                this._arSwitch = this._switch;
-                            }
-                        }
-                        ),
-                        {
-                            $type: 'label',
-                            for: 'input-forceReplace',
-                            $text: 'Edit mode'
-                        },
-                        {$type: "div", style: "margin-top: 20px"},
-                        _cellWidgets.switch({
-                            'id': 'arOnView',
-                            'init': function () {
-                                this._turnArOn = new mdc.switchControl.MDCSwitch(this);
-                                this._turnArOn.checked = false;
-                                this._turnArOnSwitch = this._turnArOn;
-                            }
-                        }
-                        ),
-                        {
-                            $type: 'label',
-                            for: 'input-forceReplace',
-                            $text: 'Ar mode'
-                        }
-                    ]
-
-                }
-            }
-
-        }
-
-
+     
 
         let actionsGUI = {
             $cell: true,
@@ -406,6 +352,7 @@ class WorldApp {
             id: 'aboutWorld',
             $cell: true,
             $type: "div",
+            _runWorldGUI: {},
             $update: function(){
                 this.$components = [
                 {
@@ -433,7 +380,7 @@ class WorldApp {
                                     $components: [
                                         worldCardGUI,
                                         { $type: 'p' },
-                                        runWorldGUI
+                                        this._runWorldGUI
                                     ]
                                 },
                                 {
@@ -494,6 +441,68 @@ class WorldApp {
             worldStates.$update();
             worldStatesComp.$components.push(worldStates);
         }
+
+
+       
+        let settings = worldCardGUI._worldInfo.settings;
+        if (settings) {
+            if (settings.ar) {
+
+               let runWorldGUI = {
+                    id: "runWorldGUI",
+                    $type: "div",
+                    $init: function () {
+                        console.log(worldCardGUI);
+                    },
+                    _arSwitch: null,
+                    _turnArOnSwitch: null,
+                    $components: [
+                        {
+                            $type: "div",
+                            $text: "Settings for start:"
+                        },
+                        _cellWidgets.switch({
+                            'id': 'arjsView',
+                            'init': function () {
+                                this._switch = new mdc.switchControl.MDCSwitch(this);
+                                this._switch.checked = false;
+                                this._arSwitch = this._switch;
+                            }
+                        }
+                        ),
+                        {
+                            $type: 'label',
+                            for: 'input-forceReplace',
+                            $text: 'Edit mode'
+                        },
+                        {$type: "div", style: "margin-top: 20px"},
+                        _cellWidgets.switch({
+                            'id': 'arOnView',
+                            'init': function () {
+                                this._turnArOn = new mdc.switchControl.MDCSwitch(this);
+                                this._turnArOn.checked = false;
+                                this._turnArOnSwitch = this._turnArOn;
+                            }
+                        }
+                        ),
+                        {
+                            $type: 'label',
+                            for: 'input-forceReplace',
+                            $text: 'Ar mode'
+                        }
+                    ]
+
+                }
+
+            document.querySelector("#aboutWorld")._runWorldGUI = runWorldGUI;
+            }
+
+            
+
+        }
+
+
+
 
 
 
