@@ -24,15 +24,15 @@ children:
   myLight:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:
-      type: "directional"
-      intensity: 0.5
-      position: "0.5 2.0 1.0"
-      castShadow: true
+      type: "spot"
+      position: [-2.5, 1, 1.5]
+      rotation: [0, -40, 0]
   myLight2:
     extends: http://vwf.example.com/aframe/alight.vwf
     properties:
-      type: "ambient"
-      intensity: 0.5
+      type: "spot"
+      position: [2, 1.8, 6.5]
+      rotation: [25, 25, -40]
   spaceText:
     extends: http://vwf.example.com/aframe/atext.vwf
     properties:

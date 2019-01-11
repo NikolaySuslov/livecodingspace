@@ -1030,6 +1030,23 @@ class IndexApp {
 
                                     localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
                                 } 
+
+                                if (el._turnArOnSwitch.checked){
+
+                                    let arSettings = {
+                                        model:{
+                                            'vwf/model/aframe': null
+                                    }, 
+                                        view:{
+                                            'vwf/view/aframe' : null,
+                                            'vwf/view/aframe-ar-driver': null
+                                    }
+                                }
+    
+                                        localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
+                                    } 
+    
+                                
                             }
     }
 

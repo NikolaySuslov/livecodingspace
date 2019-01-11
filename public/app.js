@@ -637,14 +637,97 @@ class App {
               file = _app.helpers.replaceSubStringALL(fileOriginal, "~", '/');
             }
 
-            let worldFile = await _LCSDB.user().get(worldType).get(worldName).get(file).once().then();
+            var worldFile = await _LCSDB.user().get(worldType).get(worldName).get(file).once().then();
             if (worldFile) {
-              console.log(worldFile.file);
+              var source = worldFile.file;
+              if (type == 'state') {
+                source = worldFile.jsonState;
+                var saveName = worldFile.filename;
+              }
+              console.log(source);
 
               let el = document.createElement("div");
               el.setAttribute("id", "worldFILE");
               document.body.appendChild(el);
 
+              var saveGUI = {};
+              if(type == 'proto'){
+
+                saveGUI =  {
+                  $type: "button",
+                  class: "mdc-button mdc-button--raised",
+                  $text: "Save",
+                  onclick: async function (e) {
+                    console.log("save new info");
+                    let editor = document.querySelector("#aceEditor").env.editor;
+                    let newInfo = editor.getValue();
+                    _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, function(res) {
+                      if (res) {
+
+                        let noty = new Noty({
+                          text: 'Saved!',
+                          timeout: 2000,
+                          theme: 'mint',
+                          layout: 'bottomRight',
+                          type: 'success'
+                        });
+                        noty.show();
+
+                        let modified = new Date().valueOf();
+                        _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
+                      }
+                    })
+                  }
+                }
+
+              }
+              if (type == 'state') {
+                saveGUI =  
+                
+                {
+                  $type: "div",
+                  class: "",
+                  $components: [
+                      {    
+                        $type: "button",
+                        class: "mdc-button mdc-button--raised",
+                        $text: "Replace state",
+                        onclick: async function (e) {
+                          console.log("fix state");
+                          let editor = document.querySelector("#aceEditor").env.editor;
+                          let newInfo = editor.getValue();
+                          let fixedState = newInfo; //_app.fixSaveState(newInfo, worldName, oldProtoName);
+
+                          let userPub = await _LCSDB.get('users').get(user).get('pub').then();
+                          let revs = await _app.lookupSaveRevisions(worldName, saveName, userPub);
+                          let lastRevision = revs.sort()[0];
+
+                          var newFile = file.replace('savestate_','savestate_' + lastRevision.toString());
+                          
+                          _LCSDB.user().get(worldType).get(worldName).get(file).get('revs').get(newFile).get('jsonState').put(fixedState);
+                          _LCSDB.user().get(worldType).get(worldName).get(file).get('jsonState').put(fixedState, function(res) {
+                            if (res) {
+      
+                              let noty = new Noty({
+                                text: 'Repalced!',
+                                timeout: 2000,
+                                theme: 'mint',
+                                layout: 'bottomRight',
+                                type: 'success'
+                              });
+                              noty.show();
+      
+                              let modified = new Date().valueOf();
+                              _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
+                            }
+                          })
+                        }
+      
+                      } 
+                  ]
+              }
+                
+              }
 
               let aceEditorCell = {
 
@@ -655,7 +738,7 @@ class App {
                     id: "aceEditor",
                     //style: "width:1200px; height: 800px",
                     $type: "div",
-                    $text: worldFile.file,
+                    $text: source,
                     $init: function () {
                       var mode = "ace/mode/json";
                       if (file.includes('_yaml'))
@@ -670,34 +753,11 @@ class App {
                       editor.setOptions({
                         maxLines: Infinity
                       });
+                      editor.session.setUseWrapMode(true);
+                      
                     }
                   },
-                  {
-                    $type: "button",
-                    class: "mdc-button mdc-button--raised",
-                    $text: "Save",
-                    onclick: async function (e) {
-                      console.log("save new info");
-                      let editor = document.querySelector("#aceEditor").env.editor;
-                      let newInfo = editor.getValue();
-                      _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, function(res) {
-                        if (res) {
-
-                          let noty = new Noty({
-                            text: 'Saved!',
-                            timeout: 2000,
-                            theme: 'mint',
-                            layout: 'bottomRight',
-                            type: 'success'
-                          });
-                          noty.show();
-
-                          let modified = new Date().valueOf();
-                          _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
-                        }
-                      })
-                    }
-                  },
+                  saveGUI,
                   {
                     $type: "button",
                     class: "mdc-button mdc-button--raised",
@@ -963,9 +1023,17 @@ class App {
   // an array of all revisions for that save. (If the save does not exist, this will be
   // an empty array).
 
-  async lookupSaveRevisions(public_path, save_name) {
+  async lookupSaveRevisions(public_path, save_name, userPub) {
 
-    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+    var pub = "";
+
+    if(!_LCS_WORLD_USER) {
+      pub = userPub;
+    } else {
+      pub = _LCS_WORLD_USER.pub
+    }
+  
+    let userDB = _LCSDB.user(pub);
 
     var result = [];
     var states = [];
@@ -1121,7 +1189,16 @@ class App {
 
     let users = await _LCSDB.get('users');
     let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
-    //let worldProto = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
+    let newOwner = _LCSDB.user().is.pub;
+
+    if(newWorldName){
+
+    let worldProto = await _LCSDB.user(newOwner).get('worlds').get(newWorldName).then();
+    if(worldProto) {
+      console.log('already exist!');
+        return
+    }
+  }
 
     var worldID = window._app.helpers.GenerateInstanceID().toString();
     if (newWorldName) {
@@ -1131,7 +1208,7 @@ class App {
     //let modified = new Date().valueOf();
     console.log('clone: ' + worldName + 'to: ' + worldID);
 
-    let newOwner = _LCSDB.user().is.pub;
+    
     let created = new Date().valueOf();
 
     let worldObj = {
@@ -1445,6 +1522,15 @@ class App {
     // xhrConfig.send("root=" + root + "/" + filename + "&filename=saveState&inst=" + inst + "&timestamp=" + timestamp + "&extension=.vwf.config.json" + "&jsonState=" + jsonConfig);
 
 
+  }
+
+  fixSaveState(jsonState, otherProto, oldProtoName) {
+
+      console.log('fix proto in state...');
+      let json = this.helpers.replaceSubStringALL(jsonState, '/' + oldProtoName + '/', '/' + otherProto + '/');//jsonState.replace(('/' + root + '/'), ('/' + otherProto +'/') );
+      console.log(json);
+
+      return json
   }
 
   // LoadSavedState 
@@ -1951,7 +2037,7 @@ class App {
 
     var info = {};
 
-
+    let worlds = await userdb.get('worlds').then();
     let world = await userdb.get('worlds').get(space).then();
     if (world) {
       let res = await userdb.get('worlds').get(space).get('info_json').then();

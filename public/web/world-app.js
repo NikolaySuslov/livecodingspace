@@ -15,7 +15,7 @@ class WorldApp {
 
         //this.worlds = {};
         this.language = _LangManager.language;
-          
+
     }
 
 
@@ -77,11 +77,11 @@ class WorldApp {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
                                 $components: Object.entries(this._states)
-                                .filter(el =>Object.keys(el[1]).length !== 0)
-                                .sort(function (el1, el2) {
-                                    return parseInt(el2[1].created) - parseInt(el1[1].created)
-                                })
-                                .map(this._makeWorldCard)
+                                    .filter(el => Object.keys(el[1]).length !== 0)
+                                    .sort(function (el1, el2) {
+                                        return parseInt(el2[1].created) - parseInt(el1[1].created)
+                                    })
+                                    .map(this._makeWorldCard)
                             }
                         ]
 
@@ -96,10 +96,10 @@ class WorldApp {
     }
 
 
-    async makeGUI(userPub){
-        
+    async makeGUI(userPub) {
+
         let self = this;
-        let user = {'user': this.userAlias, pub: userPub};
+        let user = { 'user': this.userAlias, pub: userPub };
         let space = this.worldName;
         let saveName = this.saveName;
 
@@ -112,7 +112,7 @@ class WorldApp {
         let worldStatesGUI = [];
 
         var info = {};
-        
+
 
         if (!saveName) {
             info = await _app.getWorldInfo(user, space);
@@ -132,16 +132,17 @@ class WorldApp {
 
         var runWorldGUI = {};
         let settings = worldCardGUI._worldInfo.settings;
-        if(settings){
-            if (settings.ar){
+        if (settings) {
+            if (settings.ar) {
 
                 runWorldGUI = {
                     id: "runWorldGUI",
                     $type: "div",
-                    $init: function(){
+                    $init: function () {
                         console.log(worldCardGUI);
                     },
                     _arSwitch: null,
+                    _turnArOnSwitch: null,
                     $components: [
                         {
                             $type: "div",
@@ -150,25 +151,40 @@ class WorldApp {
                         _cellWidgets.switch({
                             'id': 'arjsView',
                             'init': function () {
-                              this._switch = new mdc.switchControl.MDCSwitch(this);
-                              this._switch.checked = false;
-                              this._arSwitch = this._switch;
+                                this._switch = new mdc.switchControl.MDCSwitch(this);
+                                this._switch.checked = false;
+                                this._arSwitch = this._switch;
                             }
-                          }
-                          ),
-                          {
+                        }
+                        ),
+                        {
                             $type: 'label',
                             for: 'input-forceReplace',
                             $text: 'Edit mode'
-                          }
+                        },
+                        {$type: "div", style: "margin-top: 20px"},
+                        _cellWidgets.switch({
+                            'id': 'arOnView',
+                            'init': function () {
+                                this._turnArOn = new mdc.switchControl.MDCSwitch(this);
+                                this._turnArOn.checked = false;
+                                this._turnArOnSwitch = this._turnArOn;
+                            }
+                        }
+                        ),
+                        {
+                            $type: 'label',
+                            for: 'input-forceReplace',
+                            $text: 'Ar mode'
+                        }
                     ]
-        
+
                 }
-            } 
+            }
 
         }
 
-        
+
 
         let actionsGUI = {
             $cell: true,
@@ -209,7 +225,7 @@ class WorldApp {
                         userGUI.push(
                             {
                                 $type: "a",
-                                class: "mdc-button mdc-button--raised mdc-card__action actionButton",
+                                class: "mdc-button ",
                                 $text: "Edit info",
                                 //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                 onclick: function (e) {
@@ -223,23 +239,83 @@ class WorldApp {
                                     }
                                     //self.refresh();
                                 }
+                            },
+                            {
+                                $type: "a",
+                                class: "mdc-button ",
+                                $text: "Edit source",
+                                //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                onclick: function (e) {
+                                    //'/:user/:type/:name/edit/:file'
+                                    if (desc.type == 'proto') {
+                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/index_vwf_yaml'
+                                    } else if (desc.type == 'saveState') {
+                                        let names = desc.worldName.split('/');
+                                        let filename = ('savestate_/' + names[0] + '/' + names[2] + '_vwf_json').split('/').join("~");
+                                        window.location.pathname = "/" + desc.userAlias + '/state/' + names[0] + '/edit/' + filename;
+                                    }
+                                    //self.refresh();
+                                }
                             }
+
                         );
 
                         if (desc.type == 'proto') {
+                          
                             userGUI.push(
-                                {
+                                // {
+                                //     $type: "a",
+                                //     class: "mdc-button mdc-button--raised mdc-card__action actionButton",
+                                //     $text: "Edit proto",
+                                //     //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                //     onclick: function (e) {
+                                //         window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/index_vwf_yaml'
+                                //     }
+                                // },
+                               
+                                   {
                                     $type: "a",
-                                    class: "mdc-button mdc-button--raised mdc-card__action actionButton",
-                                    $text: "Edit proto",
+                                    class: "mdc-button ",
+                                    $text: "Edit config",
                                     //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                     onclick: function (e) {
-                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/index_vwf_yaml'
+                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/index_vwf_config_yaml'
+                                    }
+                                },
+                                {$type: "br"},
+                                {
+                                    $type: "a",
+                                    class: "mdc-button",
+                                    $text: "Edit appui.js",
+                                    //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                    onclick: function (e) {
+                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/appui_js'
+                                    }
+                                },
+                               
+                                {
+                                    $type: "a",
+                                    class: "mdc-button",
+                                    $text: "Edit assets.json",
+                                    //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                    onclick: function (e) {
+                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/assets_json'
+                                    }
+                                },
+                                {
+                                    $type: "a",
+                                    class: "mdc-button",
+                                    $text: "Edit index.vwf.html",
+                                    //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
+                                    onclick: function (e) {
+                                        window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/index_vwf_html'
                                     }
                                 }
+                            
                             );
 
                             userGUI.push(
+                                {$type: "br"},
                                 {
                                     $type: "a",
                                     class: "mdc-button mdc-button--raised mdc-card__action actionButton",
@@ -250,11 +326,13 @@ class WorldApp {
                                     }
                                 }
                             );
+                            
                         }
 
 
                         if (desc.type == 'saveState') {
                             userGUI.push(
+                                {$type: "br"},
                                 {
                                     $type: "a",
                                     class: "mdc-button mdc-button--raised mdc-card__action actionButton",
@@ -271,18 +349,38 @@ class WorldApp {
                     }
 
                     if (desc.type == 'proto') {
+                        let worldID = window._app.helpers.GenerateInstanceID().toString();
+
                         userGUI.push(
                             {
-                                $type: "a",
-                                class: "mdc-button mdc-button--raised mdc-card__action actionButton",
-                                $text: self.language.t('clone proto'),//"clone",
-                                onclick: function (e) {
-                                    //console.log('clone');
-                                    _app.cloneWorldPrototype(desc.worldName, desc.userAlias);
-                                    //self.refresh();
-                                }
+                                $type: "div",
+                                style: "margin-top: 20px;",
+                                _protoName: null,
+                                _protoNameField: null,
+                                $components:
+                                    [
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'protoName',
+                                            "label": worldID,
+                                            "value": this._protoName,
+                                            "type": "text",
+                                            "init": function () {
+                                                this._protoNameField = new mdc.textField.MDCTextField(this);
+                                            }
+                                        }),
+                                        {
+                                            $type: "a",
+                                            class: "mdc-button mdc-button--raised mdc-card__action actionButton",
+                                            $text: self.language.t('clone proto'),//"clone",
+                                            onclick: function (e) {
+                                                //console.log('clone');
+                                                let newProtoName = this._protoNameField.value;
+                                                _app.cloneWorldPrototype(desc.worldName, desc.userAlias, newProtoName);
+                                                //self.refresh();
+                                            }
+                                        }
+                                    ]
                             }
-
                         )
                     } else if (desc.type == 'saveState') {
 
@@ -315,7 +413,7 @@ class WorldApp {
             }
         }
 
-    
+
         document.querySelector("#aboutWorld").$cell({
             id: 'aboutWorld',
             $cell: true,
@@ -345,7 +443,7 @@ class WorldApp {
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                                     $components: [
                                         worldCardGUI,
-                                        {$type: 'p'},
+                                        { $type: 'p' },
                                         runWorldGUI
                                     ]
                                 },
@@ -376,22 +474,22 @@ class WorldApp {
 
     async initWorldGUI() {
 
-    //  _LCSDB.on('auth',
-    //     function (ack) {
-    //         if(ack.pub)
-    //             document.querySelector('#worldActionsGUI')._refresh();
-            
-    //     });
+        //  _LCSDB.on('auth',
+        //     function (ack) {
+        //         if(ack.pub)
+        //             document.querySelector('#worldActionsGUI')._refresh();
+
+        //     });
 
         let self = this;
-       let users =  await _LCSDB.get('users').then();
-        await _LCSDB.get('users').get(this.userAlias).get('pub').then(function(res){
+        let users = await _LCSDB.get('users').then();
+        await _LCSDB.get('users').get(this.userAlias).get('pub').then(function (res) {
 
             self.makeGUI(res)
 
         });
 
-       
+
 
     }
 
