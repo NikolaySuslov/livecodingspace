@@ -613,6 +613,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
                                 userDB.get('worlds').get(worldName).get(dbPath).get('file').load(function(response) {
                                     if (response) {
+
+                                        if (Object.keys(response).length > 0) {
                                         console.log(JSON.parse(response));
                                         let assets = JSON.parse(response);
                                         for (var prop in assets) {
@@ -622,7 +624,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                             assetsElement.appendChild(elm);
 
                                         }
-
+                                    }
 
                                     }
                                 },{wait: 200});

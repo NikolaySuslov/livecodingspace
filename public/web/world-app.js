@@ -16,6 +16,14 @@ class WorldApp {
         //this.worlds = {};
         this.language = _LangManager.language;
 
+        let el = document.createElement("div");
+        el.setAttribute("id", "aboutWorld");
+        document.body.appendChild(el);
+
+        let el2 = document.createElement("div");
+        el2.setAttribute("id", "worldStates");
+        document.body.appendChild(el2);
+
     }
 
 
@@ -23,7 +31,6 @@ class WorldApp {
         let self = this;
 
         let worldStatesGUI = {
-            $cell: true,
             id: "worldStatesGUI",
             $type: "div",
             $components: [],
@@ -103,32 +110,13 @@ class WorldApp {
         let space = this.worldName;
         let saveName = this.saveName;
 
-        let el = document.createElement("div");
-        el.setAttribute("id", "aboutWorld");
-        document.body.appendChild(el);
+       
 
         let cardID = user.user + '_' + space + '_' + (saveName ? saveName : "");
         let worldCardGUI = _app.indexApp.createWorldCard(cardID, 'full');
         let worldStatesGUI = [];
 
-        var info = {};
-
-
-        if (!saveName) {
-            info = await _app.getWorldInfo(user, space);
-        } else {
-            info = await _app.getStateInfo(user, space, saveName);
-        }
-        worldCardGUI._worldInfo = info;
-        worldCardGUI.$update();
-
-        if (!saveName) {
-            let statesData = await _app.getSaveStates(user, space);
-            let worldStates = this.createWorldStatesGUI();
-            worldStates._states = statesData;
-            worldStates.$update();
-            worldStatesGUI.push(worldStates);
-        }
+       
 
         var runWorldGUI = {};
         let settings = worldCardGUI._worldInfo.settings;
@@ -418,7 +406,8 @@ class WorldApp {
             id: 'aboutWorld',
             $cell: true,
             $type: "div",
-            $components: [
+            $update: function(){
+                this.$components = [
                 {
                     $type: "div",
                     class: "mdc-layout-grid",
@@ -454,18 +443,57 @@ class WorldApp {
                                         actionsGUI
                                     ]
                                 },
-                                {
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-                                    ].concat(worldStatesGUI)
-                                },
+                                // {
+                                //     $type: "div",
+                                //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                //     $components: [
+                                //     ].concat(worldStatesGUI)
+                                // },
                             ]
                         }
                     ]
                 }
             ]
+        }
         })
+
+        let worldStatesComp = this.createWorldStatesGUI();
+
+        document.querySelector("#worldStates").$cell({
+            id: 'worldStates',
+            $cell: true,
+            $type: "div",
+            $components: [worldStatesComp]
+        //     $update: function(){
+        //         this.$components = [
+        //         {}
+            
+        //     ]
+        // }
+    })
+
+
+        var info = {};
+
+
+        if (!saveName) {
+            info = await _app.getWorldInfo(user, space);
+        } else {
+            info = await _app.getStateInfo(user, space, saveName);
+        }
+        worldCardGUI._worldInfo = info;
+        worldCardGUI.$update();
+        document.querySelector("#aboutWorld").$update();
+
+
+        if (!saveName) {
+            let statesData = await _app.getSaveStates(user, space);
+            //let worldStates = this.createWorldStatesGUI();
+            let worldStates = document.querySelector("#worldStatesGUI");
+            worldStates._states = statesData;
+            worldStates.$update();
+            worldStatesComp.$components.push(worldStates);
+        }
 
 
 

@@ -347,8 +347,8 @@ class IndexApp {
                             "label": 'Default World Protos',
                             "onclick": function (e) {
                                 e.preventDefault();
-                                page("/app/worlds/protos")
-                                //window.location.pathname = "/app/worlds/protos"
+                                //page("/app/worlds/protos")
+                                window.location.pathname = "/app/worlds/protos"
                                 //_app.indexApp.getAppDetailsFromDefaultDB('protos');
 
                             }
@@ -358,8 +358,8 @@ class IndexApp {
                             "label": 'Default World States',
                             "onclick": function (e) {
                                 e.preventDefault();
-                                page("/app/worlds/states")
-                                // window.location.pathname = "/app/worlds/states"
+                                //page("/app/worlds/states")
+                                 window.location.pathname = "/app/worlds/states"
                                 //_app.indexApp.getAppDetailsFromDefaultDB('states');
 
                             }
@@ -430,8 +430,8 @@ class IndexApp {
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSDB.user().is.alias;
-                                    //window.location.pathname = '/' + alias + '/worlds/protos'
-                                    page('/' + alias + '/worlds/protos');
+                                    window.location.pathname = '/' + alias + '/worlds/protos'
+                                    //page('/' + alias + '/worlds/protos');
                                     //_app.indexApp.getWorldsProtosFromUserDB(alias);
                                 }
                             }),
@@ -441,8 +441,8 @@ class IndexApp {
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSDB.user().is.alias;
-                                    // window.location.pathname = '/' + alias + '/worlds/states'
-                                    page('/' + alias + '/worlds/states');
+                                     window.location.pathname = '/' + alias + '/worlds/states'
+                                    //page('/' + alias + '/worlds/states');
                                     // page.redirect('/' + alias + '/worlds/states');
                                     //_app.indexApp.getWorldsFromUserDB(alias);       
                                 }

@@ -641,17 +641,26 @@ class App {
             if (worldFile) {
               var source = worldFile.file;
               if (type == 'state') {
+
+                if (!file.includes('_info_vwf_json')){
                 source = worldFile.jsonState;
                 var saveName = worldFile.filename;
               }
-              console.log(source);
+              }
+              //console.log(source);
+
+              //var source = (typeof(sourceToEdit) =="object") ? JSON.stringify(sourceToEdit): sourceToEdit;
+              if (file.includes('_json')) {
+                source = JSON.stringify(source, null, '\t');
+              } 
+
 
               let el = document.createElement("div");
               el.setAttribute("id", "worldFILE");
               document.body.appendChild(el);
 
               var saveGUI = {};
-              if(type == 'proto'){
+              if(type == 'proto' || file.includes('_info_vwf_json')){
 
                 saveGUI =  {
                   $type: "button",
@@ -681,7 +690,7 @@ class App {
                 }
 
               }
-              if (type == 'state') {
+              if (type == 'state' && !file.includes('_info_vwf_json')) {
                 saveGUI =  
                 
                 {
@@ -1110,8 +1119,14 @@ class App {
 
     let worldName = this.helpers.appPath //loadInfo[ 'application_path' ].slice(1);
 
-    let saveObject = await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).once().then();
-    let saveInfo = saveObject ? JSON.parse(saveObject.jsonState) : saveObject;
+    let saveObject = await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).then();
+    
+    var saveInfo = null;
+    if(saveObject){
+      saveInfo = (typeof(saveObject.jsonState) == 'object') ? saveObject.jsonState: JSON.parse(saveObject.jsonState);
+    }
+    //typeof(saveObject == 'object')
+    
 
     return saveInfo;
 
@@ -1324,7 +1339,7 @@ class App {
   }
 
   //TODO: refactor and config save
-  saveStateAsFile(filename, otherProto) // invoke with the view as "this"
+  async saveStateAsFile(filename, otherProto) // invoke with the view as "this"
   {
     console.log("Saving: " + filename);
 
@@ -1426,9 +1441,10 @@ class App {
       }
     });
 
-    _LCSDB.user().get('worlds').get(root).get('info_json').once(function(res) {
+   // let docInfo  =  await _LCSDB.user().get('worlds').get(root).get('info_json').get('file').then();
+    _LCSDB.user().get('worlds').get(root).get('info_json').get('file').once(function(file) {
 
-      if (res) {
+      if (file) {
 
         let modified = saveRevision;
         let newOwner = _LCSDB.user().is.pub;
@@ -1437,7 +1453,7 @@ class App {
         let obj = {
           'parent': userName + '/' + root,
           'owner': newOwner,
-          'file': res.file,
+          'file': JSON.stringify(file),
           //'modified': modified,
           'created': modified
 
@@ -1456,7 +1472,7 @@ class App {
         _LCSDB.user().get('documents').get(root).get(docInfoName).get('modified').put(modified);
 
       }
-    });
+    }, {wait: 200});
 
     var docNameRev = 'savestate_' + saveRevision.toString() + '/' + root + '/' + filename + '_vwf_json';
     _LCSDB.user().get('documents').get(root).get(docName).get('revs').get(docNameRev).put(stateForStore)
@@ -1793,7 +1809,15 @@ class App {
   
               let saveName = datI.split('/')[2].replace('_info_vwf_json', "");
 
-              let worldDesc = JSON.parse(res.file);
+             // let worldDesc = JSON.parse(res.file);
+             var worldDesc = {};
+             if(typeof(res.file) == 'object'){
+               worldDesc = res.file
+             } else {
+               worldDesc = JSON.parse(res.file)
+             }
+
+
               let root = Object.keys(worldDesc)[0];
               var appInfo = worldDesc[root]['en'];
   
@@ -1879,7 +1903,15 @@ class App {
 
           if (res.file && res.file !== 'null') {
 
-            let worldDesc = JSON.parse(res.file);
+            //let worldDesc = JSON.parse(res.file);
+
+            var worldDesc = {};
+            if(typeof(res.file) == 'object'){
+              worldDesc = res.file
+            } else {
+              worldDesc = JSON.parse(res.file)
+            }
+
             let root = Object.keys(worldDesc)[0];
             var appInfo = worldDesc[root]['en'];
 
@@ -1961,8 +1993,11 @@ class App {
         for (const el of saves) {
           let stateName = el.split('/')[2].replace('_info_vwf_json', "");
           let info = await this.getStateInfo(userInfo, worldName, stateName);
-          if (Object.keys(info).length !== 0)
-            states[stateName] = info;
+          if (Object.keys(info).length !== 0){
+            if(info.info)
+                states[stateName] = info;
+          }
+           
         }
       }
     }
@@ -1986,17 +2021,25 @@ class App {
     }
 
     var info = {};
-
+    let worlds = await db.get('documents').then();
     let docName = 'savestate_/' + space + '/' + saveName + '_info_vwf_json';
-    let world = await db.get('documents').get(space).get(docName).once().then();
+    let world = await db.get('documents').get(space).get(docName).then();
     if (world) {
-      let res = await db.get('documents').get(space).get(docName).once().then();
+      let res = world;//await db.get('documents').get(space).get(docName).then();
 
         if (res && res !== 'null') {
 
           if (res.file && res.file !== 'null') {
 
-            let worldDesc = JSON.parse(res.file);
+           // let worldDesc = JSON.parse(res.file);
+
+           var worldDesc = {};
+           if(typeof(res.file) == 'object'){
+             worldDesc = res.file
+           } else {
+             worldDesc = JSON.parse(res.file)
+           }
+
             let root = Object.keys(worldDesc)[0];
             var appInfo = worldDesc[root]['en'];
 
@@ -2046,7 +2089,14 @@ class App {
 
           if (res.file && res.file !== 'null') {
 
-            let worldDesc = JSON.parse(res.file);
+            var worldDesc = {};
+            if(typeof(res.file) == 'object'){
+              worldDesc = res.file
+            } else {
+              worldDesc = JSON.parse(res.file)
+            }
+
+            //let worldDesc = JSON.parse(res.file);
             let root = Object.keys(worldDesc)[0];
             var appInfo = worldDesc[root]['en'];
             let settings = worldDesc[root].settings;
