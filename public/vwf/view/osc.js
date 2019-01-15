@@ -100,8 +100,13 @@ define(["module", "vwf/view", "vwf/view/oscjs/dist/osc-module"], function(module
 	
 			this.disconnect();
 
+			var url = 'wss://' + this.hostValue + ':' + this.portValue;
+			if (this.hostValue == 'localhost'){
+				url = 'ws://' + this.hostValue + ':' + this.portValue
+			}
+
 			this.port = new osc.WebSocketPort({
-                url: 'wss://' + this.hostValue + ':' + this.portValue
+                url: url //'wss://' + this.hostValue + ':' + this.portValue
                 //url: "ws://localhost:8081"
             	});
 			
