@@ -4011,7 +4011,7 @@ define([
     function createAceEditor(view, nodeID, elID) {
         var editor = view.ace.edit(elID);
         editor.setTheme("ace/theme/monokai");
-        editor.setFontSize(16);
+        editor.setFontSize(20);
         editor.getSession().setMode("ace/mode/javascript");
 
         editor.commands.addCommand({
