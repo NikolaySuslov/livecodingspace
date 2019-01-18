@@ -1233,15 +1233,15 @@ class App {
       'published': true
     };
 
-    let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).once().then();
+    let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).then();
     let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
     for (var doc in worldFileNames) {
 
       let fn = worldFileNames[doc];
-      let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).once().then();
+      let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).then();
       let data = {
-        'file': res.file,
+        'file': JSON.stringify(res.file),
         'modified': created
       }
       worldObj[fn] = data;
@@ -1254,8 +1254,8 @@ class App {
     //   myNewWorld.get(obj).put(worldObj[obj]);
     // }
 
-    let myWorlds = _LCSDB.user().get('worlds');
-    myWorlds.get(worldID).put(worldObj);
+    let myWorlds = await _LCSDB.user().get('worlds').then();
+    let myWorld = _LCSDB.user().get('worlds').get(worldID).put(worldObj);
 
     _app.hideProgressBar();
     console.log('CLONED!!!');
