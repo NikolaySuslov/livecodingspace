@@ -198,7 +198,6 @@ AFRAME.registerComponent('cursor-listener', {
             if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
                 vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent", [vwf_view.kernel.moniker()])
             }
-
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
         });
     }
@@ -208,23 +207,14 @@ AFRAME.registerComponent('aabb-collider-listener', {
 
     init: function () {
 
-        let self = this;
-        this.me = vwf_view.kernel.moniker();
-
+        // let self = this;
+        // this.me = vwf_view.kernel.moniker();
         this.el.addEventListener('hitstart', function (evt) {
-            //console.log('Hit start..' + evt);
-            let ownedby = evt.target.getAttribute('ownedby');
-            if (ownedby == self.me || (evt.target.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
-                vwf_view.kernel.fireEvent(evt.target.id, "hitstartEvent", [self.me]);
-            }
+            vwf_view.kernel.fireEvent(evt.target.id, "hitstartEvent");
         })
 
         this.el.addEventListener('hitend', function (evt) {
-            //console.log('Hit end..' + evt);
-            let ownedby = evt.target.getAttribute('ownedby');
-            if (ownedby == self.me || (evt.target.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
-                vwf_view.kernel.fireEvent(evt.target.id, "hitendEvent", [self.me]);
-            }
+            vwf_view.kernel.fireEvent(evt.target.id, "hitendEvent");
         })
     }
 
@@ -239,6 +229,7 @@ AFRAME.registerComponent('raycaster-listener', {
         this.intersected = false;
         this.casters = {}
         this.me = vwf_view.kernel.moniker();
+        this.driver = vwf.views["vwf/view/aframe"];
 
         this.el.addEventListener('raycaster-intersected', function (evt) {
 
@@ -248,15 +239,9 @@ AFRAME.registerComponent('raycaster-listener', {
             } else {
                 if (self.intersected) {
 
-
                 } else {
                     console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
-                    //evt.detail.intersection.object.el.id
-
-                    let ownedby = evt.detail.el.getAttribute('ownedby');
-                    if (ownedby == self.me || (evt.detail.el.id.includes(self.me))) { //if (evt.detail.el.id.includes(self.me)) {
-                        vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent", [self.me]);
-                    }
+                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent");
                 }
 
                 self.casters[evt.target.id] = evt.target;
@@ -275,10 +260,7 @@ AFRAME.registerComponent('raycaster-listener', {
                 if (self.intersected) {
                     console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.target.id] !== undefined)) {
-                        let ownedby = evt.detail.el.getAttribute('ownedby');
-                        if (ownedby == self.me || (evt.detail.el.id.includes(self.me))) {  //if (evt.detail.el.id.includes(self.me)) {
-                            vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent", [vwf_view.kernel.moniker()])
-                        }
+                        vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
                     }
                     delete self.casters[evt.target.id]
                 } else { }

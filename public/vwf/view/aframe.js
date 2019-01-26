@@ -174,17 +174,17 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
-            if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+            // if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
 
-                var clientThatSatProperty = self.kernel.client();
-                var me = self.kernel.moniker();
+            //     var clientThatSatProperty = self.kernel.client();
+            //     var me = self.kernel.moniker();
 
 
-                // If the transform property was initially updated by this view....
-                if (clientThatSatProperty == me) {
-                    self.kernel.callMethod(childID, "setOwner", [me]);
-                }
-            }
+            //     // If the transform property was initially updated by this view....
+            //     if (clientThatSatProperty == me) {
+            //         self.kernel.callMethod(childID, "setOwner", [me]);
+            //     }
+            // }
 
 
             // if (propertyName == 'ownedBy')
@@ -401,15 +401,15 @@ define(["module", "vwf/view"], function (module, view) {
 
             //var avatarID = vwf_view.kernel.find("", avatarName)
 
-            if (eventName == "postLoadAction") {
+            // if (eventName == "postLoadAction") {
 
-                Object.entries(self.state.nodes).forEach(el => {
-                    if (el[1].prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
-                        vwf_view.kernel.callMethod(el[0], "setOwner", [self.kernel.moniker()]);
-                    }
+            //     Object.entries(self.state.nodes).forEach(el => {
+            //         if (el[1].prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+            //             vwf_view.kernel.callMethod(el[0], "setOwner", [self.kernel.moniker()]);
+            //         }
 
-                });
-            }
+            //     });
+            // }
 
             var avatarName = 'avatar-' + self.kernel.moniker();
 
@@ -474,7 +474,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             }
 
-            let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect'];
+            let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect']; //'intersect', 
 
             let hitEvent = intersectEvents.filter(el=> el == eventName.slice(0,-5))[0]; //slice Event word
             if (hitEvent)
@@ -484,15 +484,13 @@ define(["module", "vwf/view"], function (module, view) {
 
                 // If the transform property was initially updated by this view....
                 if (clientThatSatProperty == me) {
-
-                    if (me == eventParameters[0]) {
                         let methodName = eventName +'Method';
-                        vwf_view.kernel.callMethod(nodeID, methodName, [])
-                    }
+                        vwf.callMethod(nodeID, methodName, [])
                 }
 
             }
     
+
 
             if (eventName == "clickEvent") {
 
@@ -962,7 +960,7 @@ define(["module", "vwf/view"], function (module, view) {
 
     function postLoadAction(nodeID) {
 
-        vwf_view.kernel.fireEvent(nodeID, "postLoadAction")
+        //vwf_view.kernel.fireEvent(nodeID, "postLoadAction")
     }
 
     function createAvatar(nodeID) {

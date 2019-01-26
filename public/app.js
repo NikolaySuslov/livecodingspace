@@ -1206,6 +1206,9 @@ class App {
     let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
     let newOwner = _LCSDB.user().is.pub;
 
+    let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
+    if(!myWorlds) _LCSDB.user(newOwner).get('worlds').put({});
+
     if(newWorldName){
 
     let worldProto = await _LCSDB.user(newOwner).get('worlds').get(newWorldName).then();
@@ -1254,8 +1257,11 @@ class App {
     //   myNewWorld.get(obj).put(worldObj[obj]);
     // }
 
-    let myWorlds = await _LCSDB.user().get('worlds').then();
-    let myWorld = _LCSDB.user().get('worlds').get(worldID).put(worldObj);
+    //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
+    let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put(worldObj);
+
+    // let myWorld = _LCSDB.user().get(worldID).put(worldObj);
+    // _LCSDB.user().get('worlds').set(myWorld);
 
     _app.hideProgressBar();
     console.log('CLONED!!!');
