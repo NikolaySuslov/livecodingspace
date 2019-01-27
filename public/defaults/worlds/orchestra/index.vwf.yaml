@@ -75,12 +75,15 @@ children:
         body: |
                 let transportNode = this.find('//' + obj.name)[0];
                 let rate = transportNode.animationRate; // 1 by default
-                let drumSeq = [{beat:0, msg: 0}];
+                let drumSeq = [
+                  {beat:0, msg: 0},
+                  {beat:15, msg: 0}
+                ];
                 drumSeq.forEach(el=>{
                   if(el.beat/rate == obj.beat){
                     let msg = {
                         address: "/trigger/sample01",
-                        args: [this.time, 'bd_808', 3]
+                        args: [this.time, 'bd_haus', 2]
                     };
                     this.sendOSC(msg); 
                     this.changeVisual();
@@ -132,15 +135,14 @@ children:
                 let transportNode = this.find('//' + obj.name)[0];
                 let rate = transportNode.animationRate; // 1 by default
                 let drumSeq = [
-                  {beat:0, msg: 0},
-                  {beat:15, msg: 0},
-                  {beat:30, msg: 0},
-                  {beat:45, msg: 0}];
+                  {beat:10, msg: 0},
+                  {beat:20, msg: 0}
+                  ];
                 drumSeq.forEach(el=>{
                   if(el.beat/rate == obj.beat){
                     let msg = {
                         address: "/trigger/sample02",
-                        args: [this.time, 'drum_cymbal_closed', 0.5]
+                        args: [this.time, 'bass_hit_c', 1]
                     };
                     this.sendOSC(msg); 
                     this.changeVisual();
@@ -192,14 +194,17 @@ children:
               let rate = transportNode.animationRate; // 1 by default
               let drumSeq = [
                 {beat:0, msg: "C3"},
-                {beat:15, msg: "E3"},
-                {beat:30, msg: "G3"},
-                {beat:45, msg: "A3"}];
+                {beat:5, msg: "D3"},
+                {beat:10, msg: "E3"},
+                {beat:15, msg: "G3"},
+                {beat:20, msg: "A3"},
+                {beat:25, msg: "B3"}
+                ];
               drumSeq.forEach(el=>{
                 if(el.beat/rate == obj.beat){
                   let msg = {
                     address: "/trigger/synth01",
-                          args: [this.time, 'pluck', el.msg, 0.1, 0.01]
+                          args: [this.time, 'pluck', el.msg, 0.1, 0.01, 0.6]
                   };
                   this.sendOSC(msg); 
                   this.changeVisual();

@@ -47,6 +47,7 @@ properties:
   ownedBy:
   class:
   stepping:
+  stepTime:
   globalBeat:
 events:
   positionChanged:
@@ -100,5 +101,6 @@ methods:
   changeVisual:
   resetVisual:  
   step:
+  do:
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

@@ -141,6 +141,10 @@ this.callMethod = function(methodName, params){
     vwf_view.kernel.callMethod(this.id, methodName, params)
 }
 
+this.do = function() {
+    //do in step
+}
+
 this.step = function(){
 
     if (this.stepping){
