@@ -846,7 +846,7 @@ define(["module", "vwf/view"], function (module, view) {
         let controlEl = document.createElement('a-camera');
 
         controlEl.setAttribute('id', 'avatarControl');
-        //controlEl.setAttribute('wasd-controls', {});
+        controlEl.setAttribute('wasd-controls', {acceleration: 100});
         controlEl.setAttribute('look-controls', { pointerLockEnabled: false });
         //controlEl.setAttribute('gamepad-controls', {'controller': 0});
 
