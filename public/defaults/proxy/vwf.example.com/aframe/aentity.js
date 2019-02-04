@@ -3,6 +3,11 @@ this.getChildByName = function (name) {
     return nodes[0]
 }
 
+this.getScene =  function () {
+    let scene = this.find("/")[0];
+    return scene
+}
+
 this.setGizmoMode = function (mode) {
     if (this.gizmo) {
         this.gizmo.properties.mode = mode
@@ -41,6 +46,8 @@ this.translationFromValue = function (propertyValue) {
     else if (typeof propertyValue === 'string') {
         let val = AFRAME.utils.coordinates.parse(propertyValue);
         value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+    } else if (propertyValue.hasOwnProperty('0')) {
+        value = goog.vec.Vec3.createFromValues(propertyValue[0], propertyValue[1], propertyValue[2])
     }
 
     return value
@@ -188,4 +195,13 @@ this.changeVisual = function() {
 
 this.resetVisual = function() {
 
+}
+
+this.getRandomColor = function () {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(this.random() * 16)];
+    }
+    return color;
 }

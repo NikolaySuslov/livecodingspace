@@ -434,22 +434,40 @@ define(["module", "vwf/view"], function (module, view) {
                 }
 
                 if (!self.state.nodes[avatarName]) {
+                   
 
                     if (_LCSUSER.is) {
-                        _LCSUSER.get('profile').once(res => {
-                            var myNode = null;
-                            if (res.avatarNode) {
-                                myNode = JSON.parse(res.avatarNode);
-                            }
-                            newNode.properties.displayName = res.alias;
 
-                            vwf_view.kernel.createChild(nodeID, avatarName, newNode);
-                            vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
-                            //"/../assets/avatars/male/avatar1.gltf"
+                        _LCSUSER.get('profile').get('alias').once(alias => {
+                                if (alias){
+
+                                    newNode.properties.displayName = alias;
+                                    //vwf_view.kernel.callMethod(avatarName, "setMyName", [alias]);
+                                }
+                                vwf_view.kernel.createChild(nodeID, avatarName, newNode);
+                                });
+
+                                    _LCSUSER.get('profile').get('avatarNode').once(res => {
+                                        var myNode = null;
+                                        if (res) {
+                                            //myNode = JSON.parse(res.avatarNode);
+                                            myNode = res;
+                                            vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
+                                        } else {
+                                            vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
+                                        }
+                                       // newNode.properties.displayName = res.alias;
+            
+                                        
+                                        //"/../assets/avatars/male/avatar1.gltf"
+            
+            
+                                        //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
+                                    });
 
 
-                            //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
-                        })
+                                
+                      
                     } else {
 
                         vwf_view.kernel.createChild(nodeID, avatarName, newNode);
@@ -458,7 +476,7 @@ define(["module", "vwf/view"], function (module, view) {
                     }
 
                     //
-
+                    
 
                 }
 

@@ -26,7 +26,6 @@ methods:
         parameters:
             - nodeDef
             - modelSrc
-    getRandomColor:
     followAvatarControl:
         parameters:
             - position
@@ -53,5 +52,10 @@ methods:
     setUserAvatar:
         parameters:
             - val
+    findWorldAvatarCostume:
+    setMyName:
+        parameters:
+            - val
+    randomizeAvatar:
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

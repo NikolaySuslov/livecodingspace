@@ -1358,40 +1358,7 @@ class App {
     var timestamp = state["queue"].time;
     timestamp = Math.round(timestamp * 1000);
 
-    var objectIsTypedArray = function (candidate) {
-      var typedArrayTypes = [
-        Int8Array,
-        Uint8Array,
-        // Uint8ClampedArray,
-        Int16Array,
-        Uint16Array,
-        Int32Array,
-        Uint32Array,
-        Float32Array,
-        Float64Array
-      ];
-
-      var isTypedArray = false;
-
-      if (typeof candidate == "object" && candidate != null) {
-        typedArrayTypes.forEach(function (typedArrayType) {
-          isTypedArray = isTypedArray || candidate instanceof typedArrayType;
-        });
-      }
-
-      return isTypedArray;
-    };
-
-    var transitTransformation = function (object) {
-      return objectIsTypedArray(object) ?
-        Array.prototype.slice.call(object) : object;
-    };
-
-
-    let jsonValuePure = require("vwf/utility").transform(
-      state, transitTransformation
-    );
-
+    let jsonValuePure = _app.helpers.replaceFloatArraysInNodeDef(state);
     //remove all Ohm generated grammarsfrom state
 
     let jsonValue = _app.helpers.removeGrammarObj(jsonValuePure);
@@ -1428,11 +1395,17 @@ class App {
       "publish": true
     };
 
+    let rev =  JSON.stringify(saveRevision);
+    var docNameRev = 'savestate_' + rev + '/' + root + '/' + filename + '_vwf_json';
+    let stateWithRev = Object.assign({},stateForStore);
+    stateWithRev.revs = {[docNameRev]: stateForStore};
+    stateWithRev.revs[docNameRev].revision = saveRevision;
+
+
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
-
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    _LCSDB.user().get('documents').get(root).get(docName).put(stateForStore, function(res) {
+    _LCSDB.user().get('documents').get(root).get(docName).put(stateWithRev, function(res) {
 
       if (res) {
 
@@ -1479,10 +1452,6 @@ class App {
 
       }
     }, {wait: 200});
-
-    var docNameRev = 'savestate_' + saveRevision.toString() + '/' + root + '/' + filename + '_vwf_json';
-    _LCSDB.user().get('documents').get(root).get(docName).get('revs').get(docNameRev).put(stateForStore)
-      .path("revision").put(saveRevision);
 
 
     // Save Config Information

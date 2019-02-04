@@ -1,7 +1,7 @@
 this.simpleBodyDef = {
     "extends": "http://vwf.example.com/aframe/abox.vwf",
     "properties": {
-        "position": "0 0.66 0.7",
+        "position": [0, 0.66, 0.7],
         "height": 1.3,
         "width": 0.65,
         "depth": 0.1,
@@ -21,8 +21,8 @@ this.modelBodyDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
         "src": "#avatar",
-        "position": "0 0 0.8",
-        "rotation": "0 180 0"
+        "position": [0, 0, 0.8],
+        "rotation": [0, 180, 0]
     },
     "children": {
         "animation-mixer": {
@@ -36,6 +36,20 @@ this.modelBodyDef = {
     }
 }
 
+this.findWorldAvatarCostume = function () {
+
+    let scene = this.getScene();
+    let def = scene.defaultAvatarCostume
+
+    if (def) {
+        let defID = def.id;
+        let avatarNode = _app.helpers.getNodeDef(defID);
+        return avatarNode
+    }
+
+    return null
+} 
+
 
 this.createAvatarBody = function (nodeDef, modelSrc) {
 
@@ -45,7 +59,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
     //     userHeight = 0
     // }
 
-    let myColor = this.getRandomColor();
+    let myColor = "white"; //this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
     //let myHandDef = this.simpleVrControllerDef;
 
@@ -55,6 +69,11 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
             "position": [0, userHeight, 0] //-userHeight
+        },
+        "methods": {
+            "randomize":{
+                "body":"let myColor = this.getRandomColor(); \n this.myName.color = myColor; \n this.myBody.material.color = myColor; \n this.myHead.visual.material.color = myColor; \n this.myHead.myCursor.vis.material.color = myColor; \n this.myHead.myCursor.line.color = myColor;"
+            }
         },
         children: {
            
@@ -96,7 +115,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                     
                     "myCamera":
                     {
-                        "id": 'camera-' + this.id,
+                        //"id": 'camera-' + this.id,
                         "extends": "http://vwf.example.com/aframe/acamera.vwf",
                         "properties": {
                             "position": [0, 0, -0.7],
@@ -107,14 +126,14 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                     },
                     "myCursor":
                     {
-                        "id": 'myCursor-' + this.id,
+                        //"id": 'myCursor-' + this.id,
                         "extends": "http://vwf.example.com/aframe/aentity.vwf",
                         "properties": {},
                         "children": {
                             "vis": {
                                 "extends": "http://vwf.example.com/aframe/abox.vwf",
                                 "properties": {
-                                    "position": "0 0 -3",
+                                    "position": [0, 0, -3],
                                     "height": 0.05,
                                     "width": 0.05,
                                     "depth": 0.01,
@@ -198,8 +217,8 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                     "color": myColor,
                     "value": this.displayName,
                     "side": "double",
-                    "rotation": "0 180 0",
-                    "position": "0.3 2.05 0.5"
+                    "rotation": [0, 180, 0],
+                    "position": [0.3, 2.05, 0.5]
                 }
             }
 
@@ -207,12 +226,29 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         }
     }
 
+
+
     var newNode  = Object.assign({}, defaultNode);
 
-    if (nodeDef){
-       newNode = Object.assign(defaultNode, nodeDef);
-    }
+   //1. check for default user saved avatar...
+   if (nodeDef){
+    newNode = Object.assign({}, nodeDef);
+    newNode.properties.position = [0, userHeight, 0];
+    newNode.children.myName.properties.value = this.displayName;
+   //newNode = Object.assign(defaultNode, nodeDef);
+}
 
+    //2. check for default avatar costume in world...
+    let defaultWorldCostume = this.findWorldAvatarCostume();
+    if(defaultWorldCostume) {
+        newNode = Object.assign({}, defaultWorldCostume);
+        newNode.properties.visible = true;
+        newNode.properties.position = [0, userHeight, 0];
+        newNode.children.myName.properties.value = this.displayName;
+    }
+    
+
+     //3. check for model...
     if (modelSrc) {
 
         let myBodyDef = this.modelBodyDef;
@@ -247,7 +283,11 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
     //this.children.create( "avatarCamera", camera );
     // this.children.create( "avatarNameNode", avatarNameNode );
 
-    this.children.create("avatarNode", newNode);
+    this.children.create("avatarNode", newNode, function(child){
+
+       child.randomize();
+
+    });
 
     // this.localUrl = '';
     // this.remoteUrl = '';
@@ -261,15 +301,6 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
     //this.interpolation = "50ms";
     //vwf_view.kernel.createChild(this.id, "avatarCursor", cursorVis);
 
-}
-
-this.getRandomColor = function () {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(this.random() * 16)];
-    }
-    return color;
 }
 
 this.followAvatarControl = function (position, rotation) {
@@ -434,3 +465,10 @@ this.initialize = function() {
 };
 
 
+this.setMyName = function(val){
+    this.avatarNode.myName.value = val
+}
+
+this.randomizeAvatar = function() {
+    this.avatarNode.randomize();
+}

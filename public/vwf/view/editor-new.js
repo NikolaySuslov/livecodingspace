@@ -555,7 +555,8 @@ define([
                                             "onclick": function (e) {
                                                 //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
                                                 let avatarID = 'avatar-' + self.kernel.moniker();
-                                                let cursorID = 'myCursor-' + avatarID;
+                                                let cursorID = vwf.find(avatarID, "./avatarNode/myHead/myCursor")[0];
+                                                //let cursorID = 'myCursor-' + avatarID;
                                                 let controlEl = document.querySelector("[id='" + cursorID + "']");
                                                 let vis = controlEl.getAttribute('visible');
                                                 this.$text = vis ? 'Show cursor' : 'Hide cursor';
@@ -1862,36 +1863,18 @@ define([
                                             //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
                                         }
                                     }),
-                                    self.widgets.floatActionButton({
-                                        label: "person",
-                                        styleClass: "mdc-fab--mini",
-                                        onclickfunc: function () {
-                                            var nodeID = document.querySelector('#currentNode')._currentNode;
-                                            let node = self.nodes[nodeID];
-                                            //vwf_view.kernel.deleteChild(node.parentID, node.name);
+                                    // self.widgets.floatActionButton({
+                                    //     label: "person",
+                                    //     styleClass: "mdc-fab--mini",
+                                    //     onclickfunc: function () {
+                                    //         var nodeID = document.querySelector('#currentNode')._currentNode;
+                                    //         let node = self.nodes[nodeID];
+                                    //         //vwf_view.kernel.deleteChild(node.parentID, node.name);
 
-                                            let me = self.kernel.moniker();
-                                            vwf_view.kernel.setProperty(nodeID, 'ownedBy', me);
-
-                                            // let me = self.kernel.moniker();
-                                            // let viewDriver = vwf.views["vwf/view/aframe"];
-                                            // let nodeComponents = viewDriver.nodes[nodeID].components;
-                                            // let raycasterID = Object.entries(nodeComponents).find(el => 
-                                            //     el[0] == 'raycaster'
-                                            //   )[1];
-                                            //  if (raycasterID){
-                                            //     vwf_view.kernel.setProperty(raycasterID, 'ownedby', me);
-                                            //  }
-                                            //   else {
-                                            //       console.log("no raycaster component on: " + nodeID);
-                                            //   }
-
-
-                                            //let nodeComponents = node.components
-                                           
-                                            //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
-                                        }
-                                    }),
+                                    //         let me = self.kernel.moniker();
+                                    //         vwf_view.kernel.setProperty(nodeID, 'ownedBy', me);
+                                    //     }
+                                    // }),
 
                                     saveGUI
 

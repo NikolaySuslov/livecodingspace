@@ -73,6 +73,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                             aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
                         } else if (typeof propertyValue === 'string') {
                             aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                        } else if (propertyValue.hasOwnProperty('0')) {
+                            aframeObject.setAttribute(propertyName, { x: propertyValue[0], y: propertyValue[1], z: propertyValue[2] })
                         }
 
                 },
@@ -88,6 +90,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     else if (typeof propertyValue === 'string') {
                         let val = AFRAME.utils.coordinates.parse(propertyValue);
                         value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+                    }  else if (propertyValue.hasOwnProperty('0')) {
+                        value = goog.vec.Vec3.createFromValues(propertyValue[0], propertyValue[1], propertyValue[2])
                     }
 
                     return value

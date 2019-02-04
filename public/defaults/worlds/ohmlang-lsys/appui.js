@@ -11,7 +11,7 @@ function createApp() {
 
     function getNewPosition() {
         //let allChild = vwf.find("","/*")
-        let cursorVisID = vwf.find("myCursor-avatar-" + vwf.moniker_, "./vis")[0]
+        let cursorVisID = vwf.find("avatar-" + vwf.moniker_, "./avatarNode/myHead/myCursor/vis")[0];
         let avPos = AFRAME.utils.coordinates.parse(vwf.callMethod(cursorVisID, 'worldPosition'));
         let newPos = [avPos.x, avPos.y, avPos.z]
         return newPos

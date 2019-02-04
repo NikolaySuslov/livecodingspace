@@ -49,6 +49,7 @@ properties:
   stepping:
   stepTime:
   globalBeat:
+  getRandomColor:
 events:
   positionChanged:
   rotationChanged:

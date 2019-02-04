@@ -1,0 +1,109 @@
+  defaultAvatarCostume:
+    extends: "http://vwf.example.com/aframe/aentity.vwf"
+    properties:
+      position: [0, -10, 0]
+      visible: false
+    methods:
+      randomize:
+        body: |
+                let myColor = this.getRandomColor();
+                this.myName.color = myColor;
+                this.myBody.material.color = myColor;
+                this.myHead.visual.material.color = myColor;
+                this.myHead.myCursor.vis.material.color = myColor;
+                this.myHead.myCursor.line.color = myColor;
+    children:
+      myBody:
+        extends: "http://vwf.example.com/aframe/abox.vwf"
+        properties:
+          position: [0, 0.66, 0.7]
+          height: 1.3
+          width: 0.65
+          depth: 0.1
+        children:
+          material:
+            extends: "http://vwf.example.com/aframe/aMaterialComponent.vwf"
+            type: "component"
+            properties:
+              color: "white"
+      myName:
+        extends: "http://vwf.example.com/aframe/atext.vwf"
+        properties:
+          color: "white"
+          value: "avatar"
+          side: "double"
+          rotation: [0, 180, 0]
+          position: [0.3, 2.05, 0.5]
+      myHead:
+        extends: "http://vwf.example.com/aframe/aentity.vwf"
+        properties:
+          position: [0, 1.6, 0.7]
+          visible: true
+        children:
+          interpolation:
+            extends: "http://vwf.example.com/aframe/interpolation-component.vwf"
+            type: "component"
+            properties:
+              enabled: true
+          visual:
+            extends: "http://vwf.example.com/aframe/abox.vwf"
+            properties:
+              height: 0.5
+              width: 0.5
+              depth: 0.1
+              visible: true
+            children:
+              material:
+                extends: "http://vwf.example.com/aframe/aMaterialComponent.vwf"
+                type: "component"
+                properties:
+                  color: "white"
+          myCamera:
+            extends: "http://vwf.example.com/aframe/acamera.vwf"
+            properties:
+              position: [0, 0, -0.7]
+              look-controls-enabled: false
+              wasd-controls-enabled: false
+              user-height: 0
+          myCursor:
+            extends: "http://vwf.example.com/aframe/aentity.vwf"
+            children:
+              vis:
+                extends: "http://vwf.example.com/aframe/abox.vwf"
+                properties:
+                  position: [0, 0, -3]
+                  height: 0.05
+                  width: 0.05
+                  depth: 0.01
+                  visible: true
+                children:
+                  material:
+                    extends: "http://vwf.example.com/aframe/aMaterialComponent.vwf"
+                    type: "component"
+                    properties:
+                      color: "white"            
+                  aabb-collider:
+                    extends: "http://vwf.example.com/aframe/aabb-collider-component.vwf"
+                    type: "component"
+                    properties:
+                      debug: false
+                      interval: 10
+                      objects: ".hit"
+              line:
+                extends: "http://vwf.example.com/aframe/lineComponent.vwf"
+                type: "component"
+                properties:
+                  start: "0 0 -1"
+                  end: "0 0 -3"
+                  color: "white"
+              myRayCaster:
+                extends: "http://vwf.example.com/aframe/aentity.vwf"
+                children:
+                  raycaster:
+                    extends: "http://vwf.example.com/aframe/raycasterComponent.vwf"
+                    type: "component"
+                    properties:
+                      recursive: false
+                      interval: 100
+                      far: 3
+                      objects: ".intersectable"

@@ -291,7 +291,50 @@ class Helpers {
         let node = vwf.getNode(nodeID, true);
         let nodeDefPure = this.removeProps(node);
         let nodeDef = this.removeGrammarObj(nodeDefPure);
-        return nodeDef
+
+        let finalDef = this.replaceFloatArraysInNodeDef(nodeDef); 
+
+        return finalDef
+    }
+
+    replaceFloatArraysInNodeDef(state){
+
+        var objectIsTypedArray = function (candidate) {
+            var typedArrayTypes = [
+              Int8Array,
+              Uint8Array,
+              // Uint8ClampedArray,
+              Int16Array,
+              Uint16Array,
+              Int32Array,
+              Uint32Array,
+              Float32Array,
+              Float64Array
+            ];
+      
+            var isTypedArray = false;
+      
+            if (typeof candidate == "object" && candidate != null) {
+              typedArrayTypes.forEach(function (typedArrayType) {
+                isTypedArray = isTypedArray || candidate instanceof typedArrayType;
+              });
+            }
+      
+            return isTypedArray;
+          };
+      
+          var transitTransformation = function (object) {
+            return objectIsTypedArray(object) ?
+              Array.prototype.slice.call(object) : object;
+          };
+      
+      
+          let value = require("vwf/utility").transform(
+            state, transitTransformation
+          );
+      
+          return value
+
     }
 
     removeGrammarObj(obj) {
