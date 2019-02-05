@@ -205,3 +205,7 @@ this.getRandomColor = function () {
     }
     return color;
 }
+
+this.randomize = function () {
+    
+}

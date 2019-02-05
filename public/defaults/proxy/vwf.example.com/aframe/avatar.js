@@ -39,13 +39,26 @@ this.modelBodyDef = {
 this.findWorldAvatarCostume = function () {
 
     let scene = this.getScene();
-    let def = scene.defaultAvatarCostume
+    let def = scene.defaultAvatarCostume;
 
+    let allChilds = this.find("//element(*,'http://vwf.example.com/aframe/aentity.vwf')"); //this.children
+    let costumes = allChilds.filter(el => {
+         el.displayName == 'defaultAvatarCostume' 
+        });
+    let avatarCostume = costumes ? costumes[0]: null;
+
+    if (def || avatarCostume) {
+
+    var defID;  
     if (def) {
-        let defID = def.id;
-        let avatarNode = _app.helpers.getNodeDef(defID);
-        return avatarNode
+        defID = def.id;
+    } else if (avatarCostume) {
+        defID = avatarCostume.id;
     }
+
+    let avatarNode = _app.helpers.getNodeDef(defID);
+    return avatarNode
+}
 
     return null
 } 

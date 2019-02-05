@@ -103,5 +103,6 @@ methods:
   resetVisual:  
   step:
   do:
+  randomize:
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

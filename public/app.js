@@ -1258,7 +1258,10 @@ class App {
     // }
 
     //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
-    let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put(worldObj);
+    let myWorld =  _LCSDB.user(newOwner).get('worlds').get(worldID).put({});
+    myWorld.put(worldObj, function(res){
+      console.log(res)
+    }); //.get(worldID) let myWorld =
 
     // let myWorld = _LCSDB.user().get(worldID).put(worldObj);
     // _LCSDB.user().get('worlds').set(myWorld);
@@ -1405,10 +1408,10 @@ class App {
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    _LCSDB.user().get('documents').get(root).get(docName).put(stateWithRev, function(res) {
-
+    let myNewWorldState =  _LCSDB.user().get('documents').get(root).get(docName).put({});
+      //_LCSDB.user().get('documents').get(root).get(docName).put(stateWithRev, function(res) {
+    myNewWorldState.put(stateWithRev, function(res) {
       if (res) {
-
         let noty = new Noty({
           text: 'Saved to ' + docName,
           timeout: 2000,
@@ -1440,7 +1443,7 @@ class App {
 
         let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).not(function(res) {
+        _LCSDB.user().get('documents').get(root).get(docInfoName).get('file').not(function(res) {
           _LCSDB.user().get('documents').get(root).get(docInfoName).put(obj);
         });
 
