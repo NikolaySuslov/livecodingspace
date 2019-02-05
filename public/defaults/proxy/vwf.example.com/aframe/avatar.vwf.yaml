@@ -57,5 +57,8 @@ methods:
         parameters:
             - val
     randomizeAvatar:
+    changeCostume:
+         parameters:
+            - val
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

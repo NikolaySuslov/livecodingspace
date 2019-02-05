@@ -37,14 +37,11 @@ this.modelBodyDef = {
 }
 
 this.findWorldAvatarCostume = function () {
-
     let scene = this.getScene();
     let def = scene.defaultAvatarCostume;
 
     let allChilds = this.find("//element(*,'http://vwf.example.com/aframe/aentity.vwf')"); //this.children
-    let costumes = allChilds.filter(el => {
-         el.displayName == 'defaultAvatarCostume' 
-        });
+    let costumes = allChilds.filter(el => (el.meta == 'avatarCostume'));
     let avatarCostume = costumes ? costumes[0]: null;
 
     if (def || avatarCostume) {
@@ -62,7 +59,6 @@ this.findWorldAvatarCostume = function () {
 
     return null
 } 
-
 
 this.createAvatarBody = function (nodeDef, modelSrc) {
 
@@ -360,6 +356,23 @@ this.setUserAvatar = function(aName){
 
     this.displayName = aName;
     this.avatarNode.myName.value = aName;
+
+}
+
+this.changeCostume = function(val){
+
+    let userHeight = -1.6;
+
+    if (this.avatarNode) {
+        this.children.delete(this.avatarNode);
+        //this.children.delete(this.interpolation);
+    }
+    let newNode = Object.assign({}, val);
+    newNode.properties.position = [0, userHeight, 0];
+    newNode.properties.visible = true;
+    newNode.properties.meta = "avatarCostume";
+    newNode.children.myName.properties.value = this.displayName;
+    this.children.create("avatarNode", newNode);
 
 }
 

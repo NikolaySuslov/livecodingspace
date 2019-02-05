@@ -455,7 +455,8 @@ define([
                 })
             }
 
-            let saveAvatar = {};
+            var saveAvatar = {};
+            var loadAvatar = {};
             if (_LCSUSER.is) {
                 saveAvatar = self.widgets.floatActionButton({
                     label: "save",
@@ -474,6 +475,19 @@ define([
                         //vwf_view.kernel.deleteChild(node.parentID, node.name);
                         //vwf_view.kernel.deleteNode(nodeID);
                         //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
+                    }
+                });
+                loadAvatar = self.widgets.floatActionButton({
+                    label: "restore",
+                    styleClass: "mdc-fab--mini",
+                    onclickfunc: function () {
+                        let nodeID = 'avatar-' + self.kernel.moniker();
+                        _LCSUSER.get('profile').get('avatarNode').once(res => {
+                            if (res) {
+                                //myNode = JSON.parse(res.avatarNode);
+                                vwf_view.kernel.callMethod(nodeID, "changeCostume", [res]);
+                            }
+                        })
                     }
                 })
             }
@@ -539,6 +553,7 @@ define([
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
                                     saveAvatar,
+                                    loadAvatar,
                                     self.widgets.divider,
                                     self.widgets.buttonStroked(
                                         {
@@ -1863,6 +1878,7 @@ define([
                                             //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
                                         }
                                     }),
+                                    
                                     // self.widgets.floatActionButton({
                                     //     label: "person",
                                     //     styleClass: "mdc-fab--mini",
@@ -1951,6 +1967,9 @@ define([
                     var viewerProps = {};
                     var viewerPropsCell = {};
 
+                    var propsActions = {};
+                    var propsActionsCell = {};
+
                     var gizmoCell = {};
                     if (this._currentNode !== self.kernel.application()) {
                         if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
@@ -1966,6 +1985,65 @@ define([
                     }
 
                     if (node !== undefined) {
+
+                        propsActions = {
+                            $type: "li",
+                            class: "mdc-list-item",
+                            $components: [
+                                {
+                                    $text: "Actions",
+                                    $type: "span",
+                                    class: "mdc-list-item__text mdc-typography--button"
+
+                                }
+                            ]
+                        }
+
+                        let actionsGUI = [];
+
+                        if(node.properties.meta) {
+                            if(node.properties.meta.rawValue == 'avatarCostume'){
+                                actionsGUI.push(self.widgets.buttonStroked(
+                                    {
+                                        "label": "Use this costume",
+                                        "onclick": function (e) {
+                                            console.log("COSTUME NEW!!!");
+                                            let nodeDef = self.helpers.getNodeDef(this._currentNode);
+                                            console.log(nodeDef);
+                                            let avatarID = 'avatar-' + self.kernel.moniker();
+                                             vwf_view.kernel.callMethod(avatarID, "changeCostume", [nodeDef]);
+                                            //vwf_view.kernel.callMethod(this._currentNode, "setCameraToActive", [vwf.moniker_]);
+                                            
+                                        }
+                                    }))
+                                }
+                        }
+                       
+
+                        propsActionsCell = {
+                            $cell: true,
+                            $type: "div",
+                            class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                            $components: [
+                                {
+
+                                    $type: "div",
+                                    class: "mdc-layout-grid__inner",
+                                    $components: [
+                                        {
+
+                                            $type: "div",
+                                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                            $components: [].concat(actionsGUI)
+                                        }
+                                    ]
+                                }
+
+                            ]
+                            //$components: this._getNodeProtoProperties().map(protoPropertiesCell)
+                        }
+
+
                         if (node.extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
                             viewerProps = {
                                 $type: "li",
@@ -2177,6 +2255,9 @@ define([
                                     class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                     $components: this._getNodeProtoProperties().map(protoPropertiesCell)
                                 }, listDivider,
+                                propsActions,
+                                propsActionsCell,
+                                listDivider,
                                 viewerProps,
                                 viewerPropsCell
 

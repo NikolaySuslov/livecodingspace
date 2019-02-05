@@ -49,7 +49,7 @@ properties:
   stepping:
   stepTime:
   globalBeat:
-  getRandomColor:
+  meta:
 events:
   positionChanged:
   rotationChanged:
@@ -61,6 +61,7 @@ events:
   hitendEvent:
   clickEvent:
 methods:
+  getRandomColor:
   intersectEventMethod:
   clearIntersectEventMethod:
   hitstartEventMethod:
