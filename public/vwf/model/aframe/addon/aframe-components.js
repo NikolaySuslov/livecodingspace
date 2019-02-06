@@ -22,7 +22,7 @@ AFRAME.registerComponent('scene-utils', {
             } else if (AFRAME.utils.device.isMobile()) {
                 avatarEl.setAttribute('position', '0 0 0')
             } else {
-                avatarEl.setAttribute('position', '0 1.6 0');
+                avatarEl.setAttribute('position', '0 0 0'); //'0 1.6 0'
             }
 
             // if (!AFRAME.utils.device.isGearVR() && !AFRAME.utils.device.isMobile()) {
