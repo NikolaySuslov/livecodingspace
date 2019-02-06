@@ -292,38 +292,38 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 shim: {
                    
                      "vwf/model/aframe/addon/aframe-interpolation": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
                     "vwf/model/aframe/extras/aframe-extras.loaders": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
                     "vwf/model/aframe/addon/aframe-sun-sky": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
 
                     "vwf/model/aframe/extras/aframe-extras.controls.min": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
                     "vwf/model/aframe/addon/SkyShader": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
 
                     "vwf/model/aframe/addon/BVHLoader": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
                     "vwf/model/aframe/addon/TransformControls": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
                     "vwf/model/aframe/addon/THREE.MeshLine": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
 
                     "vwf/model/aframe/kframe/aframe-aabb-collider-component.min": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     },
 
                     "vwf/model/aframe/addon/aframe-components": {
-                        deps: [ "vwf/model/aframe/aframe-master",
+                        deps: [ "vwf/model/aframe/aframe-master.min",
                         "vwf/model/aframe/extras/aframe-extras.loaders",
                         "vwf/model/aframe/addon/aframe-sun-sky",
                         "vwf/model/aframe/addon/SkyShader",
@@ -334,7 +334,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     ]
                     },
                     "vwf/view/arjs/aframe-ar": {
-                        deps: [ "vwf/model/aframe/aframe-master" ]
+                        deps: [ "vwf/model/aframe/aframe-master.min" ]
                     }
 
                 }
@@ -361,7 +361,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             },
 
                   { library: "vwf/model/aframe", 
-                    linkedLibraries: [ "vwf/model/aframe/aframe-master",
+                    linkedLibraries: [ "vwf/model/aframe/aframe-master.min",
                     "vwf/model/aframe/extras/aframe-extras.loaders",
                     "vwf/model/aframe/addon/aframe-interpolation",
                     "vwf/model/aframe/addon/aframe-sun-sky",
@@ -394,13 +394,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "vwf/view/osc", active: true },
 
                 { library: "vwf/view/aframe-ar-driver", 
-                linkedLibraries: [ "vwf/model/aframe/aframe-master"],
+                linkedLibraries: [ "vwf/model/aframe/aframe-master.min"],
                 active: false
             },
 
                 
                  { library: "vwf/view/aframe", active: true },
-                { library: "vwf/model/aframe/aframe-master", active: false },
+                { library: "vwf/model/aframe/aframe-master.min", active: false },
                 { library: "vwf/model/aframe/extras/aframe-extras.loaders", active: false },
                 { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
                 { library: "vwf/model/aframe/addon/aframe-sun-sky", active: false },
