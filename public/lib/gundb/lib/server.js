@@ -16,6 +16,8 @@
 	//try{require('../axe');}catch(e){}
 	require('./file');
 	require('./evict');
+	require('./multicast');
+	require('./stats');
 	if('debug' === process.env.GUN_ENV){ require('./debug') }
 	module.exports = Gun;
 }());

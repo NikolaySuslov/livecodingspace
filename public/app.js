@@ -75,8 +75,8 @@ class App {
 
     const dbConnection = new Promise((resolve, reject) => {
 
-      const opt = { peers: this.dbHost, localStorage: false, store: null }
-      opt.store = RindexedDB(opt);
+      const opt = { peers: this.dbHost, localStorage: false}
+      //opt.store = RindexedDB(opt);
       this.db = Gun(opt);
 
       this.user = this.db.user();
