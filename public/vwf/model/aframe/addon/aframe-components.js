@@ -17,7 +17,7 @@ AFRAME.registerComponent('scene-utils', {
 
             //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
             let avatarEl = document.querySelector('#avatarControlParent');
-            if (AFRAME.utils.device.isGearVR()) {
+            if (AFRAME.utils.device.isMobileVR()) {
 
             } else if (AFRAME.utils.device.isMobile()) {
                 avatarEl.setAttribute('position', '0 0 0')
@@ -36,8 +36,8 @@ AFRAME.registerComponent('scene-utils', {
             //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
             let avatarEl = document.querySelector('#avatarControlParent');
 
-            if (AFRAME.utils.device.isGearVR()) {
-
+            if (AFRAME.utils.device.isMobileVR()) {
+                //avatarEl.setAttribute('position', '0 0 0');
             } else if (AFRAME.utils.device.isMobile()) {
                 avatarEl.setAttribute('position', '0 1.6 0');
             } else {

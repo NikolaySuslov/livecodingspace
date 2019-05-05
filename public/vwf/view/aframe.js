@@ -86,7 +86,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                     if (this.gearvr == true) {
                         console.log("CREATE GEARVR HERE!!");
-                        if (AFRAME.utils.device.isGearVR()) {
+                        if (AFRAME.utils.device.isMobileVR()) {
                             let nodeName = 'gearvr-' + self.kernel.moniker();
                             createGearVRControls();
                             createGearVRController.call(self, childID, nodeName);
@@ -854,7 +854,7 @@ define(["module", "vwf/view"], function (module, view) {
         avatarEl.setAttribute('id', 'avatarControlParent');
 
 
-        if (AFRAME.utils.device.isGearVR()) {
+        if (AFRAME.utils.device.isMobileVR()) {
             avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
             //avatarEl.setAttribute('position', '0 0 0');
         }
@@ -891,7 +891,7 @@ define(["module", "vwf/view"], function (module, view) {
         cursorEl.setAttribute('raycaster', 'objects', '.clickable');
         cursorEl.setAttribute('raycaster', 'showLine', false);
 
-        if (AFRAME.utils.device.isGearVR()) { }
+        if (AFRAME.utils.device.isMobileVR()) { }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
         // cursorEl.setAttribute('raycaster', 'showLine', true);

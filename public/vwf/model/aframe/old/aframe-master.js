@@ -12,12 +12,49 @@ function anArray(arr) {
 }
 
 },{}],2:[function(_dereq_,module,exports){
+(function (global){
+/*
+ 2017 Julian Garnier
+ Released under the MIT license
+*/
+var $jscomp={scope:{}};$jscomp.defineProperty="function"==typeof Object.defineProperties?Object.defineProperty:function(e,r,p){if(p.get||p.set)throw new TypeError("ES3 does not support getters and setters.");e!=Array.prototype&&e!=Object.prototype&&(e[r]=p.value)};$jscomp.getGlobal=function(e){return"undefined"!=typeof window&&window===e?e:"undefined"!=typeof global&&null!=global?global:e};$jscomp.global=$jscomp.getGlobal(this);$jscomp.SYMBOL_PREFIX="jscomp_symbol_";
+$jscomp.initSymbol=function(){$jscomp.initSymbol=function(){};$jscomp.global.Symbol||($jscomp.global.Symbol=$jscomp.Symbol)};$jscomp.symbolCounter_=0;$jscomp.Symbol=function(e){return $jscomp.SYMBOL_PREFIX+(e||"")+$jscomp.symbolCounter_++};
+$jscomp.initSymbolIterator=function(){$jscomp.initSymbol();var e=$jscomp.global.Symbol.iterator;e||(e=$jscomp.global.Symbol.iterator=$jscomp.global.Symbol("iterator"));"function"!=typeof Array.prototype[e]&&$jscomp.defineProperty(Array.prototype,e,{configurable:!0,writable:!0,value:function(){return $jscomp.arrayIterator(this)}});$jscomp.initSymbolIterator=function(){}};$jscomp.arrayIterator=function(e){var r=0;return $jscomp.iteratorPrototype(function(){return r<e.length?{done:!1,value:e[r++]}:{done:!0}})};
+$jscomp.iteratorPrototype=function(e){$jscomp.initSymbolIterator();e={next:e};e[$jscomp.global.Symbol.iterator]=function(){return this};return e};$jscomp.array=$jscomp.array||{};$jscomp.iteratorFromArray=function(e,r){$jscomp.initSymbolIterator();e instanceof String&&(e+="");var p=0,m={next:function(){if(p<e.length){var u=p++;return{value:r(u,e[u]),done:!1}}m.next=function(){return{done:!0,value:void 0}};return m.next()}};m[Symbol.iterator]=function(){return m};return m};
+$jscomp.polyfill=function(e,r,p,m){if(r){p=$jscomp.global;e=e.split(".");for(m=0;m<e.length-1;m++){var u=e[m];u in p||(p[u]={});p=p[u]}e=e[e.length-1];m=p[e];r=r(m);r!=m&&null!=r&&$jscomp.defineProperty(p,e,{configurable:!0,writable:!0,value:r})}};$jscomp.polyfill("Array.prototype.keys",function(e){return e?e:function(){return $jscomp.iteratorFromArray(this,function(e){return e})}},"es6-impl","es3");var $jscomp$this=this;
+(function(e,r){"function"===typeof define&&define.amd?define([],r):"object"===typeof module&&module.exports?module.exports=r():e.anime=r()})(this,function(){function e(a){if(!h.col(a))try{return document.querySelectorAll(a)}catch(c){}}function r(a,c){for(var d=a.length,b=2<=arguments.length?arguments[1]:void 0,f=[],n=0;n<d;n++)if(n in a){var k=a[n];c.call(b,k,n,a)&&f.push(k)}return f}function p(a){return a.reduce(function(a,d){return a.concat(h.arr(d)?p(d):d)},[])}function m(a){if(h.arr(a))return a;
+h.str(a)&&(a=e(a)||a);return a instanceof NodeList||a instanceof HTMLCollection?[].slice.call(a):[a]}function u(a,c){return a.some(function(a){return a===c})}function C(a){var c={},d;for(d in a)c[d]=a[d];return c}function D(a,c){var d=C(a),b;for(b in a)d[b]=c.hasOwnProperty(b)?c[b]:a[b];return d}function z(a,c){var d=C(a),b;for(b in c)d[b]=h.und(a[b])?c[b]:a[b];return d}function T(a){a=a.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,function(a,c,d,k){return c+c+d+d+k+k});var c=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(a);
+a=parseInt(c[1],16);var d=parseInt(c[2],16),c=parseInt(c[3],16);return"rgba("+a+","+d+","+c+",1)"}function U(a){function c(a,c,b){0>b&&(b+=1);1<b&&--b;return b<1/6?a+6*(c-a)*b:.5>b?c:b<2/3?a+(c-a)*(2/3-b)*6:a}var d=/hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g.exec(a)||/hsla\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/g.exec(a);a=parseInt(d[1])/360;var b=parseInt(d[2])/100,f=parseInt(d[3])/100,d=d[4]||1;if(0==b)f=b=a=f;else{var n=.5>f?f*(1+b):f+b-f*b,k=2*f-n,f=c(k,n,a+1/3),b=c(k,n,a);a=c(k,n,a-1/3)}return"rgba("+
+255*f+","+255*b+","+255*a+","+d+")"}function y(a){if(a=/([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/.exec(a))return a[2]}function V(a){if(-1<a.indexOf("translate")||"perspective"===a)return"px";if(-1<a.indexOf("rotate")||-1<a.indexOf("skew"))return"deg"}function I(a,c){return h.fnc(a)?a(c.target,c.id,c.total):a}function E(a,c){if(c in a.style)return getComputedStyle(a).getPropertyValue(c.replace(/([a-z])([A-Z])/g,"$1-$2").toLowerCase())||"0"}function J(a,c){if(h.dom(a)&&
+u(W,c))return"transform";if(h.dom(a)&&(a.getAttribute(c)||h.svg(a)&&a[c]))return"attribute";if(h.dom(a)&&"transform"!==c&&E(a,c))return"css";if(null!=a[c])return"object"}function X(a,c){var d=V(c),d=-1<c.indexOf("scale")?1:0+d;a=a.style.transform;if(!a)return d;for(var b=[],f=[],n=[],k=/(\w+)\((.+?)\)/g;b=k.exec(a);)f.push(b[1]),n.push(b[2]);a=r(n,function(a,b){return f[b]===c});return a.length?a[0]:d}function K(a,c){switch(J(a,c)){case "transform":return X(a,c);case "css":return E(a,c);case "attribute":return a.getAttribute(c)}return a[c]||
+0}function L(a,c){var d=/^(\*=|\+=|-=)/.exec(a);if(!d)return a;var b=y(a)||0;c=parseFloat(c);a=parseFloat(a.replace(d[0],""));switch(d[0][0]){case "+":return c+a+b;case "-":return c-a+b;case "*":return c*a+b}}function F(a,c){return Math.sqrt(Math.pow(c.x-a.x,2)+Math.pow(c.y-a.y,2))}function M(a){a=a.points;for(var c=0,d,b=0;b<a.numberOfItems;b++){var f=a.getItem(b);0<b&&(c+=F(d,f));d=f}return c}function N(a){if(a.getTotalLength)return a.getTotalLength();switch(a.tagName.toLowerCase()){case "circle":return 2*
+Math.PI*a.getAttribute("r");case "rect":return 2*a.getAttribute("width")+2*a.getAttribute("height");case "line":return F({x:a.getAttribute("x1"),y:a.getAttribute("y1")},{x:a.getAttribute("x2"),y:a.getAttribute("y2")});case "polyline":return M(a);case "polygon":var c=a.points;return M(a)+F(c.getItem(c.numberOfItems-1),c.getItem(0))}}function Y(a,c){function d(b){b=void 0===b?0:b;return a.el.getPointAtLength(1<=c+b?c+b:0)}var b=d(),f=d(-1),n=d(1);switch(a.property){case "x":return b.x;case "y":return b.y;
+case "angle":return 180*Math.atan2(n.y-f.y,n.x-f.x)/Math.PI}}function O(a,c){var d=/-?\d*\.?\d+/g,b;b=h.pth(a)?a.totalLength:a;if(h.col(b))if(h.rgb(b)){var f=/rgb\((\d+,\s*[\d]+,\s*[\d]+)\)/g.exec(b);b=f?"rgba("+f[1]+",1)":b}else b=h.hex(b)?T(b):h.hsl(b)?U(b):void 0;else f=(f=y(b))?b.substr(0,b.length-f.length):b,b=c&&!/\s/g.test(b)?f+c:f;b+="";return{original:b,numbers:b.match(d)?b.match(d).map(Number):[0],strings:h.str(a)||c?b.split(d):[]}}function P(a){a=a?p(h.arr(a)?a.map(m):m(a)):[];return r(a,
+function(a,d,b){return b.indexOf(a)===d})}function Z(a){var c=P(a);return c.map(function(a,b){return{target:a,id:b,total:c.length}})}function aa(a,c){var d=C(c);if(h.arr(a)){var b=a.length;2!==b||h.obj(a[0])?h.fnc(c.duration)||(d.duration=c.duration/b):a={value:a}}return m(a).map(function(a,b){b=b?0:c.delay;a=h.obj(a)&&!h.pth(a)?a:{value:a};h.und(a.delay)&&(a.delay=b);return a}).map(function(a){return z(a,d)})}function ba(a,c){var d={},b;for(b in a){var f=I(a[b],c);h.arr(f)&&(f=f.map(function(a){return I(a,
+c)}),1===f.length&&(f=f[0]));d[b]=f}d.duration=parseFloat(d.duration);d.delay=parseFloat(d.delay);return d}function ca(a){return h.arr(a)?A.apply(this,a):Q[a]}function da(a,c){var d;return a.tweens.map(function(b){b=ba(b,c);var f=b.value,e=K(c.target,a.name),k=d?d.to.original:e,k=h.arr(f)?f[0]:k,w=L(h.arr(f)?f[1]:f,k),e=y(w)||y(k)||y(e);b.from=O(k,e);b.to=O(w,e);b.start=d?d.end:a.offset;b.end=b.start+b.delay+b.duration;b.easing=ca(b.easing);b.elasticity=(1E3-Math.min(Math.max(b.elasticity,1),999))/
+1E3;b.isPath=h.pth(f);b.isColor=h.col(b.from.original);b.isColor&&(b.round=1);return d=b})}function ea(a,c){return r(p(a.map(function(a){return c.map(function(b){var c=J(a.target,b.name);if(c){var d=da(b,a);b={type:c,property:b.name,animatable:a,tweens:d,duration:d[d.length-1].end,delay:d[0].delay}}else b=void 0;return b})})),function(a){return!h.und(a)})}function R(a,c,d,b){var f="delay"===a;return c.length?(f?Math.min:Math.max).apply(Math,c.map(function(b){return b[a]})):f?b.delay:d.offset+b.delay+
+b.duration}function fa(a){var c=D(ga,a),d=D(S,a),b=Z(a.targets),f=[],e=z(c,d),k;for(k in a)e.hasOwnProperty(k)||"targets"===k||f.push({name:k,offset:e.offset,tweens:aa(a[k],d)});a=ea(b,f);return z(c,{children:[],animatables:b,animations:a,duration:R("duration",a,c,d),delay:R("delay",a,c,d)})}function q(a){function c(){return window.Promise&&new Promise(function(a){return p=a})}function d(a){return g.reversed?g.duration-a:a}function b(a){for(var b=0,c={},d=g.animations,f=d.length;b<f;){var e=d[b],
+k=e.animatable,h=e.tweens,n=h.length-1,l=h[n];n&&(l=r(h,function(b){return a<b.end})[0]||l);for(var h=Math.min(Math.max(a-l.start-l.delay,0),l.duration)/l.duration,w=isNaN(h)?1:l.easing(h,l.elasticity),h=l.to.strings,p=l.round,n=[],m=void 0,m=l.to.numbers.length,t=0;t<m;t++){var x=void 0,x=l.to.numbers[t],q=l.from.numbers[t],x=l.isPath?Y(l.value,w*x):q+w*(x-q);p&&(l.isColor&&2<t||(x=Math.round(x*p)/p));n.push(x)}if(l=h.length)for(m=h[0],w=0;w<l;w++)p=h[w+1],t=n[w],isNaN(t)||(m=p?m+(t+p):m+(t+" "));
+else m=n[0];ha[e.type](k.target,e.property,m,c,k.id);e.currentValue=m;b++}if(b=Object.keys(c).length)for(d=0;d<b;d++)H||(H=E(document.body,"transform")?"transform":"-webkit-transform"),g.animatables[d].target.style[H]=c[d].join(" ");g.currentTime=a;g.progress=a/g.duration*100}function f(a){if(g[a])g[a](g)}function e(){g.remaining&&!0!==g.remaining&&g.remaining--}function k(a){var k=g.duration,n=g.offset,w=n+g.delay,r=g.currentTime,x=g.reversed,q=d(a);if(g.children.length){var u=g.children,v=u.length;
+if(q>=g.currentTime)for(var G=0;G<v;G++)u[G].seek(q);else for(;v--;)u[v].seek(q)}if(q>=w||!k)g.began||(g.began=!0,f("begin")),f("run");if(q>n&&q<k)b(q);else if(q<=n&&0!==r&&(b(0),x&&e()),q>=k&&r!==k||!k)b(k),x||e();f("update");a>=k&&(g.remaining?(t=h,"alternate"===g.direction&&(g.reversed=!g.reversed)):(g.pause(),g.completed||(g.completed=!0,f("complete"),"Promise"in window&&(p(),m=c()))),l=0)}a=void 0===a?{}:a;var h,t,l=0,p=null,m=c(),g=fa(a);g.reset=function(){var a=g.direction,c=g.loop;g.currentTime=
+0;g.progress=0;g.paused=!0;g.began=!1;g.completed=!1;g.reversed="reverse"===a;g.remaining="alternate"===a&&1===c?2:c;b(0);for(a=g.children.length;a--;)g.children[a].reset()};g.tick=function(a){h=a;t||(t=h);k((l+h-t)*q.speed)};g.seek=function(a){k(d(a))};g.pause=function(){var a=v.indexOf(g);-1<a&&v.splice(a,1);g.paused=!0};g.play=function(){g.paused&&(g.paused=!1,t=0,l=d(g.currentTime),v.push(g),B||ia())};g.reverse=function(){g.reversed=!g.reversed;t=0;l=d(g.currentTime)};g.restart=function(){g.pause();
+g.reset();g.play()};g.finished=m;g.reset();g.autoplay&&g.play();return g}var ga={update:void 0,begin:void 0,run:void 0,complete:void 0,loop:1,direction:"normal",autoplay:!0,offset:0},S={duration:1E3,delay:0,easing:"easeOutElastic",elasticity:500,round:0},W="translateX translateY translateZ rotate rotateX rotateY rotateZ scale scaleX scaleY scaleZ skewX skewY perspective".split(" "),H,h={arr:function(a){return Array.isArray(a)},obj:function(a){return-1<Object.prototype.toString.call(a).indexOf("Object")},
+pth:function(a){return h.obj(a)&&a.hasOwnProperty("totalLength")},svg:function(a){return a instanceof SVGElement},dom:function(a){return a.nodeType||h.svg(a)},str:function(a){return"string"===typeof a},fnc:function(a){return"function"===typeof a},und:function(a){return"undefined"===typeof a},hex:function(a){return/(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(a)},rgb:function(a){return/^rgb/.test(a)},hsl:function(a){return/^hsl/.test(a)},col:function(a){return h.hex(a)||h.rgb(a)||h.hsl(a)}},A=function(){function a(a,
+d,b){return(((1-3*b+3*d)*a+(3*b-6*d))*a+3*d)*a}return function(c,d,b,f){if(0<=c&&1>=c&&0<=b&&1>=b){var e=new Float32Array(11);if(c!==d||b!==f)for(var k=0;11>k;++k)e[k]=a(.1*k,c,b);return function(k){if(c===d&&b===f)return k;if(0===k)return 0;if(1===k)return 1;for(var h=0,l=1;10!==l&&e[l]<=k;++l)h+=.1;--l;var l=h+(k-e[l])/(e[l+1]-e[l])*.1,n=3*(1-3*b+3*c)*l*l+2*(3*b-6*c)*l+3*c;if(.001<=n){for(h=0;4>h;++h){n=3*(1-3*b+3*c)*l*l+2*(3*b-6*c)*l+3*c;if(0===n)break;var m=a(l,c,b)-k,l=l-m/n}k=l}else if(0===
+n)k=l;else{var l=h,h=h+.1,g=0;do m=l+(h-l)/2,n=a(m,c,b)-k,0<n?h=m:l=m;while(1e-7<Math.abs(n)&&10>++g);k=m}return a(k,d,f)}}}}(),Q=function(){function a(a,b){return 0===a||1===a?a:-Math.pow(2,10*(a-1))*Math.sin(2*(a-1-b/(2*Math.PI)*Math.asin(1))*Math.PI/b)}var c="Quad Cubic Quart Quint Sine Expo Circ Back Elastic".split(" "),d={In:[[.55,.085,.68,.53],[.55,.055,.675,.19],[.895,.03,.685,.22],[.755,.05,.855,.06],[.47,0,.745,.715],[.95,.05,.795,.035],[.6,.04,.98,.335],[.6,-.28,.735,.045],a],Out:[[.25,
+.46,.45,.94],[.215,.61,.355,1],[.165,.84,.44,1],[.23,1,.32,1],[.39,.575,.565,1],[.19,1,.22,1],[.075,.82,.165,1],[.175,.885,.32,1.275],function(b,c){return 1-a(1-b,c)}],InOut:[[.455,.03,.515,.955],[.645,.045,.355,1],[.77,0,.175,1],[.86,0,.07,1],[.445,.05,.55,.95],[1,0,0,1],[.785,.135,.15,.86],[.68,-.55,.265,1.55],function(b,c){return.5>b?a(2*b,c)/2:1-a(-2*b+2,c)/2}]},b={linear:A(.25,.25,.75,.75)},f={},e;for(e in d)f.type=e,d[f.type].forEach(function(a){return function(d,f){b["ease"+a.type+c[f]]=h.fnc(d)?
+d:A.apply($jscomp$this,d)}}(f)),f={type:f.type};return b}(),ha={css:function(a,c,d){return a.style[c]=d},attribute:function(a,c,d){return a.setAttribute(c,d)},object:function(a,c,d){return a[c]=d},transform:function(a,c,d,b,f){b[f]||(b[f]=[]);b[f].push(c+"("+d+")")}},v=[],B=0,ia=function(){function a(){B=requestAnimationFrame(c)}function c(c){var b=v.length;if(b){for(var d=0;d<b;)v[d]&&v[d].tick(c),d++;a()}else cancelAnimationFrame(B),B=0}return a}();q.version="2.2.0";q.speed=1;q.running=v;q.remove=
+function(a){a=P(a);for(var c=v.length;c--;)for(var d=v[c],b=d.animations,f=b.length;f--;)u(a,b[f].animatable.target)&&(b.splice(f,1),b.length||d.pause())};q.getValue=K;q.path=function(a,c){var d=h.str(a)?e(a)[0]:a,b=c||100;return function(a){return{el:d,property:a,totalLength:N(d)*(b/100)}}};q.setDashoffset=function(a){var c=N(a);a.setAttribute("stroke-dasharray",c);return c};q.bezier=A;q.easings=Q;q.timeline=function(a){var c=q(a);c.pause();c.duration=0;c.add=function(d){c.children.forEach(function(a){a.began=
+!0;a.completed=!0});m(d).forEach(function(b){var d=z(b,D(S,a||{}));d.targets=d.targets||a.targets;b=c.duration;var e=d.offset;d.autoplay=!1;d.direction=c.direction;d.offset=h.und(e)?b:L(e,b);c.began=!0;c.completed=!0;c.seek(d.offset);d=q(d);d.began=!0;d.completed=!0;d.duration>b&&(c.duration=d.duration);c.children.push(d)});c.seek(0);c.reset();c.autoplay&&c.restart();return c};return c};q.random=function(a,c){return Math.floor(Math.random()*(c-a+1))+a};return q});
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],3:[function(_dereq_,module,exports){
 module.exports = function numtype(num, def) {
 	return typeof num === 'number'
 		? num 
 		: (typeof def === 'number' ? def : 0)
 }
-},{}],3:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -135,7 +172,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],4:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 // For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
 
@@ -187,7 +224,7 @@ module.exports = {
     }
 };
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 var Buffer = _dereq_('buffer').Buffer; // for use with browserify
 
 module.exports = function (a, b) {
@@ -203,7 +240,7 @@ module.exports = function (a, b) {
     return true;
 };
 
-},{"buffer":6}],6:[function(_dereq_,module,exports){
+},{"buffer":7}],7:[function(_dereq_,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -1997,7 +2034,7 @@ function isnan (val) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":3,"ieee754":16,"isarray":21}],7:[function(_dereq_,module,exports){
+},{"base64-js":4,"ieee754":17,"isarray":22}],8:[function(_dereq_,module,exports){
 // Polyfill for creating CustomEvents on IE9/10/11
 
 // code pulled from:
@@ -2054,7 +2091,7 @@ function isnan (val) {
   }
 })();
 
-},{}],8:[function(_dereq_,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -2223,7 +2260,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":9}],9:[function(_dereq_,module,exports){
+},{"./debug":10}],10:[function(_dereq_,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -2407,7 +2444,7 @@ function coerce(val) {
   return val;
 }
 
-},{}],10:[function(_dereq_,module,exports){
+},{}],11:[function(_dereq_,module,exports){
 'use strict';
 var isObj = _dereq_('is-obj');
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2477,10 +2514,10 @@ module.exports = function deepAssign(target) {
 	return target;
 };
 
-},{"is-obj":20}],11:[function(_dereq_,module,exports){
+},{"is-obj":21}],12:[function(_dereq_,module,exports){
 /*! (C) WebReflection Mit Style License */
 (function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
-},{}],12:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 module.exports = function(dtype) {
   switch (dtype) {
     case 'int8':
@@ -2506,7 +2543,7 @@ module.exports = function(dtype) {
   }
 }
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],14:[function(_dereq_,module,exports){
 /*eslint new-cap:0*/
 var dtype = _dereq_('dtype')
 module.exports = flattenVertexData
@@ -2553,7 +2590,7 @@ function flattenVertexData (data, output, offset) {
   return output
 }
 
-},{"dtype":12}],14:[function(_dereq_,module,exports){
+},{"dtype":13}],15:[function(_dereq_,module,exports){
 var isFunction = _dereq_('is-function')
 
 module.exports = forEach
@@ -2601,7 +2638,7 @@ function forEachObject(object, iterator, context) {
     }
 }
 
-},{"is-function":19}],15:[function(_dereq_,module,exports){
+},{"is-function":20}],16:[function(_dereq_,module,exports){
 (function (global){
 var win;
 
@@ -2619,7 +2656,7 @@ module.exports = win;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -2705,7 +2742,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2730,7 +2767,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -2753,7 +2790,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],19:[function(_dereq_,module,exports){
+},{}],20:[function(_dereq_,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -2770,21 +2807,21 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],20:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 'use strict';
 module.exports = function (x) {
 	var type = typeof x;
 	return x !== null && (type === 'object' || type === 'function');
 };
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],22:[function(_dereq_,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],22:[function(_dereq_,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 var wordWrap = _dereq_('word-wrapper')
 var xtend = _dereq_('xtend')
 var number = _dereq_('as-number')
@@ -3084,7 +3121,7 @@ function findChar (array, value, start) {
   }
   return -1
 }
-},{"as-number":2,"word-wrapper":47,"xtend":50}],23:[function(_dereq_,module,exports){
+},{"as-number":3,"word-wrapper":47,"xtend":50}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -3186,7 +3223,7 @@ function getBinaryOpts(opt) {
 
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":48,"xtend":50}],24:[function(_dereq_,module,exports){
+},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":48,"xtend":50}],25:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -3198,7 +3235,7 @@ module.exports = function(buf) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"buffer":6,"buffer-equal":5}],25:[function(_dereq_,module,exports){
+},{"buffer":7,"buffer-equal":6}],26:[function(_dereq_,module,exports){
 /*
 object-assign
 (c) Sindre Sorhus
@@ -3290,7 +3327,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],26:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 module.exports = function parseBMFontAscii(data) {
   if (!data)
     throw new Error('no data provided')
@@ -3399,7 +3436,7 @@ function parseIntList(data) {
     return parseInt(val, 10)
   })
 }
-},{}],27:[function(_dereq_,module,exports){
+},{}],28:[function(_dereq_,module,exports){
 var HEADER = [66, 77, 70]
 
 module.exports = function readBMFontBinary(buf) {
@@ -3560,7 +3597,7 @@ function readNameNT(buf, offset) {
 function readStringNT(buf, offset) {
   return readNameNT(buf, offset).toString('utf8')
 }
-},{}],28:[function(_dereq_,module,exports){
+},{}],29:[function(_dereq_,module,exports){
 var parseAttributes = _dereq_('./parse-attribs')
 var parseFromString = _dereq_('xml-parse-from-string')
 
@@ -3646,7 +3683,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":29,"xml-parse-from-string":49}],29:[function(_dereq_,module,exports){
+},{"./parse-attribs":30,"xml-parse-from-string":49}],30:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -3675,7 +3712,7 @@ function parseIntList(data) {
     return parseInt(val, 10)
   })
 }
-},{}],30:[function(_dereq_,module,exports){
+},{}],31:[function(_dereq_,module,exports){
 var trim = _dereq_('trim')
   , forEach = _dereq_('for-each')
   , isArray = function(arg) {
@@ -3707,7 +3744,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":14,"trim":45}],31:[function(_dereq_,module,exports){
+},{"for-each":15,"trim":45}],32:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -3740,7 +3777,7 @@ module.exports = present;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],32:[function(_dereq_,module,exports){
+},{}],33:[function(_dereq_,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3926,7 +3963,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 (function(root) {
 
 	// Store setTimeout reference so promise-polyfill will be unaffected by
@@ -4122,7 +4159,7 @@ process.umask = function() { return 0; };
 
 })(this);
 
-},{}],34:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 var dtype = _dereq_('dtype')
 var anArray = _dereq_('an-array')
 var isBuffer = _dereq_('is-buffer')
@@ -4165,1364 +4202,12 @@ module.exports = function createQuadElements(array, opt) {
     }
     return indices
 }
-},{"an-array":1,"dtype":12,"is-buffer":18}],35:[function(_dereq_,module,exports){
-/*
- * anime.js v3.0.0
- * (c) 2019 Julian Garnier
- * Released under the MIT license
- * animejs.com
- */
-
-'use strict';
-
-// Defaults
-
-var defaultInstanceSettings = {
-  update: null,
-  begin: null,
-  loopBegin: null,
-  changeBegin: null,
-  change: null,
-  changeComplete: null,
-  loopComplete: null,
-  complete: null,
-  loop: 1,
-  direction: 'normal',
-  autoplay: true,
-  timelineOffset: 0
-};
-
-var defaultTweenSettings = {
-  duration: 1000,
-  delay: 0,
-  endDelay: 0,
-  easing: 'easeOutElastic(1, .5)',
-  round: 0
-};
-
-var validTransforms = ['translateX', 'translateY', 'translateZ', 'rotate', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'perspective'];
-
-// Caching
-
-var cache = {
-  CSS: {},
-  springs: {}
-};
-
-// Utils
-
-function minMax(val, min, max) {
-  return Math.min(Math.max(val, min), max);
-}
-
-function stringContains(str, text) {
-  return str.indexOf(text) > -1;
-}
-
-function applyArguments(func, args) {
-  return func.apply(null, args);
-}
-
-var hexRegex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
-var rgbPrefixRegex = /^rgb/;
-var hslRegex = /^hsl/;
-
-var is = {
-  arr: function (a) { return Array.isArray(a); },
-  obj: function (a) { return stringContains(Object.prototype.toString.call(a), 'Object'); },
-  pth: function (a) { return is.obj(a) && a.hasOwnProperty('totalLength'); },
-  svg: function (a) { return a instanceof SVGElement; },
-  inp: function (a) { return a instanceof HTMLInputElement; },
-  dom: function (a) { return a.nodeType || is.svg(a); },
-  str: function (a) { return typeof a === 'string'; },
-  fnc: function (a) { return typeof a === 'function'; },
-  und: function (a) { return typeof a === 'undefined'; },
-  hex: function (a) { return hexRegex.test(a); },
-  rgb: function (a) { return rgbPrefixRegex.test(a); },
-  hsl: function (a) { return hslRegex.test(a); },
-  col: function (a) { return (is.hex(a) || is.rgb(a) || is.hsl(a)); },
-  key: function (a) { return !defaultInstanceSettings.hasOwnProperty(a) && !defaultTweenSettings.hasOwnProperty(a) && a !== 'targets' && a !== 'keyframes'; }
-};
-
-// Easings
-
-var easingFunctionRegex = /\(([^)]+)\)/;
-
-function parseEasingParameters(string) {
-  var match = easingFunctionRegex.exec(string);
-  return match ? match[1].split(',').map(function (p) { return parseFloat(p); }) : [];
-}
-
-// Spring solver inspired by Webkit Copyright © 2016 Apple Inc. All rights reserved. https://webkit.org/demos/spring/spring.js
-
-function spring(string, duration) {
-
-  var params = parseEasingParameters(string);
-  var mass = minMax(is.und(params[0]) ? 1 : params[0], .1, 100);
-  var stiffness = minMax(is.und(params[1]) ? 100 : params[1], .1, 100);
-  var damping = minMax(is.und(params[2]) ? 10 : params[2], .1, 100);
-  var velocity =  minMax(is.und(params[3]) ? 0 : params[3], .1, 100);
-  var w0 = Math.sqrt(stiffness / mass);
-  var zeta = damping / (2 * Math.sqrt(stiffness * mass));
-  var wd = zeta < 1 ? w0 * Math.sqrt(1 - zeta * zeta) : 0;
-  var a = 1;
-  var b = zeta < 1 ? (zeta * w0 + -velocity) / wd : -velocity + w0;
-
-  function solver(t) {
-    var progress = duration ? (duration * t) / 1000 : t;
-    if (zeta < 1) {
-      progress = Math.exp(-progress * zeta * w0) * (a * Math.cos(wd * progress) + b * Math.sin(wd * progress));
-    } else {
-      progress = (a + b * progress) * Math.exp(-progress * w0);
-    }
-    if (t === 0 || t === 1) { return t; }
-    return 1 - progress;
-  }
-
-  function getDuration() {
-    var cached = cache.springs[string];
-    if (cached) { return cached; }
-    var frame = 1/6;
-    var elapsed = 0;
-    var rest = 0;
-    while(true) {
-      elapsed += frame;
-      if (solver(elapsed) === 1) {
-        rest++;
-        if (rest >= 16) { break; }
-      } else {
-        rest = 0;
-      }
-    }
-    var duration = elapsed * frame * 1000;
-    cache.springs[string] = duration;
-    return duration;
-  }
-
-  return duration ? solver : getDuration;
-
-}
-
-// Elastic easing adapted from jQueryUI http://api.jqueryui.com/easings/
-
-function elastic(amplitude, period) {
-  if ( amplitude === void 0 ) amplitude = 1;
-  if ( period === void 0 ) period = .5;
-
-  var a = minMax(amplitude, 1, 10);
-  var p = minMax(period, .1, 2);
-  return function (t) {
-    return (t === 0 || t === 1) ? t :
-      -a * Math.pow(2, 10 * (t - 1)) * Math.sin((((t - 1) - (p / (Math.PI * 2) * Math.asin(1 / a))) * (Math.PI * 2)) / p);
-  }
-}
-
-// Basic steps easing implementation https://developer.mozilla.org/fr/docs/Web/CSS/transition-timing-function
-
-function steps(steps) {
-  if ( steps === void 0 ) steps = 10;
-
-  return function (t) { return Math.round(t * steps) * (1 / steps); };
-}
-
-// BezierEasing https://github.com/gre/bezier-easing
-
-var bezier = (function () {
-
-  var kSplineTableSize = 11;
-  var kSampleStepSize = 1.0 / (kSplineTableSize - 1.0);
-
-  function A(aA1, aA2) { return 1.0 - 3.0 * aA2 + 3.0 * aA1 }
-  function B(aA1, aA2) { return 3.0 * aA2 - 6.0 * aA1 }
-  function C(aA1)      { return 3.0 * aA1 }
-
-  function calcBezier(aT, aA1, aA2) { return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT }
-  function getSlope(aT, aA1, aA2) { return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1) }
-
-  function binarySubdivide(aX, aA, aB, mX1, mX2) {
-    var currentX, currentT, i = 0;
-    do {
-      currentT = aA + (aB - aA) / 2.0;
-      currentX = calcBezier(currentT, mX1, mX2) - aX;
-      if (currentX > 0.0) { aB = currentT; } else { aA = currentT; }
-    } while (Math.abs(currentX) > 0.0000001 && ++i < 10);
-    return currentT;
-  }
-
-  function newtonRaphsonIterate(aX, aGuessT, mX1, mX2) {
-    for (var i = 0; i < 4; ++i) {
-      var currentSlope = getSlope(aGuessT, mX1, mX2);
-      if (currentSlope === 0.0) { return aGuessT; }
-      var currentX = calcBezier(aGuessT, mX1, mX2) - aX;
-      aGuessT -= currentX / currentSlope;
-    }
-    return aGuessT;
-  }
-
-  function bezier(mX1, mY1, mX2, mY2) {
-
-    if (!(0 <= mX1 && mX1 <= 1 && 0 <= mX2 && mX2 <= 1)) { return; }
-    var sampleValues = new Float32Array(kSplineTableSize);
-
-    if (mX1 !== mY1 || mX2 !== mY2) {
-      for (var i = 0; i < kSplineTableSize; ++i) {
-        sampleValues[i] = calcBezier(i * kSampleStepSize, mX1, mX2);
-      }
-    }
-
-    function getTForX(aX) {
-
-      var intervalStart = 0;
-      var currentSample = 1;
-      var lastSample = kSplineTableSize - 1;
-
-      for (; currentSample !== lastSample && sampleValues[currentSample] <= aX; ++currentSample) {
-        intervalStart += kSampleStepSize;
-      }
-
-      --currentSample;
-
-      var dist = (aX - sampleValues[currentSample]) / (sampleValues[currentSample + 1] - sampleValues[currentSample]);
-      var guessForT = intervalStart + dist * kSampleStepSize;
-      var initialSlope = getSlope(guessForT, mX1, mX2);
-
-      if (initialSlope >= 0.001) {
-        return newtonRaphsonIterate(aX, guessForT, mX1, mX2);
-      } else if (initialSlope === 0.0) {
-        return guessForT;
-      } else {
-        return binarySubdivide(aX, intervalStart, intervalStart + kSampleStepSize, mX1, mX2);
-      }
-
-    }
-
-    return function (x) {
-      if (mX1 === mY1 && mX2 === mY2) { return x; }
-      if (x === 0 || x === 1) { return x; }
-      return calcBezier(getTForX(x), mY1, mY2);
-    }
-
-  }
-
-  return bezier;
-
-})();
-
-var penner = (function () {
-
-  var names = ['Quad', 'Cubic', 'Quart', 'Quint', 'Sine', 'Expo', 'Circ', 'Back', 'Elastic'];
-
-  // Approximated Penner equations http://matthewlein.com/ceaser/
-
-  var curves = {
-    In: [
-      [0.550, 0.085, 0.680, 0.530], /* inQuad */
-      [0.550, 0.055, 0.675, 0.190], /* inCubic */
-      [0.895, 0.030, 0.685, 0.220], /* inQuart */
-      [0.755, 0.050, 0.855, 0.060], /* inQuint */
-      [0.470, 0.000, 0.745, 0.715], /* inSine */
-      [0.950, 0.050, 0.795, 0.035], /* inExpo */
-      [0.600, 0.040, 0.980, 0.335], /* inCirc */
-      [0.600,-0.280, 0.735, 0.045], /* inBack */
-      elastic /* inElastic */
-    ],
-    Out: [
-      [0.250, 0.460, 0.450, 0.940], /* outQuad */
-      [0.215, 0.610, 0.355, 1.000], /* outCubic */
-      [0.165, 0.840, 0.440, 1.000], /* outQuart */
-      [0.230, 1.000, 0.320, 1.000], /* outQuint */
-      [0.390, 0.575, 0.565, 1.000], /* outSine */
-      [0.190, 1.000, 0.220, 1.000], /* outExpo */
-      [0.075, 0.820, 0.165, 1.000], /* outCirc */
-      [0.175, 0.885, 0.320, 1.275], /* outBack */
-      function (a, p) { return function (t) { return 1 - elastic(a, p)(1 - t); }; } /* outElastic */
-    ],
-    InOut: [
-      [0.455, 0.030, 0.515, 0.955], /* inOutQuad */
-      [0.645, 0.045, 0.355, 1.000], /* inOutCubic */
-      [0.770, 0.000, 0.175, 1.000], /* inOutQuart */
-      [0.860, 0.000, 0.070, 1.000], /* inOutQuint */
-      [0.445, 0.050, 0.550, 0.950], /* inOutSine */
-      [1.000, 0.000, 0.000, 1.000], /* inOutExpo */
-      [0.785, 0.135, 0.150, 0.860], /* inOutCirc */
-      [0.680,-0.550, 0.265, 1.550], /* inOutBack */
-      function (a, p) { return function (t) { return t < .5 ? elastic(a, p)(t * 2) / 2 : 1 - elastic(a, p)(t * -2 + 2) / 2; }; } /* inOutElastic */
-    ]
-  };
-
-  var eases = {
-    linear: [0.250, 0.250, 0.750, 0.750]
-  };
-
-  for (var coords in curves) {
-    for (var i = 0, len = curves[coords].length; i < len; i++) {
-      eases['ease'+coords+names[i]] = curves[coords][i];
-    }
-  }
-
-  return eases;
-
-})();
-
-function parseEasings(easing, duration) {
-  if (is.fnc(easing)) { return easing; }
-  var name = easing.split('(')[0];
-  var ease = penner[name];
-  var args = parseEasingParameters(easing);
-  switch (name) {
-    case 'spring' : return spring(easing, duration);
-    case 'cubicBezier' : return applyArguments(bezier, args);
-    case 'steps' : return applyArguments(steps, args);
-    default : return is.fnc(ease) ? applyArguments(ease, args) : applyArguments(bezier, ease);
-  }
-}
-
-// Strings
-
-function selectString(str) {
-  try {
-    var nodes = document.querySelectorAll(str);
-    return nodes;
-  } catch(e) {
-    return;
-  }
-}
-
-// Arrays
-
-var auxArrayFilter = [];
-
-function filterArray(arr, callback) {
-  var result = auxArrayFilter;
-
-  var len = arr.length;
-  var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
-  for (var i = 0; i < len; i++) {
-    if (i in arr) {
-      var val = arr[i];
-      if (callback.call(thisArg, val, i, arr)) {
-        result.push(val);
-      }
-    }
-  }
-
-  // arr turns into the auxArray and we return the previously aux array.
-  auxArrayFilter = arr;
-  auxArrayFilter.length = 0;
-  return result;
-}
-
-var auxArrayFlatten = [];
-
-function flattenArray(arr) {
-  if (!arr.length) { return arr; }
-
-  var result = auxArrayFlatten;
-  var node = arr.pop();
-
-  do {
-    if (node.constructor === Array) {
-      for (var i = 0; i < node.length; i++) {
-        arr.push(node[i]);
-      }
-    } else {
-      result.push(node);
-    }
-  } while (arr.length && (node = arr.pop()) !== undefined);
-
-  result.reverse();  // Reverse result to restore the original order.
-
-  // arr turns into the auxArray and we return the previously aux array.
-  auxArrayFlatten = arr;
-  auxArrayFilter.length = 0;
-  return result;
-}
-
-function toArray(o) {
-  if (is.arr(o)) { return o; }
-  if (is.str(o)) { o = selectString(o) || o; }
-  if (o instanceof NodeList || o instanceof HTMLCollection) { return [].slice.call(o); }
-  return [o];
-}
-
-function arrayContains(arr, val) {
-  return arr.some(function (a) { return a === val; });
-}
-
-// Objects
-
-function cloneObject(o) {
-  var clone = {};
-  for (var p in o) { clone[p] = o[p]; }
-  return clone;
-}
-
-function replaceObjectProps(o1, o2) {
-  var o = cloneObject(o1);
-  for (var p in o1) { o[p] = o2.hasOwnProperty(p) ? o2[p] : o1[p]; }
-  return o;
-}
-
-function mergeObjects(o1, o2) {
-  var o = cloneObject(o1);
-  for (var p in o2) { o[p] = is.und(o1[p]) ? o2[p] : o1[p]; }
-  return o;
-}
-
-// Colors
-
-var rgbRegex = /rgb\((\d+,\s*[\d]+,\s*[\d]+)\)/g;
-
-function rgbToRgba(rgbValue) {
-  var rgb = rgbRegex.exec(rgbValue);
-  return rgb ? ("rgba(" + (rgb[1]) + ",1)") : rgbValue;
-}
-
-var hexToRgbaHexRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-var hexToRgbaRgbRegex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
-
-function hexToRgba(hexValue) {
-  var hex = hexValue.replace(hexToRgbaHexRegex, function (m, r, g, b) { return r + r + g + g + b + b; } );
-  var rgb = hexToRgbaRgbRegex.exec(hex);
-  var r = parseInt(rgb[1], 16);
-  var g = parseInt(rgb[2], 16);
-  var b = parseInt(rgb[3], 16);
-  return ("rgba(" + r + "," + g + "," + b + ",1)");
-}
-
-var hslToRgbaHsl1Regex = /hsl\((\d+),\s*([\d.]+)%,\s*([\d.]+)%\)/g;
-var hslToRgbaHsl2Regex = /hsla\((\d+),\s*([\d.]+)%,\s*([\d.]+)%,\s*([\d.]+)\)/g;
-
-function hslToRgba(hslValue) {
-  var hsl = hslToRgbaHsl1Regex.exec(hslValue) || hslToRgbaHsl2Regex.exec(hslValue);
-  var h = parseInt(hsl[1], 10) / 360;
-  var s = parseInt(hsl[2], 10) / 100;
-  var l = parseInt(hsl[3], 10) / 100;
-  var a = hsl[4] || 1;
-  function hue2rgb(p, q, t) {
-    if (t < 0) { t += 1; }
-    if (t > 1) { t -= 1; }
-    if (t < 1/6) { return p + (q - p) * 6 * t; }
-    if (t < 1/2) { return q; }
-    if (t < 2/3) { return p + (q - p) * (2/3 - t) * 6; }
-    return p;
-  }
-  var r, g, b;
-  if (s == 0) {
-    r = g = b = l;
-  } else {
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    var p = 2 * l - q;
-    r = hue2rgb(p, q, h + 1/3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1/3);
-  }
-  return ("rgba(" + (r * 255) + "," + (g * 255) + "," + (b * 255) + "," + a + ")");
-}
-
-function colorToRgb(val) {
-  if (is.rgb(val)) { return rgbToRgba(val); }
-  if (is.hex(val)) { return hexToRgba(val); }
-  if (is.hsl(val)) { return hslToRgba(val); }
-}
-
-// Units
-
-var unitRegex = /([\+\-]?[0-9#\.]+)(%|px|pt|em|rem|in|cm|mm|ex|ch|pc|vw|vh|vmin|vmax|deg|rad|turn)?$/;
-
-function getUnit(val) {
-  var split = unitRegex.exec(val);
-  if (split) { return split[2]; }
-}
-
-function getTransformUnit(propName) {
-  if (stringContains(propName, 'translate') || propName === 'perspective') { return 'px'; }
-  if (stringContains(propName, 'rotate') || stringContains(propName, 'skew')) { return 'deg'; }
-}
-
-// Values
-
-function getFunctionValue(val, animatable) {
-  if (!is.fnc(val)) { return val; }
-  return val(animatable.target, animatable.id, animatable.total);
-}
-
-function getAttribute(el, prop) {
-  return el.getAttribute(prop);
-}
-
-function convertPxToUnit(el, value, unit) {
-  var valueUnit = getUnit(value);
-  if (arrayContains([unit, 'deg', 'rad', 'turn'], valueUnit)) { return value; }
-  var cached = cache.CSS[value + unit];
-  if (!is.und(cached)) { return cached; }
-  var baseline = 100;
-  var tempEl = document.createElement(el.tagName);
-  var parentEl = (el.parentNode && (el.parentNode !== document)) ? el.parentNode : document.body;
-  parentEl.appendChild(tempEl);
-  tempEl.style.position = 'absolute';
-  tempEl.style.width = baseline + unit;
-  var factor = baseline / tempEl.offsetWidth;
-  parentEl.removeChild(tempEl);
-  var convertedUnit = factor * parseFloat(value);
-  cache.CSS[value + unit] = convertedUnit;
-  return convertedUnit;
-}
-
-function getCSSValue(el, prop, unit) {
-  if (prop in el.style) {
-    var uppercasePropName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-    var value = el.style[prop] || getComputedStyle(el).getPropertyValue(uppercasePropName) || '0';
-    return unit ? convertPxToUnit(el, value, unit) : value;
-  }
-}
-
-function getAnimationType(el, prop) {
-  if (is.dom(el) && !is.inp(el) && (getAttribute(el, prop) || (is.svg(el) && el[prop]))) { return 'attribute'; }
-  if (is.dom(el) && arrayContains(validTransforms, prop)) { return 'transform'; }
-  if (is.dom(el) && (prop !== 'transform' && getCSSValue(el, prop))) { return 'css'; }
-  if (el[prop] != null) { return 'object'; }
-}
-
-var transformRegex = /(\w+)\(([^)]*)\)/g;
-
-function getElementTransforms(el) {
-  if (!is.dom(el)) { return; }
-  var str = el.style.transform || '';
-  var transforms = new Map();
-  var m; while (m = transformRegex.exec(str)) { transforms.set(m[1], m[2]); }
-  return transforms;
-}
-
-function getTransformValue(el, propName, animatable, unit) {
-  var defaultVal = stringContains(propName, 'scale') ? 1 : 0 + getTransformUnit(propName);
-  var value = getElementTransforms(el).get(propName) || defaultVal;
-  if (animatable) {
-    animatable.transforms.list.set(propName, value);
-    animatable.transforms['last'] = propName;
-  }
-  return unit ? convertPxToUnit(el, value, unit) : value;
-}
-
-function getOriginalTargetValue(target, propName, unit, animatable) {
-  switch (getAnimationType(target, propName)) {
-    case 'transform': return getTransformValue(target, propName, animatable, unit);
-    case 'css': return getCSSValue(target, propName, unit);
-    case 'attribute': return getAttribute(target, propName);
-    default: return target[propName] || 0;
-  }
-}
-
-var operatorRegex = /^(\*=|\+=|-=)/;
-
-function getRelativeValue(to, from) {
-  var operator = operatorRegex.exec(to);
-  if (!operator) { return to; }
-  var u = getUnit(to) || 0;
-  var x = parseFloat(from);
-  var y = parseFloat(to.replace(operator[0], ''));
-  switch (operator[0][0]) {
-    case '+': return x + y + u;
-    case '-': return x - y + u;
-    case '*': return x * y + u;
-  }
-}
-
-var whitespaceRegex = /\s/g;
-
-function validateValue(val, unit) {
-  if (is.col(val)) { return colorToRgb(val); }
-  var originalUnit = getUnit(val);
-  var unitLess = originalUnit ? val.substr(0, val.length - originalUnit.length) : val;
-  return unit && !whitespaceRegex.test(val) ? unitLess + unit : unitLess;
-}
-
-// getTotalLength() equivalent for circle, rect, polyline, polygon and line shapes
-// adapted from https://gist.github.com/SebLambla/3e0550c496c236709744
-
-function getDistance(p1, p2) {
-  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-}
-
-function getCircleLength(el) {
-  return Math.PI * 2 * getAttribute(el, 'r');
-}
-
-function getRectLength(el) {
-  return (getAttribute(el, 'width') * 2) + (getAttribute(el, 'height') * 2);
-}
-
-function getLineLength(el) {
-  return getDistance(
-    {x: getAttribute(el, 'x1'), y: getAttribute(el, 'y1')},
-    {x: getAttribute(el, 'x2'), y: getAttribute(el, 'y2')}
-  );
-}
-
-function getPolylineLength(el) {
-  var points = el.points;
-  var totalLength = 0;
-  var previousPos;
-  for (var i = 0 ; i < points.numberOfItems; i++) {
-    var currentPos = points.getItem(i);
-    if (i > 0) { totalLength += getDistance(previousPos, currentPos); }
-    previousPos = currentPos;
-  }
-  return totalLength;
-}
-
-function getPolygonLength(el) {
-  var points = el.points;
-  return getPolylineLength(el) + getDistance(points.getItem(points.numberOfItems - 1), points.getItem(0));
-}
-
-// Path animation
-
-function getTotalLength(el) {
-  if (el.getTotalLength) { return el.getTotalLength(); }
-  switch(el.tagName.toLowerCase()) {
-    case 'circle': return getCircleLength(el);
-    case 'rect': return getRectLength(el);
-    case 'line': return getLineLength(el);
-    case 'polyline': return getPolylineLength(el);
-    case 'polygon': return getPolygonLength(el);
-  }
-}
-
-function setDashoffset(el) {
-  var pathLength = getTotalLength(el);
-  el.setAttribute('stroke-dasharray', pathLength);
-  return pathLength;
-}
-
-// Motion path
-
-function getParentSvgEl(el) {
-  var parentEl = el.parentNode;
-  while (is.svg(parentEl)) {
-    parentEl = parentEl.parentNode;
-    if (!is.svg(parentEl.parentNode)) { break; }
-  }
-  return parentEl;
-}
-
-function getParentSvg(pathEl, svgData) {
-  var svg = svgData || {};
-  var parentSvgEl = svg.el || getParentSvgEl(pathEl);
-  var rect = parentSvgEl.getBoundingClientRect();
-  var viewBoxAttr = getAttribute(parentSvgEl, 'viewBox');
-  var width = rect.width;
-  var height = rect.height;
-  var viewBox = svg.viewBox || (viewBoxAttr ? viewBoxAttr.split(' ') : [0, 0, width, height]);
-  return {
-    el: parentSvgEl,
-    viewBox: viewBox,
-    x: viewBox[0] / 1,
-    y: viewBox[1] / 1,
-    w: width / viewBox[2],
-    h: height / viewBox[3]
-  }
-}
-
-function getPath(path, percent) {
-  var pathEl = is.str(path) ? selectString(path)[0] : path;
-  var p = percent || 100;
-  return function(property) {
-    return {
-      property: property,
-      el: pathEl,
-      svg: getParentSvg(pathEl),
-      totalLength: getTotalLength(pathEl) * (p / 100)
-    }
-  }
-}
-
-function getPathProgress(path, progress) {
-  function point(offset) {
-    if ( offset === void 0 ) offset = 0;
-
-    var l = progress + offset >= 1 ? progress + offset : 0;
-    return path.el.getPointAtLength(l);
-  }
-  var svg = getParentSvg(path.el, path.svg);
-  var p = point();
-  var p0 = point(-1);
-  var p1 = point(+1);
-  switch (path.property) {
-    case 'x': return (p.x - svg.x) * svg.w;
-    case 'y': return (p.y - svg.y) * svg.h;
-    case 'angle': return Math.atan2(p1.y - p0.y, p1.x - p0.x) * 180 / Math.PI;
-  }
-}
-
-// Decompose value
-
-var valueRegex = /-?\d*\.?\d+/g;
-
-function decomposeValue(val, unit) {
-  var value = validateValue((is.pth(val) ? val.totalLength : val), unit) + '';
-  return {
-    original: value,
-    numbers: value.match(valueRegex) ? value.match(valueRegex).map(Number) : [0],
-    strings: (is.str(val) || unit) ? value.split(valueRegex) : []
-  }
-}
-
-// Animatables
-
-function parseTargets(targets) {
-  var targetsArray = targets ? (flattenArray(is.arr(targets) ? targets.map(toArray) : toArray(targets))) : [];
-  return filterArray(targetsArray, function (item, pos, self) { return self.indexOf(item) === pos; });
-}
-
-function getAnimatables(targets) {
-  var parsed = parseTargets(targets);
-  return parsed.map(function (t, i) {
-    return {target: t, id: i, total: parsed.length, transforms: { list: getElementTransforms(t) } };
-  });
-}
-
-// Properties
-
-var springRegex = /^spring/;
-
-function normalizePropertyTweens(prop, tweenSettings) {
-  var settings = cloneObject(tweenSettings);
-  // Override duration if easing is a spring
-  if (springRegex.test(settings.easing)) { settings.duration = spring(settings.easing); }
-  if (is.arr(prop)) {
-    var l = prop.length;
-    var isFromTo = (l === 2 && !is.obj(prop[0]));
-    if (!isFromTo) {
-      // Duration divided by the number of tweens
-      if (!is.fnc(tweenSettings.duration)) { settings.duration = tweenSettings.duration / l; }
-    } else {
-      // Transform [from, to] values shorthand to a valid tween value
-      prop = {value: prop};
-    }
-  }
-  var propArray = is.arr(prop) ? prop : [prop];
-  return propArray.map(function (v, i) {
-    var obj = (is.obj(v) && !is.pth(v)) ? v : {value: v};
-    // Default delay value should only be applied to the first tween
-    if (is.und(obj.delay)) { obj.delay = !i ? tweenSettings.delay : 0; }
-    // Default endDelay value should only be applied to the last tween
-    if (is.und(obj.endDelay)) { obj.endDelay = i === propArray.length - 1 ? tweenSettings.endDelay : 0; }
-    return obj;
-  }).map(function (k) { return mergeObjects(k, settings); });
-}
-
-
-function flattenKeyframes(keyframes) {
-  var propertyNames = filterArray(flattenArray(keyframes.map(function (key) { return Object.keys(key); })), function (p) { return is.key(p); })
-  .reduce(function (a,b) { if (a.indexOf(b) < 0) { a.push(b); } return a; }, []);
-  var properties = {};
-  var loop = function ( i ) {
-    var propName = propertyNames[i];
-    properties[propName] = keyframes.map(function (key) {
-      var newKey = {};
-      for (var p in key) {
-        if (is.key(p)) {
-          if (p == propName) { newKey.value = key[p]; }
-        } else {
-          newKey[p] = key[p];
-        }
-      }
-      return newKey;
-    });
-  };
-
-  for (var i = 0; i < propertyNames.length; i++) loop( i );
-  return properties;
-}
-
-function getProperties(tweenSettings, params) {
-  var properties = [];
-  var keyframes = params.keyframes;
-  if (keyframes) { params = mergeObjects(flattenKeyframes(keyframes), params); }
-  for (var p in params) {
-    if (is.key(p)) {
-      properties.push({
-        name: p,
-        tweens: normalizePropertyTweens(params[p], tweenSettings)
-      });
-    }
-  }
-  return properties;
-}
-
-// Tweens
-
-function normalizeTweenValues(tween, animatable) {
-  var t = {};
-  for (var p in tween) {
-    var value = getFunctionValue(tween[p], animatable);
-    if (is.arr(value)) {
-      value = value.map(function (v) { return getFunctionValue(v, animatable); });
-      if (value.length === 1) { value = value[0]; }
-    }
-    t[p] = value;
-  }
-  t.duration = parseFloat(t.duration);
-  t.delay = parseFloat(t.delay);
-  return t;
-}
-
-function normalizeTweens(prop, animatable) {
-  var previousTween;
-  return prop.tweens.map(function (t) {
-    var tween = normalizeTweenValues(t, animatable);
-    var tweenValue = tween.value;
-    var to = is.arr(tweenValue) ? tweenValue[1] : tweenValue;
-    var toUnit = getUnit(to);
-    var originalValue = getOriginalTargetValue(animatable.target, prop.name, toUnit, animatable);
-    var previousValue = previousTween ? previousTween.to.original : originalValue;
-    var from = is.arr(tweenValue) ? tweenValue[0] : previousValue;
-    var fromUnit = getUnit(from) || getUnit(originalValue);
-    var unit = toUnit || fromUnit;
-    if (is.und(to)) { to = previousValue; }
-    tween.from = decomposeValue(from, unit);
-    tween.to = decomposeValue(getRelativeValue(to, from), unit);
-    tween.start = previousTween ? previousTween.end : 0;
-    tween.end = tween.start + tween.delay + tween.duration + tween.endDelay;
-    tween.easing = parseEasings(tween.easing, tween.duration);
-    tween.isPath = is.pth(tweenValue);
-    tween.isColor = is.col(tween.from.original);
-    if (tween.isColor) { tween.round = 1; }
-    previousTween = tween;
-    return tween;
-  });
-}
-
-// Tween progress
-
-var setProgressValue = {
-  css: function (t, p, v) { return t.style[p] = v; },
-  attribute: function (t, p, v) { return t.setAttribute(p, v); },
-  object: function (t, p, v) { return t[p] = v; },
-  transform: function (t, p, v, transforms, manual) {
-    transforms.list.set(p, v);
-    if (p === transforms.last || manual) {
-      var str = '';
-      transforms.list.forEach(function (value, prop) { str += prop + "(" + value + ") "; });
-      t.style.transform = str;
-    }
-  }
-};
-
-// Set Value helper
-
-function setTargetsValue(targets, properties) {
-  var animatables = getAnimatables(targets);
-
-  for (var i = 0, len = animatables.length; i < len; i++) {
-    var animatable = animatables[i];
-
-    for (var property in properties) {
-      var value = getFunctionValue(properties[property], animatable);
-      var target = animatable.target;
-      var valueUnit = getUnit(value);
-      var originalValue = getOriginalTargetValue(target, property, valueUnit, animatable);
-      var unit = valueUnit || getUnit(originalValue);
-      var to = getRelativeValue(validateValue(value, unit), originalValue);
-      var animType = getAnimationType(target, property);
-      setProgressValue[animType](target, property, to, animatable.transforms, true);
-    }
-  }
-}
-
-// Animations
-
-function createAnimation(animatable, prop) {
-  var animType = getAnimationType(animatable.target, prop.name);
-  if (animType) {
-    var tweens = normalizeTweens(prop, animatable);
-    var lastTween = tweens[tweens.length - 1];
-    return {
-      type: animType,
-      property: prop.name,
-      animatable: animatable,
-      tweens: tweens,
-      duration: lastTween.end,
-      delay: tweens[0].delay,
-      endDelay: lastTween.endDelay
-    }
-  }
-}
-
-function getAnimations(animatables, properties) {
-  return filterArray(flattenArray(animatables.map(function (animatable) {
-    return properties.map(function (prop) {
-      return createAnimation(animatable, prop);
-    });
-  })), function (a) { return !is.und(a); });
-}
-
-// Create Instance
-
-function getInstanceTimings(animations, tweenSettings) {
-  var animLength = animations.length;
-  var getTlOffset = function (anim) { return anim.timelineOffset ? anim.timelineOffset : 0; };
-  var timings = {};
-  timings.duration = animLength ? Math.max.apply(Math, animations.map(function (anim) { return getTlOffset(anim) + anim.duration; })) : tweenSettings.duration;
-  timings.delay = animLength ? Math.min.apply(Math, animations.map(function (anim) { return getTlOffset(anim) + anim.delay; })) : tweenSettings.delay;
-  timings.endDelay = animLength ? timings.duration - Math.max.apply(Math, animations.map(function (anim) { return getTlOffset(anim) + anim.duration - anim.endDelay; })) : tweenSettings.endDelay;
-  return timings;
-}
-
-var instanceID = 0;
-
-function createNewInstance(params) {
-  var instanceSettings = replaceObjectProps(defaultInstanceSettings, params);
-  var tweenSettings = replaceObjectProps(defaultTweenSettings, params);
-  var properties = getProperties(tweenSettings, params);
-  var animatables = getAnimatables(params.targets);
-  var animations = getAnimations(animatables, properties);
-  var timings = getInstanceTimings(animations, tweenSettings);
-  var id = instanceID;
-  instanceID++;
-  return mergeObjects(instanceSettings, {
-    id: id,
-    children: [],
-    animatables: animatables,
-    animations: animations,
-    duration: timings.duration,
-    delay: timings.delay,
-    endDelay: timings.endDelay
-  });
-}
-
-// Core
-
-var activeInstances = [];
-var pausedInstances = [];
-var raf;
-
-var engine = (function () {
-  function play() {
-    raf = requestAnimationFrame(step);
-  }
-  function step(t) {
-    var activeInstancesLength = activeInstances.length;
-    if (activeInstancesLength) {
-      var i = 0;
-      while (i < activeInstancesLength) {
-        var activeInstance = activeInstances[i];
-        if (!activeInstance.paused) {
-          activeInstance.tick(t);
-        } else {
-          var instanceIndex = activeInstances.indexOf(activeInstance);
-          if (instanceIndex > -1) {
-            activeInstances.splice(instanceIndex, 1);
-            activeInstancesLength = activeInstances.length;
-          }
-        }
-        i++;
-      }
-      play();
-    } else {
-      raf = cancelAnimationFrame(raf);
-    }
-  }
-  return play;
-})();
-
-function handleVisibilityChange() {
-  if (document.hidden) {
-    for (var i = 0, len = activeInstances.length; i < len; i++) {
-      activeInstance[i].pause();
-    }
-    pausedInstances = activeInstances.slice(0);
-    activeInstances = [];
-  } else {
-    for (var i$1 = 0, len$1 = pausedInstances.length; i$1 < len$1; i$1++) {
-      pausedInstances[i$1].play();
-    }
-  }
-}
-
-document.addEventListener('visibilitychange', handleVisibilityChange);
-
-// Public Instance
-
-function anime(params) {
-  if ( params === void 0 ) params = {};
-
-
-  var startTime = 0, lastTime = 0, now = 0;
-  var children, childrenLength = 0;
-  var resolve = null;
-
-  function makePromise() {
-    return window.Promise && new Promise(function (_resolve) { return resolve = _resolve; });
-  }
-
-  var promise = makePromise();
-
-  var instance = createNewInstance(params);
-
-  function toggleInstanceDirection() {
-    instance.reversed = !instance.reversed;
-    for (var i = 0, len = children.length; i < len; i++) {
-      children[i].reversed = instance.reversed;
-    }
-  }
-
-  function adjustTime(time) {
-    return instance.reversed ? instance.duration - time : time;
-  }
-
-  function resetTime() {
-    startTime = 0;
-    lastTime = adjustTime(instance.currentTime) * (1 / anime.speed);
-  }
-
-  function seekCild(time, child) {
-    if (child) { child.seek(time - child.timelineOffset); }
-  }
-
-  function syncInstanceChildren(time) {
-    if (!instance.reversePlayback) {
-      for (var i = 0; i < childrenLength; i++) { seekCild(time, children[i]); }
-    } else {
-      for (var i$1 = childrenLength; i$1--;) { seekCild(time, children[i$1]); }
-    }
-  }
-
-  function setAnimationsProgress(insTime) {
-    var i = 0;
-    var animations = instance.animations;
-    var animationsLength = animations.length;
-    while (i < animationsLength) {
-      var anim = animations[i];
-      var animatable = anim.animatable;
-      var tweens = anim.tweens;
-      var tweenLength = tweens.length - 1;
-      var tween = tweens[tweenLength];
-      // Only check for keyframes if there is more than one tween
-      if (tweenLength) { tween = filterArray(tweens, function (t) { return (insTime < t.end); })[0] || tween; }
-      var elapsed = minMax(insTime - tween.start - tween.delay, 0, tween.duration) / tween.duration;
-      var eased = isNaN(elapsed) ? 1 : tween.easing(elapsed);
-      var strings = tween.to.strings;
-      var round = tween.round;
-      var numbers = [];
-      var toNumbersLength = tween.to.numbers.length;
-      var progress = (void 0);
-      for (var n = 0; n < toNumbersLength; n++) {
-        var value = (void 0);
-        var toNumber = tween.to.numbers[n];
-        var fromNumber = tween.from.numbers[n] || 0;
-        if (!tween.isPath) {
-          value = fromNumber + (eased * (toNumber - fromNumber));
-        } else {
-          value = getPathProgress(tween.value, eased * toNumber);
-        }
-        if (round) {
-          if (!(tween.isColor && n > 2)) {
-            value = Math.round(value * round) / round;
-          }
-        }
-        numbers.push(value);
-      }
-      // Manual Array.reduce for better performances
-      var stringsLength = strings.length;
-      if (!stringsLength) {
-        progress = numbers[0];
-      } else {
-        progress = strings[0];
-        for (var s = 0; s < stringsLength; s++) {
-          var a = strings[s];
-          var b = strings[s + 1];
-          var n$1 = numbers[s];
-          if (!isNaN(n$1)) {
-            if (!b) {
-              progress += n$1 + ' ';
-            } else {
-              progress += n$1 + b;
-            }
-          }
-        }
-      }
-      setProgressValue[anim.type](animatable.target, anim.property, progress, animatable.transforms);
-      anim.currentValue = progress;
-      i++;
-    }
-  }
-
-  function setCallback(cb) {
-    if (instance[cb] && !instance.passThrough) { instance[cb](instance); }
-  }
-
-  function countIteration() {
-    if (instance.remaining && instance.remaining !== true) {
-      instance.remaining--;
-    }
-  }
-
-  function setInstanceProgress(engineTime) {
-    var insDuration = instance.duration;
-    var insDelay = instance.delay;
-    var insEndDelay = insDuration - instance.endDelay;
-    var insTime = adjustTime(engineTime);
-    instance.progress = minMax((insTime / insDuration) * 100, 0, 100);
-    instance.reversePlayback = insTime < instance.currentTime;
-    if (children) { syncInstanceChildren(insTime); }
-    if (!instance.began && instance.currentTime > 0) {
-      instance.began = true;
-      setCallback('begin');
-      setCallback('loopBegin');
-    }
-    if (insTime <= insDelay && instance.currentTime !== 0) {
-      setAnimationsProgress(0);
-    }
-    if ((insTime >= insEndDelay && instance.currentTime !== insDuration) || !insDuration) {
-      setAnimationsProgress(insDuration);
-    }
-    if (insTime > insDelay && insTime < insEndDelay) {
-      if (!instance.changeBegan) {
-        instance.changeBegan = true;
-        instance.changeCompleted = false;
-        setCallback('changeBegin');
-      }
-      setCallback('change');
-      setAnimationsProgress(insTime);
-    } else {
-      if (instance.changeBegan) {
-        instance.changeCompleted = true;
-        instance.changeBegan = false;
-        setCallback('changeComplete');
-      }
-    }
-    instance.currentTime = minMax(insTime, 0, insDuration);
-    if (instance.began) { setCallback('update'); }
-    if (engineTime >= insDuration) {
-      lastTime = 0;
-      countIteration();
-      if (instance.remaining) {
-        startTime = now;
-        setCallback('loopComplete');
-        setCallback('loopBegin');
-        if (instance.direction === 'alternate') { toggleInstanceDirection(); }
-      } else {
-        instance.paused = true;
-        if (!instance.completed) {
-          instance.completed = true;
-          setCallback('loopComplete');
-          setCallback('complete');
-          if ('Promise' in window) {
-            resolve();
-            promise = makePromise();
-          }
-        }
-      }
-    }
-  }
-
-  instance.reset = function() {
-    var direction = instance.direction;
-    instance.passThrough = false;
-    instance.currentTime = 0;
-    instance.progress = 0;
-    instance.paused = true;
-    instance.began = false;
-    instance.changeBegan = false;
-    instance.completed = false;
-    instance.changeCompleted = false;
-    instance.reversePlayback = false;
-    instance.reversed = direction === 'reverse';
-    instance.remaining = instance.loop;
-    children = instance.children;
-    childrenLength = children.length;
-    for (var i = childrenLength; i--;) { instance.children[i].reset(); }
-    if (instance.reversed && instance.loop !== true || (direction === 'alternate' && instance.loop === 1)) { instance.remaining++; }
-    setAnimationsProgress(0);
-  };
-
-  // Set Value helper
-
-  instance.set = function(targets, properties) {
-    setTargetsValue(targets, properties);
-    return instance;
-  };
-
-  instance.tick = function(t) {
-    now = t;
-    if (!startTime) { startTime = now; }
-    setInstanceProgress((now + (lastTime - startTime)) * anime.speed);
-  };
-
-  instance.seek = function(time) {
-    setInstanceProgress(adjustTime(time));
-  };
-
-  instance.pause = function() {
-    instance.paused = true;
-    resetTime();
-  };
-
-  instance.play = function() {
-    if (!instance.paused) { return; }
-    instance.paused = false;
-    activeInstances.push(instance);
-    resetTime();
-    if (!raf) { engine(); }
-  };
-
-  instance.reverse = function() {
-    toggleInstanceDirection();
-    resetTime();
-  };
-
-  instance.restart = function() {
-    instance.reset();
-    instance.play();
-  };
-
-  instance.finished = promise;
-  instance.reset();
-
-  if (instance.autoplay) { instance.play(); }
-
-  return instance;
-
-}
-
-// Remove targets from animation
-
-function removeTargetsFromAnimations(targetsArray, animations) {
-  for (var a = animations.length; a--;) {
-    if (arrayContains(targetsArray, animations[a].animatable.target)) {
-      animations.splice(a, 1);
-    }
-  }
-}
-
-function removeTargets(targets) {
-  var targetsArray = parseTargets(targets);
-  for (var i = activeInstances.length; i--;) {
-    var instance = activeInstances[i];
-    var animations = instance.animations;
-    var children = instance.children;
-    removeTargetsFromAnimations(targetsArray, animations);
-    for (var c = children.length; c--;) {
-      var child = children[c];
-      var childAnimations = child.animations;
-      removeTargetsFromAnimations(targetsArray, childAnimations);
-      if (!childAnimations.length && !child.children.length) { children.splice(c, 1); }
-    }
-    if (!animations.length && !children.length) { instance.pause(); }
-  }
-}
-
-// Stagger helpers
-
-function stagger(val, params) {
-  if ( params === void 0 ) params = {};
-
-  var direction = params.direction || 'normal';
-  var easing = params.easing ? parseEasings(params.easing) : null;
-  var grid = params.grid;
-  var axis = params.axis;
-  var fromIndex = params.from || 0;
-  var fromFirst = fromIndex === 'first';
-  var fromCenter = fromIndex === 'center';
-  var fromLast = fromIndex === 'last';
-  var isRange = is.arr(val);
-  var val1 = isRange ? parseFloat(val[0]) : parseFloat(val);
-  var val2 = isRange ? parseFloat(val[1]) : 0;
-  var unit = getUnit(isRange ? val[1] : val) || 0;
-  var start = params.start || 0 + (isRange ? val1 : 0);
-  var values = [];
-  var maxValue = 0;
-  return function (el, i, t) {
-    if (fromFirst) { fromIndex = 0; }
-    if (fromCenter) { fromIndex = (t - 1) / 2; }
-    if (fromLast) { fromIndex = t - 1; }
-    if (!values.length) {
-      for (var index = 0; index < t; index++) {
-        if (!grid) {
-          values.push(Math.abs(fromIndex - index));
-        } else {
-          var fromX = !fromCenter ? fromIndex%grid[0] : (grid[0]-1)/2;
-          var fromY = !fromCenter ? Math.floor(fromIndex/grid[0]) : (grid[1]-1)/2;
-          var toX = index%grid[0];
-          var toY = Math.floor(index/grid[0]);
-          var distanceX = fromX - toX;
-          var distanceY = fromY - toY;
-          var value = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-          if (axis === 'x') { value = -distanceX; }
-          if (axis === 'y') { value = -distanceY; }
-          values.push(value);
-        }
-        maxValue = Math.max.apply(Math, values);
-      }
-      if (easing) { values = values.map(function (val) { return easing(val / maxValue) * maxValue; }); }
-      if (direction === 'reverse') { values = values.map(function (val) { return axis ? (val < 0) ? val * -1 : -val : Math.abs(maxValue - val); }); }
-    }
-    var spacing = isRange ? (val2 - val1) / maxValue : val1;
-    return start + (spacing * (Math.round(values[i] * 100) / 100)) + unit;
-  }
-}
-
-// Timeline
-
-function timeline(params) {
-  if ( params === void 0 ) params = {};
-
-  var tl = anime(params);
-  tl.duration = 0;
-  tl.add = function(instanceParams, timelineOffset) {
-    var tlIndex = activeInstances.indexOf(tl);
-    var children = tl.children;
-    if (tlIndex > -1) { activeInstances.splice(tlIndex, 1); }
-    function passThrough(ins) { ins.passThrough = true; }
-    for (var i = 0; i < children.length; i++) { passThrough(children[i]); }
-    var insParams = mergeObjects(instanceParams, replaceObjectProps(defaultTweenSettings, params));
-    insParams.targets = insParams.targets || params.targets;
-    var tlDuration = tl.duration;
-    insParams.autoplay = false;
-    insParams.direction = tl.direction;
-    insParams.timelineOffset = is.und(timelineOffset) ? tlDuration : getRelativeValue(timelineOffset, tlDuration);
-    passThrough(tl);
-    tl.seek(insParams.timelineOffset);
-    var ins = anime(insParams);
-    passThrough(ins);
-    children.push(ins);
-    var timings = getInstanceTimings(children, params);
-    tl.delay = timings.delay;
-    tl.endDelay = timings.endDelay;
-    tl.duration = timings.duration;
-    tl.seek(0);
-    tl.reset();
-    if (tl.autoplay) { tl.play(); }
-    return tl;
-  };
-  return tl;
-}
-
-anime.version = '3.0.0';
-anime.speed = 1;
-anime.running = activeInstances;
-anime.remove = removeTargets;
-anime.get = getOriginalTargetValue;
-anime.set = setTargetsValue;
-anime.convertPx = convertPxToUnit;
-anime.path = getPath;
-anime.setDashoffset = setDashoffset;
-anime.stagger = stagger;
-anime.timeline = timeline;
-anime.easing = parseEasings;
-anime.penner = penner;
-anime.random = function (min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; };
-
-module.exports = anime;
-
-},{}],36:[function(_dereq_,module,exports){
+},{"an-array":1,"dtype":13,"is-buffer":19}],36:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(global = global || self, factory(global.THREE = {}));
-}(this, function (exports) { 'use strict';
+	(factory((global.THREE = {})));
+}(this, (function (exports) { 'use strict';
 
 	// Polyfills
 
@@ -5705,7 +4390,7 @@ module.exports = anime;
 
 	} );
 
-	var REVISION = '103dev';
+	var REVISION = '101';
 	var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
 	var CullFaceNone = 0;
 	var CullFaceBack = 1;
@@ -10301,6 +8986,9 @@ module.exports = anime;
 
 		WebGLRenderTarget.call( this, width, height, options );
 
+		this.activeCubeFace = 0; // PX 0, NX 1, PY 2, NY 3, PZ 4, NZ 5
+		this.activeMipMapLevel = 0;
+
 	}
 
 	WebGLRenderTargetCube.prototype = Object.create( WebGLRenderTarget.prototype );
@@ -11558,7 +10246,7 @@ module.exports = anime;
 
 	var begin_vertex = "vec3 transformed = vec3( position );";
 
-	var beginnormal_vertex = "vec3 objectNormal = vec3( normal );\n#ifdef USE_TANGENT\n\tvec3 objectTangent = vec3( tangent.xyz );\n#endif";
+	var beginnormal_vertex = "vec3 objectNormal = vec3( normal );";
 
 	var bsdfs = "vec2 integrateSpecularBRDF( const in float dotNV, const in float roughness ) {\n\tconst vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );\n\tconst vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );\n\tvec4 r = roughness * c0 + c1;\n\tfloat a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;\n\treturn vec2( -1.04, 1.04 ) * a004 + r.zw;\n}\nfloat punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n#if defined ( PHYSICALLY_CORRECT_LIGHTS )\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n#else\n\tif( cutoffDistance > 0.0 && decayExponent > 0.0 ) {\n\t\treturn pow( saturate( -lightDistance / cutoffDistance + 1.0 ), decayExponent );\n\t}\n\treturn 1.0;\n#endif\n}\nvec3 BRDF_Diffuse_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 specularColor, const in float dotLH ) {\n\tfloat fresnel = exp2( ( -5.55473 * dotLH - 6.98316 ) * dotLH );\n\treturn ( 1.0 - specularColor ) * fresnel + specularColor;\n}\nfloat G_GGX_Smith( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gl = dotNL + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\tfloat gv = dotNV + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\treturn 1.0 / ( gl * gv );\n}\nfloat G_GGX_SmithCorrelated( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gv = dotNL * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\tfloat gl = dotNV * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\treturn 0.5 / max( gv + gl, EPSILON );\n}\nfloat D_GGX( const in float alpha, const in float dotNH ) {\n\tfloat a2 = pow2( alpha );\n\tfloat denom = pow2( dotNH ) * ( a2 - 1.0 ) + 1.0;\n\treturn RECIPROCAL_PI * a2 / pow2( denom );\n}\nvec3 BRDF_Specular_GGX( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat alpha = pow2( roughness );\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNL = saturate( dot( geometry.normal, incidentLight.direction ) );\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_GGX_SmithCorrelated( alpha, dotNL, dotNV );\n\tfloat D = D_GGX( alpha, dotNH );\n\treturn F * ( G * D );\n}\nvec2 LTC_Uv( const in vec3 N, const in vec3 V, const in float roughness ) {\n\tconst float LUT_SIZE  = 64.0;\n\tconst float LUT_SCALE = ( LUT_SIZE - 1.0 ) / LUT_SIZE;\n\tconst float LUT_BIAS  = 0.5 / LUT_SIZE;\n\tfloat dotNV = saturate( dot( N, V ) );\n\tvec2 uv = vec2( roughness, sqrt( 1.0 - dotNV ) );\n\tuv = uv * LUT_SCALE + LUT_BIAS;\n\treturn uv;\n}\nfloat LTC_ClippedSphereFormFactor( const in vec3 f ) {\n\tfloat l = length( f );\n\treturn max( ( l * l + f.z ) / ( l + 1.0 ), 0.0 );\n}\nvec3 LTC_EdgeVectorFormFactor( const in vec3 v1, const in vec3 v2 ) {\n\tfloat x = dot( v1, v2 );\n\tfloat y = abs( x );\n\tfloat a = 0.8543985 + ( 0.4965155 + 0.0145206 * y ) * y;\n\tfloat b = 3.4175940 + ( 4.1616724 + y ) * y;\n\tfloat v = a / b;\n\tfloat theta_sintheta = ( x > 0.0 ) ? v : 0.5 * inversesqrt( max( 1.0 - x * x, 1e-7 ) ) - v;\n\treturn cross( v1, v2 ) * theta_sintheta;\n}\nvec3 LTC_Evaluate( const in vec3 N, const in vec3 V, const in vec3 P, const in mat3 mInv, const in vec3 rectCoords[ 4 ] ) {\n\tvec3 v1 = rectCoords[ 1 ] - rectCoords[ 0 ];\n\tvec3 v2 = rectCoords[ 3 ] - rectCoords[ 0 ];\n\tvec3 lightNormal = cross( v1, v2 );\n\tif( dot( lightNormal, P - rectCoords[ 0 ] ) < 0.0 ) return vec3( 0.0 );\n\tvec3 T1, T2;\n\tT1 = normalize( V - N * dot( V, N ) );\n\tT2 = - cross( N, T1 );\n\tmat3 mat = mInv * transposeMat3( mat3( T1, T2, N ) );\n\tvec3 coords[ 4 ];\n\tcoords[ 0 ] = mat * ( rectCoords[ 0 ] - P );\n\tcoords[ 1 ] = mat * ( rectCoords[ 1 ] - P );\n\tcoords[ 2 ] = mat * ( rectCoords[ 2 ] - P );\n\tcoords[ 3 ] = mat * ( rectCoords[ 3 ] - P );\n\tcoords[ 0 ] = normalize( coords[ 0 ] );\n\tcoords[ 1 ] = normalize( coords[ 1 ] );\n\tcoords[ 2 ] = normalize( coords[ 2 ] );\n\tcoords[ 3 ] = normalize( coords[ 3 ] );\n\tvec3 vectorFormFactor = vec3( 0.0 );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 0 ], coords[ 1 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 1 ], coords[ 2 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 2 ], coords[ 3 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 3 ], coords[ 0 ] );\n\tfloat result = LTC_ClippedSphereFormFactor( vectorFormFactor );\n\treturn vec3( result );\n}\nvec3 BRDF_Specular_GGX_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tvec2 brdf = integrateSpecularBRDF( dotNV, roughness );\n\treturn specularColor * brdf.x + brdf.y;\n}\nvoid BRDF_Specular_Multiscattering_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness, inout vec3 singleScatter, inout vec3 multiScatter ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tvec3 F = F_Schlick( specularColor, dotNV );\n\tvec2 brdf = integrateSpecularBRDF( dotNV, roughness );\n\tvec3 FssEss = F * brdf.x + brdf.y;\n\tfloat Ess = brdf.x + brdf.y;\n\tfloat Ems = 1.0 - Ess;\n\tvec3 Favg = specularColor + ( 1.0 - specularColor ) * 0.047619;\tvec3 Fms = FssEss * Favg / ( 1.0 - Ems * Favg );\n\tsingleScatter += FssEss;\n\tmultiScatter += Fms * Ems;\n}\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_Specular_BlinnPhong( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n}\nfloat GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {\n\treturn ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );\n}\nfloat BlinnExponentToGGXRoughness( const in float blinnExponent ) {\n\treturn sqrt( 2.0 / ( blinnExponent + 2.0 ) );\n}";
 
@@ -11584,7 +10272,7 @@ module.exports = anime;
 
 	var cube_uv_reflection_fragment = "#ifdef ENVMAP_TYPE_CUBE_UV\n#define cubeUV_textureSize (1024.0)\nint getFaceFromDirection(vec3 direction) {\n\tvec3 absDirection = abs(direction);\n\tint face = -1;\n\tif( absDirection.x > absDirection.z ) {\n\t\tif(absDirection.x > absDirection.y )\n\t\t\tface = direction.x > 0.0 ? 0 : 3;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\telse {\n\t\tif(absDirection.z > absDirection.y )\n\t\t\tface = direction.z > 0.0 ? 2 : 5;\n\t\telse\n\t\t\tface = direction.y > 0.0 ? 1 : 4;\n\t}\n\treturn face;\n}\n#define cubeUV_maxLods1  (log2(cubeUV_textureSize*0.25) - 1.0)\n#define cubeUV_rangeClamp (exp2((6.0 - 1.0) * 2.0))\nvec2 MipLevelInfo( vec3 vec, float roughnessLevel, float roughness ) {\n\tfloat scale = exp2(cubeUV_maxLods1 - roughnessLevel);\n\tfloat dxRoughness = dFdx(roughness);\n\tfloat dyRoughness = dFdy(roughness);\n\tvec3 dx = dFdx( vec * scale * dxRoughness );\n\tvec3 dy = dFdy( vec * scale * dyRoughness );\n\tfloat d = max( dot( dx, dx ), dot( dy, dy ) );\n\td = clamp(d, 1.0, cubeUV_rangeClamp);\n\tfloat mipLevel = 0.5 * log2(d);\n\treturn vec2(floor(mipLevel), fract(mipLevel));\n}\n#define cubeUV_maxLods2 (log2(cubeUV_textureSize*0.25) - 2.0)\n#define cubeUV_rcpTextureSize (1.0 / cubeUV_textureSize)\nvec2 getCubeUV(vec3 direction, float roughnessLevel, float mipLevel) {\n\tmipLevel = roughnessLevel > cubeUV_maxLods2 - 3.0 ? 0.0 : mipLevel;\n\tfloat a = 16.0 * cubeUV_rcpTextureSize;\n\tvec2 exp2_packed = exp2( vec2( roughnessLevel, mipLevel ) );\n\tvec2 rcp_exp2_packed = vec2( 1.0 ) / exp2_packed;\n\tfloat powScale = exp2_packed.x * exp2_packed.y;\n\tfloat scale = rcp_exp2_packed.x * rcp_exp2_packed.y * 0.25;\n\tfloat mipOffset = 0.75*(1.0 - rcp_exp2_packed.y) * rcp_exp2_packed.x;\n\tbool bRes = mipLevel == 0.0;\n\tscale =  bRes && (scale < a) ? a : scale;\n\tvec3 r;\n\tvec2 offset;\n\tint face = getFaceFromDirection(direction);\n\tfloat rcpPowScale = 1.0 / powScale;\n\tif( face == 0) {\n\t\tr = vec3(direction.x, -direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 1) {\n\t\tr = vec3(direction.y, direction.x, direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 2) {\n\t\tr = vec3(direction.z, direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.75 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? a : offset.y;\n\t}\n\telse if( face == 3) {\n\t\tr = vec3(direction.x, direction.z, direction.y);\n\t\toffset = vec2(0.0+mipOffset,0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse if( face == 4) {\n\t\tr = vec3(direction.y, direction.x, -direction.z);\n\t\toffset = vec2(scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\telse {\n\t\tr = vec3(direction.z, -direction.x, direction.y);\n\t\toffset = vec2(2.0*scale+mipOffset, 0.5 * rcpPowScale);\n\t\toffset.y = bRes && (offset.y < 2.0*a) ? 0.0 : offset.y;\n\t}\n\tr = normalize(r);\n\tfloat texelOffset = 0.5 * cubeUV_rcpTextureSize;\n\tvec2 s = ( r.yz / abs( r.x ) + vec2( 1.0 ) ) * 0.5;\n\tvec2 base = offset + vec2( texelOffset );\n\treturn base + s * ( scale - 2.0 * texelOffset );\n}\n#define cubeUV_maxLods3 (log2(cubeUV_textureSize*0.25) - 3.0)\nvec4 textureCubeUV( sampler2D envMap, vec3 reflectedDirection, float roughness ) {\n\tfloat roughnessVal = roughness* cubeUV_maxLods3;\n\tfloat r1 = floor(roughnessVal);\n\tfloat r2 = r1 + 1.0;\n\tfloat t = fract(roughnessVal);\n\tvec2 mipInfo = MipLevelInfo(reflectedDirection, r1, roughness);\n\tfloat s = mipInfo.y;\n\tfloat level0 = mipInfo.x;\n\tfloat level1 = level0 + 1.0;\n\tlevel1 = level1 > 5.0 ? 5.0 : level1;\n\tlevel0 += min( floor( s + 0.5 ), 5.0 );\n\tvec2 uv_10 = getCubeUV(reflectedDirection, r1, level0);\n\tvec4 color10 = envMapTexelToLinear(texture2D(envMap, uv_10));\n\tvec2 uv_20 = getCubeUV(reflectedDirection, r2, level0);\n\tvec4 color20 = envMapTexelToLinear(texture2D(envMap, uv_20));\n\tvec4 result = mix(color10, color20, t);\n\treturn vec4(result.rgb, 1.0);\n}\n#endif";
 
-	var defaultnormal_vertex = "vec3 transformedNormal = normalMatrix * objectNormal;\n#ifdef FLIP_SIDED\n\ttransformedNormal = - transformedNormal;\n#endif\n#ifdef USE_TANGENT\n\tvec3 transformedTangent = normalMatrix * objectTangent;\n\t#ifdef FLIP_SIDED\n\t\ttransformedTangent = - transformedTangent;\n\t#endif\n#endif";
+	var defaultnormal_vertex = "vec3 transformedNormal = normalMatrix * objectNormal;\n#ifdef FLIP_SIDED\n\ttransformedNormal = - transformedNormal;\n#endif";
 
 	var displacementmap_pars_vertex = "#ifdef USE_DISPLACEMENTMAP\n\tuniform sampler2D displacementMap;\n\tuniform float displacementScale;\n\tuniform float displacementBias;\n#endif";
 
@@ -11666,9 +10354,9 @@ module.exports = anime;
 
 	var morphtarget_vertex = "#ifdef USE_MORPHTARGETS\n\ttransformed += ( morphTarget0 - position ) * morphTargetInfluences[ 0 ];\n\ttransformed += ( morphTarget1 - position ) * morphTargetInfluences[ 1 ];\n\ttransformed += ( morphTarget2 - position ) * morphTargetInfluences[ 2 ];\n\ttransformed += ( morphTarget3 - position ) * morphTargetInfluences[ 3 ];\n\t#ifndef USE_MORPHNORMALS\n\ttransformed += ( morphTarget4 - position ) * morphTargetInfluences[ 4 ];\n\ttransformed += ( morphTarget5 - position ) * morphTargetInfluences[ 5 ];\n\ttransformed += ( morphTarget6 - position ) * morphTargetInfluences[ 6 ];\n\ttransformed += ( morphTarget7 - position ) * morphTargetInfluences[ 7 ];\n\t#endif\n#endif";
 
-	var normal_fragment_begin = "#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal );\n\t#ifdef DOUBLE_SIDED\n\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t#endif\n\t#ifdef USE_TANGENT\n\t\tvec3 tangent = normalize( vTangent );\n\t\tvec3 bitangent = normalize( vBitangent );\n\t\t#ifdef DOUBLE_SIDED\n\t\t\ttangent = tangent * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t\tbitangent = bitangent * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t#endif\n#endif";
+	var normal_fragment_begin = "#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal );\n\t#ifdef DOUBLE_SIDED\n\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t#endif\n#endif";
 
-	var normal_fragment_maps = "#ifdef USE_NORMALMAP\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tnormal = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t#ifdef FLIP_SIDED\n\t\t\tnormal = - normal;\n\t\t#endif\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t\tnormal = normalize( normalMatrix * normal );\n\t#else\n\t\t#ifdef USE_TANGENT\n\t\t\tmat3 vTBN = mat3( tangent, bitangent, normal );\n\t\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t\tmapN.xy = normalScale * mapN.xy;\n\t\t\tnormal = normalize( vTBN * mapN );\n\t\t#else\n\t\t\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n\t\t#endif\n\t#endif\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif";
+	var normal_fragment_maps = "#ifdef USE_NORMALMAP\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tnormal = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t#ifdef FLIP_SIDED\n\t\t\tnormal = - normal;\n\t\t#endif\n\t\t#ifdef DOUBLE_SIDED\n\t\t\tnormal = normal * ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t#endif\n\t\tnormal = normalize( normalMatrix * normal );\n\t#else\n\t\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n\t#endif\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif";
 
 	var normalmap_pars_fragment = "#ifdef USE_NORMALMAP\n\tuniform sampler2D normalMap;\n\tuniform vec2 normalScale;\n\t#ifdef OBJECTSPACE_NORMALMAP\n\t\tuniform mat3 normalMatrix;\n\t#else\n\t\tvec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {\n\t\t\tvec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );\n\t\t\tvec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );\n\t\t\tvec2 st0 = dFdx( vUv.st );\n\t\t\tvec2 st1 = dFdy( vUv.st );\n\t\t\tfloat scale = sign( st1.t * st0.s - st0.t * st1.s );\n\t\t\tvec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );\n\t\t\tvec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );\n\t\t\tvec3 N = normalize( surf_norm );\n\t\t\tmat3 tsn = mat3( S, T, N );\n\t\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\t\tmapN.xy *= normalScale;\n\t\t\tmapN.xy *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\t\treturn normalize( tsn * mapN );\n\t\t}\n\t#endif\n#endif";
 
@@ -11678,7 +10366,7 @@ module.exports = anime;
 
 	var project_vertex = "vec4 mvPosition = modelViewMatrix * vec4( transformed, 1.0 );\ngl_Position = projectionMatrix * mvPosition;";
 
-	var dithering_fragment = "#if defined( DITHERING )\n\tgl_FragColor.rgb = dithering( gl_FragColor.rgb );\n#endif";
+	var dithering_fragment = "#if defined( DITHERING )\n  gl_FragColor.rgb = dithering( gl_FragColor.rgb );\n#endif";
 
 	var dithering_pars_fragment = "#if defined( DITHERING )\n\tvec3 dithering( vec3 color ) {\n\t\tfloat grid_position = rand( gl_FragCoord.xy );\n\t\tvec3 dither_shift_RGB = vec3( 0.25 / 255.0, -0.25 / 255.0, 0.25 / 255.0 );\n\t\tdither_shift_RGB = mix( 2.0 * dither_shift_RGB, -2.0 * dither_shift_RGB, grid_position );\n\t\treturn color + dither_shift_RGB;\n\t}\n#endif";
 
@@ -11700,13 +10388,13 @@ module.exports = anime;
 
 	var skinning_vertex = "#ifdef USE_SKINNING\n\tvec4 skinVertex = bindMatrix * vec4( transformed, 1.0 );\n\tvec4 skinned = vec4( 0.0 );\n\tskinned += boneMatX * skinVertex * skinWeight.x;\n\tskinned += boneMatY * skinVertex * skinWeight.y;\n\tskinned += boneMatZ * skinVertex * skinWeight.z;\n\tskinned += boneMatW * skinVertex * skinWeight.w;\n\ttransformed = ( bindMatrixInverse * skinned ).xyz;\n#endif";
 
-	var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n\t#ifdef USE_TANGENT\n\t\tobjectTangent = vec4( skinMatrix * vec4( objectTangent, 0.0 ) ).xyz;\n\t#endif\n#endif";
+	var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n#endif";
 
 	var specularmap_fragment = "float specularStrength;\n#ifdef USE_SPECULARMAP\n\tvec4 texelSpecular = texture2D( specularMap, vUv );\n\tspecularStrength = texelSpecular.r;\n#else\n\tspecularStrength = 1.0;\n#endif";
 
 	var specularmap_pars_fragment = "#ifdef USE_SPECULARMAP\n\tuniform sampler2D specularMap;\n#endif";
 
-	var tonemapping_fragment = "#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif";
+	var tonemapping_fragment = "#if defined( TONE_MAPPING )\n  gl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif";
 
 	var tonemapping_pars_fragment = "#ifndef saturate\n\t#define saturate(a) clamp( a, 0.0, 1.0 )\n#endif\nuniform float toneMappingExposure;\nuniform float toneMappingWhitePoint;\nvec3 LinearToneMapping( vec3 color ) {\n\treturn toneMappingExposure * color;\n}\nvec3 ReinhardToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( color / ( vec3( 1.0 ) + color ) );\n}\n#define Uncharted2Helper( x ) max( ( ( x * ( 0.15 * x + 0.10 * 0.50 ) + 0.20 * 0.02 ) / ( x * ( 0.15 * x + 0.50 ) + 0.20 * 0.30 ) ) - 0.02 / 0.30, vec3( 0.0 ) )\nvec3 Uncharted2ToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( Uncharted2Helper( color ) / Uncharted2Helper( vec3( toneMappingWhitePoint ) ) );\n}\nvec3 OptimizedCineonToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\tcolor = max( vec3( 0.0 ), color - 0.004 );\n\treturn pow( ( color * ( 6.2 * color + 0.5 ) ) / ( color * ( 6.2 * color + 1.7 ) + 0.06 ), vec3( 2.2 ) );\n}\nvec3 ACESFilmicToneMapping( vec3 color ) {\n\tcolor *= toneMappingExposure;\n\treturn saturate( ( color * ( 2.51 * color + 0.03 ) ) / ( color * ( 2.43 * color + 0.59 ) + 0.14 ) );\n}";
 
@@ -11764,13 +10452,13 @@ module.exports = anime;
 
 	var meshphong_vert = "#define PHONG\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <envmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <envmap_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 
-	var meshphysical_frag = "#define PHYSICAL\nuniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float roughness;\nuniform float metalness;\nuniform float opacity;\n#ifndef STANDARD\n\tuniform float clearCoat;\n\tuniform float clearCoatRoughness;\n#endif\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <bsdfs>\n#include <cube_uv_reflection_fragment>\n#include <envmap_pars_fragment>\n#include <envmap_physical_pars_fragment>\n#include <fog_pars_fragment>\n#include <lights_pars_begin>\n#include <lights_physical_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <roughnessmap_pars_fragment>\n#include <metalnessmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <roughnessmap_fragment>\n\t#include <metalnessmap_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\t#include <emissivemap_fragment>\n\t#include <lights_physical_fragment>\n\t#include <lights_fragment_begin>\n\t#include <lights_fragment_maps>\n\t#include <lights_fragment_end>\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
+	var meshphysical_frag = "#define PHYSICAL\nuniform vec3 diffuse;\nuniform vec3 emissive;\nuniform float roughness;\nuniform float metalness;\nuniform float opacity;\n#ifndef STANDARD\n\tuniform float clearCoat;\n\tuniform float clearCoatRoughness;\n#endif\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <packing>\n#include <dithering_pars_fragment>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\n#include <alphamap_pars_fragment>\n#include <aomap_pars_fragment>\n#include <lightmap_pars_fragment>\n#include <emissivemap_pars_fragment>\n#include <bsdfs>\n#include <cube_uv_reflection_fragment>\n#include <envmap_pars_fragment>\n#include <envmap_physical_pars_fragment>\n#include <fog_pars_fragment>\n#include <lights_pars_begin>\n#include <lights_physical_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <roughnessmap_pars_fragment>\n#include <metalnessmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\tvec3 totalEmissiveRadiance = emissive;\n\t#include <logdepthbuf_fragment>\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphamap_fragment>\n\t#include <alphatest_fragment>\n\t#include <roughnessmap_fragment>\n\t#include <metalnessmap_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\t#include <emissivemap_fragment>\n\t#include <lights_physical_fragment>\n\t#include <lights_fragment_begin>\n\t#include <lights_fragment_maps>\n\t#include <lights_fragment_end>\n\t#include <aomap_fragment>\n\tvec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + reflectedLight.directSpecular + reflectedLight.indirectSpecular + totalEmissiveRadiance;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n\t#include <premultiplied_alpha_fragment>\n\t#include <dithering_fragment>\n}";
 
-	var meshphysical_vert = "#define PHYSICAL\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n\t#ifdef USE_TANGENT\n\t\tvTangent = normalize( transformedTangent );\n\t\tvBitangent = normalize( cross( vNormal, vTangent ) * tangent.w );\n\t#endif\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
+	var meshphysical_vert = "#define PHYSICAL\nvarying vec3 vViewPosition;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <color_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\tvViewPosition = - mvPosition.xyz;\n\t#include <worldpos_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}";
 
-	var normal_frag = "#define NORMAL\nuniform float opacity;\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <packing>\n#include <uv_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\nvoid main() {\n\t#include <logdepthbuf_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tgl_FragColor = vec4( packNormalToRGB( normal ), opacity );\n}";
+	var normal_frag = "#define NORMAL\nuniform float opacity;\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <packing>\n#include <uv_pars_fragment>\n#include <bumpmap_pars_fragment>\n#include <normalmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\nvoid main() {\n\t#include <logdepthbuf_fragment>\n\t#include <normal_fragment_begin>\n\t#include <normal_fragment_maps>\n\tgl_FragColor = vec4( packNormalToRGB( normal ), opacity );\n}";
 
-	var normal_vert = "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n\t#ifdef USE_TANGENT\n\t\tvarying vec3 vTangent;\n\t\tvarying vec3 vBitangent;\n\t#endif\n#endif\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n\t#ifdef USE_TANGENT\n\t\tvTangent = normalize( transformedTangent );\n\t\tvBitangent = normalize( cross( vNormal, vTangent ) * tangent.w );\n\t#endif\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}";
+	var normal_vert = "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || ( defined( USE_NORMALMAP ) && ! defined( OBJECTSPACE_NORMALMAP ) )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}";
 
 	var points_frag = "uniform vec3 diffuse;\nuniform float opacity;\n#include <common>\n#include <color_pars_fragment>\n#include <map_particle_pars_fragment>\n#include <fog_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_particle_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n}";
 
@@ -16853,18 +15541,6 @@ module.exports = anime;
 
 			}
 
-			var tangent = this.attributes.tangent;
-
-			if ( tangent !== undefined ) {
-
-				var normalMatrix = new Matrix3().getNormalMatrix( matrix );
-
-				// Tangent is vec4, but the '.w' component is a sign value (+1/-1).
-				normalMatrix.applyToBufferAttribute( tangent );
-				tangent.needsUpdate = true;
-
-			}
-
 			if ( this.boundingBox !== null ) {
 
 				this.computeBoundingBox();
@@ -17300,59 +15976,35 @@ module.exports = anime;
 
 		computeBoundingBox: function () {
 
-			var box = new Box3();
+			if ( this.boundingBox === null ) {
 
-			return function computeBoundingBox() {
+				this.boundingBox = new Box3();
 
-				if ( this.boundingBox === null ) {
+			}
 
-					this.boundingBox = new Box3();
+			var position = this.attributes.position;
 
-				}
+			if ( position !== undefined ) {
 
-				var position = this.attributes.position;
-				var morphAttributesPosition = this.morphAttributes.position;
+				this.boundingBox.setFromBufferAttribute( position );
 
-				if ( position !== undefined ) {
+			} else {
 
-					this.boundingBox.setFromBufferAttribute( position );
+				this.boundingBox.makeEmpty();
 
-					// process morph attributes if present
+			}
 
-					if ( morphAttributesPosition ) {
+			if ( isNaN( this.boundingBox.min.x ) || isNaN( this.boundingBox.min.y ) || isNaN( this.boundingBox.min.z ) ) {
 
-						for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
+				console.error( 'THREE.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
 
-							var morphAttribute = morphAttributesPosition[ i ];
-							box.setFromBufferAttribute( morphAttribute );
+			}
 
-							this.boundingBox.expandByPoint( box.min );
-							this.boundingBox.expandByPoint( box.max );
-
-						}
-
-					}
-
-				} else {
-
-					this.boundingBox.makeEmpty();
-
-				}
-
-				if ( isNaN( this.boundingBox.min.x ) || isNaN( this.boundingBox.min.y ) || isNaN( this.boundingBox.min.z ) ) {
-
-					console.error( 'THREE.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this );
-
-				}
-
-			};
-
-		}(),
+		},
 
 		computeBoundingSphere: function () {
 
 			var box = new Box3();
-			var boxMorphTargets = new Box3();
 			var vector = new Vector3();
 
 			return function computeBoundingSphere() {
@@ -17364,64 +16016,25 @@ module.exports = anime;
 				}
 
 				var position = this.attributes.position;
-				var morphAttributesPosition = this.morphAttributes.position;
 
 				if ( position ) {
-
-					// first, find the center of the bounding sphere
 
 					var center = this.boundingSphere.center;
 
 					box.setFromBufferAttribute( position );
-
-					// process morph attributes if present
-
-					if ( morphAttributesPosition ) {
-
-						for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
-
-							var morphAttribute = morphAttributesPosition[ i ];
-							boxMorphTargets.setFromBufferAttribute( morphAttribute );
-
-							box.expandByPoint( boxMorphTargets.min );
-							box.expandByPoint( boxMorphTargets.max );
-
-						}
-
-					}
-
 					box.getCenter( center );
 
-					// second, try to find a boundingSphere with a radius smaller than the
+					// hoping to find a boundingSphere with a radius smaller than the
 					// boundingSphere of the boundingBox: sqrt(3) smaller in the best case
 
 					var maxRadiusSq = 0;
 
 					for ( var i = 0, il = position.count; i < il; i ++ ) {
 
-						vector.fromBufferAttribute( position, i );
-
+						vector.x = position.getX( i );
+						vector.y = position.getY( i );
+						vector.z = position.getZ( i );
 						maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
-
-					}
-
-					// process morph attributes if present
-
-					if ( morphAttributesPosition ) {
-
-						for ( var i = 0, il = morphAttributesPosition.length; i < il; i ++ ) {
-
-							var morphAttribute = morphAttributesPosition[ i ];
-
-							for ( var j = 0, jl = morphAttribute.count; j < jl; j ++ ) {
-
-								vector.fromBufferAttribute( morphAttribute, i );
-
-								maxRadiusSq = Math.max( maxRadiusSq, center.distanceToSquared( vector ) );
-
-							}
-
-						}
 
 					}
 
@@ -17748,9 +16361,11 @@ module.exports = anime;
 
 			if ( index !== null ) {
 
+				var array = Array.prototype.slice.call( index.array );
+
 				data.data.index = {
 					type: index.array.constructor.name,
-					array: Array.prototype.slice.call( index.array )
+					array: array
 				};
 
 			}
@@ -17761,56 +16376,16 @@ module.exports = anime;
 
 				var attribute = attributes[ key ];
 
-				var attributeData = {
+				var array = Array.prototype.slice.call( attribute.array );
+
+				data.data.attributes[ key ] = {
 					itemSize: attribute.itemSize,
 					type: attribute.array.constructor.name,
-					array: Array.prototype.slice.call( attribute.array ),
+					array: array,
 					normalized: attribute.normalized
 				};
 
-				if ( attribute.name !== '' ) attributeData.name = attribute.name;
-
-				data.data.attributes[ key ] = attributeData;
-
 			}
-
-			var morphAttributes = {};
-			var hasMorphAttributes = false;
-
-			for ( var key in this.morphAttributes ) {
-
-				var attributeArray = this.morphAttributes[ key ];
-
-				var array = [];
-
-				for ( var i = 0, il = attributeArray.length; i < il; i ++ ) {
-
-					var attribute = attributeArray[ i ];
-
-					var attributeData = {
-						itemSize: attribute.itemSize,
-						type: attribute.array.constructor.name,
-						array: Array.prototype.slice.call( attribute.array ),
-						normalized: attribute.normalized
-					};
-
-					if ( attribute.name !== '' ) attributeData.name = attribute.name;
-
-					array.push( attributeData );
-
-				}
-
-				if ( array.length > 0 ) {
-
-					morphAttributes[ key ] = array;
-
-					hasMorphAttributes = true;
-
-				}
-
-			}
-
-			if ( hasMorphAttributes ) data.data.morphAttributes = morphAttributes;
 
 			var groups = this.groups;
 
@@ -18312,7 +16887,6 @@ module.exports = anime;
 		this.blending = NormalBlending;
 		this.side = FrontSide;
 		this.flatShading = false;
-		this.vertexTangents = false;
 		this.vertexColors = NoColors; // THREE.NoColors, THREE.VertexColors, THREE.FaceColors
 
 		this.opacity = 1;
@@ -18666,10 +17240,6 @@ module.exports = anime;
 
 	} );
 
-	var default_vertex = "void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}";
-
-	var default_fragment = "void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}";
-
 	/**
 	 * @author alteredq / http://alteredqualia.com/
 	 *
@@ -18700,8 +17270,8 @@ module.exports = anime;
 		this.defines = {};
 		this.uniforms = {};
 
-		this.vertexShader = default_vertex;
-		this.fragmentShader = default_fragment;
+		this.vertexShader = 'void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}';
+		this.fragmentShader = 'void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}';
 
 		this.linewidth = 1;
 
@@ -19989,10 +18559,6 @@ module.exports = anime;
 			var tempB = new Vector3();
 			var tempC = new Vector3();
 
-			var morphA = new Vector3();
-			var morphB = new Vector3();
-			var morphC = new Vector3();
-
 			var uvA = new Vector2();
 			var uvB = new Vector2();
 			var uvC = new Vector2();
@@ -20031,42 +18597,11 @@ module.exports = anime;
 
 			}
 
-			function checkBufferGeometryIntersection( object, material, raycaster, ray, position, morphPosition, uv, a, b, c ) {
+			function checkBufferGeometryIntersection( object, material, raycaster, ray, position, uv, a, b, c ) {
 
 				vA.fromBufferAttribute( position, a );
 				vB.fromBufferAttribute( position, b );
 				vC.fromBufferAttribute( position, c );
-
-				var morphInfluences = object.morphTargetInfluences;
-
-				if ( material.morphTargets && morphPosition && morphInfluences ) {
-
-					morphA.set( 0, 0, 0 );
-					morphB.set( 0, 0, 0 );
-					morphC.set( 0, 0, 0 );
-
-					for ( var i = 0, il = morphPosition.length; i < il; i ++ ) {
-
-						var influence = morphInfluences[ i ];
-						var morphAttribute = morphPosition[ i ];
-
-						if ( influence === 0 ) continue;
-
-						tempA.fromBufferAttribute( morphAttribute, a );
-						tempB.fromBufferAttribute( morphAttribute, b );
-						tempC.fromBufferAttribute( morphAttribute, c );
-
-						morphA.addScaledVector( tempA.sub( vA ), influence );
-						morphB.addScaledVector( tempB.sub( vB ), influence );
-						morphC.addScaledVector( tempC.sub( vC ), influence );
-
-					}
-
-					vA.add( morphA );
-					vB.add( morphB );
-					vC.add( morphC );
-
-				}
 
 				var intersection = checkIntersection( object, material, raycaster, ray, vA, vB, vC, intersectionPoint );
 
@@ -20130,7 +18665,6 @@ module.exports = anime;
 					var a, b, c;
 					var index = geometry.index;
 					var position = geometry.attributes.position;
-					var morphPosition = geometry.morphAttributes.position;
 					var uv = geometry.attributes.uv;
 					var groups = geometry.groups;
 					var drawRange = geometry.drawRange;
@@ -20158,7 +18692,7 @@ module.exports = anime;
 									b = index.getX( j + 1 );
 									c = index.getX( j + 2 );
 
-									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -20183,7 +18717,7 @@ module.exports = anime;
 								b = index.getX( i + 1 );
 								c = index.getX( i + 2 );
 
-								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
+								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
 
 								if ( intersection ) {
 
@@ -20216,7 +18750,7 @@ module.exports = anime;
 									b = j + 1;
 									c = j + 2;
 
-									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, morphPosition, uv, a, b, c );
+									intersection = checkBufferGeometryIntersection( this, groupMaterial, raycaster, ray, position, uv, a, b, c );
 
 									if ( intersection ) {
 
@@ -20241,7 +18775,7 @@ module.exports = anime;
 								b = i + 1;
 								c = i + 2;
 
-								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, morphPosition, uv, a, b, c );
+								intersection = checkBufferGeometryIntersection( this, material, raycaster, ray, position, uv, a, b, c );
 
 								if ( intersection ) {
 
@@ -20278,6 +18812,39 @@ module.exports = anime;
 						fvA = vertices[ face.a ];
 						fvB = vertices[ face.b ];
 						fvC = vertices[ face.c ];
+
+						if ( faceMaterial.morphTargets === true ) {
+
+							var morphTargets = geometry.morphTargets;
+							var morphInfluences = this.morphTargetInfluences;
+
+							vA.set( 0, 0, 0 );
+							vB.set( 0, 0, 0 );
+							vC.set( 0, 0, 0 );
+
+							for ( var t = 0, tl = morphTargets.length; t < tl; t ++ ) {
+
+								var influence = morphInfluences[ t ];
+
+								if ( influence === 0 ) continue;
+
+								var targets = morphTargets[ t ].vertices;
+
+								vA.addScaledVector( tempA.subVectors( targets[ face.a ], fvA ), influence );
+								vB.addScaledVector( tempB.subVectors( targets[ face.b ], fvB ), influence );
+								vC.addScaledVector( tempC.subVectors( targets[ face.c ], fvC ), influence );
+
+							}
+
+							vA.add( fvA );
+							vB.add( fvB );
+							vC.add( fvC );
+
+							fvA = vA;
+							fvB = vB;
+							fvC = vC;
+
+						}
 
 						intersection = checkIntersection( this, faceMaterial, raycaster, ray, fvA, fvB, fvC, intersectionPoint );
 
@@ -20335,18 +18902,6 @@ module.exports = anime;
 		function render( renderList, scene, camera, forceClear ) {
 
 			var background = scene.background;
-
-			// Ignore background in AR
-			// TODO: Reconsider this.
-
-			var vr = renderer.vr;
-			var session = vr.getSession && vr.getSession();
-
-			if ( session && session.environmentBlendMode === 'additive' ) {
-
-				background = null;
-
-			}
 
 			if ( background === null ) {
 
@@ -21414,7 +19969,6 @@ module.exports = anime;
 
 		images = images !== undefined ? images : [];
 		mapping = mapping !== undefined ? mapping : CubeReflectionMapping;
-		format = format !== undefined ? format : RGBFormat;
 
 		Texture.call( this, images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding );
 
@@ -21444,30 +19998,6 @@ module.exports = anime;
 	} );
 
 	/**
-	 * @author Takahiro https://github.com/takahirox
-	 */
-
-	function DataTexture2DArray( data, width, height, depth ) {
-
-		Texture.call( this, null );
-
-		this.image = { data: data, width: width, height: height, depth: depth };
-
-		this.magFilter = NearestFilter;
-		this.minFilter = NearestFilter;
-
-		this.wrapR = ClampToEdgeWrapping;
-
-		this.generateMipmaps = false;
-		this.flipY = false;
-
-	}
-
-	DataTexture2DArray.prototype = Object.create( Texture.prototype );
-	DataTexture2DArray.prototype.constructor = DataTexture2DArray;
-	DataTexture2DArray.prototype.isDataTexture2DArray = true;
-
-	/**
 	 * @author Artur Trzesiok
 	 */
 
@@ -21487,8 +20017,6 @@ module.exports = anime;
 
 		this.magFilter = NearestFilter;
 		this.minFilter = NearestFilter;
-
-		this.wrapR = ClampToEdgeWrapping;
 
 		this.generateMipmaps = false;
 		this.flipY = false;
@@ -21551,7 +20079,6 @@ module.exports = anime;
 	 */
 
 	var emptyTexture = new Texture();
-	var emptyTexture2dArray = new DataTexture2DArray();
 	var emptyTexture3d = new DataTexture3D();
 	var emptyCubeTexture = new CubeTexture();
 
@@ -21888,22 +20415,6 @@ module.exports = anime;
 
 	}
 
-	function setValueT2DArray1( gl, v, renderer ) {
-
-		var cache = this.cache;
-		var unit = renderer.allocTextureUnit();
-
-		if ( cache[ 0 ] !== unit ) {
-
-			gl.uniform1i( this.addr, unit );
-			cache[ 0 ] = unit;
-
-		}
-
-		renderer.setTexture2DArray( v || emptyTexture2dArray, unit );
-
-	}
-
 	function setValueT3D1( gl, v, renderer ) {
 
 		var cache = this.cache;
@@ -21990,9 +20501,8 @@ module.exports = anime;
 			case 0x8b5c: return setValue4fm; // _MAT4
 
 			case 0x8b5e: case 0x8d66: return setValueT1; // SAMPLER_2D, SAMPLER_EXTERNAL_OES
-			case 0x8b5f: return setValueT3D1; // SAMPLER_3D
+			case 0x8B5F: return setValueT3D1; // SAMPLER_3D
 			case 0x8b60: return setValueT6; // SAMPLER_CUBE
-			case 0x8DC1: return setValueT2DArray1; // SAMPLER_2D_ARRAY
 
 			case 0x1404: case 0x8b56: return setValue1i; // INT, BOOL
 			case 0x8b53: case 0x8b57: return setValue2iv; // _VEC2
@@ -22788,8 +21298,6 @@ module.exports = anime;
 				parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
 				parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
 				parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
-
-				parameters.vertexTangents ? '#define USE_TANGENT' : '',
 				parameters.vertexColors ? '#define USE_COLOR' : '',
 
 				parameters.flatShading ? '#define FLAT_SHADED' : '',
@@ -22820,12 +21328,6 @@ module.exports = anime;
 				'attribute vec3 position;',
 				'attribute vec3 normal;',
 				'attribute vec2 uv;',
-
-				'#ifdef USE_TANGENT',
-
-				'	attribute vec4 tangent;',
-
-				'#endif',
 
 				'#ifdef USE_COLOR',
 
@@ -22903,8 +21405,6 @@ module.exports = anime;
 				parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
 				parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
 				parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
-
-				parameters.vertexTangents ? '#define USE_TANGENT' : '',
 				parameters.vertexColors ? '#define USE_COLOR' : '',
 
 				parameters.gradientMap ? '#define USE_GRADIENTMAP' : '',
@@ -23201,7 +21701,7 @@ module.exports = anime;
 			"precision", "supportsVertexTextures", "map", "mapEncoding", "matcap", "matcapEncoding", "envMap", "envMapMode", "envMapEncoding",
 			"lightMap", "aoMap", "emissiveMap", "emissiveMapEncoding", "bumpMap", "normalMap", "objectSpaceNormalMap", "displacementMap", "specularMap",
 			"roughnessMap", "metalnessMap", "gradientMap",
-			"alphaMap", "combine", "vertexColors", "vertexTangents", "fog", "useFog", "fogExp",
+			"alphaMap", "combine", "vertexColors", "fog", "useFog", "fogExp",
 			"flatShading", "sizeAttenuation", "logarithmicDepthBuffer", "skinning",
 			"maxBones", "useVertexTexture", "morphTargets", "morphNormals",
 			"maxMorphTargets", "maxMorphNormals", "premultipliedAlpha",
@@ -23333,7 +21833,6 @@ module.exports = anime;
 
 				combine: material.combine,
 
-				vertexTangents: ( material.normalMap && material.vertexTangents ),
 				vertexColors: material.vertexColors,
 
 				fog: !! fog,
@@ -23573,7 +22072,7 @@ module.exports = anime;
 
 			return a.renderOrder - b.renderOrder;
 
-		} else if ( a.z !== b.z ) {
+		} if ( a.z !== b.z ) {
 
 			return b.z - a.z;
 
@@ -24436,8 +22935,6 @@ module.exports = anime;
 
 			if ( lights.length === 0 ) return;
 
-			var currentRenderTarget = _renderer.getRenderTarget();
-
 			var _state = _renderer.state;
 
 			// Set GL state for depth map.
@@ -24593,8 +23090,6 @@ module.exports = anime;
 			}
 
 			scope.needsUpdate = false;
-
-			_renderer.setRenderTarget( currentRenderTarget );
 
 		};
 
@@ -25748,18 +24243,6 @@ module.exports = anime;
 
 		//
 
-		var useOffscreenCanvas = typeof OffscreenCanvas !== 'undefined';
-
-		function createCanvas( width, height ) {
-
-			// Use OffscreenCanvas when available. Specially needed in web workers
-
-			return useOffscreenCanvas ?
-				new OffscreenCanvas( width, height ) :
-				document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
-
-		}
-
 		function resizeImage( image, needsPowerOfTwo, needsNewCanvas, maxSize ) {
 
 			var scale = 1;
@@ -25778,28 +24261,23 @@ module.exports = anime;
 
 				// only perform resize for certain image types
 
-				if ( ( typeof HTMLImageElement !== 'undefined' && image instanceof HTMLImageElement ) ||
-					( typeof HTMLCanvasElement !== 'undefined' && image instanceof HTMLCanvasElement ) ||
-					( typeof ImageBitmap !== 'undefined' && image instanceof ImageBitmap ) ) {
+				if ( image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof ImageBitmap ) {
 
-					var floor = needsPowerOfTwo ? _Math.floorPowerOfTwo : Math.floor;
-
-					var width = floor( scale * image.width );
-					var height = floor( scale * image.height );
-
-					if ( _canvas === undefined ) _canvas = createCanvas( width, height );
+					if ( _canvas === undefined ) _canvas = document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' );
 
 					// cube textures can't reuse the same canvas
 
-					var canvas = needsNewCanvas ? createCanvas( width, height ) : _canvas;
+					var canvas = needsNewCanvas ? document.createElementNS( 'http://www.w3.org/1999/xhtml', 'canvas' ) : _canvas;
 
-					canvas.width = width;
-					canvas.height = height;
+					var floor = needsPowerOfTwo ? _Math.floorPowerOfTwo : Math.floor;
+
+					canvas.width = floor( scale * image.width );
+					canvas.height = floor( scale * image.height );
 
 					var context = canvas.getContext( '2d' );
-					context.drawImage( image, 0, 0, width, height );
+					context.drawImage( image, 0, 0, canvas.width, canvas.height );
 
-					console.warn( 'THREE.WebGLRenderer: Texture has been resized from (' + image.width + 'x' + image.height + ') to (' + width + 'x' + height + ').' );
+					console.warn( 'THREE.WebGLRenderer: Texture has been resized from (' + image.width + 'x' + image.height + ') to (' + canvas.width + 'x' + canvas.height + ').' );
 
 					return canvas;
 
@@ -25951,10 +24429,23 @@ module.exports = anime;
 
 			var textureProperties = properties.get( texture );
 
-			if ( textureProperties.__webglInit === undefined ) return;
+			if ( texture.image && textureProperties.__image__webglTextureCube ) {
 
-			_gl.deleteTexture( textureProperties.__webglTexture );
+				// cube texture
 
+				_gl.deleteTexture( textureProperties.__image__webglTextureCube );
+
+			} else {
+
+				// 2D texture
+
+				if ( textureProperties.__webglInit === undefined ) return;
+
+				_gl.deleteTexture( textureProperties.__webglTexture );
+
+			}
+
+			// remove all webgl properties
 			properties.remove( texture );
 
 		}
@@ -26035,22 +24526,6 @@ module.exports = anime;
 
 		}
 
-		function setTexture2DArray( texture, slot ) {
-
-			var textureProperties = properties.get( texture );
-
-			if ( texture.version > 0 && textureProperties.__version !== texture.version ) {
-
-				uploadTexture( textureProperties, texture, slot );
-				return;
-
-			}
-
-			state.activeTexture( 33984 + slot );
-			state.bindTexture( 35866, textureProperties.__webglTexture );
-
-		}
-
 		function setTexture3D( texture, slot ) {
 
 			var textureProperties = properties.get( texture );
@@ -26067,6 +24542,7 @@ module.exports = anime;
 
 		}
 
+
 		function setTextureCube( texture, slot ) {
 
 			var textureProperties = properties.get( texture );
@@ -26075,10 +24551,18 @@ module.exports = anime;
 
 				if ( texture.version > 0 && textureProperties.__version !== texture.version ) {
 
-					initTexture( textureProperties, texture );
+					if ( ! textureProperties.__image__webglTextureCube ) {
+
+						texture.addEventListener( 'dispose', onTextureDispose );
+
+						textureProperties.__image__webglTextureCube = _gl.createTexture();
+
+						info.memory.textures ++;
+
+					}
 
 					state.activeTexture( 33984 + slot );
-					state.bindTexture( 34067, textureProperties.__webglTexture );
+					state.bindTexture( 34067, textureProperties.__image__webglTextureCube );
 
 					_gl.pixelStorei( 37440, texture.flipY );
 
@@ -26179,7 +24663,7 @@ module.exports = anime;
 				} else {
 
 					state.activeTexture( 33984 + slot );
-					state.bindTexture( 34067, textureProperties.__webglTexture );
+					state.bindTexture( 34067, textureProperties.__image__webglTextureCube );
 
 				}
 
@@ -26203,12 +24687,6 @@ module.exports = anime;
 				_gl.texParameteri( textureType, 10242, utils.convert( texture.wrapS ) );
 				_gl.texParameteri( textureType, 10243, utils.convert( texture.wrapT ) );
 
-				if ( textureType === 32879 || textureType === 35866 ) {
-
-					_gl.texParameteri( textureType, 32882, utils.convert( texture.wrapR ) );
-
-				}
-
 				_gl.texParameteri( textureType, 10240, utils.convert( texture.magFilter ) );
 				_gl.texParameteri( textureType, 10241, utils.convert( texture.minFilter ) );
 
@@ -26216,12 +24694,6 @@ module.exports = anime;
 
 				_gl.texParameteri( textureType, 10242, 33071 );
 				_gl.texParameteri( textureType, 10243, 33071 );
-
-				if ( textureType === 32879 || textureType === 35866 ) {
-
-					_gl.texParameteri( textureType, 32882, 33071 );
-
-				}
 
 				if ( texture.wrapS !== ClampToEdgeWrapping || texture.wrapT !== ClampToEdgeWrapping ) {
 
@@ -26258,7 +24730,20 @@ module.exports = anime;
 
 		}
 
-		function initTexture( textureProperties, texture ) {
+		function uploadTexture( textureProperties, texture, slot ) {
+
+			var textureType;
+
+			if ( texture.isDataTexture3D ) {
+
+				textureType = 32879;
+
+			} else {
+
+				textureType = 3553;
+
+			}
+
 
 			if ( textureProperties.__webglInit === undefined ) {
 
@@ -26271,20 +24756,12 @@ module.exports = anime;
 				info.memory.textures ++;
 
 			}
-
-		}
-
-		function uploadTexture( textureProperties, texture, slot ) {
-
-			var textureType = 3553;
-
-			if ( texture.isDataTexture2DArray ) textureType = 35866;
-			if ( texture.isDataTexture3D ) textureType = 32879;
-
-			initTexture( textureProperties, texture );
-
 			state.activeTexture( 33984 + slot );
+
+
 			state.bindTexture( textureType, textureProperties.__webglTexture );
+
+
 
 			_gl.pixelStorei( 37440, texture.flipY );
 			_gl.pixelStorei( 37441, texture.premultiplyAlpha );
@@ -26410,11 +24887,6 @@ module.exports = anime;
 				}
 
 				textureProperties.__maxMipLevel = mipmaps.length - 1;
-
-			} else if ( texture.isDataTexture2DArray ) {
-
-				state.texImage3D( 35866, 0, glInternalFormat, image.width, image.height, image.depth, 0, glFormat, glType, image.data );
-				textureProperties.__maxMipLevel = 0;
 
 			} else if ( texture.isDataTexture3D ) {
 
@@ -26814,7 +25286,6 @@ module.exports = anime;
 		}
 
 		this.setTexture2D = setTexture2D;
-		this.setTexture2DArray = setTexture2DArray;
 		this.setTexture3D = setTexture3D;
 		this.setTextureCube = setTextureCube;
 		this.setTextureCubeDynamic = setTextureCubeDynamic;
@@ -27207,17 +25678,17 @@ module.exports = anime;
 		 *   var fullHeight = h * 2;
 		 *
 		 *   --A--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
 		 *   --B--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
 		 *   --C--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
 		 *   --D--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
 		 *   --E--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
 		 *   --F--
-		 *   camera.setViewOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
+		 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
 		 *
 		 *   Note there is no reason monitors have to be the same size or in a grid.
 		 */
@@ -27452,17 +25923,30 @@ module.exports = anime;
 
 		}
 
-		var currentSize = new Vector2(), currentPixelRatio;
+		var currentSize, currentPixelRatio;
 
 		function onVRDisplayPresentChange() {
 
-			updateDrawingBufferSize();
-
 			if ( isPresenting() ) {
+
+				var eyeParameters = device.getEyeParameters( 'left' );
+				var renderWidth = eyeParameters.renderWidth * framebufferScaleFactor;
+				var renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
+
+				currentPixelRatio = renderer.getPixelRatio();
+				currentSize = renderer.getSize();
+
+				renderer.setDrawingBufferSize( renderWidth * 2, renderHeight, 1 );
 
 				animation.start();
 
 			} else {
+
+				if ( scope.enabled ) {
+
+					renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
+
+				}
 
 				animation.stop();
 
@@ -27490,31 +25974,6 @@ module.exports = anime;
 					if ( j === id ) return gamepad;
 
 					j ++;
-
-				}
-
-			}
-
-		}
-
-		function updateDrawingBufferSize() {
-
-			if ( isPresenting() ) {
-
-				var eyeParameters = device.getEyeParameters( 'left' );
-				var renderWidth = eyeParameters.renderWidth * framebufferScaleFactor;
-				var renderHeight = eyeParameters.renderHeight * framebufferScaleFactor;
-
-				renderer.setDrawingBufferSize( renderWidth * 2, renderHeight, 1 );
-
-			} else {
-
-				if ( scope.enabled ) {
-
-					currentPixelRatio = renderer.getPixelRatio();
-					renderer.getSize( currentSize );
-
-					renderer.setDrawingBufferSize( currentSize.width, currentSize.height, currentPixelRatio );
 
 				}
 
@@ -27613,10 +26072,6 @@ module.exports = anime;
 
 			animation.setContext( value );
 
-			updateDrawingBufferSize();
-
-			if ( isPresenting() ) animation.start();
-
 		};
 
 		this.setFramebufferScaleFactor = function ( value ) {
@@ -27641,11 +26096,9 @@ module.exports = anime;
 
 			var userHeight = frameOfReferenceType === 'stage' ? 1.6 : 0;
 
-			if ( isPresenting() === false ) {
+			if ( device === null ) {
 
 				camera.position.set( 0, userHeight, 0 );
-				camera.rotation.set( 0, 0, 0 );
-
 				return camera;
 
 			}
@@ -27698,6 +26151,8 @@ module.exports = anime;
 			}
 
 			poseObject.updateMatrixWorld();
+
+			if ( device.isPresenting === false ) return camera;
 
 			//
 
@@ -27785,8 +26240,6 @@ module.exports = anime;
 		this.setAnimationLoop = function ( callback ) {
 
 			animation.setAnimationLoop( callback );
-
-			if ( isPresenting() ) animation.start();
 
 		};
 
@@ -27897,7 +26350,6 @@ module.exports = anime;
 		function onSessionEnd() {
 
 			renderer.setFramebuffer( null );
-			renderer.setRenderTarget( renderer.getRenderTarget() ); // Hack #15830
 			animation.stop();
 
 		}
@@ -28119,7 +26571,7 @@ module.exports = anime;
 		this.getStandingMatrix = function () {
 
 			console.warn( 'THREE.WebXRManager: getStandingMatrix() is no longer needed.' );
-			return new Matrix4();
+			return new THREE.Matrix4();
 
 		};
 
@@ -28315,7 +26767,6 @@ module.exports = anime;
 		} catch ( error ) {
 
 			console.error( 'THREE.WebGLRenderer: ' + error.message );
-			throw error;
 
 		}
 
@@ -28445,17 +26896,12 @@ module.exports = anime;
 
 		};
 
-		this.getSize = function ( target ) {
+		this.getSize = function () {
 
-			if ( target === undefined ) {
-
-				console.warn( 'WebGLRenderer: .getsize() now requires a Vector2 as an argument' );
-
-				target = new Vector2();
-
-			}
-
-			return target.set( _width, _height );
+			return {
+				width: _width,
+				height: _height
+			};
 
 		};
 
@@ -28485,17 +26931,12 @@ module.exports = anime;
 
 		};
 
-		this.getDrawingBufferSize = function ( target ) {
+		this.getDrawingBufferSize = function () {
 
-			if ( target === undefined ) {
-
-				console.warn( 'WebGLRenderer: .getdrawingBufferSize() now requires a Vector2 as an argument' );
-
-				target = new Vector2();
-
-			}
-
-			return target.set( _width * _pixelRatio, _height * _pixelRatio );
+			return {
+				width: _width * _pixelRatio,
+				height: _height * _pixelRatio
+			};
 
 		};
 
@@ -28513,67 +26954,23 @@ module.exports = anime;
 
 		};
 
-		this.getCurrentViewport = function ( target ) {
+		this.getCurrentViewport = function () {
 
-			if ( target === undefined ) {
-
-				console.warn( 'WebGLRenderer: .getCurrentViewport() now requires a Vector4 as an argument' );
-
-				target = new Vector4();
-
-			}
-
-			return target.copy( _currentViewport );
-
-		};
-
-		this.getViewport = function ( target ) {
-
-			return target.copy( _viewport );
+			return _currentViewport;
 
 		};
 
 		this.setViewport = function ( x, y, width, height ) {
 
-			if ( x.isVector4 ) {
-
-				_viewport.set( x.x, x.y, x.z, x.w );
-
-			} else {
-
-				_viewport.set( x, y, width, height );
-
-			}
-
+			_viewport.set( x, _height - y - height, width, height );
 			state.viewport( _currentViewport.copy( _viewport ).multiplyScalar( _pixelRatio ) );
-
-		};
-
-		this.getScissor = function ( target ) {
-
-			return target.copy( _scissor );
 
 		};
 
 		this.setScissor = function ( x, y, width, height ) {
 
-			if ( x.isVector4 ) {
-
-				_scissor.set( x.x, x.y, x.z, x.w );
-
-			} else {
-
-				_scissor.set( x, y, width, height );
-
-			}
-
+			_scissor.set( x, _height - y - height, width, height );
 			state.scissor( _currentScissor.copy( _scissor ).multiplyScalar( _pixelRatio ) );
-
-		};
-
-		this.getScissorTest = function () {
-
-			return _scissorTest;
 
 		};
 
@@ -28789,7 +27186,7 @@ module.exports = anime;
 
 		this.renderBufferDirect = function ( camera, fog, geometry, material, object, group ) {
 
-			var frontFaceCW = ( object.isMesh && object.matrixWorld.determinant() < 0 );
+			var frontFaceCW = ( object.isMesh && object.normalMatrix.determinant() < 0 );
 
 			state.setMaterial( material, frontFaceCW );
 
@@ -28960,7 +27357,7 @@ module.exports = anime;
 
 		function setupVertexAttributes( material, program, geometry ) {
 
-			if ( geometry && geometry.isInstancedBufferGeometry && ! capabilities.isWebGL2 ) {
+			if ( geometry && geometry.isInstancedBufferGeometry & ! capabilities.isWebGL2 ) {
 
 				if ( extensions.get( 'ANGLE_instanced_arrays' ) === null ) {
 
@@ -29163,23 +27560,7 @@ module.exports = anime;
 
 		// Rendering
 
-		this.render = function ( scene, camera ) {
-
-			var renderTarget, forceClear;
-
-			if ( arguments[ 2 ] !== undefined ) {
-
-				console.warn( 'THREE.WebGLRenderer.render(): the renderTarget argument has been removed. Use .setRenderTarget() instead.' );
-				renderTarget = arguments[ 2 ];
-
-			}
-
-			if ( arguments[ 3 ] !== undefined ) {
-
-				console.warn( 'THREE.WebGLRenderer.render(): the forceClear argument has been removed. Use .clear() instead.' );
-				forceClear = arguments[ 3 ];
-
-			}
+		this.render = function ( scene, camera, renderTarget, forceClear ) {
 
 			if ( ! ( camera && camera.isCamera ) ) {
 
@@ -29217,7 +27598,7 @@ module.exports = anime;
 			currentRenderState = renderStates.get( scene, camera );
 			currentRenderState.init();
 
-			scene.onBeforeRender( _this, scene, camera, renderTarget || _currentRenderTarget );
+			scene.onBeforeRender( _this, scene, camera, renderTarget );
 
 			_projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
 			_frustum.setFromMatrix( _projScreenMatrix );
@@ -29252,11 +27633,13 @@ module.exports = anime;
 
 			if ( this.info.autoReset ) this.info.reset();
 
-			if ( renderTarget !== undefined ) {
+			if ( renderTarget === undefined ) {
 
-				this.setRenderTarget( renderTarget );
+				renderTarget = null;
 
 			}
+
+			this.setRenderTarget( renderTarget );
 
 			//
 
@@ -29288,19 +27671,15 @@ module.exports = anime;
 
 			//
 
-			scene.onAfterRender( _this, scene, camera );
-
-			//
-
-			if ( _currentRenderTarget !== null ) {
+			if ( renderTarget ) {
 
 				// Generate mipmap if we're using any kind of mipmap filtering
 
-				textures.updateRenderTargetMipmap( _currentRenderTarget );
+				textures.updateRenderTargetMipmap( renderTarget );
 
 				// resolve multisample renderbuffers to a single-sample texture if necessary
 
-				textures.updateMultisampleRenderTarget( _currentRenderTarget );
+				textures.updateMultisampleRenderTarget( renderTarget );
 
 			}
 
@@ -29311,6 +27690,8 @@ module.exports = anime;
 			state.buffers.color.setMask( true );
 
 			state.setPolygonOffset( false );
+
+			scene.onAfterRender( _this, scene, camera );
 
 			if ( vr.enabled ) {
 
@@ -29361,11 +27742,7 @@ module.exports = anime;
 						var geometry = objects.update( object );
 						var material = object.material;
 
-						if ( material.visible ) {
-
-							currentRenderList.push( object, geometry, material, groupOrder, _vector3.z, null );
-
-						}
+						currentRenderList.push( object, geometry, material, groupOrder, _vector3.z, null );
 
 					}
 
@@ -30551,17 +28928,16 @@ module.exports = anime;
 
 		}() );
 
-		this.setTexture2DArray = function ( texture, slot ) {
+		this.setTexture3D = ( function () {
 
-			textures.setTexture2DArray( texture, slot );
+			// backwards compatibility: peel texture.texture
+			return function setTexture3D( texture, slot ) {
 
-		};
+				textures.setTexture3D( texture, slot );
 
-		this.setTexture3D = function ( texture, slot ) {
+			};
 
-			textures.setTexture3D( texture, slot );
-
-		};
+		}() );
 
 		this.setTexture = ( function () {
 
@@ -30638,7 +29014,7 @@ module.exports = anime;
 
 		};
 
-		this.setRenderTarget = function ( renderTarget, activeCubeFace, activeMipMapLevel ) {
+		this.setRenderTarget = function ( renderTarget ) {
 
 			_currentRenderTarget = renderTarget;
 
@@ -30657,7 +29033,7 @@ module.exports = anime;
 
 				if ( renderTarget.isWebGLRenderTargetCube ) {
 
-					framebuffer = __webglFramebuffer[ activeCubeFace || 0 ];
+					framebuffer = __webglFramebuffer[ renderTarget.activeCubeFace ];
 					isCube = true;
 
 				} else if ( renderTarget.isWebGLMultisampleRenderTarget ) {
@@ -30696,7 +29072,7 @@ module.exports = anime;
 			if ( isCube ) {
 
 				var textureProperties = properties.get( renderTarget.texture );
-				_gl.framebufferTexture2D( 36160, 36064, 34069 + ( activeCubeFace || 0 ), textureProperties.__webglTexture, activeMipMapLevel || 0 );
+				_gl.framebufferTexture2D( 36160, 36064, 34069 + renderTarget.activeCubeFace, textureProperties.__webglTexture, renderTarget.activeMipMapLevel );
 
 			}
 
@@ -30826,27 +29202,23 @@ module.exports = anime;
 
 	}
 
-	Object.assign( FogExp2.prototype, {
+	FogExp2.prototype.isFogExp2 = true;
 
-		isFogExp2: true,
+	FogExp2.prototype.clone = function () {
 
-		clone: function () {
+		return new FogExp2( this.color, this.density );
 
-			return new FogExp2( this.color, this.density );
+	};
 
-		},
+	FogExp2.prototype.toJSON = function ( /* meta */ ) {
 
-		toJSON: function ( /* meta */ ) {
+		return {
+			type: 'FogExp2',
+			color: this.color.getHex(),
+			density: this.density
+		};
 
-			return {
-				type: 'FogExp2',
-				color: this.color.getHex(),
-				density: this.density
-			};
-
-		}
-
-	} );
+	};
 
 	/**
 	 * @author mrdoob / http://mrdoob.com/
@@ -30864,28 +29236,24 @@ module.exports = anime;
 
 	}
 
-	Object.assign( Fog.prototype, {
+	Fog.prototype.isFog = true;
 
-		isFog: true,
+	Fog.prototype.clone = function () {
 
-		clone: function () {
+		return new Fog( this.color, this.near, this.far );
 
-			return new Fog( this.color, this.near, this.far );
+	};
 
-		},
+	Fog.prototype.toJSON = function ( /* meta */ ) {
 
-		toJSON: function ( /* meta */ ) {
+		return {
+			type: 'Fog',
+			color: this.color.getHex(),
+			near: this.near,
+			far: this.far
+		};
 
-			return {
-				type: 'Fog',
-				color: this.color.getHex(),
-				near: this.near,
-				far: this.far
-			};
-
-		}
-
-	} );
+	};
 
 	/**
 	 * @author mrdoob / http://mrdoob.com/
@@ -32178,9 +30546,20 @@ module.exports = anime;
 
 		}() ),
 
+		copy: function ( source ) {
+
+			Object3D.prototype.copy.call( this, source );
+
+			this.geometry.copy( source.geometry );
+			this.material.copy( source.material );
+
+			return this;
+
+		},
+
 		clone: function () {
 
-			return new this.constructor( this.geometry, this.material ).copy( this );
+			return new this.constructor().copy( this );
 
 		}
 
@@ -33722,16 +32101,6 @@ module.exports = anime;
 
 	TubeBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 	TubeBufferGeometry.prototype.constructor = TubeBufferGeometry;
-
-	TubeBufferGeometry.prototype.toJSON = function () {
-
-		var data = BufferGeometry.prototype.toJSON.call( this );
-
-		data.path = this.parameters.path.toJSON();
-
-		return data;
-
-	};
 
 	/**
 	 * @author oosmoxiecode
@@ -40276,7 +38645,7 @@ module.exports = anime;
 
 		},
 
-		parse: function ( json ) {
+		parse: function ( json, onLoad ) {
 
 			var animations = [];
 
@@ -40288,7 +38657,7 @@ module.exports = anime;
 
 			}
 
-			return animations;
+			onLoad( animations );
 
 		},
 
@@ -43667,36 +42036,7 @@ module.exports = anime;
 				var attribute = attributes[ key ];
 				var typedArray = new TYPED_ARRAYS[ attribute.type ]( attribute.array );
 
-				var bufferAttribute = new BufferAttribute( typedArray, attribute.itemSize, attribute.normalized );
-				if ( attribute.name !== undefined ) bufferAttribute.name = attribute.name;
-				geometry.addAttribute( key, bufferAttribute );
-
-			}
-
-			var morphAttributes = json.data.morphAttributes;
-
-			if ( morphAttributes ) {
-
-				for ( var key in morphAttributes ) {
-
-					var attributeArray = morphAttributes[ key ];
-
-					var array = [];
-
-					for ( var i = 0, il = attributeArray.length; i < il; i ++ ) {
-
-						var attribute = attributeArray[ i ];
-						var typedArray = new TYPED_ARRAYS[ attribute.type ]( attribute.array );
-
-						var bufferAttribute = new BufferAttribute( typedArray, attribute.itemSize, attribute.normalized );
-						if ( attribute.name !== undefined ) bufferAttribute.name = attribute.name;
-						array.push( bufferAttribute );
-
-					}
-
-					geometry.morphAttributes[ key ] = array;
-
-				}
+				geometry.addAttribute( key, new BufferAttribute( typedArray, attribute.itemSize, attribute.normalized ) );
 
 			}
 
@@ -44042,21 +42382,6 @@ module.exports = anime;
 								data.radialSegments,
 								data.p,
 								data.q
-							);
-
-							break;
-
-						case 'TubeGeometry':
-						case 'TubeBufferGeometry':
-
-							// This only works for built-in curves (e.g. CatmullRomCurve3).
-							// User defined curves or instances of CurvePath will not be deserialized.
-							geometry = new Geometries[ data.type ](
-								new Curves[ data.path.type ]().fromJSON( data.path ),
-								data.tubularSegments,
-								data.radius,
-								data.radialSegments,
-								data.closed
 							);
 
 							break;
@@ -44794,16 +43119,7 @@ module.exports = anime;
 
 			} ).then( function ( blob ) {
 
-				if ( scope.options === undefined ) {
-
-					// Workaround for FireFox. It causes an error if you pass options.
-					return createImageBitmap( blob );
-
-				} else {
-
-					return createImageBitmap( blob, scope.options );
-
-				}
+				return createImageBitmap( blob, scope.options );
 
 			} ).then( function ( imageBitmap ) {
 
@@ -44821,8 +43137,6 @@ module.exports = anime;
 				scope.manager.itemEnd( url );
 
 			} );
-
-			scope.manager.itemStart( url );
 
 		},
 
@@ -45861,25 +44175,25 @@ module.exports = anime;
 
 			renderTarget.texture.generateMipmaps = false;
 
-			renderer.setRenderTarget( renderTarget, 0 );
-			renderer.render( scene, cameraPX );
+			renderTarget.activeCubeFace = 0;
+			renderer.render( scene, cameraPX, renderTarget );
 
-			renderer.setRenderTarget( renderTarget, 1 );
-			renderer.render( scene, cameraNX );
+			renderTarget.activeCubeFace = 1;
+			renderer.render( scene, cameraNX, renderTarget );
 
-			renderer.setRenderTarget( renderTarget, 2 );
-			renderer.render( scene, cameraPY );
+			renderTarget.activeCubeFace = 2;
+			renderer.render( scene, cameraPY, renderTarget );
 
-			renderer.setRenderTarget( renderTarget, 3 );
-			renderer.render( scene, cameraNY );
+			renderTarget.activeCubeFace = 3;
+			renderer.render( scene, cameraNY, renderTarget );
 
-			renderer.setRenderTarget( renderTarget, 4 );
-			renderer.render( scene, cameraPZ );
+			renderTarget.activeCubeFace = 4;
+			renderer.render( scene, cameraPZ, renderTarget );
 
 			renderTarget.texture.generateMipmaps = generateMipmaps;
 
-			renderer.setRenderTarget( renderTarget, 5 );
-			renderer.render( scene, cameraNZ );
+			renderTarget.activeCubeFace = 5;
+			renderer.render( scene, cameraNZ, renderTarget );
 
 			renderer.setRenderTarget( currentRenderTarget );
 
@@ -45893,7 +44207,8 @@ module.exports = anime;
 
 			for ( var i = 0; i < 6; i ++ ) {
 
-				renderer.setRenderTarget( renderTarget, i );
+				renderTarget.activeCubeFace = i;
+				renderer.setRenderTarget( renderTarget );
 
 				renderer.clear( color, depth, stencil );
 
@@ -46560,7 +44875,7 @@ module.exports = anime;
 
 				Object3D.prototype.updateMatrixWorld.call( this, force );
 
-				if ( this.hasPlaybackControl === true && this.isPlaying === false ) return;
+				if ( this.isPlaying === false ) return;
 
 				this.matrixWorld.decompose( position, quaternion, scale );
 
@@ -50907,106 +49222,6 @@ module.exports = anime;
 	PolarGridHelper.prototype.constructor = PolarGridHelper;
 
 	/**
-	 * @author Mugen87 / http://github.com/Mugen87
-	 */
-
-	function PositionalAudioHelper( audio, range, divisionsInnerAngle, divisionsOuterAngle ) {
-
-		this.audio = audio;
-		this.range = range || 1;
-		this.divisionsInnerAngle = divisionsInnerAngle || 16;
-		this.divisionsOuterAngle = divisionsOuterAngle || 2;
-
-		var geometry = new BufferGeometry();
-		var divisions = this.divisionsInnerAngle + this.divisionsOuterAngle * 2;
-		var positions = new Float32Array( ( divisions * 3 + 3 ) * 3 );
-		geometry.addAttribute( 'position', new BufferAttribute( positions, 3 ) );
-
-		var materialInnerAngle = new LineBasicMaterial( { color: 0x00ff00 } );
-		var materialOuterAngle = new LineBasicMaterial( { color: 0xffff00 } );
-
-		Line.call( this, geometry, [ materialOuterAngle, materialInnerAngle ] );
-
-		this.update();
-
-	}
-
-	PositionalAudioHelper.prototype = Object.create( Line.prototype );
-	PositionalAudioHelper.prototype.constructor = PositionalAudioHelper;
-
-	PositionalAudioHelper.prototype.update = function () {
-
-		var audio = this.audio;
-		var range = this.range;
-		var divisionsInnerAngle = this.divisionsInnerAngle;
-		var divisionsOuterAngle = this.divisionsOuterAngle;
-
-		var coneInnerAngle = _Math.degToRad( audio.panner.coneInnerAngle );
-		var coneOuterAngle = _Math.degToRad( audio.panner.coneOuterAngle );
-
-		var halfConeInnerAngle = coneInnerAngle / 2;
-		var halfConeOuterAngle = coneOuterAngle / 2;
-
-		var start = 0;
-		var count = 0;
-		var i, stride;
-
-		var geometry = this.geometry;
-		var positionAttribute = geometry.attributes.position;
-
-		geometry.clearGroups();
-
-		//
-
-		function generateSegment( from, to, divisions, materialIndex ) {
-
-			var step = ( to - from ) / divisions;
-
-			positionAttribute.setXYZ( start, 0, 0, 0 );
-			count ++;
-
-			for ( i = from; i < to; i += step ) {
-
-				stride = start + count;
-
-				positionAttribute.setXYZ( stride, Math.sin( i ) * range, 0, Math.cos( i ) * range );
-				positionAttribute.setXYZ( stride + 1, Math.sin( Math.min( i + step, to ) ) * range, 0, Math.cos( Math.min( i + step, to ) ) * range );
-				positionAttribute.setXYZ( stride + 2, 0, 0, 0 );
-
-				count += 3;
-
-			}
-
-			geometry.addGroup( start, count, materialIndex );
-
-			start += count;
-			count = 0;
-
-		}
-
-		//
-
-		generateSegment( - halfConeOuterAngle, - halfConeInnerAngle, divisionsOuterAngle, 0 );
-		generateSegment( - halfConeInnerAngle, halfConeInnerAngle, divisionsInnerAngle, 1 );
-		generateSegment( halfConeInnerAngle, halfConeOuterAngle, divisionsOuterAngle, 0 );
-
-		//
-
-		positionAttribute.needsUpdate = true;
-
-		if ( coneInnerAngle === coneOuterAngle ) this.material[ 0 ].visible = false;
-
-	};
-
-	PositionalAudioHelper.prototype.dispose = function () {
-
-		this.geometry.dispose();
-		this.material[ 0 ].dispose();
-		this.material[ 1 ].dispose();
-
-	};
-
-	/**
 	 * @author mrdoob / http://mrdoob.com/
 	 * @author WestLangley / http://github.com/WestLangley
 	 */
@@ -53278,27 +51493,6 @@ module.exports = anime;
 
 	//
 
-	Object.defineProperties( WebGLRenderTargetCube.prototype, {
-
-		activeCubeFace: {
-			set: function ( /* value */ ) {
-
-				console.warn( 'THREE.WebGLRenderTargetCube: .activeCubeFace has been removed. It is now the second parameter of WebGLRenderer.setRenderTarget().' );
-
-			}
-		},
-		activeMipMapLevel: {
-			set: function ( /* value */ ) {
-
-				console.warn( 'THREE.WebGLRenderTargetCube: .activeMipMapLevel has been removed. It is now the third parameter of WebGLRenderer.setRenderTarget().' );
-
-			}
-		}
-
-	} );
-
-	//
-
 	Object.defineProperties( WebGLRenderTarget.prototype, {
 
 		wrapS: {
@@ -53672,7 +51866,6 @@ module.exports = anime;
 	exports.Group = Group;
 	exports.VideoTexture = VideoTexture;
 	exports.DataTexture = DataTexture;
-	exports.DataTexture2DArray = DataTexture2DArray;
 	exports.DataTexture3D = DataTexture3D;
 	exports.CompressedTexture = CompressedTexture;
 	exports.CubeTexture = CubeTexture;
@@ -53778,7 +51971,6 @@ module.exports = anime;
 	exports.HemisphereLightHelper = HemisphereLightHelper;
 	exports.GridHelper = GridHelper;
 	exports.PolarGridHelper = PolarGridHelper;
-	exports.PositionalAudioHelper = PositionalAudioHelper;
 	exports.FaceNormalsHelper = FaceNormalsHelper;
 	exports.DirectionalLightHelper = DirectionalLightHelper;
 	exports.CameraHelper = CameraHelper;
@@ -53837,7 +52029,6 @@ module.exports = anime;
 	exports.CircleGeometry = CircleGeometry;
 	exports.CircleBufferGeometry = CircleBufferGeometry;
 	exports.BoxGeometry = BoxGeometry;
-	exports.CubeGeometry = BoxGeometry;
 	exports.BoxBufferGeometry = BoxBufferGeometry;
 	exports.ShadowMaterial = ShadowMaterial;
 	exports.SpriteMaterial = SpriteMaterial;
@@ -54020,6 +52211,7 @@ module.exports = anime;
 	exports.RGBADepthPacking = RGBADepthPacking;
 	exports.TangentSpaceNormalMap = TangentSpaceNormalMap;
 	exports.ObjectSpaceNormalMap = ObjectSpaceNormalMap;
+	exports.CubeGeometry = BoxGeometry;
 	exports.Face4 = Face4;
 	exports.LineStrip = LineStrip;
 	exports.LinePieces = LinePieces;
@@ -54060,7 +52252,7 @@ module.exports = anime;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+})));
 
 },{}],37:[function(_dereq_,module,exports){
 // Copyright 2016 The Draco Authors.
@@ -54777,7 +52969,7 @@ THREE.GLTFLoader = ( function () {
 							break;
 
 						case EXTENSIONS.MSFT_TEXTURE_DDS:
-							extensions[ EXTENSIONS.MSFT_TEXTURE_DDS ] = new GLTFTextureDDSExtension();
+							extensions[ EXTENSIONS.MSFT_TEXTURE_DDS ] = new GLTFTextureDDSExtension( json );
 							break;
 
 						case EXTENSIONS.KHR_TEXTURE_TRANSFORM:
@@ -54806,7 +52998,23 @@ THREE.GLTFLoader = ( function () {
 
 			} );
 
-			parser.parse( onLoad, onError );
+			parser.parse( function ( scene, scenes, cameras, animations, json ) {
+
+				var glTF = {
+					scene: scene,
+					scenes: scenes,
+					cameras: cameras,
+					animations: animations,
+					asset: json.asset,
+					parser: parser,
+					userData: {}
+				};
+
+				addUnknownExtensionsToUserData( extensions, glTF, json );
+
+				onLoad( glTF );
+
+			}, onError );
 
 		}
 
@@ -55084,6 +53292,7 @@ THREE.GLTFLoader = ( function () {
 		this.name = EXTENSIONS.KHR_DRACO_MESH_COMPRESSION;
 		this.json = json;
 		this.dracoLoader = dracoLoader;
+		THREE.DRACOLoader.getDecoderModule();
 
 	}
 
@@ -55099,23 +53308,21 @@ THREE.GLTFLoader = ( function () {
 
 		for ( var attributeName in gltfAttributeMap ) {
 
-			var threeAttributeName = ATTRIBUTES[ attributeName ] || attributeName.toLowerCase();
+			if ( ! ( attributeName in ATTRIBUTES ) ) continue;
 
-			threeAttributeMap[ threeAttributeName ] = gltfAttributeMap[ attributeName ];
+			threeAttributeMap[ ATTRIBUTES[ attributeName ] ] = gltfAttributeMap[ attributeName ];
 
 		}
 
 		for ( attributeName in primitive.attributes ) {
 
-			var threeAttributeName = ATTRIBUTES[ attributeName ] || attributeName.toLowerCase();
-
-			if ( gltfAttributeMap[ attributeName ] !== undefined ) {
+			if ( ATTRIBUTES[ attributeName ] !== undefined && gltfAttributeMap[ attributeName ] !== undefined ) {
 
 				var accessorDef = json.accessors[ primitive.attributes[ attributeName ] ];
 				var componentType = WEBGL_COMPONENT_TYPES[ accessorDef.componentType ];
 
-				attributeTypeMap[ threeAttributeName ] = componentType;
-				attributeNormalizedMap[ threeAttributeName ] = accessorDef.normalized === true;
+				attributeTypeMap[ ATTRIBUTES[ attributeName ] ] = componentType;
+				attributeNormalizedMap[ ATTRIBUTES[ attributeName ] ] = accessorDef.normalized === true;
 
 			}
 
@@ -55775,7 +53982,6 @@ THREE.GLTFLoader = ( function () {
 	var ATTRIBUTES = {
 		POSITION: 'position',
 		NORMAL: 'normal',
-		TANGENT: 'tangent',
 		TEXCOORD_0: 'uv',
 		TEXCOORD_1: 'uv2',
 		COLOR_0: 'color',
@@ -55791,8 +53997,10 @@ THREE.GLTFLoader = ( function () {
 	};
 
 	var INTERPOLATION = {
-		CUBICSPLINE: undefined, // We use a custom interpolant (GLTFCubicSplineInterpolation) for CUBICSPLINE tracks. Each
-		                        // keyframe track will be initialized with a default interpolation type, then modified.
+		CUBICSPLINE: THREE.InterpolateSmooth, // We use custom interpolation GLTFCubicSplineInterpolation for CUBICSPLINE.
+		                                      // KeyframeTrack.optimize() can't handle glTF Cubic Spline output values layout,
+		                                      // using THREE.InterpolateSmooth for KeyframeTrack instantiation to prevent optimization.
+		                                      // See KeyframeTrack.optimize() for the detail.
 		LINEAR: THREE.InterpolateLinear,
 		STEP: THREE.InterpolateDiscrete
 	};
@@ -55838,14 +54046,12 @@ THREE.GLTFLoader = ( function () {
 
 	}
 
-	var defaultMaterial;
-
 	/**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#default-material
 	 */
 	function createDefaultMaterial() {
 
-		defaultMaterial = defaultMaterial || new THREE.MeshStandardMaterial( {
+		return new THREE.MeshStandardMaterial( {
 			color: 0xFFFFFF,
 			emissive: 0x000000,
 			metalness: 1,
@@ -55854,8 +54060,6 @@ THREE.GLTFLoader = ( function () {
 			depthTest: true,
 			side: THREE.FrontSide
 		} );
-
-		return defaultMaterial;
 
 	}
 
@@ -55933,21 +54137,30 @@ THREE.GLTFLoader = ( function () {
 
 			if ( hasMorphPosition ) {
 
-				var pendingAccessor = target.POSITION !== undefined
+				// TODO: Error-prone use of a callback inside a loop.
+				var accessor = target.POSITION !== undefined
 					? parser.getDependency( 'accessor', target.POSITION )
+						.then( function ( accessor ) {
+							// Cloning not to pollute original accessor below
+							return cloneBufferAttribute( accessor );
+						} )
 					: geometry.attributes.position;
 
-				pendingPositionAccessors.push( pendingAccessor );
+				pendingPositionAccessors.push( accessor );
 
 			}
 
 			if ( hasMorphNormal ) {
 
-				var pendingAccessor = target.NORMAL !== undefined
+				// TODO: Error-prone use of a callback inside a loop.
+				var accessor = target.NORMAL !== undefined
 					? parser.getDependency( 'accessor', target.NORMAL )
+						.then( function ( accessor ) {
+							return cloneBufferAttribute( accessor );
+						} )
 					: geometry.attributes.normal;
 
-				pendingNormalAccessors.push( pendingAccessor );
+				pendingNormalAccessors.push( accessor );
 
 			}
 
@@ -55960,24 +54173,6 @@ THREE.GLTFLoader = ( function () {
 
 			var morphPositions = accessors[ 0 ];
 			var morphNormals = accessors[ 1 ];
-
-			// Clone morph target accessors before modifying them.
-
-			for ( var i = 0, il = morphPositions.length; i < il; i ++ ) {
-
-				if ( geometry.attributes.position === morphPositions[ i ] ) continue;
-
-				morphPositions[ i ] = cloneBufferAttribute( morphPositions[ i ] );
-
-			}
-
-			for ( var i = 0, il = morphNormals.length; i < il; i ++ ) {
-
-				if ( geometry.attributes.normal === morphNormals[ i ] ) continue;
-
-				morphNormals[ i ] = cloneBufferAttribute( morphNormals[ i ] );
-
-			}
 
 			for ( var i = 0, il = targets.length; i < il; i ++ ) {
 
@@ -56099,6 +54294,30 @@ THREE.GLTFLoader = ( function () {
 		}
 
 	}
+
+	function isPrimitiveEqual( a, b ) {
+
+		var dracoExtA = a.extensions ? a.extensions[ EXTENSIONS.KHR_DRACO_MESH_COMPRESSION ] : undefined;
+		var dracoExtB = b.extensions ? b.extensions[ EXTENSIONS.KHR_DRACO_MESH_COMPRESSION ] : undefined;
+
+		if ( dracoExtA && dracoExtB ) {
+
+			if ( dracoExtA.bufferView !== dracoExtB.bufferView ) return false;
+
+			return isObjectEqual( dracoExtA.attributes, dracoExtB.attributes );
+
+		}
+
+		if ( a.indices !== b.indices ) {
+
+			return false;
+
+		}
+
+		return isObjectEqual( a.attributes, b.attributes );
+
+	}
+
 	function isObjectEqual( a, b ) {
 
 		if ( Object.keys( a ).length !== Object.keys( b ).length ) return false;
@@ -56113,40 +54332,59 @@ THREE.GLTFLoader = ( function () {
 
 	}
 
-	function createPrimitiveKey( primitiveDef ) {
+	function isArrayEqual( a, b ) {
 
-		var dracoExtension = primitiveDef.extensions && primitiveDef.extensions[ EXTENSIONS.KHR_DRACO_MESH_COMPRESSION ];
-		var geometryKey;
+		if ( a.length !== b.length ) return false;
 
-		if ( dracoExtension ) {
+		for ( var i = 0, il = a.length; i < il; i ++ ) {
 
-			geometryKey = 'draco:' + dracoExtension.bufferView
-				+ ':' + dracoExtension.indices
-				+ ':' + createAttributesKey( dracoExtension.attributes );
-
-		} else {
-
-			geometryKey = primitiveDef.indices + ':' + createAttributesKey( primitiveDef.attributes ) + ':' + primitiveDef.mode;
+			if ( a[ i ] !== b[ i ] ) return false;
 
 		}
 
-		return geometryKey;
+		return true;
 
 	}
 
-	function createAttributesKey( attributes ) {
+	function getCachedGeometry( cache, newPrimitive ) {
 
-		var attributesKey = '';
+		for ( var i = 0, il = cache.length; i < il; i ++ ) {
 
-		var keys = Object.keys( attributes ).sort();
+			var cached = cache[ i ];
 
-		for ( var i = 0, il = keys.length; i < il; i ++ ) {
-
-			attributesKey += keys[ i ] + ':' + attributes[ keys[ i ] ] + ';';
+			if ( isPrimitiveEqual( cached.primitive, newPrimitive ) ) return cached.promise;
 
 		}
 
-		return attributesKey;
+		return null;
+
+	}
+
+	function getCachedCombinedGeometry( cache, geometries ) {
+
+		for ( var i = 0, il = cache.length; i < il; i ++ ) {
+
+			var cached = cache[ i ];
+
+			if ( isArrayEqual( geometries, cached.baseGeometries ) ) return cached.geometry;
+
+		}
+
+		return null;
+
+	}
+
+	function getCachedMultiPassGeometry( cache, geometry, primitives ) {
+
+		for ( var i = 0, il = cache.length; i < il; i ++ ) {
+
+			var cached = cache[ i ];
+
+			if ( geometry === cached.baseGeometry && isArrayEqual( primitives, cached.primitives ) ) return cached.geometry;
+
+		}
+
+		return null;
 
 	}
 
@@ -56175,6 +54413,48 @@ THREE.GLTFLoader = ( function () {
 
 	}
 
+	/**
+	 * Checks if we can build a single Mesh with MultiMaterial from multiple primitives.
+	 * Returns true if all primitives use the same attributes/morphAttributes/mode
+	 * and also have index. Otherwise returns false.
+	 *
+	 * @param {Array<GLTF.Primitive>} primitives
+	 * @return {Boolean}
+	 */
+	function isMultiPassGeometry( primitives ) {
+
+		if ( primitives.length < 2 ) return false;
+
+		var primitive0 = primitives[ 0 ];
+		var targets0 = primitive0.targets || [];
+
+		if ( primitive0.indices === undefined ) return false;
+
+		for ( var i = 1, il = primitives.length; i < il; i ++ ) {
+
+			var primitive = primitives[ i ];
+
+			if ( primitive0.mode !== primitive.mode ) return false;
+			if ( primitive.indices === undefined ) return false;
+			if ( primitive.extensions && primitive.extensions[ EXTENSIONS.KHR_DRACO_MESH_COMPRESSION ] ) return false;
+			if ( ! isObjectEqual( primitive0.attributes, primitive.attributes ) ) return false;
+
+			var targets = primitive.targets || [];
+
+			if ( targets0.length !== targets.length ) return false;
+
+			for ( var j = 0, jl = targets0.length; j < jl; j ++ ) {
+
+				if ( ! isObjectEqual( targets0[ j ], targets[ j ] ) ) return false;
+
+			}
+
+		}
+
+		return true;
+
+	}
+
 	/* GLTF PARSER */
 
 	function GLTFParser( json, extensions, options ) {
@@ -56187,7 +54467,9 @@ THREE.GLTFLoader = ( function () {
 		this.cache = new GLTFRegistry();
 
 		// BufferGeometry caching
-		this.primitiveCache = {};
+		this.primitiveCache = [];
+		this.multiplePrimitivesCache = [];
+		this.multiPassGeometryCache = [];
 
 		this.textureLoader = new THREE.TextureLoader( this.options.manager );
 		this.textureLoader.setCrossOrigin( this.options.crossOrigin );
@@ -56199,9 +54481,7 @@ THREE.GLTFLoader = ( function () {
 
 	GLTFParser.prototype.parse = function ( onLoad, onError ) {
 
-		var parser = this;
 		var json = this.json;
-		var extensions = this.extensions;
 
 		// Clear the loader cache
 		this.cache.removeAll();
@@ -56209,27 +54489,21 @@ THREE.GLTFLoader = ( function () {
 		// Mark the special nodes/meshes in json for efficient parse
 		this.markDefs();
 
-		Promise.all( [
+		// Fire the callback on complete
+		this.getMultiDependencies( [
 
-			this.getDependencies( 'scene' ),
-			this.getDependencies( 'animation' ),
-			this.getDependencies( 'camera' ),
+			'scene',
+			'animation',
+			'camera'
 
 		] ).then( function ( dependencies ) {
 
-			var result = {
-				scene: dependencies[ 0 ][ json.scene || 0 ],
-				scenes: dependencies[ 0 ],
-				animations: dependencies[ 1 ],
-				cameras: dependencies[ 2 ],
-				asset: json.asset,
-				parser: parser,
-				userData: {}
-			};
+			var scenes = dependencies.scenes || [];
+			var scene = scenes[ json.scene || 0 ];
+			var animations = dependencies.animations || [];
+			var cameras = dependencies.cameras || [];
 
-			addUnknownExtensionsToUserData( extensions, result, json );
-
-			onLoad( result );
+			onLoad( scene, scenes, cameras, animations, json );
 
 		} ).catch( onError );
 
@@ -56399,6 +54673,40 @@ THREE.GLTFLoader = ( function () {
 		}
 
 		return dependencies;
+
+	};
+
+	/**
+	 * Requests all multiple dependencies of the specified types asynchronously, with caching.
+	 * @param {Array<string>} types
+	 * @return {Promise<Object<Array<Object>>>}
+	 */
+	GLTFParser.prototype.getMultiDependencies = function ( types ) {
+
+		var results = {};
+		var pending = [];
+
+		for ( var i = 0, il = types.length; i < il; i ++ ) {
+
+			var type = types[ i ];
+			var value = this.getDependencies( type );
+
+			// TODO: Error-prone use of a callback inside a loop.
+			value = value.then( function ( key, value ) {
+
+				results[ key ] = value;
+
+			}.bind( this, type + ( type === 'mesh' ? 'es' : 's' ) ) );
+
+			pending.push( value );
+
+		}
+
+		return Promise.all( pending ).then( function () {
+
+			return results;
+
+		} );
 
 	};
 
@@ -56704,18 +55012,6 @@ THREE.GLTFLoader = ( function () {
 
 		return this.getDependency( 'texture', mapDef.index ).then( function ( texture ) {
 
-			switch ( mapName ) {
-
-				case 'aoMap':
-				case 'emissiveMap':
-				case 'metalnessMap':
-				case 'normalMap':
-				case 'roughnessMap':
-					texture.format = THREE.RGBFormat;
-					break;
-
-			}
-
 			if ( parser.extensions[ EXTENSIONS.KHR_TEXTURE_TRANSFORM ] ) {
 
 				var transform = mapDef.extensions !== undefined ? mapDef.extensions[ EXTENSIONS.KHR_TEXTURE_TRANSFORM ] : undefined;
@@ -56731,124 +55027,6 @@ THREE.GLTFLoader = ( function () {
 			materialParams[ mapName ] = texture;
 
 		} );
-
-	};
-
-	/**
-	 * Assigns final material to a Mesh, Line, or Points instance. The instance
-	 * already has a material (generated from the glTF material options alone)
-	 * but reuse of the same glTF material may require multiple threejs materials
-	 * to accomodate different primitive types, defines, etc. New materials will
-	 * be created if necessary, and reused from a cache.
-	 * @param  {THREE.Object3D} mesh Mesh, Line, or Points instance.
-	 */
-	GLTFParser.prototype.assignFinalMaterial = function ( mesh ) {
-
-		var geometry = mesh.geometry;
-		var material = mesh.material;
-		var extensions = this.extensions;
-
-		var useVertexTangents = geometry.attributes.tangent !== undefined;
-		var useVertexColors = geometry.attributes.color !== undefined;
-		var useFlatShading = geometry.attributes.normal === undefined;
-		var useSkinning = mesh.isSkinnedMesh === true;
-		var useMorphTargets = Object.keys( geometry.morphAttributes ).length > 0;
-		var useMorphNormals = useMorphTargets && geometry.morphAttributes.normal !== undefined;
-
-		if ( mesh.isPoints ) {
-
-			var cacheKey = 'PointsMaterial:' + material.uuid;
-
-			var pointsMaterial = this.cache.get( cacheKey );
-
-			if ( ! pointsMaterial ) {
-
-				pointsMaterial = new THREE.PointsMaterial();
-				THREE.Material.prototype.copy.call( pointsMaterial, material );
-				pointsMaterial.color.copy( material.color );
-				pointsMaterial.map = material.map;
-				pointsMaterial.lights = false; // PointsMaterial doesn't support lights yet
-
-				this.cache.add( cacheKey, pointsMaterial );
-
-			}
-
-			material = pointsMaterial;
-
-		} else if ( mesh.isLine ) {
-
-			var cacheKey = 'LineBasicMaterial:' + material.uuid;
-
-			var lineMaterial = this.cache.get( cacheKey );
-
-			if ( ! lineMaterial ) {
-
-				lineMaterial = new THREE.LineBasicMaterial();
-				THREE.Material.prototype.copy.call( lineMaterial, material );
-				lineMaterial.color.copy( material.color );
-				lineMaterial.lights = false; // LineBasicMaterial doesn't support lights yet
-
-				this.cache.add( cacheKey, lineMaterial );
-
-			}
-
-			material = lineMaterial;
-
-		}
-
-		// Clone the material if it will be modified
-		if ( useVertexTangents || useVertexColors || useFlatShading || useSkinning || useMorphTargets ) {
-
-			var cacheKey = 'ClonedMaterial:' + material.uuid + ':';
-
-			if ( material.isGLTFSpecularGlossinessMaterial ) cacheKey += 'specular-glossiness:';
-			if ( useSkinning ) cacheKey += 'skinning:';
-			if ( useVertexTangents ) cacheKey += 'vertex-tangents:';
-			if ( useVertexColors ) cacheKey += 'vertex-colors:';
-			if ( useFlatShading ) cacheKey += 'flat-shading:';
-			if ( useMorphTargets ) cacheKey += 'morph-targets:';
-			if ( useMorphNormals ) cacheKey += 'morph-normals:';
-
-			var cachedMaterial = this.cache.get( cacheKey );
-
-			if ( ! cachedMaterial ) {
-
-				cachedMaterial = material.isGLTFSpecularGlossinessMaterial
-					? extensions[ EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS ].cloneMaterial( material )
-					: material.clone();
-
-				if ( useSkinning ) cachedMaterial.skinning = true;
-				if ( useVertexTangents ) cachedMaterial.vertexTangents = true;
-				if ( useVertexColors ) cachedMaterial.vertexColors = THREE.VertexColors;
-				if ( useFlatShading ) cachedMaterial.flatShading = true;
-				if ( useMorphTargets ) cachedMaterial.morphTargets = true;
-				if ( useMorphNormals ) cachedMaterial.morphNormals = true;
-
-				this.cache.add( cacheKey, cachedMaterial );
-
-			}
-
-			material = cachedMaterial;
-
-		}
-
-		// workarounds for mesh and geometry
-
-		if ( material.aoMap && geometry.attributes.uv2 === undefined && geometry.attributes.uv !== undefined ) {
-
-			console.log( 'THREE.GLTFLoader: Duplicating UVs to support aoMap.' );
-			geometry.addAttribute( 'uv2', new THREE.BufferAttribute( geometry.attributes.uv.array, 2 ) );
-
-		}
-
-		if ( material.isGLTFSpecularGlossinessMaterial ) {
-
-			// for GLTFSpecularGlossinessMaterial(ShaderMaterial) uniforms runtime update
-			mesh.onBeforeRender = extensions[ EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS ].refreshUniforms;
-
-		}
-
-		mesh.material = material;
 
 	};
 
@@ -56999,6 +55177,14 @@ THREE.GLTFLoader = ( function () {
 
 			if ( materialDef.name !== undefined ) material.name = materialDef.name;
 
+			// Normal map textures use OpenGL conventions:
+			// https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#materialnormaltexture
+			if ( material.normalScale ) {
+
+				material.normalScale.y = - material.normalScale.y;
+
+			}
+
 			// baseColorTexture, emissiveTexture, and specularGlossinessTexture use sRGB encoding.
 			if ( material.map ) material.map.encoding = THREE.sRGBEncoding;
 			if ( material.emissiveMap ) material.emissiveMap.encoding = THREE.sRGBEncoding;
@@ -57039,7 +55225,9 @@ THREE.GLTFLoader = ( function () {
 
 		for ( var gltfAttributeName in attributes ) {
 
-			var threeAttributeName = ATTRIBUTES[ gltfAttributeName ] || gltfAttributeName.toLowerCase();
+			var threeAttributeName = ATTRIBUTES[ gltfAttributeName ];
+
+			if ( ! threeAttributeName ) continue;
 
 			// Skip attributes already provided by e.g. Draco extension.
 			if ( threeAttributeName in geometry.attributes ) continue;
@@ -57076,6 +55264,8 @@ THREE.GLTFLoader = ( function () {
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#geometry
 	 *
 	 * Creates BufferGeometries from primitives.
+	 * If we can build a single BufferGeometry with .groups from multiple primitives, returns one BufferGeometry.
+	 * Otherwise, returns BufferGeometries without .groups as many as primitives.
 	 *
 	 * @param {Array<GLTF.Primitive>} primitives
 	 * @return {Promise<Array<THREE.BufferGeometry>>}
@@ -57085,6 +55275,22 @@ THREE.GLTFLoader = ( function () {
 		var parser = this;
 		var extensions = this.extensions;
 		var cache = this.primitiveCache;
+
+		var isMultiPass = isMultiPassGeometry( primitives );
+		var originalPrimitives;
+
+		if ( isMultiPass ) {
+
+			originalPrimitives = primitives; // save original primitives and use later
+
+			// We build a single BufferGeometry with .groups from multiple primitives
+			// because all primitives share the same attributes/morph/mode and have indices.
+
+			primitives = [ primitives[ 0 ] ];
+
+			// Sets .groups and combined indices to a geometry later in this method.
+
+		}
 
 		function createDracoPrimitive( primitive ) {
 
@@ -57103,15 +55309,14 @@ THREE.GLTFLoader = ( function () {
 		for ( var i = 0, il = primitives.length; i < il; i ++ ) {
 
 			var primitive = primitives[ i ];
-			var cacheKey = createPrimitiveKey( primitive );
 
 			// See if we've already created this geometry
-			var cached = cache[ cacheKey ];
+			var cached = getCachedGeometry( cache, primitive );
 
 			if ( cached ) {
 
 				// Use the cached geometry if it exists
-				pending.push( cached.promise );
+				pending.push( cached );
 
 			} else {
 
@@ -57130,7 +55335,7 @@ THREE.GLTFLoader = ( function () {
 				}
 
 				// Cache this geometry
-				cache[ cacheKey ] = { primitive: primitive, promise: geometryPromise };
+				cache.push( { primitive: primitive, promise: geometryPromise } );
 
 				pending.push( geometryPromise );
 
@@ -57138,7 +55343,95 @@ THREE.GLTFLoader = ( function () {
 
 		}
 
-		return Promise.all( pending );
+		return Promise.all( pending ).then( function ( geometries ) {
+
+			if ( isMultiPass ) {
+
+				var baseGeometry = geometries[ 0 ];
+
+				// See if we've already created this combined geometry
+				var cache = parser.multiPassGeometryCache;
+				var cached = getCachedMultiPassGeometry( cache, baseGeometry, originalPrimitives );
+
+				if ( cached !== null ) return [ cached.geometry ];
+
+				// Cloning geometry because of index override.
+				// Attributes can be reused so cloning by myself here.
+				var geometry = new THREE.BufferGeometry();
+
+				geometry.name = baseGeometry.name;
+				geometry.userData = baseGeometry.userData;
+
+				for ( var key in baseGeometry.attributes ) geometry.addAttribute( key, baseGeometry.attributes[ key ] );
+				for ( var key in baseGeometry.morphAttributes ) geometry.morphAttributes[ key ] = baseGeometry.morphAttributes[ key ];
+
+				var pendingIndices = [];
+
+				for ( var i = 0, il = originalPrimitives.length; i < il; i ++ ) {
+
+					pendingIndices.push( parser.getDependency( 'accessor', originalPrimitives[ i ].indices ) );
+
+				}
+
+				return Promise.all( pendingIndices ).then( function ( accessors ) {
+
+					var indices = [];
+					var offset = 0;
+
+					for ( var i = 0, il = originalPrimitives.length; i < il; i ++ ) {
+
+						var accessor = accessors[ i ];
+
+						for ( var j = 0, jl = accessor.count; j < jl; j ++ ) indices.push( accessor.array[ j ] );
+
+						geometry.addGroup( offset, accessor.count, i );
+
+						offset += accessor.count;
+
+					}
+
+					geometry.setIndex( indices );
+
+					cache.push( { geometry: geometry, baseGeometry: baseGeometry, primitives: originalPrimitives } );
+
+					return [ geometry ];
+
+				} );
+
+			} else if ( geometries.length > 1 && THREE.BufferGeometryUtils !== undefined ) {
+
+				// Tries to merge geometries with BufferGeometryUtils if possible
+
+				for ( var i = 1, il = primitives.length; i < il; i ++ ) {
+
+					// can't merge if draw mode is different
+					if ( primitives[ 0 ].mode !== primitives[ i ].mode ) return geometries;
+
+				}
+
+				// See if we've already created this combined geometry
+				var cache = parser.multiplePrimitivesCache;
+				var cached = getCachedCombinedGeometry( cache, geometries );
+
+				if ( cached ) {
+
+					if ( cached.geometry !== null ) return [ cached.geometry ];
+
+				} else {
+
+					var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries, true );
+
+					cache.push( { geometry: geometry, baseGeometries: geometries } );
+
+					if ( geometry !== null ) return [ geometry ];
+
+				}
+
+			}
+
+			return geometries;
+
+		} );
 
 	};
 
@@ -57172,6 +55465,8 @@ THREE.GLTFLoader = ( function () {
 
 			return parser.loadGeometries( primitives ).then( function ( geometries ) {
 
+				var isMultiMaterial = geometries.length === 1 && geometries[ 0 ].groups.length > 0;
+
 				var meshes = [];
 
 				for ( var i = 0, il = geometries.length; i < il; i ++ ) {
@@ -57183,7 +55478,7 @@ THREE.GLTFLoader = ( function () {
 
 					var mesh;
 
-					var material = originalMaterials[ i ];
+					var material = isMultiMaterial ? originalMaterials : originalMaterials[ i ];
 
 					if ( primitive.mode === WEBGL_CONSTANTS.TRIANGLES ||
 						primitive.mode === WEBGL_CONSTANTS.TRIANGLE_STRIP ||
@@ -57241,9 +55536,118 @@ THREE.GLTFLoader = ( function () {
 
 					assignExtrasToUserData( mesh, meshDef );
 
-					parser.assignFinalMaterial( mesh );
-
 					meshes.push( mesh );
+
+					// 2. update Material depending on Mesh and BufferGeometry
+
+					var materials = isMultiMaterial ? mesh.material : [ mesh.material ];
+
+					var useVertexColors = geometry.attributes.color !== undefined;
+					var useFlatShading = geometry.attributes.normal === undefined;
+					var useSkinning = mesh.isSkinnedMesh === true;
+					var useMorphTargets = Object.keys( geometry.morphAttributes ).length > 0;
+					var useMorphNormals = useMorphTargets && geometry.morphAttributes.normal !== undefined;
+
+					for ( var j = 0, jl = materials.length; j < jl; j ++ ) {
+
+						var material = materials[ j ];
+
+						if ( mesh.isPoints ) {
+
+							var cacheKey = 'PointsMaterial:' + material.uuid;
+
+							var pointsMaterial = parser.cache.get( cacheKey );
+
+							if ( ! pointsMaterial ) {
+
+								pointsMaterial = new THREE.PointsMaterial();
+								THREE.Material.prototype.copy.call( pointsMaterial, material );
+								pointsMaterial.color.copy( material.color );
+								pointsMaterial.map = material.map;
+								pointsMaterial.lights = false; // PointsMaterial doesn't support lights yet
+
+								parser.cache.add( cacheKey, pointsMaterial );
+
+							}
+
+							material = pointsMaterial;
+
+						} else if ( mesh.isLine ) {
+
+							var cacheKey = 'LineBasicMaterial:' + material.uuid;
+
+							var lineMaterial = parser.cache.get( cacheKey );
+
+							if ( ! lineMaterial ) {
+
+								lineMaterial = new THREE.LineBasicMaterial();
+								THREE.Material.prototype.copy.call( lineMaterial, material );
+								lineMaterial.color.copy( material.color );
+								lineMaterial.lights = false; // LineBasicMaterial doesn't support lights yet
+
+								parser.cache.add( cacheKey, lineMaterial );
+
+							}
+
+							material = lineMaterial;
+
+						}
+
+						// Clone the material if it will be modified
+						if ( useVertexColors || useFlatShading || useSkinning || useMorphTargets ) {
+
+							var cacheKey = 'ClonedMaterial:' + material.uuid + ':';
+
+							if ( material.isGLTFSpecularGlossinessMaterial ) cacheKey += 'specular-glossiness:';
+							if ( useSkinning ) cacheKey += 'skinning:';
+							if ( useVertexColors ) cacheKey += 'vertex-colors:';
+							if ( useFlatShading ) cacheKey += 'flat-shading:';
+							if ( useMorphTargets ) cacheKey += 'morph-targets:';
+							if ( useMorphNormals ) cacheKey += 'morph-normals:';
+
+							var cachedMaterial = parser.cache.get( cacheKey );
+
+							if ( ! cachedMaterial ) {
+
+								cachedMaterial = material.isGLTFSpecularGlossinessMaterial
+									? extensions[ EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS ].cloneMaterial( material )
+									: material.clone();
+
+								if ( useSkinning ) cachedMaterial.skinning = true;
+								if ( useVertexColors ) cachedMaterial.vertexColors = THREE.VertexColors;
+								if ( useFlatShading ) cachedMaterial.flatShading = true;
+								if ( useMorphTargets ) cachedMaterial.morphTargets = true;
+								if ( useMorphNormals ) cachedMaterial.morphNormals = true;
+
+								parser.cache.add( cacheKey, cachedMaterial );
+
+							}
+
+							material = cachedMaterial;
+
+						}
+
+						materials[ j ] = material;
+
+						// workarounds for mesh and geometry
+
+						if ( material.aoMap && geometry.attributes.uv2 === undefined && geometry.attributes.uv !== undefined ) {
+
+							console.log( 'THREE.GLTFLoader: Duplicating UVs to support aoMap.' );
+							geometry.addAttribute( 'uv2', new THREE.BufferAttribute( geometry.attributes.uv.array, 2 ) );
+
+						}
+
+						if ( material.isGLTFSpecularGlossinessMaterial ) {
+
+							// for GLTFSpecularGlossinessMaterial(ShaderMaterial) uniforms runtime update
+							mesh.onBeforeRender = extensions[ EXTENSIONS.KHR_MATERIALS_PBR_SPECULAR_GLOSSINESS ].refreshUniforms;
+
+						}
+
+					}
+
+					mesh.material = isMultiMaterial ? materials : materials[ 0 ];
 
 				}
 
@@ -57428,7 +55832,10 @@ THREE.GLTFLoader = ( function () {
 
 				if ( PATH_PROPERTIES[ target.path ] === PATH_PROPERTIES.weights ) {
 
-					// Node may be a THREE.Group (glTF mesh with several primitives) or a THREE.Mesh.
+					// node can be THREE.Group here but
+					// PATH_PROPERTIES.weights(morphTargetInfluences) should be
+					// the property of a mesh object under group.
+
 					node.traverse( function ( object ) {
 
 						if ( object.isMesh === true && object.morphTargetInfluences ) {
@@ -57445,16 +55852,20 @@ THREE.GLTFLoader = ( function () {
 
 				}
 
+				// KeyframeTrack.optimize() will modify given 'times' and 'values'
+				// buffers before creating a truncated copy to keep. Because buffers may
+				// be reused by other tracks, make copies here.
 				for ( var j = 0, jl = targetNames.length; j < jl; j ++ ) {
 
 					var track = new TypedKeyframeTrack(
 						targetNames[ j ] + '.' + PATH_PROPERTIES[ target.path ],
-						inputAccessor.array,
-						outputAccessor.array,
+						THREE.AnimationUtils.arraySlice( inputAccessor.array, 0 ),
+						THREE.AnimationUtils.arraySlice( outputAccessor.array, 0 ),
 						interpolation
 					);
 
-					// Override interpolation with custom factory method.
+					// Here is the trick to enable custom interpolation.
+					// Overrides .createInterpolant in a factory method which creates custom interpolation.
 					if ( sampler.interpolation === 'CUBICSPLINE' ) {
 
 						track.createInterpolant = function InterpolantFactoryMethodGLTFCubicSpline( result ) {
@@ -57467,7 +55878,8 @@ THREE.GLTFLoader = ( function () {
 
 						};
 
-						// Mark as CUBICSPLINE. `track.getInterpolation()` doesn't support custom interpolants.
+						// Workaround, provide an alternate way to know if the interpolant type is cubis spline to track.
+						// track.getInterpolation() doesn't return valid value for custom interpolant.
 						track.createInterpolant.isInterpolantFactoryMethodGLTFCubicSpline = true;
 
 					}
@@ -57695,7 +56107,7 @@ THREE.GLTFLoader = ( function () {
 
 						mesh.bind( new THREE.Skeleton( bones, boneInverses ), mesh.matrixWorld );
 
-					}
+					};
 
 					return node;
 
@@ -59276,7 +57688,7 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
-},{"./lib/utils":42,"./lib/vertices":43,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":34,"three-buffer-vertex-data":44}],42:[function(_dereq_,module,exports){
+},{"./lib/utils":42,"./lib/vertices":43,"inherits":18,"layout-bmfont-text":23,"object-assign":26,"quad-indices":35,"three-buffer-vertex-data":44}],42:[function(_dereq_,module,exports){
 var itemSize = 2
 var box = { min: [0, 0], max: [0, 0] }
 
@@ -59495,7 +57907,7 @@ function rebuildAttribute (attrib, data, itemSize) {
   return false
 }
 
-},{"flatten-vertex-data":13}],45:[function(_dereq_,module,exports){
+},{"flatten-vertex-data":14}],45:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -63362,7 +61774,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":15,"is-function":19,"parse-headers":30,"xtend":50}],49:[function(_dereq_,module,exports){
+},{"global/window":16,"is-function":20,"parse-headers":31,"xtend":50}],49:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof self.DOMParser !== 'undefined') {
@@ -63415,7 +61827,7 @@ function extend() {
 },{}],51:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.9.1",
+  "version": "0.8.2",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -63434,7 +61846,7 @@ module.exports={
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prepush": "node scripts/testOnlyCheck.js",
-    "prerelease": "node scripts/release.js 0.9.0 0.9.1",
+    "prerelease": "node scripts/release.js 0.7.1 0.8.0",
     "start": "npm run dev",
     "start:https": "cross-env SSL=true npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -63453,6 +61865,7 @@ module.exports={
     "vendor/**/*"
   ],
   "dependencies": {
+    "animejs": "^2.2.0",
     "browserify-css": "^0.8.4",
     "custom-event-polyfill": "^1.0.6",
     "debug": "ngokevin/debug#noTimestamp",
@@ -63464,8 +61877,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "super-animejs": "^3.0.0",
-    "super-three": "^0.102.2",
+    "super-three": "^0.101.0",
     "three-bmfont-text": "^2.1.0",
     "webvr-polyfill": "^0.10.10"
   },
@@ -63551,7 +61963,7 @@ module.exports={
 }
 
 },{}],52:[function(_dereq_,module,exports){
-var anime = _dereq_('super-animejs');
+var anime = _dereq_('animejs');
 var components = _dereq_('../core/component').components;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -63718,7 +62130,6 @@ module.exports.Component = registerComponent('animation', {
     this.updateConfig();
     this.animationIsPlaying = false;
     this.animation = anime(this.config);
-    this.animation.began = true;
 
     this.removeEventListeners();
     this.addEventListeners();
@@ -63742,7 +62153,6 @@ module.exports.Component = registerComponent('animation', {
    */
   beginAnimation: function () {
     this.updateConfig();
-    this.animation.began = true;
     this.time = 0;
     this.animationIsPlaying = true;
     this.stopRelatedAnimations();
@@ -63954,7 +62364,7 @@ module.exports.Component = registerComponent('animation', {
     config.update = (function () {
       var lastValue = {};
       return function (anim) {
-        var value = anim.animatables[0].target;
+        var value = anim.animations[0].target;
 
         // Animate rotation through radians.
         // For animation timeline.
@@ -64121,10 +62531,6 @@ function getRawProperty (el, path) {
   for (i = 0; i < split.length; i++) {
     value = value[split[i]];
   }
-  if (value === undefined) {
-    console.log(el);
-    throw new Error('[animation] property (' + path + ') could not be found');
-  }
   return value;
 }
 
@@ -64172,7 +62578,7 @@ function isRawProperty (data) {
          data.property.startsWith(STRING_OBJECT3D);
 }
 
-},{"../core/component":103,"../lib/three":151,"../utils":176,"super-animejs":35}],53:[function(_dereq_,module,exports){
+},{"../core/component":103,"../lib/three":151,"../utils":176,"animejs":2}],53:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -64660,9 +63066,8 @@ module.exports.Component = registerComponent('cursor', {
 },{"../core/component":103,"../utils/":176}],55:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-
+var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
@@ -64710,14 +63115,18 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   init: function () {
     var self = this;
+    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -64745,7 +63154,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
   },
 
   play: function () {
@@ -64799,7 +63208,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   onButtonChanged: function (evt) {
@@ -64835,7 +63244,6 @@ module.exports.Component = registerComponent('daydream-controls', {
 },{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -64884,14 +63292,18 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   init: function () {
     var self = this;
+    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -64919,7 +63331,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -64979,7 +63391,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -65138,8 +63550,8 @@ var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Found at https://github.com/aframevr/assets.
 var MODEL_URLS = {
-  left: 'https://cdn.aframe.io/controllers/hands/leftHand.glb',
-  right: 'https://cdn.aframe.io/controllers/hands/rightHand.glb'
+  left: 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json',
+  right: 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json'
 };
 
 // Poses.
@@ -65190,7 +63602,7 @@ module.exports.Component = registerComponent('hand-controls', {
     // Active buttons populated by events provided by the attached controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
-    this.loader = new THREE.GLTFLoader();
+    this.loader = new THREE.ObjectLoader();
     this.loader.setCrossOrigin('anonymous');
 
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
@@ -65301,7 +63713,6 @@ module.exports.Component = registerComponent('hand-controls', {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data;
-    var self = this;
 
     // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
@@ -65312,10 +63723,10 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Set model.
     if (hand !== previousHand) {
-      this.loader.load(MODEL_URLS[hand], function (gltf) {
-        var mesh = gltf.scene.children[0];
+      this.loader.load(MODEL_URLS[hand], function (scene) {
+        var mesh = scene.getObjectByName('Hand');
+        mesh.material.skinning = true;
         mesh.mixer = new THREE.AnimationMixer(mesh);
-        self.clips = gltf.animations;
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
@@ -65363,6 +63774,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Same gesture.
     if (this.gesture === lastGesture) { return; }
+
     // Animate gesture.
     this.animateGesture(this.gesture, lastGesture);
 
@@ -65383,38 +63795,24 @@ module.exports.Component = registerComponent('hand-controls', {
     var isVive = isViveController(this.el.components['tracked-controls']);
 
     // Works well with Oculus Touch and Windows Motion Controls, but Vive needs tweaks.
-    if (isVive) {
-      if (isGripActive || isTriggerActive) {
+    if (isGripActive) {
+      if (isVive) {
         gesture = ANIMATIONS.fist;
-      } else if (isTrackpadActive) {
-        gesture = ANIMATIONS.point;
-      }
-    } else {
-      if (isGripActive) {
+      } else
         if (isSurfaceActive || isABXYActive || isTrackpadActive) {
           gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
         } else {
           gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
         }
-      } else if (isTriggerActive) {
-        gesture = ANIMATIONS.hold;
+    } else {
+      if (isTriggerActive) {
+        gesture = !isVive ? ANIMATIONS.hold : ANIMATIONS.fist;
+      } else if (isVive && isTrackpadActive) {
+        gesture = ANIMATIONS.point;
       }
     }
 
     return gesture;
-  },
-
-  /**
-   * Play corresponding clip to a gesture
-   */
-  getClip: function (gesture) {
-    var clip;
-    var i;
-    for (i = 0; i < this.clips.length; i++) {
-      clip = this.clips[i];
-      if (clip.name !== gesture) { continue; }
-      return clip;
-    }
   },
 
   /**
@@ -65428,7 +63826,6 @@ module.exports.Component = registerComponent('hand-controls', {
       this.playAnimation(gesture || ANIMATIONS.open, lastGesture, false);
       return;
     }
-
     // If no gesture, then reverse the current gesture back to open pose.
     this.playAnimation(lastGesture, lastGesture, true);
   },
@@ -65459,38 +63856,33 @@ module.exports.Component = registerComponent('hand-controls', {
   * @param {boolean} reverse - Whether animation should play in reverse.
   */
   playAnimation: function (gesture, lastGesture, reverse) {
-    var clip;
     var fromAction;
     var mesh = this.el.getObject3D('mesh');
     var toAction;
 
     if (!mesh) { return; }
 
-    // Stop all current animations.
-    mesh.mixer.stopAllAction();
-
     // Grab clip action.
-    clip = this.getClip(gesture);
-    toAction = mesh.mixer.clipAction(clip);
+    toAction = mesh.mixer.clipAction(gesture);
     toAction.clampWhenFinished = true;
     toAction.loop = THREE.LoopRepeat;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
-    toAction.time = reverse ? clip.duration : 0;
     toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
       // Stop all current animations.
       mesh.mixer.stopAllAction();
+
       // Play animation.
       toAction.play();
       return;
     }
 
     // Animate or crossfade from gesture to gesture.
-    clip = this.getClip(lastGesture);
-    fromAction = mesh.mixer.clipAction(clip);
+    fromAction = mesh.mixer.clipAction(lastGesture);
+    mesh.mixer.stopAllAction();
     fromAction.weight = 0.15;
     fromAction.play();
     toAction.play();
@@ -66475,7 +64867,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupMouseControls();
     this.bindMethods();
     this.el.object3D.matrixAutoUpdate = false;
-    this.el.object3D.updateMatrix();
 
     this.savedPose = {
       position: new THREE.Vector3(),
@@ -67149,19 +65540,11 @@ module.exports.Component = registerComponent('obj-model', {
   },
 
   init: function () {
-    var self = this;
-
     this.model = null;
     this.objLoader = new THREE.OBJLoader();
     this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
     // Allow cross-origin images to be loaded.
     this.mtlLoader.crossOrigin = '';
-
-    this.el.addEventListener('componentinitialized', function (evt) {
-      if (!self.model) { return; }
-      if (evt.detail.name !== 'material') { return; }
-      self.applyMaterial();
-    });
   },
 
   update: function () {
@@ -67186,14 +65569,13 @@ module.exports.Component = registerComponent('obj-model', {
     var mtlLoader = this.mtlLoader;
     var objLoader = this.objLoader;
     var rendererSystem = this.el.sceneEl.systems.renderer;
-    var BASE_PATH = mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1);
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
       if (el.hasAttribute('material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
-      mtlLoader.setResourcePath(BASE_PATH);
+      mtlLoader.setTexturePath(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);
@@ -67217,23 +65599,19 @@ module.exports.Component = registerComponent('obj-model', {
 
     // .OBJ only.
     objLoader.load(objUrl, function loadObjOnly (objModel) {
+      // Apply material.
+      var material = el.components.material;
+      if (material) {
+        objModel.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = material.material;
+          }
+        });
+      }
+
       self.model = objModel;
-      self.applyMaterial();
       el.setObject3D('mesh', objModel);
       el.emit('model-loaded', {format: 'obj', model: objModel});
-    });
-  },
-
-  /**
-   * Apply material from material component recursively.
-   */
-  applyMaterial: function () {
-    var material = this.el.components.material;
-    if (!material) { return; }
-    this.model.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = material.material;
-      }
     });
   }
 });
@@ -67241,7 +65619,6 @@ module.exports.Component = registerComponent('obj-model', {
 },{"../core/component":103,"../lib/three":151,"../utils/debug":172}],68:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -67264,7 +65641,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
-    orientationOffset: {type: 'vec3'},
+    rotationOffset: {default: 0},
     armModel: {default: true}
   },
 
@@ -67288,15 +65665,19 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 
   init: function () {
     var self = this;
+    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -67324,7 +65705,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -67344,7 +65725,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      rotationOffset: data.rotationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', OCULUS_GO_CONTROLLER_MODEL_URL);
@@ -67382,7 +65763,7 @@ module.exports.Component = registerComponent('oculus-go-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -67414,11 +65795,8 @@ module.exports.Component = registerComponent('oculus-go-controls', {
 },{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],69:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var THREE = _dereq_('../lib/three');
-
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var THREE = _dereq_('../lib/three');
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
@@ -67490,6 +65868,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
     this.bindMethods();
+
+    // Allow mock.
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -67517,7 +65899,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand
     });
   },
@@ -67613,7 +65995,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+    this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -68384,7 +66766,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":51,"../../constants":95,"../../core/component":103,"../../utils/":176,"_process":32}],79:[function(_dereq_,module,exports){
+},{"../../../package":51,"../../constants":95,"../../core/component":103,"../../utils/":176,"_process":33}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -69256,10 +67638,10 @@ module.exports.Component = registerComponent('sound', {
    * @returns {object} sound
    */
   setupSound: function () {
+    var self = this;
     var el = this.el;
     var i;
     var sceneEl = el.sceneEl;
-    var self = this;
     var sound;
 
     if (this.pool.children.length > 0) {
@@ -69294,7 +67676,7 @@ module.exports.Component = registerComponent('sound', {
       sound = this.pool.children[i];
       sound.onEnded = function () {
         this.isPlaying = false;
-        self.el.emit('sound-ended', self.evtDetail, false);
+        el.emit('sound-ended', self.evtDetail, false);
       };
     }
   },
@@ -69853,7 +68235,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":103,"../core/shader":113,"../lib/three":151,"../utils/":176,"load-bmfont":23,"three-bmfont-text":41}],87:[function(_dereq_,module,exports){
+},{"../core/component":103,"../core/shader":113,"../lib/three":151,"../utils/":176,"load-bmfont":24,"three-bmfont-text":41}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -70331,8 +68713,9 @@ module.exports.Component = registerComponent('visible', {
 
 },{"../core/component":103}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
-var bind = _dereq_('../utils/bind');
+var utils = _dereq_('../utils/');
 
+var bind = utils.bind;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -70373,13 +68756,17 @@ module.exports.Component = registerComponent('vive-controls', {
 
   init: function () {
     var self = this;
+    this.animationActive = 'pointing';
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
     this.controllerPresent = false;
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
     this.rendererSystem = this.el.sceneEl.systems.renderer;
 
@@ -70430,14 +68817,14 @@ module.exports.Component = registerComponent('vive-controls', {
 
   /**
    * Once OpenVR returns correct hand data in supporting browsers, we can use hand property.
-   * var isPresent = checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
+   * var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX,
                                                         { hand: data.hand });
    * Until then, use hardcoded index.
    */
   checkIfControllerPresent: function () {
     var data = this.data;
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {index: controllerIndex});
   },
 
   injectTrackedControls: function () {
@@ -70447,8 +68834,9 @@ module.exports.Component = registerComponent('vive-controls', {
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
-      // Hand IDs: 1 = right, 0 = left, 2 = anything else.
-      controller: data.hand === 'right' ? 1 : data.hand === 'left' ? 0 : 2,
+      // Hand IDs: 0 = right, 1 = left, 2 = anything else.
+      controller: data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2,
+      hand: data.hand,
       orientationOffset: data.orientationOffset
     });
 
@@ -70522,7 +68910,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -70558,10 +68946,9 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":103,"../utils/bind":170,"../utils/tracked-controls":184}],92:[function(_dereq_,module,exports){
+},{"../core/component":103,"../utils/":176,"../utils/tracked-controls":184}],92:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
@@ -70583,7 +68970,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     buttonTouchedColor: {type: 'color', default: '#BBBBBB'},
     buttonHighlightColor: {type: 'color', default: '#7A7A7A'},
     model: {default: true},
-    orientationOffset: {type: 'vec3'},
+    rotationOffset: {default: 0},
     armModel: {default: true}
   },
 
@@ -70607,14 +68994,18 @@ module.exports.Component = registerComponent('vive-focus-controls', {
 
   init: function () {
     var self = this;
+    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
     this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
     this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -70644,7 +69035,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX,
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
@@ -70664,7 +69055,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
     el.setAttribute('tracked-controls', {
       armModel: data.armModel,
       idPrefix: GAMEPAD_ID_PREFIX,
-      orientationOffset: data.orientationOffset
+      rotationOffset: data.rotationOffset
     });
     if (!this.data.model) { return; }
     this.el.setAttribute('gltf-model', VIVE_FOCUS_CONTROLLER_MODEL_URL);
@@ -70709,7 +69100,7 @@ module.exports.Component = registerComponent('vive-focus-controls', {
   },
 
   onAxisMoved: function (evt) {
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
@@ -70954,14 +69345,10 @@ function isEmptyObject (keys) {
 
 },{"../constants":95,"../core/component":103,"../lib/three":151,"../utils/":176}],94:[function(_dereq_,module,exports){
 /* global THREE */
-var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-
+var registerComponent = _dereq_('../core/component').registerComponent;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
-var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
-var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
 var onButtonEvent = trackedControlsUtils.onButtonEvent;
-
 var utils = _dereq_('../utils/');
 
 var debug = utils.debug('components:windows-motion-controls:debug');
@@ -71056,6 +69443,10 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       createdFromMesh: false
     };
 
+    // Stored on object to allow for mocking in tests
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
@@ -71087,7 +69478,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   checkIfControllerPresent: function () {
-    checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
       hand: this.data.hand,
       index: this.data.pair
     });
@@ -71389,7 +69780,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       }
     }
 
-    emitIfAxesChanged(this, this.mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   setModelVisibility: function (visible) {
@@ -71842,9 +70233,7 @@ var proto = Object.create(ANode.prototype, {
       if (!this.parentEl) { return; }
 
       // Remove components.
-      for (componentName in this.components) {
-        this.removeComponent(componentName, false);
-      }
+      for (componentName in this.components) { this.removeComponent(componentName); }
 
       if (this.isScene) { return; }
 
@@ -72002,11 +70391,7 @@ var proto = Object.create(ANode.prototype, {
    */
   remove: {
     value: function (el) {
-      if (el) {
-        this.object3D.remove(el.object3D);
-      } else {
-        this.parentNode.removeChild(this);
-      }
+      this.object3D.remove(el.object3D);
     }
   },
 
@@ -72121,7 +70506,7 @@ var proto = Object.create(ANode.prototype, {
   },
 
   removeComponent: {
-    value: function (name, destroy) {
+    value: function (name) {
       var component;
 
       component = this.components[name];
@@ -72131,7 +70516,7 @@ var proto = Object.create(ANode.prototype, {
       if (!component.initialized) {
         this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
           if (evt.detail.name !== name) { return; }
-          this.removeComponent(name, destroy);
+          this.removeComponent(name);
           this.removeEventListener('componentinitialized', tryRemoveLater);
         });
         return;
@@ -72139,14 +70524,8 @@ var proto = Object.create(ANode.prototype, {
 
       component.pause();
       component.remove();
-
-      // Keep component attached to entity in case of just full entity detach.
-      if (destroy) {
-        component.destroy();
-        delete this.components[name];
-      }
-
-      this.emit('componentremoved', component.evtDetail, false);
+      delete this.components[name];
+      this.emit('componentremoved', component.evtDetail);
     },
     writable: window.debug
   },
@@ -72225,7 +70604,7 @@ var proto = Object.create(ANode.prototype, {
       if (component) {
         // Remove component.
         if (attrValue === null && !checkComponentDefined(this, attr)) {
-          this.removeComponent(attr, true);
+          this.removeComponent(attr);
           return;
         }
         // Component already initialized. Update component.
@@ -72252,7 +70631,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Remove component.
       if (component && propertyName === undefined) {
-        this.removeComponent(attr, true);
+        this.removeComponent(attr);
       }
 
       // Reset component property value.
@@ -72395,7 +70774,7 @@ var proto = Object.create(ANode.prototype, {
                   this.components[component].handleMixinUpdate();
                 } else {
                   // Remove component if not explicitly defined.
-                  this.removeComponent(component, true);
+                  this.removeComponent(component);
                 }
               }
             }
@@ -72581,22 +70960,6 @@ var proto = Object.create(ANode.prototype, {
   inspect: {
     value: function () {
       this.sceneEl.components.inspector.openInspector(this);
-    }
-  },
-
-  /**
-   * Clean up memory and return memory to object pools.
-   */
-  destroy: {
-    value: function () {
-      var key;
-      if (this.parentNode) {
-        warn('Entity can only be destroyed if detached from scenegraph.');
-        return;
-      }
-      for (key in this.components) {
-        this.components[key].destroy();
-      }
     }
   }
 });
@@ -73247,7 +71610,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":99,"./a-node":101,"document-register-element":11}],103:[function(_dereq_,module,exports){
+},{"./a-entity":99,"./a-node":101,"document-register-element":12}],103:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -73292,32 +71655,17 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.initialized = false;
   this.isSingleProperty = isSingleProp(this.schema);
   this.isSinglePropertyObject = this.isSingleProperty &&
-                                isObject(parseProperty(undefined, this.schema)) &&
-                                !(this.schema.default instanceof window.HTMLElement);
+                                isObject(parseProperty(undefined, this.schema));
   this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
   this.objectPool = objectPools[this.name];
 
-  eventsBind(this, this.events);
-
   // Store component data from previous update call.
   this.attrValue = undefined;
-  if (this.isObjectBased) {
-    this.nextData = this.objectPool.use();
-    // Drop any properties added by dynamic schemas in previous use
-    utils.objectPool.removeUnusedKeys(this.nextData, this.schema);
-    this.oldData = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.oldData, this.schema);
-    this.previousOldData = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.previousOldData, this.schema);
-    this.parsingAttrValue = this.objectPool.use();
-    utils.objectPool.removeUnusedKeys(this.parsingAttrValue, this.schema);
-  } else {
-    this.nextData = undefined;
-    this.oldData = undefined;
-    this.previousOldData = undefined;
-    this.parsingAttrValue = undefined;
-  }
+  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
 
   // Last value passed to updateProperties.
   this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
@@ -73339,13 +71687,6 @@ Component.prototype = {
    * Components can use this to set initial state.
    */
   init: function () { /* no-op */ },
-
-  /**
-   * Map of event names to binded event handlers that will be lifecycle-handled.
-   * Will be detached on pause / remove.
-   * Will be attached on play.
-   */
-  events: {},
 
   /**
    * Update handler. Similar to attributeChangedCallback.
@@ -73449,7 +71790,7 @@ Component.prototype = {
       return;
     }
 
-    if (value instanceof Object && !(value instanceof window.HTMLElement)) {
+    if (value instanceof Object) {
       // If value is an object, copy it to our pooled newAttrValue object to use to update
       // the attrValue.
       tempObject = this.objectPool.use();
@@ -73511,7 +71852,7 @@ Component.prototype = {
    */
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
-    if (attrValue === null || attrValue === undefined) { return; }
+    if (!attrValue) { return; }
     window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                                    this.stringify(attrValue));
   },
@@ -73800,47 +72141,8 @@ Component.prototype = {
     }
 
     return parseProperties(data, schema, undefined, this.name, silent);
-  },
-
-  /**
-   * Attach events from component-defined events map.
-   */
-  eventsAttach: function () {
-    var eventName;
-    // Safety detach to prevent double-registration.
-    this.eventsDetach();
-    for (eventName in this.events) {
-      this.el.addEventListener(eventName, this.events[eventName]);
-    }
-  },
-
-  /**
-   * Detach events from component-defined events map.
-   */
-  eventsDetach: function () {
-    var eventName;
-    for (eventName in this.events) {
-      this.el.removeEventListener(eventName, this.events[eventName]);
-    }
-  },
-
-  /**
-   * Release and free memory.
-   */
-  destroy: function () {
-    this.objectPool.recycle(this.attrValue);
-    this.objectPool.recycle(this.oldData);
-    this.objectPool.recycle(this.parsingAttrValue);
-    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
   }
 };
-
-function eventsBind (component, events) {
-  var eventName;
-  for (eventName in events) {
-    events[eventName] = events[eventName].bind(component);
-  }
-}
 
 // For testing.
 if (window.debug) {
@@ -73848,7 +72150,7 @@ if (window.debug) {
 }
 
 /**
- * Register a component to A-Frame.
+ * Registers a component to A-Frame.
  *
  * @param {string} name - Component name.
  * @param {object} definition - Component schema and lifecycle method handlers.
@@ -73918,6 +72220,7 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
+  NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
 
   schema = utils.extend(processSchema(NewComponent.prototype.schema,
                                       NewComponent.prototype.name));
@@ -74014,7 +72317,6 @@ function wrapPause (pauseMethod) {
     if (!this.isPlaying) { return; }
     pauseMethod.call(this);
     this.isPlaying = false;
-    this.eventsDetach();
     // Remove tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.removeBehavior(this);
@@ -74034,20 +72336,35 @@ function wrapPlay (playMethod) {
     if (!this.initialized || !shouldPlay) { return; }
     playMethod.call(this);
     this.isPlaying = true;
-    this.eventsAttach();
     // Add tick behavior.
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
   };
 }
 
+/**
+ * Wrapper for defined remove method.
+ * Clean up memory.
+ *
+ * @param removeMethod {function} - Defined remove method.
+ */
+function wrapRemove (removeMethod) {
+  return function remove () {
+    removeMethod.call(this);
+    this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.parsingAttrValue);
+
+    this.attrValue = this.oldData = this.parsingAttrValue = undefined;
+  };
+}
+
 function isObject (value) {
-  return value && value.constructor === Object && !(value instanceof window.HTMLElement);
+  return value && value.constructor === Object;
 }
 
 function isObjectOrArray (value) {
-  return value && (value.constructor === Object || value.constructor === Array) &&
-         !(value instanceof window.HTMLElement);
+  return value && (value.constructor === Object || value.constructor === Array);
 }
 
 },{"../utils/":176,"./scene/scenes":110,"./schema":112,"./system":114}],104:[function(_dereq_,module,exports){
@@ -74349,7 +72666,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":171,"debug":8}],106:[function(_dereq_,module,exports){
+},{"../utils/coordinates":171,"debug":9}],106:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -74390,7 +72707,6 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     createdCallback: {
       value: function () {
-        this.clock = new THREE.Clock();
         this.isIOS = isIOS;
         this.isMobile = isMobile;
         this.hasWebXR = isWebXRAvailable;
@@ -74410,6 +72726,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
+        this.renderTarget = null;
 
         // Default components.
         this.setAttribute('inspector', '');
@@ -74489,24 +72806,22 @@ module.exports.AScene = registerElement('a-scene', {
         this.pointerRestrictedBound = function () { self.pointerRestricted(); };
         this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
 
-        if (!isWebXRAvailable) {
-          // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-          window.addEventListener('vrdisplayactivate', this.enterVRBound);
+        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
+        window.addEventListener('vrdisplayactivate', this.enterVRBound);
 
-          // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-          window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
+        // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
+        window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
-          // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-          window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
-          // Register for mouse restricted events while in VR
-          // (e.g. mouse no longer available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+        // Register for mouse restricted events while in VR
+        // (e.g. mouse no longer available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
 
-          // Register for mouse unrestricted events while in VR
-          // (e.g. mouse once again available on desktop 2D view)
-          window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
-        }
+        // Register for mouse unrestricted events while in VR
+        // (e.g. mouse once again available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       },
       writable: window.debug
     },
@@ -74617,8 +72932,8 @@ module.exports.AScene = registerElement('a-scene', {
         // Has VR.
         if (this.checkHeadsetConnected() || this.isMobile) {
           vrDisplay = utils.device.getVRDisplay();
-          vrManager.enabled = true;
           vrManager.setDevice(vrDisplay);
+          vrManager.enabled = true;
 
           if (this.hasWebXR) {
             // XR API.
@@ -74638,21 +72953,13 @@ module.exports.AScene = registerElement('a-scene', {
               enterVRSuccess();
             });
           } else {
-            if (vrDisplay.isPresenting &&
-                !window.hasNativeWebVRImplementation) {
+            // WebVR API.
+            if (vrDisplay.isPresenting) {
               enterVRSuccess();
               return Promise.resolve();
             }
-            var rendererSystem = this.getAttribute('renderer');
-            var presentationAttributes = {
-              highRefreshRate: rendererSystem.highRefreshRate,
-              foveationLevel: rendererSystem.foveationLevel
-            };
-
-            return vrDisplay.requestPresent([{
-              source: this.canvas,
-              attributes: presentationAttributes
-            }]).then(enterVRSuccess, enterVRFailure);
+            return vrDisplay.requestPresent([{source: this.canvas}]).then(
+              enterVRSuccess, enterVRFailure);
           }
           return Promise.resolve();
         }
@@ -74678,8 +72985,6 @@ module.exports.AScene = registerElement('a-scene', {
           if (!self.isMobile && !self.checkHeadsetConnected()) {
             requestFullscreen(self.canvas);
           }
-
-          self.renderer.setAnimationLoop(self.render);
           self.resize();
         }
 
@@ -74937,10 +73242,6 @@ module.exports.AScene = registerElement('a-scene', {
             rendererConfig.logarithmicDepthBuffer = rendererAttr.logarithmicDepthBuffer === 'true';
           }
 
-          if (rendererAttr.alpha) {
-            rendererConfig.alpha = rendererAttr.alpha === 'true';
-          }
-
           this.maxCanvasSize = {
             width: rendererAttr.maxCanvasWidth
               ? parseInt(rendererAttr.maxCanvasWidth)
@@ -74978,25 +73279,19 @@ module.exports.AScene = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
-          var renderer = this.renderer;
-          var vrDisplay;
-          var vrManager = this.renderer.vr;
           AEntity.prototype.play.call(this);  // .play() *before* render.
 
           if (sceneEl.renderStarted) { return; }
+
           sceneEl.resize();
 
           // Kick off render loop.
           if (sceneEl.renderer) {
             if (window.performance) { window.performance.mark('render-started'); }
+            sceneEl.clock = new THREE.Clock();
             loadingScreen.remove();
-            vrDisplay = utils.device.getVRDisplay();
-            if (vrDisplay && vrDisplay.isPresenting) {
-              vrManager.setDevice(vrDisplay);
-              vrManager.enabled = true;
-              sceneEl.enterVR();
-            }
-            renderer.setAnimationLoop(this.render);
+            sceneEl.renderer.setAnimationLoop(this.render);
+            sceneEl.render();
             sceneEl.renderStarted = true;
             sceneEl.emit('renderstart');
           }
@@ -75085,7 +73380,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, this.delta); }
 
-        renderer.render(this.object3D, this.camera);
+        renderer.render(this.object3D, this.camera, this.renderTarget);
       },
       writable: true
     }
@@ -75157,16 +73452,10 @@ function requestFullscreen (canvas) {
     canvas.webkitRequestFullscreen ||
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
-  // Hide navigation buttons on Android.
-  requestFullscreen.apply(canvas, [{navigationUI: 'hide'}]);
+  requestFullscreen.apply(canvas);
 }
 
 function exitFullscreen () {
-  var fullscreenEl =
-    document.fullscreenElement ||
-    document.webkitFullscreenElement ||
-    document.mozFullScreenElement;
-  if (!fullscreenEl) { return; }
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.mozCancelFullScreen) {
@@ -75223,6 +73512,18 @@ var getSceneCanvasSize;
 
 var ATTR_NAME = 'loading-screen';
 var LOADER_TITLE_CLASS = 'a-loader-title';
+
+// It catches vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
+window.addEventListener('vrdisplayactivate', function () {
+  var vrManager = sceneEl.renderer.vr;
+  var vrDisplay = utils.device.getVRDisplay();
+
+  vrManager.setDevice(vrDisplay);
+  vrManager.enabled = true;
+  if (!vrDisplay.isPresenting) {
+    return vrDisplay.requestPresent([{source: sceneEl.canvas}]).then(function () {}, function () {});
+  }
+});
 
 module.exports.setup = function setup (el, getCanvasSize) {
   sceneEl = el;
@@ -75310,7 +73611,7 @@ var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
 var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
-  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui,viewport-fit=cover'}),
+  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui'}),
 
   // W3C-standardised meta tags.
   Meta({name: 'mobile-web-app-capable', content: 'yes'}),
@@ -77026,7 +75327,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.9.1 (Date 2019-05-01, Commit #e3ee3d0)');
+console.log('A-Frame Version: 0.8.2 (Date 2019-02-05, Commit #050135f)');
 console.log('three Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -77035,10 +75336,9 @@ module.exports = window.AFRAME = {
   AComponent: _dereq_('./core/component').Component,
   AEntity: AEntity,
   ANode: ANode,
-  ANIME: _dereq_('super-animejs'),
+  ANIME: _dereq_('animejs'),
   AScene: AScene,
   components: components,
-  coreComponents: Object.keys(components),
   geometries: _dereq_('./core/geometry').geometries,
   registerComponent: registerComponent,
   registerElement: _dereq_('./core/a-register-element').registerElement,
@@ -77059,7 +75359,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":51,"../vendor/starts-with-polyfill":187,"./components/index":60,"./core/a-assets":97,"./core/a-cubemap":98,"./core/a-entity":99,"./core/a-mixin":100,"./core/a-node":101,"./core/a-register-element":102,"./core/component":103,"./core/geometry":104,"./core/scene/a-scene":106,"./core/scene/scenes":110,"./core/schema":112,"./core/shader":113,"./core/system":114,"./extras/components/":115,"./extras/primitives/":118,"./extras/primitives/getMeshMixin":117,"./extras/primitives/primitives":119,"./geometries/index":140,"./lib/three":151,"./shaders/index":153,"./style/aframe.css":158,"./style/rStats.css":159,"./systems/index":163,"./utils/":176,"./utils/isIOSOlderThan10":178,"custom-event-polyfill":7,"present":31,"promise-polyfill":33,"super-animejs":35,"webvr-polyfill":46}],150:[function(_dereq_,module,exports){
+},{"../package":51,"../vendor/starts-with-polyfill":187,"./components/index":60,"./core/a-assets":97,"./core/a-cubemap":98,"./core/a-entity":99,"./core/a-mixin":100,"./core/a-node":101,"./core/a-register-element":102,"./core/component":103,"./core/geometry":104,"./core/scene/a-scene":106,"./core/scene/scenes":110,"./core/schema":112,"./core/shader":113,"./core/system":114,"./extras/components/":115,"./extras/primitives/":118,"./extras/primitives/getMeshMixin":117,"./extras/primitives/primitives":119,"./geometries/index":140,"./lib/three":151,"./shaders/index":153,"./style/aframe.css":158,"./style/rStats.css":159,"./systems/index":163,"./utils/":176,"./utils/isIOSOlderThan10":178,"animejs":2,"custom-event-polyfill":8,"present":32,"promise-polyfill":34,"webvr-polyfill":46}],150:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -77326,14 +75626,6 @@ module.exports.Shader = registerShader('msdf', {
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
     '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
 
-    // When texel is too small, blend raw alpha value rather than supersampling.
-    // FIXME: Experimentally determined constant.
-    '  // Do modified alpha test.',
-    '  if (isBigEnough > BIG_ENOUGH) {',
-    '    float ratio = BIG_ENOUGH / isBigEnough;',
-    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
-    '  }',
-
     '  // Do modified alpha test.',
     '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
     '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
@@ -77411,13 +75703,6 @@ module.exports.Shader = registerShader('sdf', {
 
     '    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
     '    float isBigEnough = max(abs(duv.x), abs(duv.y));',
-
-         // When texel is too small, blend raw alpha value rather than supersampling.
-         // FIXME: experimentally determined constant
-    '    if (isBigEnough > BIG_ENOUGH) {',
-    '      float ratio = BIG_ENOUGH / isBigEnough;',
-    '      alpha = ratio * alpha + (1.0 - ratio) * dist;',
-    '    }',
 
          // Otherwise do weighted supersampling.
          // FIXME: why this weighting?
@@ -77649,9 +75934,9 @@ function getMaterialData (data, materialData) {
 
 },{"../core/shader":113,"../lib/three":151,"../utils/":176}],158:[function(_dereq_,module,exports){
 var css = "html.a-fullscreen{bottom:0;left:0;position:fixed;right:0;top:0}html.a-fullscreen body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}html.a-fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;position:fixed!important}html:not(.a-fullscreen) .a-enter-vr{right:5px;bottom:5px}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}canvas.a-canvas.a-mouse-cursor-hover:hover{cursor:pointer}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}.a-loader-title{background-color:rgba(0,0,0,.6);font-family:sans-serif,monospace;text-align:center;font-size:20px;height:50px;font-weight:300;line-height:50px;position:absolute;right:0;left:0;top:0;color:#fff}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],159:[function(_dereq_,module,exports){
+},{"browserify-css":5}],159:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":4}],160:[function(_dereq_,module,exports){
+},{"browserify-css":5}],160:[function(_dereq_,module,exports){
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
 
@@ -77893,13 +76178,13 @@ module.exports.System = registerSystem('camera', {
     this.originalRender = undefined;
   },
 
-  render: function (scene, camera) {
+  render: function (scene, camera, renderTarget) {
     var isVREnabled;
     var sceneEl = this.sceneEl;
     var spectatorCamera;
 
     isVREnabled = sceneEl.renderer.vr.enabled;
-    this.originalRender.call(sceneEl.renderer, scene, camera);
+    this.originalRender.call(sceneEl.renderer, scene, camera, renderTarget);
     if (!this.spectatorCameraEl || sceneEl.isMobile || !isVREnabled) { return; }
     spectatorCamera = this.spectatorCameraEl.components.camera.camera;
     sceneEl.renderer.vr.enabled = false;
@@ -78083,14 +76368,6 @@ module.exports.System = registerSystem('gltf-model', {
 
   init: function () {
     var path = this.data.dracoDecoderPath;
-    THREE.DRACOLoader.setDecoderPath(path);
-    this.dracoLoader = path ? new THREE.DRACOLoader() : null;
-  },
-
-  update: function () {
-    var path;
-    if (this.dracoLoader) { return; }
-    path = this.data.dracoDecoderPath;
     THREE.DRACOLoader.setDecoderPath(path);
     this.dracoLoader = path ? new THREE.DRACOLoader() : null;
   },
@@ -78616,7 +76893,6 @@ var warn = debug('components:renderer:warn');
 module.exports.System = registerSystem('renderer', {
   schema: {
     antialias: {default: 'auto', oneOf: ['true', 'false', 'auto']},
-    highRefreshRate: {default: false},
     logarithmicDepthBuffer: {default: 'auto', oneOf: ['true', 'false', 'auto']},
     maxCanvasWidth: {default: 1920},
     maxCanvasHeight: {default: 1920},
@@ -78624,15 +76900,12 @@ module.exports.System = registerSystem('renderer', {
     precision: {default: 'high', oneOf: ['high', 'medium', 'low']},
     sortObjects: {default: false},
     colorManagement: {default: false},
-    gammaOutput: {default: false},
-    alpha: {default: true},
-    foveationLevel: {default: 0}
+    gammaOutput: {default: false}
   },
 
   init: function () {
     var data = this.data;
     var sceneEl = this.el;
-    // This is the rendering engine, such as THREE.js so copy over any persistent properties from the rendering system.
     var renderer = sceneEl.renderer;
 
     renderer.sortObjects = data.sortObjects;
@@ -78684,7 +76957,6 @@ var SHADOW_MAP_TYPE_MAP = {
  */
 module.exports.System = registerSystem('shadow', {
   schema: {
-    enabled: {default: true},
     autoUpdate: {default: true},
     type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
   },
@@ -78702,21 +76974,15 @@ module.exports.System = registerSystem('shadow', {
     this.setShadowMapEnabled(this.shadowMapEnabled);
   },
 
-  update: function (prevData) {
-    if (prevData.enabled !== this.data.enabled) {
-      this.setShadowMapEnabled(this.data.enabled);
-    }
-  },
-
   /**
    * Enables/disables the renderer shadow map.
    * @param {boolean} enabled
    */
   setShadowMapEnabled: function (enabled) {
     var renderer = this.sceneEl.renderer;
-    this.shadowMapEnabled = this.data.enabled && enabled;
+    this.shadowMapEnabled = enabled;
     if (renderer) {
-      renderer.shadowMap.enabled = this.shadowMapEnabled;
+      renderer.shadowMap.enabled = enabled;
     }
   }
 });
@@ -78734,7 +77000,6 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
     var self = this;
 
     this.controllers = [];
-    this.isChrome = navigator.userAgent.indexOf('Chrome') !== -1;
 
     this.updateControllerList();
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
@@ -78749,12 +77014,11 @@ module.exports.System = registerSystem('tracked-controls-webvr', {
   },
 
   tick: function () {
-    if (this.isChrome) {
-      // Retrieve new controller handlers with updated state (pose, buttons...)
-      this.updateControllerList();
-    } else {
-      this.throttledUpdateControllerList();
+    if (navigator.userAgent.indexOf('Chrome') !== -1) {
+      // Call getGamepads for Chrome for it to update. Not sure if needed in future.
+      navigator.getGamepads && navigator.getGamepads();
     }
+    this.throttledUpdateControllerList();
   },
 
   /**
@@ -78870,10 +77134,10 @@ function parse (value, defaultVec) {
     y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
     z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
     w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
-    if (x !== undefined && x !== null) { value.x = parseIfString(x); }
-    if (y !== undefined && y !== null) { value.y = parseIfString(y); }
-    if (z !== undefined && z !== null) { value.z = parseIfString(z); }
-    if (w !== undefined && w !== null) { value.w = parseIfString(w); }
+    if (x !== undefined) { value.x = parseIfString(x); }
+    if (y !== undefined) { value.y = parseIfString(y); }
+    if (z !== undefined) { value.z = parseIfString(z); }
+    if (w !== undefined) { value.w = parseIfString(w); }
     return value;
   }
 
@@ -78908,8 +77172,8 @@ function stringify (data) {
   var str;
   if (typeof data !== OBJECT) { return data; }
   str = data.x + ' ' + data.y;
-  if (data.z != null) { str += ' ' + data.z; }
-  if (data.w != null) { str += ' ' + data.w; }
+  if (data.z) { str += ' ' + data.z; }
+  if (data.w) { str += ' ' + data.w; }
   return str;
 }
 module.exports.stringify = stringify;
@@ -78928,7 +77192,7 @@ module.exports.isCoordinate = function (value) {
 };
 
 function parseIfString (val) {
-  if (val !== null && val !== undefined && val.constructor === String) {
+  if (val.constructor === String) {
     return parseFloat(val, 10);
   }
   return val;
@@ -78941,7 +77205,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":172,"object-assign":25}],172:[function(_dereq_,module,exports){
+},{"./debug":172,"object-assign":26}],172:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -79038,34 +77302,18 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32,"debug":8,"object-assign":25}],173:[function(_dereq_,module,exports){
+},{"_process":33,"debug":9,"object-assign":26}],173:[function(_dereq_,module,exports){
 (function (process){
-var error = _dereq_('debug')('device:error');
-
 var vrDisplay;
-
-// Catch vrdisplayactivate early to ensure we can enter VR mode after the scene loads.
-window.addEventListener('vrdisplayactivate', function (evt) {
-  var canvasEl;
-  // WebXR takes priority if available.
-  if (navigator.xr) { return; }
-  canvasEl = document.createElement('canvas');
-  vrDisplay = evt.display;
-  // Request present immediately. a-scene will be allowed to enter VR without user gesture.
-  vrDisplay.requestPresent([{source: canvasEl}]).then(function () {}, function () {});
-});
 
 // Support both WebVR and WebXR APIs.
 if (navigator.xr) {
   navigator.xr.requestDevice().then(function (device) {
-    if (!device) { return; }
     device.supportsSession({immersive: true, exclusive: true}).then(function () {
       var sceneEl = document.querySelector('a-scene');
       vrDisplay = device;
       if (sceneEl) { sceneEl.emit('displayconnected', {vrDisplay: vrDisplay}); }
     });
-  }).catch(function (err) {
-    error('WebXR Request Device: ' + err.message);
   });
 } else {
   if (navigator.getVRDisplays) {
@@ -79089,7 +77337,17 @@ function checkHeadsetConnected () { return !!getVRDisplay(); }
 module.exports.checkHeadsetConnected = checkHeadsetConnected;
 
 /**
- * Checks if browser is mobile and not stand-alone dedicated vr device.
+ * Check for positional tracking.
+ */
+function checkHasPositionalTracking () {
+  var vrDisplay = getVRDisplay();
+  if (isMobile() || isGearVR() || isOculusGo()) { return false; }
+  return vrDisplay && vrDisplay.capabilities.hasPosition;
+}
+module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
+
+/**
+ * Checks if browser is mobile.
  * @return {Boolean} True if mobile browser detected.
  */
 var isMobile = (function () {
@@ -79102,7 +77360,7 @@ var isMobile = (function () {
     if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
-    if (isMobileVR()) {
+    if (isOculusGo()) {
       _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
@@ -79126,13 +77384,18 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
-/**
- *  Detect browsers in Stand-Alone headsets
- */
-function isMobileVR () {
-  return /(OculusBrowser)|(SamsungBrowser)|(Mobile VR)/i.test(window.navigator.userAgent);
+function isGearVR () {
+  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
-module.exports.isMobileVR = isMobileVR;
+module.exports.isGearVR = isGearVR;
+
+/**
+ *  Detect Oculus Go device
+ */
+function isOculusGo () {
+  return /Pacific Build.+OculusBrowser.+SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
+}
+module.exports.isOculusGo = isOculusGo;
 
 function isR7 () {
   return /R7 Build/.test(window.navigator.userAgent);
@@ -79189,7 +77452,7 @@ module.exports.PolyfillControls = function PolyfillControls (object) {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":32,"debug":8}],174:[function(_dereq_,module,exports){
+},{"_process":33}],174:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -79296,15 +77559,13 @@ module.exports.checkHeadsetConnected = function () {
   warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
   return device.checkHeadsetConnected(arguments);
 };
-module.exports.isGearVR = module.exports.device.isGearVR = function () {
-  warn('`utils.isGearVR` has been deprecated, use `utils.device.isMobileVR`');
+module.exports.isGearVR = function () {
+  warn('`utils.isGearVR` has moved to `utils.device.isGearVR`');
+  return device.isGearVR(arguments);
 };
 module.exports.isIOS = function () {
   warn('`utils.isIOS` has moved to `utils.device.isIOS`');
   return device.isIOS(arguments);
-};
-module.exports.isOculusGo = module.exports.device.isOculusGo = function () {
-  warn('`utils.isOculusGo` has been deprecated, use `utils.device.isMobileVR`');
 };
 module.exports.isMobile = function () {
   warn('`utils.isMobile has moved to `utils.device.isMobile`');
@@ -79597,7 +77858,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":170,"./coordinates":171,"./debug":172,"./device":173,"./entity":174,"./forceCanvasResizeSafariMobile":175,"./is-ie11":177,"./material":179,"./object-pool":180,"./split":181,"./src-loader":182,"./styleParser":183,"./tracked-controls":184,"deep-assign":10,"object-assign":25}],177:[function(_dereq_,module,exports){
+},{"./bind":170,"./coordinates":171,"./debug":172,"./device":173,"./entity":174,"./forceCanvasResizeSafariMobile":175,"./is-ie11":177,"./material":179,"./object-pool":180,"./split":181,"./src-loader":182,"./styleParser":183,"./tracked-controls":184,"deep-assign":11,"object-assign":26}],177:[function(_dereq_,module,exports){
 // https://stackoverflow.com/a/17907562
 function getInternetExplorerVersion () {
   var version = -1;
@@ -79873,17 +78134,6 @@ function clearObject (obj) {
   for (key in obj) { obj[key] = undefined; }
 }
 module.exports.clearObject = clearObject;
-
-function removeUnusedKeys (obj, schema) {
-  var key;
-  if (!obj || obj.constructor !== Object) { return; }
-  for (key in obj) {
-    if (!(key in schema)) {
-      delete obj[key];
-    }
-  }
-}
-module.exports.removeUnusedKeys = removeUnusedKeys;
 
 },{}],181:[function(_dereq_,module,exports){
 /**
