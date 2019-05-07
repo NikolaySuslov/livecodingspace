@@ -20,7 +20,7 @@
     "optimist": "0.6.1",
     "winston": "3.2.1",
     "socket.io": "2.2.0",
-    "lcs-reflector": "0.1.0"
+    "lcs-reflector": "0.2.0"
   },
   "scripts": {
     "start": "node index.js",
