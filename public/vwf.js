@@ -289,6 +289,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             var requireConfig = {
                 baseUrl: '/',
+                waitSeconds: 0,
                 shim: {
                    
                      "vwf/model/aframe/addon/aframe-interpolation": {
