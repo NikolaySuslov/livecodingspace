@@ -5,7 +5,7 @@ Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.j
 
 > Online at: **[https://livecoding.space](https://livecoding.space)**
 
-![logo](https://krestianstvo.org/books/doc/sdk3/_images/webimg.jpg)
+![logo](https://krestianstvo.org/docs/assets/webimg.jpg)
 
 ## Architecture
 
@@ -28,13 +28,13 @@ alongside with the existed features from the initial version ```v0.1```:
 - **WebRTC** for video/audio streaming, 3D positional audio support
 - GearVR, Windows MixedReality motion **controllers** ..
 
-## [Documentation](https://krestianstvo.org/books/doc/sdk3)
+## [Documentation](https://krestianstvo.org/docs/sdk3)
 
-<img src="https://krestianstvo.org/lib/images/doc/images/codeeditor.jpg" width="400">
+<img src="https://krestianstvo.org/img/003.jpg" width="400">
 <br>
-<img src="https://krestianstvo.org/lib/images/doc/images/osc.jpg" width="400">
+<img src="https://krestianstvo.org/img/004.jpg" width="400">
 <br>
-<img src="https://krestianstvo.org/lib/images/doc/images/avatar.jpg" width="400">
+<img src="https://krestianstvo.org/img/avatar.jpg" width="400">
 <br>
 
 ## Contributing
