@@ -527,7 +527,7 @@ define(["module", "vwf/view"], function (module, view) {
                         let editorDriver = vwf.views["vwf/view/editor-new"];
                         if (editorDriver) {
                             let selectSwitch = document.querySelector('#selectNodeSwitch');
-                            const selectSwitchComp = new mdc.iconToggle.MDCIconToggle(selectSwitch); //new mdc.select.MDCIconToggle
+                            const selectSwitchComp = new mdc.iconButton.MDCIconButtonToggle(selectSwitch); //new mdc.select.MDCIconToggle
                             selectSwitchComp.on = false;
 
                             let currentNodeDIV = document.querySelector('#currentNode');

@@ -167,11 +167,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
 
 
                 let vidui = document.querySelector('#webrtcvideo');
-                const viduicomp = new mdc.iconToggle.MDCIconToggle(vidui); //new mdc.select.MDCIconToggle
+                const viduicomp = new mdc.iconButton.MDCIconButtonToggle(vidui); //new mdc.select.MDCIconToggle
                 if (vidui) viduicomp.on = false;
 
                 let micui = document.querySelector('#webrtcaudio');
-                const micuicomp = new mdc.iconToggle.MDCIconToggle(micui);
+                const micuicomp = new mdc.iconButton.MDCIconButtonToggle(micui);
                 if (micui) micuicomp.on = false;
 
                 this.deleteConnection(nodeID);
@@ -562,14 +562,14 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
                 let vstatus =  videoTracks[0].enabled;
 
                 let vidui = document.querySelector('#webrtcvideo');
-                const viduicomp = new mdc.iconToggle.MDCIconToggle(vidui); //new mdc.select.MDCIconToggle
+                const viduicomp = new mdc.iconButton.MDCIconButtonToggle(vidui); //new mdc.select.MDCIconToggle
                 if (vidui) viduicomp.on = vstatus;
 
                 let audioTracks = stream.getAudioTracks();
                 let astatus =  audioTracks[0].enabled;
 
                 let micui = document.querySelector('#webrtcaudio');
-                const micuicomp = new mdc.iconToggle.MDCIconToggle(micui);
+                const micuicomp = new mdc.iconButton.MDCIconButtonToggle(micui);
                 if (micui) micuicomp.on = astatus;
 
 

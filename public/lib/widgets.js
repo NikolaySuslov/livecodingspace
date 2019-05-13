@@ -295,7 +295,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 $cell: true,
                 $type: "button",
                 class: "mdc-button",
-                $text: obj.label,
+                $components: [
+                    {
+                        $type: "span",
+                        class: "mdc-button__label",
+                        $text: obj.label
+                    }
+                ],
                 onclick: obj.onclick
             }
         }
@@ -456,18 +462,28 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             if (obj.styleClass){
                 addClass = obj.styleClass;
             }
-
             return {
-                $type: "i",
-                class: addClass + " mdc-icon-toggle material-icons",
-                role: "button",
-                $text: obj.label,
+                $type: "button",
+                class: addClass + " mdc-icon-button",
+                //$text: obj.label,
                 id: obj.id,
-                'data-toggle-on': obj.on,
-                'data-toggle-off': obj.off,
+                //'data-toggle-on': obj.on,
+               // 'data-toggle-off': obj.off,
                 'aria-pressed': obj.state,
                 'aria-hidden': true,
-                $init: obj.init
+                $init: obj.init,
+                $components:[
+                    {
+                    $type: "i",
+                    class: "material-icons mdc-icon-button__icon mdc-icon-button__icon--on",
+                    $text: JSON.parse(obj.on).content
+                },
+                {
+                    $type: "i",
+                    class: "material-icons mdc-icon-button__icon",
+                    $text: JSON.parse(obj.off).content  
+                },
+                ]
             }
         }
 

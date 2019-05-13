@@ -370,6 +370,7 @@ define([
                                 $text: "Google Poly"
 
                             },
+
                             self.widgets.inputTextFieldOutlined({
                                 "id": 'googlepolyid',
                                 "label": "Enter Google Poly model ID",
@@ -385,16 +386,31 @@ define([
                             //         console.log(this.value)
                             //     }
                             // }),
-                            self.widgets.buttonSimple(
-                                {
-                                    label: "Load Model from Poly",
-                                    onclick: function (e) {
-                                        let srcEl = document.querySelector('#googlepolyid');
-                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                        vwf_view.kernel.callMethod(vwf.application(), "createGooglePoly", [srcEl.value, null, null, avatarID])
+
+                            {
+                                $type: "div",
+                                class: "mdc-grid-list",
+                                $components: [
+                                    {
+                                        $type: "ul",
+                                        class: "mdc-grid-list__tiles",
+                                        $components: [
+                                            self.widgets.buttonSimple(
+                                                {
+                                                    label: "Load from Poly",
+                                                    onclick: function (e) {
+                                                        let srcEl = document.querySelector('#googlepolyid');
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        vwf_view.kernel.callMethod(vwf.application(), "createGooglePoly", [srcEl.value, null, null, avatarID])
+                                                    }
+                                                }
+                                            )
+                                        ]
                                     }
-                                }
-                            )
+                                ]
+                            }
+
+
                         ]
                     }
 
@@ -514,8 +530,8 @@ define([
                                         'state': false,
                                         'init': function () {
                                             this._driver = vwf.views["vwf/view/aframe"];
-                                            this._comp = new mdc.iconToggle.MDCIconToggle(this);
-                                            mdc.iconToggle.MDCIconToggle.attachTo(this);
+                                            this._comp = new mdc.iconButton.MDCIconButtonToggle(this);
+                                            //mdc.iconButton.MDCIconButtonToggle.attachTo(this);
                                             if (document.getElementsByClassName('touchZone').length > 0){
                                                 this._comp.on = true;
                                                 this.style.color = "#3e7e40";
@@ -525,7 +541,7 @@ define([
                                             }
                                             
 
-                                                this.addEventListener('MDCIconToggle:change', (e) => {
+                                                this.addEventListener('MDCIconButtonToggle:change', (e) => {
                                                     let chkAttr = e.detail.isOn;
                                                     let driver = e.target._driver;
                                                     if (chkAttr) {
@@ -1491,11 +1507,12 @@ define([
                                         'init': function () {
                                             this._driver = vwf.views["vwf/view/webrtc"];
                                             if (!this._driver) {
-                                                this.classList.add('mdc-icon-toggle--disabled');
+                                                //this.classList.add('mdc-icon-toggle--disabled');
+                                                this.setAttribute('disabled',"");
 
                                             }
 
-                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                                 let driver = e.target._driver;
                                                 let chkAttr = e.detail.isOn;
@@ -1507,16 +1524,20 @@ define([
                                                 if (chkAttr) {
                                                     driver.startWebRTC(avatarID);
 
-                                                    micToggle.classList.remove('mdc-icon-toggle--disabled');
-                                                    camToggle.classList.remove('mdc-icon-toggle--disabled');
+                                                    micToggle.removeAttribute('disabled');
+                                                    camToggle.removeAttribute('disabled');
+                                                    //micToggle.classList.remove('mdc-icon-toggle--disabled');
+                                                    //camToggle.classList.remove('mdc-icon-toggle--disabled');
 
                                                     console.log("on")
 
                                                 } else {
                                                     driver.stopWebRTC(avatarID);
 
-                                                    micToggle.classList.add('mdc-icon-toggle--disabled');
-                                                    camToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    micToggle.setAttribute('disabled',"");
+                                                    camToggle.setAttribute('disabled',"");
+                                                    //micToggle.classList.add('mdc-icon-toggle--disabled');
+                                                    //camToggle.classList.add('mdc-icon-toggle--disabled');
                                                     console.log("off")
                                                 }
 
@@ -1545,10 +1566,12 @@ define([
                                             let webrtcswitch = document.querySelector('#webrtcswitch');
 
                                             if (!this._driver) {
-                                                this.classList.add('mdc-icon-toggle--disabled');
+                                                //this.classList.add('mdc-icon-toggle--disabled');
+                                                this.setAttribute("disabled", "");
                                             }
-                                            this.classList.add('mdc-icon-toggle--disabled');
-                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                            //this.classList.add('mdc-icon-toggle--disabled');
+                                            this.setAttribute("disabled", "");
+                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                                 let driver = e.target._driver;
                                                 let chkAttr = e.detail.isOn;
@@ -1583,11 +1606,13 @@ define([
                                             this._driver = vwf.views["vwf/view/webrtc"];
 
                                             if (!this._driver) {
-                                                this.classList.add('mdc-icon-toggle--disabled');
+                                                //this.classList.add('mdc-icon-toggle--disabled');
+                                                this.setAttribute("disabled", "");
                                             }
 
-                                            this.classList.add('mdc-icon-toggle--disabled');
-                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                           // this.classList.add('mdc-icon-toggle--disabled');
+                                           this.setAttribute("disabled", "");
+                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                                 let driver = e.target._driver;
                                                 let chkAttr = e.detail.isOn;
@@ -1650,15 +1675,15 @@ define([
                                         'init': function () {
                                             var nodeID = this._currentNode;
 
-                                            this._comp = new mdc.iconToggle.MDCIconToggle(this);
+                                            this._comp = new mdc.iconButtonToggle.MDCIconButtonToggle(this);
 
                                             this.setAttribute('id', "soundStopStartSwitch-" + nodeID);
                                             let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
-                                            mdc.iconToggle.MDCIconToggle.attachTo(this);
+                                            //mdc.iconToggle.MDCIconToggle.attachTo(this);
                                             this._comp.on = isPlaying;
 
 
-                                            this.addEventListener('MDCIconToggle:change', (e) => {
+                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                                 // let avatarID = 'avatar-'+ vwf.moniker_;
                                                 // let avatarNode = self.nodes['avatar-'+ vwf.moniker_];
@@ -3587,7 +3612,7 @@ define([
                             'state': false,
                             'init': function () {
 
-                                this.addEventListener('MDCIconToggle:change', (e) => {
+                                this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                     let avatarID = 'avatar-' + vwf.moniker_;
                                     let avatarNode = self.nodes['avatar-' + vwf.moniker_];
@@ -3678,9 +3703,9 @@ define([
             }
             );
 
-            var toggleNodes = document.querySelectorAll('.mdc-icon-toggle');
+            var toggleNodes = document.querySelectorAll('.mdc-icon-button');
             toggleNodes.forEach(el => {
-                mdc.iconToggle.MDCIconToggle.attachTo(el);
+                mdc.iconButton.MDCIconButtonToggle.attachTo(el);
             });
 
 
