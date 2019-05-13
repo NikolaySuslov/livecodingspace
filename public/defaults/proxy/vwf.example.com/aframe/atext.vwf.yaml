@@ -24,3 +24,4 @@ properties:
   wrap-count:
   wrap-pixels:
   z-offset:
+  negate:

@@ -183,7 +183,9 @@ this.textProto = function () {
             "color": "white",
             "value": "Text",
             "side": "double",
-            "class": "clickable"
+            "class": "clickable",
+            "font": "/vwf/model/aframe/fonts/custom-msdf.json",
+            "negate": false
         },
         children: {
             "interpolation":

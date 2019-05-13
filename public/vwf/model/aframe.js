@@ -141,7 +141,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     'transparent', 'value',
                     'white-space', 'width',
                     'wrap-count', 'wrap-pixels',
-                    'z-offset'
+                    'z-offset', 'negate'
                 ],
 
                 'A-SKY': [
