@@ -621,7 +621,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                   
 
-            },{wait: 200})
+            })
 
 
             
@@ -4907,7 +4907,7 @@ if ( ! childComponent.source ) {
                        //console.log(r);
                        parseComp(r);
 
-                   },{wait:200});
+                   });
 
                 } else {
                     let worldName = dbName.split('/')[0];
@@ -4917,7 +4917,7 @@ if ( ! childComponent.source ) {
                     //console.log(r);
                     parseComp(r);
 
-                },{wait:200});
+                });
                 }
 
                 //console.log(source);
@@ -4983,7 +4983,7 @@ if ( ! childComponent.source ) {
                     window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(function(r){
                         //console.log(r);
                         parseComp(r);
-                    },{wait: 200});
+                    });
  
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
@@ -4991,7 +4991,7 @@ if ( ! childComponent.source ) {
                         //console.log(r);
                         parseComp(r);
     
-                    },{wait: 200});
+                    });
                 }
 
                // userDB.get(fileName).once(, {wait: 1000})

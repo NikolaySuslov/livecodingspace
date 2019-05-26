@@ -1454,7 +1454,7 @@ class App {
         _LCSDB.user().get('documents').get(root).get(docInfoName).get('modified').put(modified);
 
       }
-    }, {wait: 200});
+    });
 
 
     // Save Config Information

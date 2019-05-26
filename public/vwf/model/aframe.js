@@ -632,7 +632,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                     }
 
                                     }
-                                },{wait: 200});
+                                });
 
 
                                 // httpGetJson(propertyValue).then(function (response) {
