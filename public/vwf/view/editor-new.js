@@ -3612,6 +3612,7 @@ define([
                             'state': false,
                             'init': function () {
 
+                                this._comp = mdc.iconButton.MDCIconButtonToggle.attachTo(this);
                                 this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                     let avatarID = 'avatar-' + vwf.moniker_;
