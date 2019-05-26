@@ -37,7 +37,7 @@ class Header {
             $cell: true,
             $type: "div",
             $components: [
-                headerGUI
+                //headerGUI
             ]
         })
 
