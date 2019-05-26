@@ -97,7 +97,6 @@ function adapterFactory() {
       chromeShim.shimOnTrack(window);
       chromeShim.shimAddTrackRemoveTrack(window);
       chromeShim.shimGetSendersWithDtmf(window);
-      chromeShim.shimGetStats(window);
       chromeShim.shimSenderReceiverGetStats(window);
       chromeShim.fixNegotiationNeeded(window);
 
@@ -219,7 +218,6 @@ Object.defineProperty(exports, 'shimGetDisplayMedia', {
 exports.shimMediaStream = shimMediaStream;
 exports.shimOnTrack = shimOnTrack;
 exports.shimGetSendersWithDtmf = shimGetSendersWithDtmf;
-exports.shimGetStats = shimGetStats;
 exports.shimSenderReceiverGetStats = shimSenderReceiverGetStats;
 exports.shimAddTrackRemoveTrackWithNative = shimAddTrackRemoveTrackWithNative;
 exports.shimAddTrackRemoveTrack = shimAddTrackRemoveTrack;
@@ -231,6 +229,46 @@ var _utils = require('../utils.js');
 var utils = _interopRequireWildcard(_utils);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+/* iterates the stats graph recursively. */
+function walkStats(stats, base, resultSet) {
+  if (!base || resultSet.has(base.id)) {
+    return;
+  }
+  resultSet.set(base.id, base);
+  Object.keys(base).forEach(function (name) {
+    if (name.endsWith('Id')) {
+      walkStats(stats, stats.get(base[name]), resultSet);
+    } else if (name.endsWith('Ids')) {
+      base[name].forEach(function (id) {
+        walkStats(stats, stats.get(id), resultSet);
+      });
+    }
+  });
+}
+
+/* filter getStats for a sender/receiver track. */
+function filterStats(result, track, outbound) {
+  var streamStatsType = outbound ? 'outbound-rtp' : 'inbound-rtp';
+  var filteredResult = new Map();
+  if (track === null) {
+    return filteredResult;
+  }
+  var trackStats = [];
+  result.forEach(function (value) {
+    if (value.type === 'track' && value.trackIdentifier === track.id) {
+      trackStats.push(value);
+    }
+  });
+  trackStats.forEach(function (trackStat) {
+    result.forEach(function (stats) {
+      if (stats.type === streamStatsType && stats.trackId === trackStat.id) {
+        walkStats(result, stats, filteredResult);
+      }
+    });
+  });
+  return filteredResult;
+}
 
 function shimMediaStream(window) {
   window.MediaStream = window.MediaStream || window.webkitMediaStream;
@@ -411,74 +449,6 @@ function shimGetSendersWithDtmf(window) {
   }
 }
 
-function shimGetStats(window) {
-  if (!window.RTCPeerConnection) {
-    return;
-  }
-
-  var origGetStats = window.RTCPeerConnection.prototype.getStats;
-  window.RTCPeerConnection.prototype.getStats = function (selector, successCallback, errorCallback) {
-    var _this5 = this;
-
-    var args = arguments;
-
-    // If selector is a function then we are in the old style stats so just
-    // pass back the original getStats format to avoid breaking old users.
-    if (arguments.length > 0 && typeof selector === 'function') {
-      return origGetStats.apply(this, arguments);
-    }
-
-    // When spec-style getStats is supported, return those when called with
-    // either no arguments or the selector argument is null.
-    if (origGetStats.length === 0 && (arguments.length === 0 || typeof arguments[0] !== 'function')) {
-      return origGetStats.apply(this, []);
-    }
-
-    var fixChromeStats_ = function fixChromeStats_(response) {
-      var standardReport = {};
-      var reports = response.result();
-      reports.forEach(function (report) {
-        var standardStats = {
-          id: report.id,
-          timestamp: report.timestamp,
-          type: {
-            localcandidate: 'local-candidate',
-            remotecandidate: 'remote-candidate'
-          }[report.type] || report.type
-        };
-        report.names().forEach(function (name) {
-          standardStats[name] = report.stat(name);
-        });
-        standardReport[standardStats.id] = standardStats;
-      });
-
-      return standardReport;
-    };
-
-    // shim getStats with maplike support
-    var makeMapStats = function makeMapStats(stats) {
-      return new Map(Object.keys(stats).map(function (key) {
-        return [key, stats[key]];
-      }));
-    };
-
-    if (arguments.length >= 2) {
-      var successCallbackWrapper_ = function successCallbackWrapper_(response) {
-        args[1](makeMapStats(fixChromeStats_(response)));
-      };
-
-      return origGetStats.apply(this, [successCallbackWrapper_, arguments[0]]);
-    }
-
-    // promise-support
-    return new Promise(function (resolve, reject) {
-      origGetStats.apply(_this5, [function (response) {
-        resolve(makeMapStats(fixChromeStats_(response)));
-      }, reject]);
-    }).then(successCallback, errorCallback);
-  };
-}
-
 function shimSenderReceiverGetStats(window) {
   if (!((typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' && window.RTCPeerConnection && window.RTCRtpSender && window.RTCRtpReceiver)) {
     return;
@@ -489,11 +459,11 @@ function shimSenderReceiverGetStats(window) {
     var origGetSenders = window.RTCPeerConnection.prototype.getSenders;
     if (origGetSenders) {
       window.RTCPeerConnection.prototype.getSenders = function () {
-        var _this6 = this;
+        var _this5 = this;
 
         var senders = origGetSenders.apply(this, []);
         senders.forEach(function (sender) {
-          return sender._pc = _this6;
+          return sender._pc = _this5;
         });
         return senders;
       };
@@ -515,7 +485,7 @@ function shimSenderReceiverGetStats(window) {
            *   send a track with the same id as sender.track as
            *   it is not possible to identify the RTCRtpSender.
            */
-          utils.filterStats(result, sender.track, true)
+          filterStats(result, sender.track, true)
         );
       });
     };
@@ -526,11 +496,11 @@ function shimSenderReceiverGetStats(window) {
     var origGetReceivers = window.RTCPeerConnection.prototype.getReceivers;
     if (origGetReceivers) {
       window.RTCPeerConnection.prototype.getReceivers = function () {
-        var _this7 = this;
+        var _this6 = this;
 
         var receivers = origGetReceivers.apply(this, []);
         receivers.forEach(function (receiver) {
-          return receiver._pc = _this7;
+          return receiver._pc = _this6;
         });
         return receivers;
       };
@@ -542,7 +512,7 @@ function shimSenderReceiverGetStats(window) {
     window.RTCRtpReceiver.prototype.getStats = function () {
       var receiver = this;
       return this._pc.getStats().then(function (result) {
-        return utils.filterStats(result, receiver.track, false);
+        return filterStats(result, receiver.track, false);
       });
     };
   }
@@ -596,11 +566,11 @@ function shimAddTrackRemoveTrackWithNative(window) {
   // the interactions with legacy getLocalStreams behave as in other browsers.
   // Keeps a mapping stream.id => [stream, rtpsenders...]
   window.RTCPeerConnection.prototype.getLocalStreams = function () {
-    var _this8 = this;
+    var _this7 = this;
 
     this._shimmedLocalStreams = this._shimmedLocalStreams || {};
     return Object.keys(this._shimmedLocalStreams).map(function (streamId) {
-      return _this8._shimmedLocalStreams[streamId][0];
+      return _this7._shimmedLocalStreams[streamId][0];
     });
   };
 
@@ -622,12 +592,12 @@ function shimAddTrackRemoveTrackWithNative(window) {
 
   var origAddStream = window.RTCPeerConnection.prototype.addStream;
   window.RTCPeerConnection.prototype.addStream = function (stream) {
-    var _this9 = this;
+    var _this8 = this;
 
     this._shimmedLocalStreams = this._shimmedLocalStreams || {};
 
     stream.getTracks().forEach(function (track) {
-      var alreadyExists = _this9.getSenders().find(function (s) {
+      var alreadyExists = _this8.getSenders().find(function (s) {
         return s.track === track;
       });
       if (alreadyExists) {
@@ -651,17 +621,17 @@ function shimAddTrackRemoveTrackWithNative(window) {
 
   var origRemoveTrack = window.RTCPeerConnection.prototype.removeTrack;
   window.RTCPeerConnection.prototype.removeTrack = function (sender) {
-    var _this10 = this;
+    var _this9 = this;
 
     this._shimmedLocalStreams = this._shimmedLocalStreams || {};
     if (sender) {
       Object.keys(this._shimmedLocalStreams).forEach(function (streamId) {
-        var idx = _this10._shimmedLocalStreams[streamId].indexOf(sender);
+        var idx = _this9._shimmedLocalStreams[streamId].indexOf(sender);
         if (idx !== -1) {
-          _this10._shimmedLocalStreams[streamId].splice(idx, 1);
+          _this9._shimmedLocalStreams[streamId].splice(idx, 1);
         }
-        if (_this10._shimmedLocalStreams[streamId].length === 1) {
-          delete _this10._shimmedLocalStreams[streamId];
+        if (_this9._shimmedLocalStreams[streamId].length === 1) {
+          delete _this9._shimmedLocalStreams[streamId];
         }
       });
     }
@@ -683,24 +653,24 @@ function shimAddTrackRemoveTrack(window) {
   // to return the original streams.
   var origGetLocalStreams = window.RTCPeerConnection.prototype.getLocalStreams;
   window.RTCPeerConnection.prototype.getLocalStreams = function () {
-    var _this11 = this;
+    var _this10 = this;
 
     var nativeStreams = origGetLocalStreams.apply(this);
     this._reverseStreams = this._reverseStreams || {};
     return nativeStreams.map(function (stream) {
-      return _this11._reverseStreams[stream.id];
+      return _this10._reverseStreams[stream.id];
     });
   };
 
   var origAddStream = window.RTCPeerConnection.prototype.addStream;
   window.RTCPeerConnection.prototype.addStream = function (stream) {
-    var _this12 = this;
+    var _this11 = this;
 
     this._streams = this._streams || {};
     this._reverseStreams = this._reverseStreams || {};
 
     stream.getTracks().forEach(function (track) {
-      var alreadyExists = _this12.getSenders().find(function (s) {
+      var alreadyExists = _this11.getSenders().find(function (s) {
         return s.track === track;
       });
       if (alreadyExists) {
@@ -729,7 +699,7 @@ function shimAddTrackRemoveTrack(window) {
   };
 
   window.RTCPeerConnection.prototype.addTrack = function (track, stream) {
-    var _this13 = this;
+    var _this12 = this;
 
     if (this.signalingState === 'closed') {
       throw new DOMException('The RTCPeerConnection\'s signalingState is \'closed\'.', 'InvalidStateError');
@@ -762,7 +732,7 @@ function shimAddTrackRemoveTrack(window) {
 
       // Trigger ONN async.
       Promise.resolve().then(function () {
-        _this13.dispatchEvent(new Event('negotiationneeded'));
+        _this12.dispatchEvent(new Event('negotiationneeded'));
       });
     } else {
       var newStream = new window.MediaStream([track]);
@@ -804,13 +774,13 @@ function shimAddTrackRemoveTrack(window) {
   ['createOffer', 'createAnswer'].forEach(function (method) {
     var nativeMethod = window.RTCPeerConnection.prototype[method];
     window.RTCPeerConnection.prototype[method] = function () {
-      var _this14 = this;
+      var _this13 = this;
 
       var args = arguments;
       var isLegacyCall = arguments.length && typeof arguments[0] === 'function';
       if (isLegacyCall) {
         return nativeMethod.apply(this, [function (description) {
-          var desc = replaceInternalStreamId(_this14, description);
+          var desc = replaceInternalStreamId(_this13, description);
           args[0].apply(null, [desc]);
         }, function (err) {
           if (args[1]) {
@@ -819,7 +789,7 @@ function shimAddTrackRemoveTrack(window) {
         }, arguments[2]]);
       }
       return nativeMethod.apply(this, arguments).then(function (description) {
-        return replaceInternalStreamId(_this14, description);
+        return replaceInternalStreamId(_this13, description);
       });
     };
   });
@@ -847,7 +817,7 @@ function shimAddTrackRemoveTrack(window) {
   });
 
   window.RTCPeerConnection.prototype.removeTrack = function (sender) {
-    var _this15 = this;
+    var _this14 = this;
 
     if (this.signalingState === 'closed') {
       throw new DOMException('The RTCPeerConnection\'s signalingState is \'closed\'.', 'InvalidStateError');
@@ -866,11 +836,11 @@ function shimAddTrackRemoveTrack(window) {
     this._streams = this._streams || {};
     var stream = void 0;
     Object.keys(this._streams).forEach(function (streamid) {
-      var hasTrack = _this15._streams[streamid].getTracks().find(function (track) {
+      var hasTrack = _this14._streams[streamid].getTracks().find(function (track) {
         return sender.track === track;
       });
       if (hasTrack) {
-        stream = _this15._streams[streamid];
+        stream = _this14._streams[streamid];
       }
     });
 
@@ -896,6 +866,68 @@ function shimPeerConnection(window) {
   if (!window.RTCPeerConnection) {
     return;
   }
+
+  var origGetStats = window.RTCPeerConnection.prototype.getStats;
+  window.RTCPeerConnection.prototype.getStats = function (selector, successCallback, errorCallback) {
+    var _this15 = this;
+
+    var args = arguments;
+
+    // If selector is a function then we are in the old style stats so just
+    // pass back the original getStats format to avoid breaking old users.
+    if (arguments.length > 0 && typeof selector === 'function') {
+      return origGetStats.apply(this, arguments);
+    }
+
+    // When spec-style getStats is supported, return those when called with
+    // either no arguments or the selector argument is null.
+    if (origGetStats.length === 0 && (arguments.length === 0 || typeof arguments[0] !== 'function')) {
+      return origGetStats.apply(this, []);
+    }
+
+    var fixChromeStats_ = function fixChromeStats_(response) {
+      var standardReport = {};
+      var reports = response.result();
+      reports.forEach(function (report) {
+        var standardStats = {
+          id: report.id,
+          timestamp: report.timestamp,
+          type: {
+            localcandidate: 'local-candidate',
+            remotecandidate: 'remote-candidate'
+          }[report.type] || report.type
+        };
+        report.names().forEach(function (name) {
+          standardStats[name] = report.stat(name);
+        });
+        standardReport[standardStats.id] = standardStats;
+      });
+
+      return standardReport;
+    };
+
+    // shim getStats with maplike support
+    var makeMapStats = function makeMapStats(stats) {
+      return new Map(Object.keys(stats).map(function (key) {
+        return [key, stats[key]];
+      }));
+    };
+
+    if (arguments.length >= 2) {
+      var successCallbackWrapper_ = function successCallbackWrapper_(response) {
+        args[1](makeMapStats(fixChromeStats_(response)));
+      };
+
+      return origGetStats.apply(this, [successCallbackWrapper_, arguments[0]]);
+    }
+
+    // promise-support
+    return new Promise(function (resolve, reject) {
+      origGetStats.apply(_this15, [function (response) {
+        resolve(makeMapStats(fixChromeStats_(response)));
+      }, reject]);
+    }).then(successCallback, errorCallback);
+  };
 
   // shim implicit creation of RTCSessionDescription/RTCIceCandidate
   ['setLocalDescription', 'setRemoteDescription', 'addIceCandidate'].forEach(function (method) {
@@ -1167,24 +1199,22 @@ function shimGetUserMedia(window) {
   // Even though Chrome 45 has navigator.mediaDevices and a getUserMedia
   // function which returns a Promise, it does not accept spec-style
   // constraints.
-  if (navigator.mediaDevices.getUserMedia) {
-    var origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-    navigator.mediaDevices.getUserMedia = function (cs) {
-      return shimConstraints_(cs, function (c) {
-        return origGetUserMedia(c).then(function (stream) {
-          if (c.audio && !stream.getAudioTracks().length || c.video && !stream.getVideoTracks().length) {
-            stream.getTracks().forEach(function (track) {
-              track.stop();
-            });
-            throw new DOMException('', 'NotFoundError');
-          }
-          return stream;
-        }, function (e) {
-          return Promise.reject(shimError_(e));
-        });
+  var origGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+  navigator.mediaDevices.getUserMedia = function (cs) {
+    return shimConstraints_(cs, function (c) {
+      return origGetUserMedia(c).then(function (stream) {
+        if (c.audio && !stream.getAudioTracks().length || c.video && !stream.getVideoTracks().length) {
+          stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          throw new DOMException('', 'NotFoundError');
+        }
+        return stream;
+      }, function (e) {
+        return Promise.reject(shimError_(e));
       });
-    };
-  }
+    });
+  };
 }
 
 },{"../utils.js":15}],6:[function(require,module,exports){
@@ -1286,9 +1316,6 @@ function shimMaxMessageSize(window) {
   }
 
   var sctpInDescription = function sctpInDescription(description) {
-    if (!description || !description.sdp) {
-      return false;
-    }
     var sections = _sdp2.default.splitSections(description.sdp);
     sections.shift();
     return sections.some(function (mediaSection) {
@@ -2388,7 +2415,7 @@ function shimCreateOfferLegacy(window) {
         offerOptions.offerToReceiveAudio = !!offerOptions.offerToReceiveAudio;
       }
       var audioTransceiver = this.getTransceivers().find(function (transceiver) {
-        return transceiver.receiver.track.kind === 'audio';
+        return transceiver.sender.track && transceiver.sender.track.kind === 'audio';
       });
       if (offerOptions.offerToReceiveAudio === false && audioTransceiver) {
         if (audioTransceiver.direction === 'sendrecv') {
@@ -2413,7 +2440,7 @@ function shimCreateOfferLegacy(window) {
         offerOptions.offerToReceiveVideo = !!offerOptions.offerToReceiveVideo;
       }
       var videoTransceiver = this.getTransceivers().find(function (transceiver) {
-        return transceiver.receiver.track.kind === 'video';
+        return transceiver.sender.track && transceiver.sender.track.kind === 'video';
       });
       if (offerOptions.offerToReceiveVideo === false && videoTransceiver) {
         if (videoTransceiver.direction === 'sendrecv') {
@@ -2462,8 +2489,6 @@ exports.log = log;
 exports.deprecated = deprecated;
 exports.detectBrowser = detectBrowser;
 exports.compactObject = compactObject;
-exports.walkStats = walkStats;
-exports.filterStats = filterStats;
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -2600,11 +2625,9 @@ function detectBrowser(window) {
     // Firefox.
     result.browser = 'firefox';
     result.version = extractVersion(navigator.userAgent, /Firefox\/(\d+)\./, 1);
-  } else if (navigator.webkitGetUserMedia || window.isSecureContext === false && window.webkitRTCPeerConnection && !window.RTCIceGatherer) {
+  } else if (navigator.webkitGetUserMedia) {
     // Chrome, Chromium, Webview, Opera.
     // Version matches Chrome/WebRTC version.
-    // Chrome 74 removed webkitGetUserMedia on http as well so we need the
-    // more complicated fallback to webkitRTCPeerConnection.
     result.browser = 'chrome';
     result.version = extractVersion(navigator.userAgent, /Chrom(e|ium)\/(\d+)\./, 2);
   } else if (navigator.mediaDevices && navigator.userAgent.match(/Edge\/(\d+).(\d+)$/)) {
@@ -2644,46 +2667,6 @@ function compactObject(data) {
 
     return Object.assign(accumulator, _defineProperty({}, key, value));
   }, {});
-}
-
-/* iterates the stats graph recursively. */
-function walkStats(stats, base, resultSet) {
-  if (!base || resultSet.has(base.id)) {
-    return;
-  }
-  resultSet.set(base.id, base);
-  Object.keys(base).forEach(function (name) {
-    if (name.endsWith('Id')) {
-      walkStats(stats, stats.get(base[name]), resultSet);
-    } else if (name.endsWith('Ids')) {
-      base[name].forEach(function (id) {
-        walkStats(stats, stats.get(id), resultSet);
-      });
-    }
-  });
-}
-
-/* filter getStats for a sender/receiver track. */
-function filterStats(result, track, outbound) {
-  var streamStatsType = outbound ? 'outbound-rtp' : 'inbound-rtp';
-  var filteredResult = new Map();
-  if (track === null) {
-    return filteredResult;
-  }
-  var trackStats = [];
-  result.forEach(function (value) {
-    if (value.type === 'track' && value.trackIdentifier === track.id) {
-      trackStats.push(value);
-    }
-  });
-  trackStats.forEach(function (trackStat) {
-    result.forEach(function (stats) {
-      if (stats.type === streamStatsType && stats.trackId === trackStat.id) {
-        walkStats(result, stats, filteredResult);
-      }
-    });
-  });
-  return filteredResult;
 }
 
 },{}],16:[function(require,module,exports){

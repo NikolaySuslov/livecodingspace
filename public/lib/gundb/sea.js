@@ -677,7 +677,7 @@
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window||{}).Gun || USE('./gun', 1);
+    var Gun = (SEA.window||{}).Gun || USE((typeof common == "undefined"?'.':'')+'./gun', 1);
     Gun.SEA = SEA;
     SEA.GUN = SEA.Gun = Gun;
 
@@ -1121,6 +1121,10 @@
     // This is broken down into some pretty clear edge cases, let's go over them:
     function security(msg){
       var at = this.as, sea = at.sea, to = this.to;
+      if(at.opt.faith && (msg._||noop).faith){ // you probably shouldn't have faith in this!
+        this.to.next(msg); // why do we allow skipping security? I'm very scared about it actually.
+        return; // but so that way storage adapters that already verified something can get performance boost. This was a community requested feature. If anybody finds an exploit with it, please report immediately. It should only be exploitable if you have XSS control anyways, which if you do, you can bypass security regardless of this.
+      }
       if(msg.get){
         // if there is a request to read data from us, then...
         var soul = msg.get['#'];

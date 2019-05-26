@@ -1972,10 +1972,11 @@
 			mesh.hear = function(raw, peer){
 				if(!raw){ return }
 				var dup = ctx.dup, id, hash, msg, tmp = raw[0];
-				if(opt.pack <= raw.length){ return mesh.say({dam: '!', err: "Message too big!"}, peer) }
+				if(opt.pack <= raw.length){ return mesh.say({dam: '!', err: "Message too big!"}, peer) } 
 				if('{' === tmp){
 					try{msg = JSON.parse(raw);}catch(e){opt.log('DAM JSON parse error', e)}
 					if(!msg){ return }
+					mesh.hear.d += raw.length; ++mesh.hear.c; // STATS!
 					if(dup.check(id = msg['#'])){ return }
 					dup.track(id, true).it = msg; // GUN core also dedups, so `true` is needed.
 					if((tmp = msg['@']) && msg.put){
@@ -2010,19 +2011,20 @@
 					return;
 				}
 			}
+			mesh.hear.c = mesh.hear.d = 0;
 			var tomap = function(k,i,m){m(k,true)};
 
 			;(function(){
+				var message;
+				function each(peer){ mesh.say(message, peer) }
 				mesh.say = function(msg, peer, o){
 					/*
 						TODO: Plenty of performance optimizations
 						that can be made just based off of ordering,
 						and reducing function calls for cached writes.
 					*/
-					if(!peer){
-						Type.obj.map(opt.peers, function(peer){
-							mesh.say(msg, peer);
-						});
+					if(!peer){ message = msg;
+						Type.obj.map(opt.peers, each);
 						return;
 					}
 					var tmp, wire = peer.wire || ((opt.wire) && opt.wire(peer)), msh, raw;// || open(peer, ctx); // TODO: Reopen!
@@ -2067,10 +2069,12 @@
 						if(wire.send){
 							wire.send(raw);
 						}
+						mesh.say.d += raw.length; ++mesh.say.c; // STATS!
 					}catch(e){
 						(peer.queue = peer.queue || []).push(raw);
 					}
 				}
+				mesh.say.c = mesh.say.d = 0;
 
 			}());
 
@@ -2127,9 +2131,8 @@
 				var tmp = peer.wire || {};
 				if(peer.id || peer.url){
 					opt.peers[peer.url || peer.id] = peer;
-					Type.obj.del(opt.peers, tmp.id);
 				} else {
-					tmp = tmp.id = tmp.id || Type.text.random(9);
+					tmp = peer.id = tmp.pid = peer.id || Type.text.random(9);
 					mesh.say({dam: '?'}, opt.peers[tmp] = peer);
 				}
 				if(!tmp.hied){ ctx.on(tmp.hied = 'hi', peer) }
@@ -2154,7 +2157,11 @@
 					// });
 					return;
 				}
-				peer.id = peer.id || msg.pid;
+				if(!peer.wire){ return }
+				if(!peer.wire.pid){ return } // only run code below if wire.pid exists
+				Type.obj.del(opt.peers, peer.wire.pid || peer.id);
+				delete peer.wire.pid;
+				peer.id = msg.pid;
 				mesh.hi(peer);
 			}
 			return mesh;

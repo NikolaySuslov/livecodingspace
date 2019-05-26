@@ -1511,7 +1511,7 @@ define([
                                                 this.setAttribute('disabled',"");
 
                                             }
-
+                                            mdc.iconButton.MDCIconButtonToggle.attachTo(this);
                                             this.addEventListener('MDCIconButtonToggle:change', (e) => {
 
                                                 let driver = e.target._driver;
@@ -3703,10 +3703,10 @@ define([
             }
             );
 
-            var toggleNodes = document.querySelectorAll('.mdc-icon-button');
-            toggleNodes.forEach(el => {
-                mdc.iconButton.MDCIconButtonToggle.attachTo(el);
-            });
+            // var toggleNodes = document.querySelectorAll('.mdc-icon-button');
+            // toggleNodes.forEach(el => {
+            //     mdc.iconButton.MDCIconButtonToggle.attachTo(el);
+            // });
 
 
             //==============
