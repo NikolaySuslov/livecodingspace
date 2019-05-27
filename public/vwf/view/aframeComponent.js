@@ -23,6 +23,7 @@ define(["module", "vwf/view"], function (module, view) {
             this.realTickDif = 50;
             this.lastrealTickDif = 50;
             this.lastRealTick = performance.now();
+            this.interpolateView = true;
 
             this.state.appInitialized = false;
 
@@ -215,9 +216,9 @@ define(["module", "vwf/view"], function (module, view) {
         },
 
         ticked: function (vwfTime) {
-
-            lerpTick();
-
+           
+                lerpTick();
+            
         },
 
         tocked: function (vwfTime) {

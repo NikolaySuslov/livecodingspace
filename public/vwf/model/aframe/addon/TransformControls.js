@@ -853,6 +853,10 @@
 
 				if ( intersect ) {
 
+					let viewDriver = vwf.views["vwf/view/aframeComponent"];
+					viewDriver.interpolateView = false;
+
+
 					event.preventDefault();
 					event.stopPropagation();
 
@@ -1101,6 +1105,9 @@
 			event.preventDefault(); // Prevent MouseEvent on mobile
 
 			if ( event.button !== undefined && event.button !== 0 ) return;
+
+			let viewDriver = vwf.views["vwf/view/aframeComponent"];
+			viewDriver.interpolateView = true;
 
 			if ( _dragging && ( scope.axis !== null ) ) {
 

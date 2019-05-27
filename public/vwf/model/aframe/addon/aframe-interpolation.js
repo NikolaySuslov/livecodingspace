@@ -60,7 +60,7 @@ AFRAME.registerComponent('interpolation', {
       this.nodeState = interNode[1];
     }
 
-    if (this.enabled && this.node && this.node.interpolate) {
+    if (this.enabled && this.node && this.node.interpolate && this.driver.interpolateView) {
       this.setInterpolatedTransforms(timepassed);
 
       // this.restoreTransforms();
@@ -74,7 +74,7 @@ AFRAME.registerComponent('interpolation', {
 
   tock: function (t, dt) {
     if (this.node) {
-      if (this.enabled && this.node.interpolate) {
+      if (this.enabled && this.node.interpolate && this.driver.interpolateView) {
         this.restoreTransforms();
       }
 
