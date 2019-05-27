@@ -3781,6 +3781,14 @@ define([
             var property = node.properties[propertyName] = createProperty.call(this, node, propertyName, propertyValue);
 
             node.properties.push(property);
+
+            let nodeCell = document.querySelector("#currentNode");
+            if (nodeCell !== null) {
+                if (nodeCell._currentNode === nodeID) {
+                    nodeCell._getNodeProperties();
+                }
+            }
+
         },
 
         deletedNode: function (nodeID) {
@@ -3891,29 +3899,26 @@ define([
             let nodeCell = document.querySelector('#currentNode');
 
             if (nodeCell !== null) {
-                if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
-                    let editCheckBox = document.querySelector("#currentNode #editnode");
 
+                if (nodeCell._currentNode == nodeID && propertyName == 'edit') {
+
+                    let gizmoChild = node.children.filter(el=>el.ID.includes('gizmo'));
+                    if (gizmoChild.length > 0) {
+
+                    let editCheckBox = document.querySelector("#currentNode #editnode");
 
                     if (editCheckBox) {
                         let mdcSwitch = editCheckBox._switch;
                         if (mdcSwitch) {
-                            if (propertyValue) {
-                                //editCheckBox.setAttribute('checked', '');
-                                //editCheckBox.classList.add("mdc-switch--checked");
-                                mdcSwitch.checked = true;
-                            } else {
-                                // let checkAttr = editCheckBox.getAttribute('checked');
-                                // if (checkAttr) editCheckBox.removeAttribute('checked');
-                                mdcSwitch.checked = false;
-                            }
+                            mdcSwitch.checked = propertyValue
                         }
                     }
                     console.log('EDIT !!! is ' + propertyValue)
-
+                }
                 }
 
             }
+            
 
 
         },
