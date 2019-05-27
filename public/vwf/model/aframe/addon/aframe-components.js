@@ -183,7 +183,7 @@ AFRAME.registerComponent('gizmo', {
     },
 
     tick: function (t) {
-        this.transformControls.update();
+       // this.transformControls.update();
     }
 
 });
