@@ -96,6 +96,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                     if (this.wmrright == true) {
                         console.log("CREATE WMR RIGHT HERE!!");
+                        if (AFRAME.utils.device.checkHeadsetConnected()) {
                         if (AFRAME.utils.device.checkHasPositionalTracking()) {
                             let nodeName = 'wmrvr-right-' + self.kernel.moniker();
                             createWMRVRControls('right');
@@ -103,13 +104,17 @@ define(["module", "vwf/view"], function (module, view) {
                         }
                     }
 
+                    }
+
                     if (this.wmrleft == true) {
                         console.log("CREATE WMR LEFT HERE!!");
+                        if (AFRAME.utils.device.checkHeadsetConnected()) {
                         if (AFRAME.utils.device.checkHasPositionalTracking()) {
                             let nodeName = 'wmrvr-left-' + self.kernel.moniker();
                             createWMRVRControls('left');
                             createWMRVR.call(this, childID, nodeName);
                         }
+                    }
                     }
 
                 })
