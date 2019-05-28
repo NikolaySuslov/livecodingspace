@@ -124,12 +124,12 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
     <div id="vwf-root"></div>
 
     <div id="ui-controls" class="guiwindow">
-        <i id="hideui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar" tabindex="0"
+        <i id="hideui" class="mdc-icon-button material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar" tabindex="0"
             data-toggle-on='{"label": "Hide", "content": "grid_on"}' data-toggle-off='{"label": "Show", "content": "grid_off"}'>
             grid_on
         </i>
 
-        <i id="fullscreenui" class="mdc-icon-toggle material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar"
+        <i id="fullscreenui" class="mdc-icon-button material-icons" role="button" aria-pressed="true" aria-label="Hide Toollbar"
             tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}' data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
             fullscreen
         </i>
@@ -149,7 +149,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         });
 
         const iconEl = document.querySelector('#hideui');
-        iconEl.addEventListener('MDCIconToggle:change', (e) => {
+        const compHideUI = new mdc.iconButton.MDCIconButtonToggle(iconEl);
+        iconEl.addEventListener('MDCIconButtonToggle:change', (e) => {
 
             let ui = document.querySelector('.mdc-top-app-bar');
             if (ui) {
@@ -165,7 +166,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         });
 
         const fullScreenToggle = document.querySelector('#fullscreenui');
-        fullScreenToggle.addEventListener('MDCIconToggle:change', (e) => {
+        const compfullScreen = new mdc.iconButton.MDCIconButtonToggle(fullScreenToggle);
+        fullScreenToggle.addEventListener('MDCIconButtonToggle:change', (e) => {
 
             if (screenfull.enabled) {
                 screenfull.toggle();

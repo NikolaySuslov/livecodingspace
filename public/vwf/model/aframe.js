@@ -333,6 +333,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     if (childNode.aframeObj !== undefined) {
                         // removes and destroys object
                         childNode.aframeObj.parentNode.removeChild(childNode.aframeObj);
+                        childNode.aframeObj.destroy();
                         childNode.aframeObj = undefined;
                     }
 
