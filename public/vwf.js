@@ -347,9 +347,10 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 { library: "domReady", active: true },
                 { library: "vwf/configuration", active: true },
                 { library: "vwf/kernel/model", active: true },
+    
                 { library: "vwf/model/javascript", active: true },
-
                 { library: "vwf/model/object", active: true },
+                
                 { library: "vwf/model/stage/log", active: true },
 
                 { library: "vwf/model/ohm", active: true },
@@ -860,6 +861,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             //await _app.getApplicationState();
             await _app.getApplicationState()
+                .then(res => _app.reflector.connectToReflector(res))
                 .then(res => {self.ready( application, res)})
 
         };
@@ -873,6 +875,51 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             // Connect to the reflector. This implementation uses the socket.io library, which
             // communicates using a channel back to the server that provided the client documents.
+            vwf.namespace_ = _app.helpers.GetNamespace(path.path);//.split(".").join("_");
+            console.log(vwf.namespace_);
+            let clientID = path.clientID;
+            vwf.moniker_ = clientID;
+            var self = this;
+            let instance = _LCSDB.get(vwf.namespace_);
+
+            instance.get('heartbeat').on(function (res) {
+
+                if (res.tick) {
+
+                    _LCSDB.get(vwf.namespace_).get('heartbeat').once(inf => {
+
+                        if (inf.start_time) {
+
+                            let start_time = Gun.state.is(inf, 'start_time');
+                            let rate = inf.rate;
+
+                            let msg = self.stamp(res, start_time, rate);
+
+                            if (msg.explicit) {
+                                if (msg.explicit == vwf.moniker_) {
+                                    self.onMessage(msg, queue);
+
+                                    if (msg.action == 'setState') {
+                                        if (_app.reflector.status.pending) {
+                                            _LCSDB.get(clientID).get('status').get('pending').put(false, res => {
+                                                _app.reflector.distributePendingMessages()
+                                            });
+                                        }
+                                    }
+                                    console.log(res);
+                                }
+
+                            } else if (!_app.reflector.status.pending) {
+                                self.onMessage(msg, queue)
+                            } else {
+                                if (_app.reflector.pendingList.pending) {
+                                    _app.reflector.pendingList.push(msg);
+                                }
+                            }
+                        }
+                    })
+                }
+            })
 
             try {
 
@@ -891,8 +938,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     }
                 }
 
-            
-              
 
                 var options = {
 
@@ -929,7 +974,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     //window.location.host
             var host = window._app.reflectorHost; //localStorage.getItem('lcs_reflector'); 
             //if(!host) host = 'http://localhost:3002'; //window.location.origin;       
-            socket = io.connect( host, options );
+           
+            // socket = io.connect( host, options );
                     
 
                 } else {  // Ruby Server -- only supports socket.io 0.6
@@ -968,18 +1014,18 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 // Start a timer to monitor the incoming queue and dispatch the messages as though
                 // they were received from the server.
 
-                this.dispatch();
+                // this.dispatch();
 
-                setInterval( function() {
+                // setInterval( function() {
 
-                    var fields = {
-                        time: vwf.now + 0.010, // TODO: there will be a slight skew here since the callback intervals won't be exactly 10 ms; increment using the actual delta time; also, support play/pause/stop and different playback rates as with connected mode.
-                        origin: "reflector",
-                    };
+                //     var fields = {
+                //         time: vwf.now + 0.010, // TODO: there will be a slight skew here since the callback intervals won't be exactly 10 ms; increment using the actual delta time; also, support play/pause/stop and different playback rates as with connected mode.
+                //         origin: "reflector",
+                //     };
 
-                    queue.insert( fields, true ); // may invoke dispatch(), so call last before returning to the host
+                //     queue.insert( fields, true ); // may invoke dispatch(), so call last before returning to the host
 
-                }, 10 );
+                // }, 10 );
 
             }
 
@@ -995,13 +1041,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                 socket.on( "connect", function() {
 
-                    vwf.logger.infox( "-socket", "connected" );
+                    // vwf.logger.infox( "-socket", "connected" );
 
-                    if ( isSocketIO07() ) {
-                        vwf.moniker_ = this.id;                        
-                    } else {  //Ruby Server
-                        vwf.moniker_ = this.transport.sessionid;
-                    }
+                    // if ( isSocketIO07() ) {
+                    //     vwf.moniker_ = this.id;                        
+                    // } else {  //Ruby Server
+                    //     vwf.moniker_ = this.transport.sessionid;
+                    // }
 
                 } );
 
@@ -1019,29 +1065,29 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                     try {
 
-                        if ( isSocketIO07() ) {
-                            var fields = message;
-                        } else { // Ruby Server - Unpack the arguements
-                            var fields = JSON.parse( message );
-                        }
+                    //     if ( isSocketIO07() ) {
+                    //         var fields = message;
+                    //     } else { // Ruby Server - Unpack the arguements
+                    //         var fields = JSON.parse( message );
+                    //     }
 
-                        fields.time = Number( fields.time );
-                        // TODO: other message validation (check node id, others?)
+                    //     fields.time = Number( fields.time );
+                    //     // TODO: other message validation (check node id, others?)
 
-                        fields.origin = "reflector";
+                    //     fields.origin = "reflector";
 
-                        // Update the queue.  Messages in the queue are ordered by time, then by order of arrival.
-                        // Time is only advanced if the message has no action, meaning it is a tick.
+                    //     // Update the queue.  Messages in the queue are ordered by time, then by order of arrival.
+                    //     // Time is only advanced if the message has no action, meaning it is a tick.
 
-                        queue.insert( fields, !fields.action ); // may invoke dispatch(), so call last before returning to the host
+                    //     queue.insert( fields, !fields.action ); // may invoke dispatch(), so call last before returning to the host
 
-                        // Each message from the server allows us to move time forward. Parse the
-                        // timestamp from the message and call dispatch() to execute all queued
-                        // actions through that time, including the message just received.
+                    //     // Each message from the server allows us to move time forward. Parse the
+                    //     // timestamp from the message and call dispatch() to execute all queued
+                    //     // actions through that time, including the message just received.
                     
-                        // The simulation may perform immediate actions at the current time or it
-                        // may post actions to the queue to be performed in the future. But we only
-                        // move time forward for items arriving in the queue from the reflector.
+                    //     // The simulation may perform immediate actions at the current time or it
+                    //     // may post actions to the queue to be performed in the future. But we only
+                    //     // move time forward for items arriving in the queue from the reflector.
 
                     } catch ( e ) {
 
@@ -1096,19 +1142,114 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
         };
 
+        this.onMessageInsert = function(fields){
+
+            queue.insert(fields, !fields.action);
+        }
+
+        this.stamp = function(source, start_time, rate) {
+
+            let message = JSON.parse(source.tick);
+
+            message.state = Gun.state.is(source, 'tick');
+            message.start_time = start_time; //Gun.state.is(source, 'start_time');
+            message.rate = rate; //source.rate;
+
+            var time = ((message.state - message.start_time)*message.rate)/1000;
+
+            if (message.action == 'setState'){
+                time = ((_app.reflector.setStateTime - message.start_time)*message.rate)/1000;
+            }
+
+            message.time = Number( time );
+            message.origin = "reflector";
+
+            return message
+
+        }
+
+        this.stampExternalMessage = function (msg) {
+
+            let mes = msg;//JSON.parse(msg.msg);
+            let meta = mes.meta;
+
+            delete mes.meta;
+
+            let message = Object.assign({}, mes);
+            message.client = meta.clientID;
+
+            let newMsg = message;
+            let instance = _LCSDB.get(vwf.namespace_)//_LCSDB.get(meta.namespace);
+
+            if (message.result === undefined) {
+
+                instance.get('heartbeat').get('tick').put(JSON.stringify(newMsg));
+
+            } else if (message.action == "getState") {
+
+                let state = message.result;//JSON.stringify(message.result);
+                let toClient = message.parameters[0];
+
+                let msg = 
+                    JSON.stringify({
+                        action: "setState",
+                        parameters: [state],
+                        time: 'tick', //self.setStateTime,
+                        explicit: toClient
+                    })
+
+                instance.get('heartbeat')
+                    .get('tick')
+                    .put(msg, res => {
+                        _LCSDB.get(toClient).get('status').get('pending').put(false)
+                    })
+
+            } else if (message.action === "execute") {
+                console.log("!!!! execute ", message)
+            }
+
+        }
+    
+
+        this.onMessage = function(message, queue, pending ) {
+
+            try {
+        
+                var fields = Object.assign({},message);
+
+                queue.insert(fields, !fields.action); // may invoke dispatch(), so call last before returning to the host
+
+                // Each message from the server allows us to move time forward. Parse the
+                // timestamp from the message and call dispatch() to execute all queued
+                // actions through that time, including the message just received.
+            
+                // The simulation may perform immediate actions at the current time or it
+                // may post actions to the queue to be performed in the future. But we only
+                // move time forward for items arriving in the queue from the reflector.
+        
+            } catch ( e ) {
+        
+                vwf.logger.warn( fields.action, fields.node, fields.member, fields.parameters,
+                    "exception performing action:", require( "vwf/utility" ).exceptionMessage( e ) );
+        
+            }
+        }
+
+
         // -- plan ---------------------------------------------------------------------------------
 
         /// @name module:vwf.plan
 
         this.plan = function( nodeID, actionName, memberName, parameters, when, callback_async /* ( result ) */ ) {
 
-            this.logger.debuggx( "plan", nodeID, actionName, memberName,
-                parameters && parameters.length, when, callback_async && "callback" );
+             this.logger.debuggx( "plan", nodeID, actionName, memberName,
+                 parameters && parameters.length, when, callback_async && "callback" );
 
             var time = when > 0 ? // absolute (+) or relative (-)
                 Math.max( this.now, when ) :
                 this.now + ( -when );
 
+               // console.log(time);
             var fields = {
                 time: time,
                 node: nodeID,
@@ -1150,27 +1291,31 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 member: memberName,
                 parameters: require( "vwf/utility" ).transform( parameters, require( "vwf/utility" ).transforms.transit ),
                 // callback: callback_async,  // TODO: provisionally add fields to queue (or a holding queue) then execute callback when received back from reflector
+                meta: {namespace: vwf.namespace_, clientID: vwf.moniker_}
             };
 
-            if ( socket ) {
+            this.stampExternalMessage(fields);
+
+            // if ( socket ) {
     
-                // Send the message.
-                var message = JSON.stringify( fields );
-                socket.send( message );
+            //     // Send the message.
+            //     var message = JSON.stringify( fields );
+            //     socket.send( message );
  
-            } else {
+            // } else {
                 
-                // In single-user mode, loop the message back to the incoming queue.
+            //     // In single-user mode, loop the message back to the incoming queue.
 
-                fields.client = this.moniker_; // stamp with the originating client like the reflector does
-                fields.origin = "reflector";
+            //     fields.client = this.moniker_; // stamp with the originating client like the reflector does
+            //     fields.origin = "reflector";
 
-                queue.insert( fields );
+            //     queue.insert( fields );
     
-            }
+            // }
 
             this.logger.debugu();
         };
+
 
         // -- respond ------------------------------------------------------------------------------
 
@@ -1180,33 +1325,40 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
         this.respond = function( nodeID, actionName, memberName, parameters, result ) {
 
-            this.logger.debuggx( "respond", nodeID, actionName, memberName,
-                parameters && parameters.length, "..." );  // TODO: loggableParameters(), loggableResult()
+             this.logger.debuggx( "respond", nodeID, actionName, memberName,
+                 parameters && parameters.length, "..." );  // TODO: loggableParameters(), loggableResult()
 
             // Attach the current simulation time and pack the message as an array of the arguments.
+       
+            //let params = require( "vwf/utility" ).transform( parameters, require( "vwf/utility" ).transforms.transit );
+            //var res = require( "vwf/utility" ).transform.apply(this, [result, require( "vwf/utility" .transforms.transit )]);
 
-            var fields = {
+            let fields = {
                 // sequence: undefined,  // TODO: use to identify on return from reflector?
                 time: this.now,
                 node: nodeID,
                 action: actionName,
                 member: memberName,
                 parameters: require( "vwf/utility" ).transform( parameters, require( "vwf/utility" ).transforms.transit ),
-                result: require( "vwf/utility" ).transform( result, require( "vwf/utility" ).transforms.transit ),
+                result: require( "vwf/utility" ).transform(result, require( "vwf/utility").transforms.transit),
+                meta: {namespace: vwf.namespace_, clientID: vwf.moniker_}
             };
 
-            if ( socket ) {
 
-                // Send the message.
+           this.stampExternalMessage(fields);
 
-                var message = JSON.stringify( fields );
-                socket.send( message );
+            // if ( socket ) {
 
-            } else {
+            //     // Send the message.
 
-                // Nothing to do in single-user mode.
+            //     var message = JSON.stringify( fields );
+            //     socket.send( message );
 
-            }
+            // } else {
+
+            //     // Nothing to do in single-user mode.
+
+            // }
 
             this.logger.debugu();
         };
@@ -1218,7 +1370,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         /// @name module:vwf.receive
 
         this.receive = function( nodeID, actionName, memberName, parameters, respond, origin ) {
-
+            
             // origin == "reflector" ?
             //     this.logger.infogx( "receive", nodeID, actionName, memberName,
             //         parameters && parameters.length, respond, origin ) :
@@ -3240,8 +3392,8 @@ if ( ! childComponent.source ) {
         this.setProperty = function( nodeID, propertyName, propertyValue ) {
 
             this.logger.debuggx( "setProperty", function() {
-                return [ nodeID, propertyName, JSON.stringify( loggableValue( propertyValue ) ) ];
-            } );
+                 return [ nodeID, propertyName, JSON.stringify( loggableValue( propertyValue ) ) ];
+             } );
 
             var node = nodes.existing[nodeID];
 
@@ -3433,7 +3585,7 @@ if ( ! childComponent.source ) {
 
         this.getProperty = function( nodeID, propertyName, ignorePrototype ) {
 
-            this.logger.debuggx( "getProperty", nodeID, propertyName );
+             this.logger.debuggx( "getProperty", nodeID, propertyName );
 
             var propertyValue = undefined;
 
@@ -3748,9 +3900,9 @@ if ( ! childComponent.source ) {
 
         this.callMethod = function( nodeID, methodName, methodParameters ) {
 
-            this.logger.debuggx( "callMethod", function() {
-                return [ nodeID, methodName, JSON.stringify( loggableValues( methodParameters ) ) ];
-            } );
+             this.logger.debuggx( "callMethod", function() {
+                 return [ nodeID, methodName, JSON.stringify( loggableValues( methodParameters ) ) ];
+             } );
 
             // Call callingMethod() on each model. The first model to return a non-undefined value
             // dictates the return value.
@@ -4205,9 +4357,9 @@ if ( ! childComponent.source ) {
 
         this.fireEvent = function( nodeID, eventName, eventParameters ) {
 
-            this.logger.debuggx( "fireEvent", function() {
-                return [ nodeID, eventName, JSON.stringify( loggableValues( eventParameters ) ) ];
-            } );
+             this.logger.debuggx( "fireEvent", function() {
+                 return [ nodeID, eventName, JSON.stringify( loggableValues( eventParameters ) ) ];
+             } );
 
             // Encode any namespacing into the name. (Namespaced names were added in 0.6.21.)
 

@@ -91,6 +91,14 @@ class Helpers {
         return result;
     }
 
+    GetNamespace( processedURL ) {
+        if ( ( processedURL[ 'instance' ] ) && ( processedURL[ 'public_path' ] ) ) {
+            return this.JoinPath( processedURL[ 'public_path' ], processedURL[ 'application' ], processedURL[ 'instance' ] );
+        }
+        return undefined;
+    }
+
+
     async IsFileExist(path) {
 
         let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
