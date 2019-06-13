@@ -12,6 +12,9 @@ import { IndexApp } from '/web/index-app.js';
 import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/widgets.js';
 
+import { Reflector } from '/reflector.js';
+
+
 
 class App {
   constructor() {
@@ -23,6 +26,9 @@ class App {
     window._cellWidgets = this.widgets;
     window._LangManager = new Lang;
     window._noty = new Noty;
+
+    this.reflector = new Reflector;
+
 
     _LangManager.setLanguage().then(res => {
       return this.initDB()
@@ -75,7 +81,7 @@ class App {
 
     const dbConnection = new Promise((resolve, reject) => {
 
-      const opt = { peers: this.dbHost, localStorage: false}
+      const opt = { peers: this.dbHost, localStorage: false, until: 1000, chunk: 5} //, until: 1000, chunk: 5
       //opt.store = RindexedDB(opt);
       this.db = Gun(opt);
 
