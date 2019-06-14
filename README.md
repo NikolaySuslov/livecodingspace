@@ -1,4 +1,5 @@
-# LiveCoding.space
+# LiveCoding.space 
+## with [**Krestianstvo Luminary**](https://github.com/NikolaySuslov/luminary-partial) - partial version (very experimental, pure decentralized)
 
 > Collaborative Live Coding Space with support of user-defined languages and **WebVR** ready 3D graphics
 Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.js** | **Cell.js** | **GunDB** and more...
@@ -11,9 +12,9 @@ Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.j
 
 **[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://github.com/virtual-world-framework/vwf)** architecture towards pure-decentralized application by introducing:
 
+- **Krestiasntvo Luminary** running on Gun DB (client based replcement for **Reflector** server)
 - **single page web application**
 - **client-side router** (generating **instances IDs** by client) ([about Page.js](https://visionmedia.github.io/page.js/))
-- file storage independent **Reflector**
 - **GunDB storage system** for serving ```Proxy VWF components```, ```Worlds prototypes```, ```World save states```, ```User Inventories``` ect. in fully decentralized (peer-to-peer or multi-master) DB ([about GunDB](https://gun.eco/docs/Introduction))
 - **GunDB SEA** (Security, Encryption, Authorization) framework for user authorization and **P2P identities** ([about SEA](https://gun.eco/docs/Auth))
 
