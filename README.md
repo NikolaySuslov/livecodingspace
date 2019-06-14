@@ -1,5 +1,5 @@
 # LiveCoding.space 
-## with [**Krestianstvo Luminary**](https://github.com/NikolaySuslov/luminary) - full version (very experimental, pure decentralized)
+## with [**Krestianstvo Luminary**](https://github.com/NikolaySuslov/luminary) - (very experimental, pure decentralized)
 
 > Collaborative Live Coding Space with support of user-defined languages and **WebVR** ready 3D graphics
 Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.js** | **Cell.js** | **GunDB** and more...
