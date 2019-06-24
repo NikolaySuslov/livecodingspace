@@ -17,7 +17,7 @@ Based on: **Virtual World Framework** | **A-Frame** | **Ohm language** | **OSC.j
 - **GunDB storage system** for serving ```Proxy VWF components```, ```Worlds prototypes```, ```World save states```, ```User Inventories``` ect. in fully decentralized (peer-to-peer or multi-master) DB ([about GunDB](https://gun.eco/docs/Introduction))
 - **GunDB SEA** (Security, Encryption, Authorization) framework for user authorization and **P2P identities** ([about SEA](https://gun.eco/docs/Auth))
 
-By default a tiny Reflector server is used for creating a Virtual World instances. In the near future this functionality will have an alternative with the new totaly decentralized solution provided by [**Krestianstvo Luminary**](https://blog.krestianstvo.org/en/krestianstvo-luminary-for-open-croquet-architecutre-and-virtual-world-framework-in-peer-to-peer-web/)">. That will allow to create Virtual World Instances just within Web Browser by a client, using any avaliable decentralized storage GunDB on internet. Secure world instances lists, clients lists, message streams with P2P identities.
+By default a tiny Reflector server is used for creating a Virtual World instances. In the near future this functionality will have an alternative with the new totaly decentralized solution provided by [**Krestianstvo Luminary**](https://blog.krestianstvo.org/en/krestianstvo-luminary-for-open-croquet-architecutre-and-virtual-world-framework-in-peer-to-peer-web/). That will allow to create Virtual World Instances just within Web Browser by a client, using any avaliable decentralized storage GunDB on internet. Secure world instances lists, clients lists, message streams with P2P identities.
 
 alongside with the existed features from the initial version ```v0.1```:
 
