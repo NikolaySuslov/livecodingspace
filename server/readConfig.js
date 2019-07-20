@@ -5,8 +5,8 @@ ADL VW Sandbox Apache 2.0 license(https://github.com/NikolaySuslov/livecodingspa
 */
 
 var fs = require('fs'),
-    argv = require('optimist').argv,
-    logger = require('./logger')
+    argv = require('optimist').argv
+   // logger = require('./logger')
 
 function parseConfigOptions() {
 
@@ -67,15 +67,19 @@ function readConfigFile() {
 
   //This is a bit ugly, but it does beat putting a ton of if/else statements everywhere
   var config = p >= 0 ? (process.argv[p + 1]) : './config.json';
-  logger.warn('loading config from ' + config);
+  //logger.warn('loading config from ' + config);
+  console.log('loading config from ' + config);
   //start the DAL, load configuration file
   try {
       configSettings = JSON.parse(fs.readFileSync(config).toString());
-      logger.info('Configuration read.');
+      //logger.info('Configuration read.');
+      console.log('Configuration read.');
   } catch (e) {
       configSettings = {};
-      logger.error(e.message);
-      logger.error('Could not read config file. Loading defaults.');
+      //logger.error(e.message);
+      //logger.error('Could not read config file. Loading defaults.');
+        console.log(e.message);
+        console.log('Could not read config file. Loading defaults.');
   }
   //save configuration into global scope so other modules can use.
   global.configuration = configSettings;

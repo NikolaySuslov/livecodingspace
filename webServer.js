@@ -13,7 +13,7 @@ var express = require('express'),
     fs = require('fs'),
     http = require('http'),
     https = require('https'),
-    logger = require('./server/logger'),
+    //logger = require('./server/logger'),
     config = require('./server/readConfig')
 
 var app = express();
@@ -29,7 +29,8 @@ function registerReflector(srv) {
 
     if (global.configuration.reflector) {
 
-        logger.info('register reflector server...\n');
+        //logger.info('register reflector server...\n');
+        console.log('register reflector server...\n');
         var reflectorServer = require('lcs-reflector'),
             sio = require('socket.io')(srv);
 
@@ -44,7 +45,8 @@ function registerReflector(srv) {
 
 function startServer() {
 
-    logger.info('Welcome to LiveCoding.space App server!\n');
+    //logger.info('Welcome to LiveCoding.space App server!\n');
+    console.log('Welcome to LiveCoding.space App server!\n');
     config.readConfigFile();
 
     app.use(compression());

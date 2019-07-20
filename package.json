@@ -18,9 +18,8 @@
     "serve-index": "^1.9.1",
     "serve-static": "^1.13.2",
     "optimist": "0.6.1",
-    "winston": "3.2.1",
     "socket.io": "2.2.0",
-    "lcs-reflector": "0.2.0"
+    "lcs-reflector": "0.2.1"
   },
   "scripts": {
     "start": "node index.js",
