@@ -3,7 +3,7 @@ The MIT License (MIT)
 Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 */
 
-import page from '/lib/page.mjs';
+//import page from '/lib/page.mjs';
 import { Header } from '/web/header.js';
 
 
@@ -1052,5 +1052,5 @@ class IndexApp {
 
 
 }
-export { IndexApp }
+export { IndexApp as default }
     //export {getAppDetails, generateFrontPage, setLanguage, initLocale};

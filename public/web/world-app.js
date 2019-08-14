@@ -3,7 +3,7 @@ The MIT License (MIT)
 Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 */
 
-import page from '/lib/page.mjs';
+//import page from '/lib/page.mjs';
 
 class WorldApp {
     constructor(userAlias, worldName, saveName) {
@@ -509,7 +509,7 @@ class WorldApp {
     }
 
 
-    async initWorldGUI() {
+    initWorldGUI() {
 
         //  _LCSDB.on('auth',
         //     function (ack) {
@@ -519,8 +519,7 @@ class WorldApp {
         //     });
 
         let self = this;
-        let users = await _LCSDB.get('users').then();
-        await _LCSDB.get('users').get(this.userAlias).get('pub').then(function (res) {
+     _LCSDB.get('users').get(this.userAlias).get('pub').once(function (res) {
 
             self.makeGUI(res)
 

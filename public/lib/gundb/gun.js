@@ -115,8 +115,9 @@
 				} t.r = t.r || [];
 				t.r.push(k);
 			};
-			var keys = Object.keys;
-			Type.obj.map = function(l, c, _){
+			var keys = Object.keys, map;
+			Object.keys = Object.keys || function(o){ return map(o, function(v,k,t){t(k)}) }
+			Type.obj.map = map = function(l, c, _){
 				var u, i = 0, x, r, ll, lle, f = fn_is(c);
 				t.r = null;
 				if(keys && obj_is(l)){
@@ -801,6 +802,7 @@
 			Gun.on.get = function(msg, gun){
 				var root = gun._, get = msg.get, soul = get[_soul], node = root.graph[soul], has = get[_has], tmp;
 				var next = root.next || (root.next = {}), at = next[soul];
+				// queue concurrent GETs?
 				if(!node){ return root.on('get', msg) }
 				if(has){
 					if('string' != typeof has || !obj_has(node, has)){ return root.on('get', msg) }
@@ -839,7 +841,11 @@
 					at.opt.peers = obj_to(tmp, at.opt.peers);
 				}
 				at.opt.peers = at.opt.peers || {};
-				obj_to(opt, at.opt); // copies options on to `at.opt` only if not already taken.
+				obj_map(opt, function each(v,k){
+					if(!obj_has(this, k) || text.is(v) || obj.empty(v)){ this[k] = v ; return }
+					if(v && v.constructor !== Object && !list_is(v)){ return }
+					obj_map(v, each, this[k]);
+				}, at.opt);
 				Gun.on('opt', at);
 				at.opt.uuid = at.opt.uuid || function(){ return state_lex() + text_rand(12) }
 				return gun;
@@ -1288,7 +1294,7 @@
 			var cat = gun._, acks = 0, tmp;
 			if(tmp = cat.soul || cat.link || cat.dub){ return cb(tmp, as, cat), gun }
 			gun.get(function(msg, ev){
-				if(u === msg.put && (tmp = (obj_map(cat.root.opt.peers, function(v,k,t){t(k)})||[]).length) && ++acks < tmp){
+				if(u === msg.put && (tmp = Object.keys(cat.root.opt.peers).length) && ++acks < tmp){
 					return;
 				}
 				ev.rid(msg);
@@ -1479,7 +1485,6 @@
 			}, as);
 			if(as.res){ as.res() }
 		} function no(v,k){ if(v){ return true } }
-		//console.debug(999,1); var C = 0; setInterval(function(){ try{ debug.innerHTML = C }catch(e){console.log(e)} }, 500);
 
 		function map(v,k,n, at){ var as = this;
 			var is = Gun.is(v);
@@ -1509,7 +1514,7 @@
 			id = at.dub = at.dub || id || Gun.node.soul(cat.obj) || Gun.node.soul(msg.put || at.put) || Gun.val.link.is(msg.put || at.put) || (as.via.back('opt.uuid') || Gun.text.random)(); // TODO: BUG!? Do we really want the soul of the object given to us? Could that be dangerous?
 			if(eve){ eve.stun = true }
 			if(!id){ // polyfill async uuid for SEA
-				at.via.back('opt.uuid')(function(err, id){ // TODO: improve perf without anonymous callback
+				as.via.back('opt.uuid')(function(err, id){ // TODO: improve perf without anonymous callback
 					if(err){ return Gun.log(err) } // TODO: Handle error.
 					solve(at, at.dub = at.dub || id, cat, as);
 				});
@@ -1677,8 +1682,10 @@
 				}
 			}
 			if((tmp = eve.wait) && (tmp = tmp[at.id])){ clearTimeout(tmp) }
+			eve.ack = (eve.ack||0)+1;
+			if(!to && u === data && eve.ack <= (opt.acks || Object.keys(at.root.opt.peers).length)){ return }
 			if((!to && (u === data || at.soul || at.link || (link && !(0 < link.ack))))
-			|| (u === data && (tmp = (obj_map(at.root.opt.peers, function(v,k,t){t(k)})||[]).length) && (!to && (link||at).ack <= tmp))){
+			|| (u === data && (tmp = Object.keys(at.root.opt.peers).length) && (!to && (link||at).ack < tmp))){
 				tmp = (eve.wait = {})[at.id] = setTimeout(function(){
 					val.call({as:opt}, msg, eve, tmp || 1);
 				}, opt.wait || 99);
@@ -1921,7 +1928,7 @@
 				if(data){ disk = data }
 				try{store.setItem(opt.prefix, JSON.stringify(disk));
 				}catch(e){
-					Gun.log(err = (e || "localStorage failure") + " Consider using GUN's IndexedDB plugin for RAD for more storage space, temporary example at https://github.com/amark/gun/blob/master/test/tmp/indexedDB.html .");
+					Gun.log(err = (e || "localStorage failure") + " Consider using GUN's IndexedDB plugin for RAD for more storage space, https://gun.eco/docs/RAD#install");
 					root.on('localStorage:error', {err: err, file: opt.prefix, flush: disk, retry: flush});
 				}
 				if(!err && !Gun.obj.empty(opt.peers)){ return } // only ack if there are no peers.
@@ -2018,6 +2025,7 @@
 						return;
 					}
 					if(!peer.wire && mesh.wire){ mesh.wire(peer) }
+					if(id === peer.last){ return } peer.last = id;  // was it just sent?
 					if(peer === meta.via){ return false }
 					if((tmp = meta.to) && (tmp[peer.url] || tmp[peer.pid] || tmp[peer.id]) /*&& !o*/){ return false }
 					if(peer.batch){
@@ -2100,7 +2108,6 @@
 				});
 			}
 			mesh.bye = function(peer){
-				Type.obj.del(opt.peers, peer.id); // assume if peer.url then reconnect
 				root.on('bye', peer);
 				var tmp = +(new Date); tmp = (tmp - (peer.met||tmp));
 				mesh.bye.time = ((mesh.bye.time || tmp) + tmp) / 2;
@@ -2125,6 +2132,14 @@
 				root.opt.pid = root.opt.pid || Type.text.random(9);
 				this.to.next(root);
 				root.on('out', mesh.say);
+			});
+
+			root.on('bye', function(peer, tmp){
+				peer = opt.peers[peer.id || peer] || peer; 
+				this.to.next(peer);
+				peer.bye? peer.bye() : (tmp = peer.wire) && tmp.close && tmp.close();
+				Type.obj.del(opt.peers, peer.id);
+				peer.wire = null;
 			});
 
 			var gets = {};
@@ -2176,7 +2191,6 @@
 		}());
 
 	  var empty = {}, ok = true, u;
-	  Object.keys = Object.keys || function(o){ return map(o, function(v,k,t){t(k)}) }
 
 	  try{ module.exports = Mesh }catch(e){}
 
@@ -2214,11 +2228,7 @@
 					reconnect(peer);
 				};
 				wire.onerror = function(error){
-					reconnect(peer); // placement?
-					if(!error){ return }
-					if(error.code === 'ECONNREFUSED'){
-						//reconnect(peer, as);
-					}
+					reconnect(peer);
 				};
 				wire.onopen = function(){
 					opt.mesh.hi(peer);

@@ -57,13 +57,13 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                let dbPath = appName + '_html';
               let worldName = path.slice(1);
               let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-              userDB.get('worlds').get(worldName).get(dbPath).once().then(function(res) {
+
+              userDB.get('worlds').get(worldName).get(dbPath).get('file').then(function(res) {
                    
                    var responseText = "";
                    
-
                    if (res) { 
-                    responseText = res.file;
+                    responseText = res//.file;
                    }
 
                      // If the overlay attached a `createdNode` handler, forward this first call

@@ -52,4 +52,4 @@ class Lang {
 
 }
 
-export { Lang }
+export {Lang as default}
