@@ -101,7 +101,7 @@ class App {
 
     _LCSDB.on('hi', function (peer) {
 
-      let msg = peer.url ? 'Connected to DB at: ' + peer.url: 'Peer added!';
+     let msg = peer.url ? 'Connected to DB at: ' + peer.url: 'Peer added!';
 
       let noty = new Noty({
         text: msg,
@@ -110,7 +110,11 @@ class App {
         layout: 'bottomRight',
         type: 'success'
       });
-      noty.show();
+      
+      if (peer.url) {
+        noty.show();
+      }
+     
       console.log(msg)
     })
 

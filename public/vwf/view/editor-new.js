@@ -3542,7 +3542,7 @@ define([
                         {
                             $type: "button",
                             type: "button",
-                            class: "material-icons mdc-top-app-bar__navigation-icon",
+                            class: "mdc-icon-button material-icons mdc-top-app-bar__navigation-icon",
                             $text: "menu"
 
 
@@ -3560,7 +3560,7 @@ define([
                             $components: [
                                 {
                                     $type: "a",
-                                    class: "material-icons mdc-top-app-bar__action-item",
+                                    class: "mdc-icon-button material-icons mdc-top-app-bar__action-item",
                                     id: "toggleCreate",
                                     $text: "apps",
                                     'aria-label': "More"
@@ -3644,7 +3644,7 @@ define([
                         {
                             $type: "a",
                             href: "#",
-                            class: "mdc-top-app-bar__action-item",
+                            class: "mdc-icon-button menuItem mdc-top-app-bar__action-item",
                             $text: "EN",
                             onclick: function () {
                                 //self.lang.changeLanguageTo('en')
@@ -3655,7 +3655,7 @@ define([
                         {
                             $type: "a",
                             href: "#",
-                            class: "mdc-top-app-bar__action-item",
+                            class: "mdc-icon-button menuItem mdc-top-app-bar__action-item",
                             $text: "RU",
                             onclick: function () {
                                 //self.lang.changeLanguageTo('ru')
@@ -3666,7 +3666,7 @@ define([
                         {
                             $type: "a",
                             href: "#",
-                            class: "material-icons mdc-top-app-bar__action-item",
+                            class: "material-icons mdc-icon-button mdc-top-app-bar__action-item",
                             $text: "help",
                             'aria-label': "Help",
                             onclick: function (e) {
