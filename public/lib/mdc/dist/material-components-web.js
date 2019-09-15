@@ -8210,6 +8210,14 @@ var MDCList = /** @class */function (_super) {
             this.selectedIndex = this.listElements.indexOf(radioSelectedListItem);
         }
     };
+    /**
+     * Updates the list item at itemIndex to the desired isEnabled state.
+     * @param itemIndex Index of the list item
+     * @param isEnabled Sets the list item to enabled or disabled.
+     */
+    MDCList.prototype.setEnabled = function (itemIndex, isEnabled) {
+        this.foundation_.setEnabled(itemIndex, isEnabled);
+    };
     MDCList.prototype.getDefaultFoundation = function () {
         var _this = this;
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
@@ -8387,6 +8395,7 @@ var strings = {
     ARIA_CHECKED_CHECKBOX_SELECTOR: '[role="checkbox"][aria-checked="true"]',
     ARIA_CHECKED_RADIO_SELECTOR: '[role="radio"][aria-checked="true"]',
     ARIA_CURRENT: 'aria-current',
+    ARIA_DISABLED: 'aria-disabled',
     ARIA_ORIENTATION: 'aria-orientation',
     ARIA_ORIENTATION_HORIZONTAL: 'horizontal',
     ARIA_ROLE_CHECKBOX_SELECTOR: '[role="checkbox"]',
@@ -8758,6 +8767,22 @@ var MDCListFoundation = /** @class */function (_super) {
         var lastIndex = this.adapter_.getListItemCount() - 1;
         this.adapter_.focusItemAtIndex(lastIndex);
         return lastIndex;
+    };
+    /**
+     * @param itemIndex Index of the list item
+     * @param isEnabled Sets the list item to enabled or disabled.
+     */
+    MDCListFoundation.prototype.setEnabled = function (itemIndex, isEnabled) {
+        if (!this.isIndexValid_(itemIndex)) {
+            return;
+        }
+        if (isEnabled) {
+            this.adapter_.removeClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter_.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'false');
+        } else {
+            this.adapter_.addClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter_.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'true');
+        }
     };
     /**
      * Ensures that preventDefault is only called if the containing element doesn't
@@ -10123,6 +10148,14 @@ var MDCMenu = /** @class */function (_super) {
         this.foundation_.setSelectedIndex(index);
     };
     /**
+     * Sets the enabled state to isEnabled for the menu item at the given index.
+     * @param index Index of the menu item
+     * @param isEnabled The desired enabled state of the menu item.
+     */
+    MDCMenu.prototype.setEnabled = function (index, isEnabled) {
+        this.foundation_.setEnabled(index, isEnabled);
+    };
+    /**
      * @return The item within the menu at the index specified.
      */
     MDCMenu.prototype.getOptionByIndex = function (index) {
@@ -10256,6 +10289,7 @@ var cssClasses = {
 exports.cssClasses = cssClasses;
 var strings = {
     ARIA_CHECKED_ATTR: 'aria-checked',
+    ARIA_DISABLED_ATTR: 'aria-disabled',
     CHECKBOX_SELECTOR: 'input[type="checkbox"]',
     LIST_SELECTOR: '.mdc-list',
     SELECTED_EVENT: 'MDCMenu:selected'
@@ -10341,33 +10375,34 @@ var __assign = this && this.__assign || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var constants_1 = __webpack_require__(/*! @material/list/constants */ "./packages/mdc-list/constants.ts");
 var foundation_2 = __webpack_require__(/*! @material/menu-surface/foundation */ "./packages/mdc-menu-surface/foundation.ts");
-var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu/constants.ts");
+var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu/constants.ts");
 var MDCMenuFoundation = /** @class */function (_super) {
     __extends(MDCMenuFoundation, _super);
     function MDCMenuFoundation(adapter) {
         var _this = _super.call(this, __assign({}, MDCMenuFoundation.defaultAdapter, adapter)) || this;
         _this.closeAnimationEndTimerId_ = 0;
-        _this.defaultFocusState_ = constants_1.DefaultFocusState.LIST_ROOT;
+        _this.defaultFocusState_ = constants_2.DefaultFocusState.LIST_ROOT;
         return _this;
     }
     Object.defineProperty(MDCMenuFoundation, "cssClasses", {
         get: function get() {
-            return constants_1.cssClasses;
+            return constants_2.cssClasses;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCMenuFoundation, "strings", {
         get: function get() {
-            return constants_1.strings;
+            return constants_2.strings;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCMenuFoundation, "numbers", {
         get: function get() {
-            return constants_1.numbers;
+            return constants_2.numbers;
         },
         enumerable: true,
         configurable: true
@@ -10448,20 +10483,22 @@ var MDCMenuFoundation = /** @class */function (_super) {
         this.adapter_.closeSurface();
         // Wait for the menu to close before adding/removing classes that affect styles.
         this.closeAnimationEndTimerId_ = setTimeout(function () {
-            if (_this.adapter_.isSelectableItemAtIndex(index)) {
-                _this.setSelectedIndex(index);
+            // Recompute the index in case the menu contents have changed.
+            var recomputedIndex = _this.adapter_.getElementIndex(listItem);
+            if (_this.adapter_.isSelectableItemAtIndex(recomputedIndex)) {
+                _this.setSelectedIndex(recomputedIndex);
             }
         }, foundation_2.MDCMenuSurfaceFoundation.numbers.TRANSITION_CLOSE_DURATION);
     };
     MDCMenuFoundation.prototype.handleMenuSurfaceOpened = function () {
         switch (this.defaultFocusState_) {
-            case constants_1.DefaultFocusState.FIRST_ITEM:
+            case constants_2.DefaultFocusState.FIRST_ITEM:
                 this.adapter_.focusItemAtIndex(0);
                 break;
-            case constants_1.DefaultFocusState.LAST_ITEM:
+            case constants_2.DefaultFocusState.LAST_ITEM:
                 this.adapter_.focusItemAtIndex(this.adapter_.getMenuItemCount() - 1);
                 break;
-            case constants_1.DefaultFocusState.NONE:
+            case constants_2.DefaultFocusState.NONE:
                 // Do nothing.
                 break;
             default:
@@ -10488,11 +10525,26 @@ var MDCMenuFoundation = /** @class */function (_super) {
         }
         var prevSelectedIndex = this.adapter_.getSelectedSiblingOfItemAtIndex(index);
         if (prevSelectedIndex >= 0) {
-            this.adapter_.removeAttributeFromElementAtIndex(prevSelectedIndex, constants_1.strings.ARIA_CHECKED_ATTR);
-            this.adapter_.removeClassFromElementAtIndex(prevSelectedIndex, constants_1.cssClasses.MENU_SELECTED_LIST_ITEM);
+            this.adapter_.removeAttributeFromElementAtIndex(prevSelectedIndex, constants_2.strings.ARIA_CHECKED_ATTR);
+            this.adapter_.removeClassFromElementAtIndex(prevSelectedIndex, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
         }
-        this.adapter_.addClassToElementAtIndex(index, constants_1.cssClasses.MENU_SELECTED_LIST_ITEM);
-        this.adapter_.addAttributeToElementAtIndex(index, constants_1.strings.ARIA_CHECKED_ATTR, 'true');
+        this.adapter_.addClassToElementAtIndex(index, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
+        this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_CHECKED_ATTR, 'true');
+    };
+    /**
+     * Sets the enabled state to isEnabled for the menu item at the given index.
+     * @param index Index of the menu item
+     * @param isEnabled The desired enabled state of the menu item.
+     */
+    MDCMenuFoundation.prototype.setEnabled = function (index, isEnabled) {
+        this.validatedIndex_(index);
+        if (isEnabled) {
+            this.adapter_.removeClassFromElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'false');
+        } else {
+            this.adapter_.addClassToElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'true');
+        }
     };
     MDCMenuFoundation.prototype.validatedIndex_ = function (index) {
         var menuSize = this.adapter_.getMenuItemCount();
@@ -12172,7 +12224,9 @@ function detectEdgePseudoVarBug(windowObj) {
     var document = windowObj.document;
     var node = document.createElement('div');
     node.className = 'mdc-ripple-surface--test-edge-var-bug';
-    document.body.appendChild(node);
+    // Append to head instead of body because this script might be invoked in the
+    // head, in which case the body doesn't exist yet. The probe works either way.
+    document.head.appendChild(node);
     // The bug exists if ::before style ends up propagating to the parent element.
     // Additionally, getComputedStyle returns null in iframes with display: "none" in Firefox,
     // but Firefox is known to support CSS custom properties correctly.
@@ -21966,6 +22020,7 @@ var MDCShortTopAppBarFoundation = /** @class */function (_super) {
     function MDCShortTopAppBarFoundation(adapter) {
         var _this = _super.call(this, adapter) || this;
         _this.isCollapsed_ = false;
+        _this.isAlwaysCollapsed_ = false;
         return _this;
     }
     Object.defineProperty(MDCShortTopAppBarFoundation.prototype, "isCollapsed", {
@@ -21981,30 +22036,55 @@ var MDCShortTopAppBarFoundation = /** @class */function (_super) {
         if (this.adapter_.getTotalActionItems() > 0) {
             this.adapter_.addClass(constants_1.cssClasses.SHORT_HAS_ACTION_ITEM_CLASS);
         }
-        // this is intended as the short variant must calculate if the
-        // page starts off from the top of the page.
-        this.handleTargetScroll();
+        // If initialized with SHORT_COLLAPSED_CLASS, the bar should always be collapsed
+        this.setAlwaysCollapsed(this.adapter_.hasClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS));
+    };
+    /**
+     * Set if the short top app bar should always be collapsed.
+     *
+     * @param value When `true`, bar will always be collapsed. When `false`, bar may collapse or expand based on scroll.
+     */
+    MDCShortTopAppBarFoundation.prototype.setAlwaysCollapsed = function (value) {
+        this.isAlwaysCollapsed_ = !!value;
+        if (this.isAlwaysCollapsed_) {
+            this.collapse_();
+        } else {
+            // let maybeCollapseBar_ determine if the bar should be collapsed
+            this.maybeCollapseBar_();
+        }
+    };
+    MDCShortTopAppBarFoundation.prototype.getAlwaysCollapsed = function () {
+        return this.isAlwaysCollapsed_;
     };
     /**
      * Scroll handler for applying/removing the collapsed modifier class on the short top app bar.
      * @override
      */
     MDCShortTopAppBarFoundation.prototype.handleTargetScroll = function () {
-        if (this.adapter_.hasClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS)) {
+        this.maybeCollapseBar_();
+    };
+    MDCShortTopAppBarFoundation.prototype.maybeCollapseBar_ = function () {
+        if (this.isAlwaysCollapsed_) {
             return;
         }
         var currentScroll = this.adapter_.getViewportScrollY();
         if (currentScroll <= 0) {
             if (this.isCollapsed_) {
-                this.adapter_.removeClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
-                this.isCollapsed_ = false;
+                this.uncollapse_();
             }
         } else {
             if (!this.isCollapsed_) {
-                this.adapter_.addClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
-                this.isCollapsed_ = true;
+                this.collapse_();
             }
         }
+    };
+    MDCShortTopAppBarFoundation.prototype.uncollapse_ = function () {
+        this.adapter_.removeClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
+        this.isCollapsed_ = false;
+    };
+    MDCShortTopAppBarFoundation.prototype.collapse_ = function () {
+        this.adapter_.addClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
+        this.isCollapsed_ = true;
     };
     return MDCShortTopAppBarFoundation;
 }(foundation_1.MDCTopAppBarBaseFoundation);
