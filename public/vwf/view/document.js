@@ -58,7 +58,7 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
               let worldName = path.slice(1);
               let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-              userDB.get('worlds').get(worldName).get(dbPath).get('file').then(function(res) {
+              userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(res) {
                    
                    var responseText = "";
                    

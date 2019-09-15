@@ -13,6 +13,7 @@
 			while(!(at = t[k]) && i < l){
 				k += key[++i];
 			}
+			radix.at = t; /// caching to external access.
 			if(!at){
 				if(!map(t, function(r, s){
 					var ii = 0, kk = '';
@@ -54,10 +55,10 @@
 	Radix.map = function map(radix, cb, opt, pre){ pre = pre || [];
 		var t = ('function' == typeof radix)? radix.$ || {} : radix;
 		if(!t){ return }
-		var keys = (t[_]||no).sort || (t[_] = function $(){ $.sort = Object.keys(t).sort(); return $ }()).sort, rev;
+		var keys = (t[_]||no).sort || (t[_] = function $(){ $.sort = Object.keys(t).sort(); return $ }()).sort;
 		//var keys = Object.keys(t).sort();
 		opt = (true === opt)? {branch: true} : (opt || {});
-		if(rev = opt.reverse){ keys = keys.slice().reverse() }
+		if(opt.reverse){ keys = keys.slice().reverse() }
 		var start = opt.start, end = opt.end;
 		var i = 0, l = keys.length;
 		for(;i < l; i++){ var key = keys[i], tree = t[key], tmp, p, pt;
@@ -66,10 +67,6 @@
 			pt = p.join('');
 			if(u !== start && pt < (start||'').slice(0,pt.length)){ continue }
 			if(u !== end && (end || '\uffff') < pt){ continue }
-			if(rev){ // children must be checked first when going in reverse.
-				tmp = map(tree, cb, opt, p);
-				if(u !== tmp){ return tmp }
-			}
 			if(u !== (tmp = tree[''])){
 				tmp = cb(tmp, pt, key, pre);
 				if(u !== tmp){ return tmp }
@@ -79,10 +76,8 @@
 				if(u !== tmp){ return tmp }
 			}
 			pre = p;
-			if(!rev){
-				tmp = map(tree, cb, opt, pre);
-				if(u !== tmp){ return tmp }
-			}
+			tmp = map(tree, cb, opt, pre);
+			if(u !== tmp){ return tmp }
 			pre.pop();
 		}
 	};

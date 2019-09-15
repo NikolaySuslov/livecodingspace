@@ -1,4 +1,5 @@
 ;(function(){
+	console.log("RADISK 2!!!!");
 
 	function Radisk(opt){
 
@@ -14,12 +15,12 @@
 		opt.chunk = opt.chunk || (1024 * 1024 * 10); // 10MB
 		opt.code = opt.code || {};
 		opt.code.from = opt.code.from || '!';
-		//opt.jsonify = true; if(opt.jsonify){ console.log("JSON RAD!!!") } // TODO: REMOVE!!!!
+		//opt.jsonify = true; // TODO: REMOVE!!!!
 
 		function ename(t){ return encodeURIComponent(t).replace(/\*/g, '%2A') }
 		function atomic(v){ return u !== v && (!v || 'object' != typeof v) }
 		var map = Gun.obj.map;
-		var LOG = false;//true;
+		var LOG = false;
 
 		if(!opt.store){
 			return opt.log("ERROR: Radisk needs `opt.store` interface with `{get: fn, put: fn (, list: fn)}`!");
@@ -83,13 +84,12 @@
 			r.batch = Radix();
 			r.batch.acks = [];
 			r.batch.ed = 0;
-			//console.debug(99); var ID = Gun.text.random(2), S = (+new Date); console.log("[[[[[[[[", ID, batch.acks.length);
+			//var id = Gun.text.random(2), S = (+new Date); console.log("<<<<<<<<<<<<", id);
 			r.save(batch, function(err, ok){
 				if(++i > 1){ opt.log('RAD ERR: Radisk has callbacked multiple times, please report this as a BUG at github.com/amark/gun/issues ! ' + i); return }
 				if(err){ opt.log('err', err) }
-				//console.debug(99); var TMP; console.log("]]]]]]]]", ID, batch.acks.length, (TMP = +new Date) - S, 'more?', thrash.more);
+				//console.log(">>>>>>>>>>>>", id, ((+new Date) - S), batch.acks.length);
 				map(batch.acks, function(cb){ cb(err, ok) });
-				//console.log("][", +new Date - TMP, thrash.more);
 				thrash.at = null;
 				thrash.ing = false;
 				if(thrash.more){ thrash() }
@@ -172,9 +172,9 @@
 			}
 			f.write = function(){
 				var tmp = ename(file);
-				var start; LOG && (start = +new Date); // comment this out!
+				var start; LOG && (start = (+new Date)); // comment this out!
 				opt.store.put(tmp, f.text, function(err){
-					LOG && console.log("wrote to disk in", (+new Date) - start, tmp); // comment this out!
+					LOG && console.log("wrote JSON in", (+new Date) - start); // comment this out!
 					if(err){ return cb(err) }
 					r.list.add(tmp, cb);
 				});
@@ -203,10 +203,10 @@
 
 		r.write.jsonify = function(f, file, rad, cb, o){
 			var raw;
-			var start; LOG && (start = +new Date); // comment this out!
+			var start; LOG && (start = (+new Date)); // comment this out!
 			try{raw = JSON.stringify(rad.$);
 			}catch(e){ return cb("Record too big!") }
-			LOG && console.log("stringified JSON in", +new Date - start); // comment this out!
+			LOG && console.log("stringified JSON in", (+new Date) - start); // comment this out!
 			if(opt.chunk < raw.length && !o.force){
 				if(Radix.map(rad, f.each, true)){ return }
 			}
@@ -221,7 +221,7 @@
 			var sub = Radix();
 			Radix.map(tree, function(v,k){
 				sub(k,v);
-			}, o);
+			}, o)
 			return sub('');
 		}
 
@@ -267,7 +267,7 @@
 				}
 				g.ack = function(as){
 					if(!as.ack){ return }
-					var tmp = as.key, o = as.opt, info = g.info, rad = g.disk || noop, data = r.range(rad(tmp), o), last = rad.last || Radix.map(rad, rev, revo);
+					var tmp = as.key, o = as.opt, info = g.info, rad = g.disk || noop, data = r.range(rad(tmp), o), last = rad.last;
 					o.parsed = (o.parsed || 0) + (info.parsed||0);
 					o.chunks = (o.chunks || 0) + 1;
 					if(!o.some){ o.some = (u !== data) }
@@ -284,8 +284,6 @@
 				if(o.reverse){ g.lex.reverse = true }
 				r.list(g.lex);
 			}
-			function rev(a,b){ return b }
-			var revo = {reverse: true};
 		}());
 
 		;(function(){
@@ -302,7 +300,6 @@
 				var p = function Parse(){}, info = {};
 				p.disk = Radix();
 				p.read = function(err, data){ var tmp;
-					LOG && console.log('read disk in', +new Date - start, ename(file)); // keep this commented out in 
 					delete Q[file];
 					if((p.err = err) || (p.not = !data)){
 						return map(q, p.ack);
@@ -319,12 +316,12 @@
 					}
 					info.parsed = data.length;
 
-					LOG && (start = +new Date); // keep this commented out in production!
+					var start; LOG && (start = (+new Date)); // keep this commented out in production!
 					if(opt.jsonify){ // temporary testing idea
 						try{
 							var json = JSON.parse(data);
 							p.disk.$ = json;
-							LOG && console.log('parsed JSON in', +new Date - start); // keep this commented out in production!
+							LOG && console.log('parsed JSON in', (+new Date) - start); // keep this commented out in production!
 							map(q, p.ack);
 							return;
 						}catch(e){ tmp = e }
@@ -333,8 +330,8 @@
 							return map(q, p.ack);
 						}
 					}
-					LOG && (start = +new Date); // keep this commented out in production!
-					var tmp = p.split(data), pre = [], i, k, v;
+					var start; LOG && (start = (+new Date)); // keep this commented out in production!
+					var tmp = p.split(data), pre = [], i, k, v, at, ats=[];
 					if(!tmp || 0 !== tmp[1]){
 						p.err = "File '"+file+"' does not have root radix! ";
 						return map(q, p.ack);
@@ -351,12 +348,24 @@
 							}
 						}
 						tmp = p.split(tmp[2])||'';
-						if('\n' == tmp[0]){ continue }
+						if('\n' == tmp[0]){
+							at = ats[i] || p.disk.at;
+							p.disk(k, u, at);
+							ats[i] = p.disk.at;
+							ats[i+1] = p.disk.at[k] || (p.disk.at[k]={});
+							continue;
+						}
 						if('=' == tmp[0] || ':' == tmp[0]){ v = tmp[1] }
-						if(u !== k && u !== v){ p.disk(pre.join(''), v) }
+						if(u !== k && u !== v){
+// 							p.disk(pre.join(''), v)// mark's code
+							at = ats[i];// || p.disk.at;
+							p.disk(k, v, at);
+							ats[i] = p.disk.at;
+							ats[i+1] = p.disk.at[k];
+						}
 						tmp = p.split(tmp[2]);
 					}
-					LOG && console.log('parsed RAD in', +new Date - start); // keep this commented out in production!
+					LOG && console.log('parsed JSON in', (+new Date) - start); // keep this commented out in production!
 					//cb(err, p.disk);
 					map(q, p.ack);
 				};
@@ -376,7 +385,6 @@
 					if(p.err || p.not){ return cb(p.err, u, info) }
 					cb(u, p.disk, info);
 				}
-				var start; LOG && (start = +new Date); // keep this commented out in production!
 				if(raw){ return p.read(null, raw) }
 				opt.store.get(ename(file), p.read);
 			}
@@ -508,8 +516,7 @@
 	  window.Radisk = Radisk;
 	} else { 
 	  var Gun = require('../gun');
-		var Radix = require('./radix');
-		//var Radix = require('./radix2'); Radisk = require('./radisk2');
+		var Radix = require('./radix2');
 		try{ module.exports = Radisk }catch(e){}
 	}
 

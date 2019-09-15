@@ -656,7 +656,8 @@ class App {
               file = _app.helpers.replaceSubStringALL(fileOriginal, "~", '/');
             }
 
-            var worldFile = await _LCSDB.user().get(worldType).get(worldName).get(file).then();
+            _LCSDB.user().get(worldType).get(worldName).get(file).load(worldFile => {
+
             if (worldFile) {
               var source = worldFile.file;
               if (type == 'state') {
@@ -792,7 +793,8 @@ class App {
                     $text: "Close",
                     onclick: function (e) {
                       console.log("close");
-                      window.history.back();
+                      window.location.pathname = "/" + user + '/' + worldName + '/about'
+                      //window.history.back();
                       // if (type == "proto")
                       //   window.location.pathname = "/" + user + '/' + worldName + '/about'
                       // if (type == "state")
@@ -808,6 +810,8 @@ class App {
                 ]
               })
             }
+          });
+
           }
         }
       })
@@ -1205,7 +1209,7 @@ class App {
 
     _app.showProgressBar();
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
     let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
     let newOwner = _LCSDB.user().is.pub;
 
@@ -1311,7 +1315,7 @@ class App {
     let myWorldProtos = await _LCSDB.user().get('worlds').then();
     let userName = this.helpers.worldUser;
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
 
     let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
     let protoUserRoot = this.helpers.getRoot(true).root;
@@ -1757,7 +1761,7 @@ class App {
 
   async getAllStateWorldsInfoForUser(userAlias, cb) {
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
 
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
 
@@ -1833,7 +1837,7 @@ class App {
 
   async getAllStateWorldsInfoForUserPromise(userAlias) {
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
 
     var db = _LCSDB.user(userPub);
@@ -1865,7 +1869,7 @@ class App {
 
   async getAllProtoWorldsInfoForUser(userAlias, cb) {
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
 
     var db = _LCSDB.user(userPub);
@@ -1921,7 +1925,7 @@ class App {
 
   async getAllProtoWorldsInfoForUserPromise(userAlias) {
 
-    let users = await _LCSDB.get('users');
+    let users = await _LCSDB.get('users').then();
     let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
 
     var db = _LCSDB.user(userPub);
