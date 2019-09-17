@@ -400,13 +400,14 @@ class IndexApp {
                             {
                                 "label": 'Sign OUT',
                                 "onclick": function (e) {
-                                    _LCSDB.user().leave().then(function(ack) {
-                                        if (ack.pub) {
-                                            window.sessionStorage.removeItem('alias');
-                                            window.sessionStorage.removeItem('tmp');
-                                            window.location.reload(true);
-                                        }
-                                    });
+                                    _LCSDB.user().leave();
+                                    setTimeout(() =>  
+                                   {
+                                    //window.sessionStorage.removeItem('alias');
+                                    //window.sessionStorage.removeItem('tmp');
+                                    window.location.reload(true);
+                                }, 1);
+                                   
                                 }
                             }),
                         {
