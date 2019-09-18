@@ -1055,13 +1055,13 @@ class App {
     var states = [];
     let docName = 'savestate_/' + public_path + '/' + save_name + '_vwf_json';
 
-    let revs = await userDB.get('documents').get(public_path).get(docName).get('revs').then();
+    let revs = await userDB.get('documents').get(public_path).get(docName).get('revs').promOnce();
     if (revs) {
-      for (const res of Object.keys(revs)) {
+      for (const res of Object.keys(revs.data)) {
         if (res !== '_') {
-          let el = await userDB.get('documents').get(public_path).get(docName).get('revs').get(res).then();
+          let el = await userDB.get('documents').get(public_path).get(docName).get('revs').get(res).promOnce();
           if (el)
-            result.push(parseInt(el.revision));
+            result.push(parseInt(el.data.revision));
         }
       }
       return result
@@ -1126,7 +1126,7 @@ class App {
 
     let worldName = this.helpers.appPath //loadInfo[ 'application_path' ].slice(1);
 
-    let saveObject = await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).then();
+    let saveObject = (await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).promOnce()).data;
 
     var saveInfo = null;
     if (saveObject) {
@@ -1182,13 +1182,13 @@ class App {
 
   async getProtoWorldFiles(userPub, worldName, date) {
 
-    let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).then();
+    let fileNamesAll = (await _LCSDB.user(userPub).get('worlds').get(worldName).promOnce()).data;
     let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
     let worldObj = {};
     for (var doc in worldFileNames) {
       let fn = worldFileNames[doc];
-      let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).then();
+      let res = await (_LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
       var data = {
         'file': res.file,
         'modified': res.modified,
@@ -2065,10 +2065,10 @@ class App {
 
     var info = {};
 
-    let worlds = await userdb.get('worlds').then();
-    let world = await userdb.get('worlds').get(space).then();
+    //let worlds = await userdb.get('worlds').then();
+    let world = (await userdb.get('worlds').get(space).promOnce()).data;
     if (world) {
-      let res = await userdb.get('worlds').get(space).get('info_json').then();
+      let res = (await userdb.get('worlds').get(space).get('info_json').promOnce()).data;
 
       if (res && res !== 'null') {
 
