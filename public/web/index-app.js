@@ -13,7 +13,7 @@ class IndexApp {
 
 
         this.worlds = {};
-        this.language = _LangManager.language;
+        //this.language = _LangManager.language;
 
         this.options = {
 
@@ -689,7 +689,7 @@ class IndexApp {
                                 {
                                     $type: "span",
                                     class: "mdc-list-item__secondary-text",
-                                    $text: self.language.t('users') + m[1].clients
+                                    $text: _LangManager.language.t('users') + m[1].clients
                                 }
                             ]
                         }
@@ -798,7 +798,7 @@ class IndexApp {
                 userGUI.push({
                     $type: "a",
                     class: "mdc-button mdc-button--raised mdc-card__action ",
-                    $text: self.language.t('start'),//"Start new",
+                    $text: _LangManager.language.t('start'),//"Start new",
                     //target: "_blank",
                     //href: "/" + desc.userAlias + '/' + desc.worldName,
                     onclick: function (e) {
