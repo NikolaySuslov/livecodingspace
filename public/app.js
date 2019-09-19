@@ -727,7 +727,7 @@ class App {
                           let newInfo = editor.getValue();
                           let fixedState = newInfo; //_app.fixSaveState(newInfo, worldName, oldProtoName);
 
-                          let userPub = await _LCSDB.get('users').get(user).get('pub').then();
+                          let userPub = (await _LCSDB.get('users').get(user).get('pub').promOnce()).data;
                           let revs = await _app.lookupSaveRevisions(worldName, saveName, userPub);
                           let lastRevision = revs.sort()[0];
 
@@ -793,8 +793,8 @@ class App {
                     $text: "Close",
                     onclick: function (e) {
                       console.log("close");
-                      window.location.pathname = "/" + user + '/' + worldName + '/about'
-                      //window.history.back();
+                      //window.location.pathname = "/" + user + '/' + worldName + '/about'
+                      window.history.back();
                       // if (type == "proto")
                       //   window.location.pathname = "/" + user + '/' + worldName + '/about'
                       // if (type == "state")
@@ -1147,14 +1147,14 @@ class App {
     let user = _LCSDB.user(userPUB);
 
     var docName = application_path.slice(1);
-    let potentialSaveNames = await user.get('documents').get(docName).then();
+    let potentialSaveNames = (await user.get('documents').get(docName).promOnce()).data;
 
     if (potentialSaveNames) {
 
       for (const res of Object.keys(potentialSaveNames)) {
         if (res !== '_') {
 
-          let el = await user.get('documents').path(docName).get(res).then();
+          let el = (await user.get('documents').path(docName).get(res).promOnce()).data;
 
           let revisionList = await this.lookupSaveRevisions(application_path.slice(1), el.filename);
           var latestsave = true;
@@ -1209,16 +1209,16 @@ class App {
 
     _app.showProgressBar();
 
-    let users = await _LCSDB.get('users').then();
-    let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
+    //let users = await _LCSDB.get('users').then();
+    let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
     let newOwner = _LCSDB.user().is.pub;
 
-    let myWorlds = await _LCSDB.user(newOwner).get('worlds').then();
+    let myWorlds = (await _LCSDB.user(newOwner).get('worlds').promOnce()).data;
     if (!myWorlds) _LCSDB.user(newOwner).get('worlds').put({});
 
     if (newWorldName) {
 
-      let worldProto = await _LCSDB.user(newOwner).get('worlds').get(newWorldName).then();
+      let worldProto = (await _LCSDB.user(newOwner).get('worlds').get(newWorldName).promOnce()).data;
       if (worldProto) {
         console.log('already exist!');
         return
@@ -1243,13 +1243,13 @@ class App {
       'published': true
     };
 
-    let fileNamesAll = await _LCSDB.user(userPub).get('worlds').get(worldName).then();
+    let fileNamesAll = (await _LCSDB.user(userPub).get('worlds').get(worldName).promOnce()).data;
     let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
     for (var doc in worldFileNames) {
 
       let fn = worldFileNames[doc];
-      let res = await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).then();
+      let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
       let data = {
         'file': JSON.stringify(res.file),
         'modified': created
@@ -1312,12 +1312,12 @@ class App {
 
   async cloneWorldState(filename) {
 
-    let myWorldProtos = await _LCSDB.user().get('worlds').then();
+    let myWorldProtos = (await _LCSDB.user().get('worlds').promOnce()).data;
     let userName = this.helpers.worldUser;
 
-    let users = await _LCSDB.get('users').then();
+   // let users = await _LCSDB.get('users').then();
 
-    let userPub = await _LCSDB.get('users').get(userName).get('pub').then();
+    let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
     let protoUserRoot = this.helpers.getRoot(true).root;
     //let myName = this.db.user().is.alias;
 
@@ -1541,7 +1541,7 @@ class App {
 
     let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-    let userName = await userDB.get('alias').then();
+    let userName = (await userDB.get('alias').promOnce()).data;
 
     if (revision) {
       window.location.pathname = '/' + userName + applicationpath + '/load/' + filename + '/' + revision + '/';
@@ -1602,31 +1602,31 @@ class App {
 
   async deleteWorldState(worldName, indexState) {
 
-    let revs = await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').then();
+    let revs = (await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').promOnce()).data;
     if (revs) {
       for (const el of Object.keys(revs)) {
         if (el !== '_') {
-          let doc = await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).then();
+          let doc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).promOnce()).data;
           for (const rev of Object.keys(doc)) {
             if (rev !== '_') {
-              await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).then();
+              await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).promOnce();
             }
           }
-          await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).then();
+          await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).promOnce();
         }
       }
     }
 
     // clear all state params
-    let stateDoc = await _LCSDB.user().get('documents').get(worldName).get(indexState).then();
+    let stateDoc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).promOnce()).data;
     for (const state of Object.keys(stateDoc)) {
       if (state !== '_' && state !== 'revs') {
-        await _LCSDB.user().get('documents').get(worldName).get(indexState).get(state).put(null).then();
+        await _LCSDB.user().get('documents').get(worldName).get(indexState).get(state).put(null).promOnce();
       }
     }
 
-    await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').put(null).then();
-    await _LCSDB.user().get('documents').get(worldName).get(indexState).put(null).then();
+    await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').put(null).promOnce();
+    await _LCSDB.user().get('documents').get(worldName).get(indexState).put(null).promOnce();
 
   }
 
@@ -1638,9 +1638,9 @@ class App {
       //TODO check for states (ask for deleting all states first...)
       //delete states
 
-      let documents = await _LCSDB.user().get('documents').then();
+      let documents = (await _LCSDB.user().get('documents').promOnce()).data;
       if (documents) {
-        let states = await _LCSDB.user().get('documents').get(worldName).then();
+        let states = (await _LCSDB.user().get('documents').get(worldName).promOnce()).data;
         if (states) {
           for (const st of Object.keys(states)) {
             if (st !== '_') {
@@ -1653,21 +1653,21 @@ class App {
         }
       }
 
-      let worldFiles = await _LCSDB.user().get('worlds').get(worldName).then();
+      let worldFiles = (await _LCSDB.user().get('worlds').get(worldName).promOnce()).data;
       if (worldFiles) {
         for (const el of Object.keys(worldFiles)) {
           if (el !== '_') {
-            let doc = await _LCSDB.user().get('worlds').get(worldName).get(el).then();
+            let doc = (await _LCSDB.user().get('worlds').get(worldName).get(el).promOnce()).data;
             if (doc) {
               if (doc.file) {
                 for (const fEl of Object.keys(doc)) {
                   if (fEl !== '_') {
-                    await _LCSDB.user().get('worlds').get(worldName).get(el).get(fEl).put(null).then();
+                    await _LCSDB.user().get('worlds').get(worldName).get(el).get(fEl).put(null).promOnce();
                   }
                 }
-                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).then();
+                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce();
               } else {
-                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).then()
+                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce()
               }
             }
           }
@@ -1689,7 +1689,7 @@ class App {
       //       }
       //  })
 
-      await _LCSDB.user().get('worlds').get(worldName).put(null).then();
+      await _LCSDB.user().get('worlds').get(worldName).put(null).promOnce();
 
     } else if (type == 'state') {
 
@@ -1761,9 +1761,9 @@ class App {
 
   async getAllStateWorldsInfoForUser(userAlias, cb) {
 
-    let users = await _LCSDB.get('users').then();
+    //let users = await _LCSDB.get('users').then();
 
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
+    let userPub = (await _LCSDB.get('users').get(userAlias).get('pub').promOnce()).data;
 
     var db = _LCSDB.user(userPub);
 
@@ -1773,12 +1773,9 @@ class App {
     }
 
 
-    // db.get('worlds').once().map().once((val, index)=>{
+    //let myWorlds = (await db.get('documents').promOnce()).data;
 
-    //db.get('documents').get(index).once().map().load((res, datI)=>{
-
-    let myWorlds = await db.get('documents').then();
-
+    db.get('documents').load(myWorlds => {
     if (myWorlds) {
 
       Object.keys(myWorlds).filter(el => el !== '_').forEach(w => {
@@ -1831,14 +1828,15 @@ class App {
       })
 
     }
+  })
     //})
   }
 
 
   async getAllStateWorldsInfoForUserPromise(userAlias) {
 
-    let users = await _LCSDB.get('users').then();
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
+    //let users = await _LCSDB.get('users').then();
+    let userPub = (await _LCSDB.get('users').get(userAlias).get('pub').promOnce()).data;
 
     var db = _LCSDB.user(userPub);
 
@@ -1849,7 +1847,7 @@ class App {
 
     var states = {};
 
-    let worldDocs = await db.get('worlds').then();
+    let worldDocs = (await db.get('worlds').promOnce()).data;
     if (worldDocs) {
       let protos = Object.keys(worldDocs).filter(el => el !== '_');
 
@@ -1869,8 +1867,8 @@ class App {
 
   async getAllProtoWorldsInfoForUser(userAlias, cb) {
 
-    let users = await _LCSDB.get('users').then();
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
+    //let users = await _LCSDB.get('users').then();
+    let userPub = (await _LCSDB.get('users').get(userAlias).get('pub').promOnce()).data;
 
     var db = _LCSDB.user(userPub);
 
@@ -1925,8 +1923,8 @@ class App {
 
   async getAllProtoWorldsInfoForUserPromise(userAlias) {
 
-    let users = await _LCSDB.get('users').then();
-    let userPub = await _LCSDB.get('users').get(userAlias).get('pub').then();
+    //let users = await _LCSDB.get('users').then();
+    let userPub = (await _LCSDB.get('users').get(userAlias).get('pub').promOnce()).data;
 
     var db = _LCSDB.user(userPub);
 
@@ -1937,7 +1935,7 @@ class App {
 
     var worlds = {};
 
-    let worldDocs = await db.get('worlds').then();
+    let worldDocs = (await db.get('worlds').promOnce()).data;
     if (worldDocs) {
       let protos = Object.keys(worldDocs).filter(el => el !== '_');
 
@@ -1969,9 +1967,9 @@ class App {
 
     var states = {};
 
-    let documents = await db.get('documents').then();
+    let documents = (await db.get('documents').promOnce()).data;
     if (documents) {
-      let docs = await db.get('documents').get(worldName).then();
+      let docs = (await db.get('documents').get(worldName).promOnce()).data;
       if (docs) {
         let saves = Object.keys(docs).filter(el => el.includes('_info_vwf_json'));
         if (saves) {
@@ -2006,23 +2004,23 @@ class App {
     }
 
     var info = {};
-    let worlds = await db.get('documents').then();
+    //let worlds = await db.get('documents').then();
     let docName = 'savestate_/' + space + '/' + saveName + '_info_vwf_json';
-    let world = await db.get('documents').get(space).get(docName).then();
+    let world = (await db.get('documents').get(space).get(docName).promOnce()).data;
     if (world) {
-      let res = world;//await db.get('documents').get(space).get(docName).then();
 
-      if (res && res !== 'null') {
+      let file = (await db.get('documents').get(space).get(docName).get('file').promOnce()).data;
+        
 
-        if (res.file && res.file !== 'null') {
+        if (file && file !== 'null') {
 
           // let worldDesc = JSON.parse(res.file);
 
           var worldDesc = {};
-          if (typeof (res.file) == 'object') {
-            worldDesc = res.file
+          if (typeof (file) == 'object') {
+            worldDesc = file
           } else {
-            worldDesc = JSON.parse(res.file)
+            worldDesc = JSON.parse(file)
           }
 
           let root = Object.keys(worldDesc)[0];
@@ -2033,16 +2031,19 @@ class App {
             appInfo = worldDesc[root][langID]
           }
 
+          let created = (await db.get('documents').get(space).get(docName).get('created').promOnce()).data;
+          let modified = (await db.get('documents').get(space).get(docName).get('modified').promOnce()).data;
+
           info = {
             'worldName': space + '/load/' + saveName,
-            'created': res.created ? res.created : res.modified,
-            'modified': res.modified,
+            'created': created ? created : modified,
+            'modified': modified,
             'type': 'saveState',
             'userAlias': user,
             'info': appInfo
           }
         }
-      }
+      
 
     }
 
@@ -2065,20 +2066,19 @@ class App {
 
     var info = {};
 
-    //let worlds = await userdb.get('worlds').then();
+    //let worlds = await userdb.get('worlds').promOnce();
     let world = (await userdb.get('worlds').get(space).promOnce()).data;
     if (world) {
-      let res = (await userdb.get('worlds').get(space).get('info_json').promOnce()).data;
 
-      if (res && res !== 'null') {
+        let file = (await userdb.get('worlds').get(space).get('info_json').get('file').promOnce()).data;
 
-        if (res.file && res.file !== 'null') {
+        if (file && file !== 'null') {
 
           var worldDesc = {};
-          if (typeof (res.file) == 'object') {
-            worldDesc = res.file
+          if (typeof (file) == 'object') {
+            worldDesc = file
           } else {
-            worldDesc = JSON.parse(res.file)
+            worldDesc = JSON.parse(file)
           }
 
           //let worldDesc = JSON.parse(res.file);
@@ -2091,10 +2091,13 @@ class App {
             appInfo = worldDesc[root][langID]
           }
 
+          let created = (await userdb.get('worlds').get(space).get('info_json').get('created').promOnce()).data;
+          let modified = (await userdb.get('worlds').get(space).get('info_json').get('modified').promOnce()).data;
+
           info = {
             'worldName': space,
-            'created': res.created ? res.created : res.modified,
-            'modified': res.modified,
+            'created': created ? created : modified,
+            'modified': modified,
             'type': 'proto',
             'userAlias': user,
             'info': appInfo,
@@ -2102,7 +2105,7 @@ class App {
           }
 
         }
-      }
+      
 
     }
 
