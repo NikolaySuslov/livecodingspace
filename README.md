@@ -9,7 +9,7 @@ Based on: **Virtual World Framework (Croquet)** | **A-Frame** | **Ohm language**
 
 ## Updates
 
-- [10.2019] **Krestianstvo Luminary** included
+- [10.2019] **Krestianstvo Luminary** working prototype included
 
 ## Architecture
 
