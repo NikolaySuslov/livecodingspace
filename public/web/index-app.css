@@ -81,3 +81,11 @@ background: rgb(217, 217, 217);
 .actionButton {
   margin: 3px
 }
+
+.unselectable {
+  -moz-user-select: text;
+  -khtml-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+ }

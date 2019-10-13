@@ -512,7 +512,8 @@ class IndexApp {
                             })
                     ]
                 }
-                this.$components = [
+                this.$components = [luminaryFeature,
+                    _app.widgets.emptyDiv,
                     window._app.widgets.buttonRaised(
                         {
                             "label": 'Connection settings',
@@ -520,8 +521,8 @@ class IndexApp {
                                 e.preventDefault();
                                 window.location.pathname = '/settings';
                             }
-                        }),
-                        luminaryFeature,
+                        }), _app.widgets.emptyDiv,
+                        _app.widgets.divider,
                     {
                         $type: "h1",
                         class: "mdc-typography--headline3",

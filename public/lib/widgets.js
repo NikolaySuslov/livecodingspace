@@ -15,7 +15,14 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             return {
                 $cell: true,
                 $type: "hr",
-                class: "mdc-list-divider",
+                class: "mdc-list-divider"
+            }
+        }
+
+        get emptyDiv(){
+            return {
+                $type: "div",
+                style: "padding-bottom: 30px;"
             }
         }
 
