@@ -7,17 +7,22 @@ Based on: **Virtual World Framework (Croquet)** | **A-Frame** | **Ohm language**
 
 ![logo](https://krestianstvo.org/docs/assets/webimg.jpg)
 
+## Updates
+
+- [10.2019] **Krestianstvo Luminary experimental included**
+
 ## Architecture
 
 **[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://github.com/virtual-world-framework/vwf)** architecture towards pure-decentralized application by introducing:
 
 - **single page web application**
 - **client-side router** (generating **instances IDs** by client) ([about Page.js](https://visionmedia.github.io/page.js/))
-- file storage independent **Reflector** or **Krestianstvo Luminary**
+- file storage independent **Reflector**
+- **[Krestiasntvo Luminary](https://blog.krestianstvo.org/en/krestianstvo-luminary-for-open-croquet-architecutre-and-virtual-world-framework-in-peer-to-peer-web/)** running on Gun DB (client based replcement for **Reflector** server)
 - **GunDB storage system** for serving ```Proxy VWF components```, ```Worlds prototypes```, ```World save states```, ```User Inventories``` ect. in fully decentralized (peer-to-peer or multi-master) DB ([about GunDB](https://gun.eco/docs/Introduction))
 - **GunDB SEA** (Security, Encryption, Authorization) framework for user authorization and **P2P identities** ([about SEA](https://gun.eco/docs/Auth))
 
-By default a tiny Reflector server is used for creating a Virtual World instances. In the near future this functionality will have an alternative with the new totaly decentralized solution provided by [**Krestianstvo Luminary**](https://blog.krestianstvo.org/en/krestianstvo-luminary-for-open-croquet-architecutre-and-virtual-world-framework-in-peer-to-peer-web/). That will allow to create Virtual World Instances just within Web Browser by a client, using any avaliable decentralized storage GunDB on internet. Secure world instances lists, clients lists, message streams with P2P identities.
+By default a tiny Reflector server is used for creating a Virtual World instances. But you could try out to connect using the new experimental totaly decentralized solution provided by [**Krestianstvo Luminary**](https://blog.krestianstvo.org/en/krestianstvo-luminary-for-open-croquet-architecutre-and-virtual-world-framework-in-peer-to-peer-web/). That will allow to create Virtual World Instances just within Web Browser by a client,using any avaliable decentralized storage GunDB on internet. **No any Reflector server needed**. In the near future it will be extended with support of securing world instances lists, clients lists, message streams with P2P identities.
 
 alongside with the existed features from the initial version ```v0.1```:
 
@@ -43,7 +48,7 @@ alongside with the existed features from the initial version ```v0.1```:
 
 All code is published under the MIT license
 
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors.
+Copyright (c) 2014-2019 Nikolai Suslov and the Krestianstvo.org project contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
