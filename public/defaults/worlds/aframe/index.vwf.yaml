@@ -127,6 +127,6 @@ children:
 methods:
   initialize:
     body: |
-      var runBox = vwf_view.kernel.find("", "/sphere/box2")[0];
+      var runBox = vwf.find("", "/sphere/box2")[0];
       console.log(runBox);
-      vwf_view.kernel.callMethod(runBox, "run");
+      vwf.callMethod(runBox, "run");

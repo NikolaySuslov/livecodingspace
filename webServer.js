@@ -22,6 +22,43 @@ var app = express();
 // var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 
 
+function registerGunDB(srv){
+
+    if (global.configuration.db === undefined)
+    global.configuration.db = false;
+
+    if (global.configuration.db){
+
+        console.log('register gun db node...\n');
+        var Gun = require('gun')
+        require('gun/sea')
+        require('gun/lib/path')
+        require('gun/lib/not')
+        require('gun/nts')
+        require('gun/lib/bye')
+
+        app.use(Gun.serve);
+        global.gun = Gun({ web: srv, axe: false}); 
+
+        //GLOBAL HEARTBEAT SAMPLE
+        setInterval(function () {
+
+            let message = {
+                parameters: [],
+                time: 'tick'//hb
+            };
+        
+            global.gun.get('server').get('heartbeat').get('tick').put(JSON.stringify(message),function(ack){
+                if(ack.err){ 
+                    console.log('ERROR: ' + ack.err)
+                }});
+        
+        }, 50);
+
+    }
+
+}
+
 function registerReflector(srv) {
 
     if (global.configuration.reflector === undefined)
@@ -109,6 +146,7 @@ function startServer() {
     console.log('Serving on port ' + conf.port);
 
     registerReflector(srv);
+    registerGunDB(srv);
 
 }
 

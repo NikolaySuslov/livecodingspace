@@ -81,7 +81,7 @@ define(["module", "vwf/view"], function (module, view) {
 
                 prepairAvatar.then(res => {
                     // console.log(res);
-                    createAvatar.call(self, childID);
+                    createAvatar.call(self, childID);                  
                     postLoadAction.call(self, childID);
 
                     if (this.gearvr == true) {
@@ -415,86 +415,8 @@ define(["module", "vwf/view"], function (module, view) {
             //     });
             // }
 
-            var avatarName = 'avatar-' + self.kernel.moniker();
+             var avatarName = 'avatar-' + self.kernel.moniker();
 
-            if (eventName == "createAvatar") {
-                console.log("creating avatar...");
-
-                // let avatarID = self.kernel.moniker();
-                // var nodeName = 'avatar-' + avatarID;
-
-                var newNode = {
-                    "id": avatarName,
-                    "uri": avatarName,
-                    "extends": "http://vwf.example.com/aframe/avatar.vwf",
-                    "properties": {
-                        "localUrl": '',
-                        "remoteUrl": '',
-                        "displayName": 'Avatar ' + randId(),
-                        "sharing": { audio: true, video: true },
-                        "selectMode": false,
-                        "position": [0, 1.6, 0]
-                    }
-                }
-
-                if (!self.state.nodes[avatarName]) {
-                   
-
-                    if (_LCSUSER.is) {
-
-                        _LCSUSER.get('profile').get('alias').once(alias => {
-                                if (alias){
-
-                                    newNode.properties.displayName = alias;
-                                    //vwf_view.kernel.callMethod(avatarName, "setMyName", [alias]);
-                                }
-                                vwf_view.kernel.createChild(nodeID, avatarName, newNode);
-                                });
-
-                                    _LCSUSER.get('profile').get('avatarNode').once(res => {
-                                        var myNode = null;
-                                        if (res) {
-                                            //myNode = JSON.parse(res.avatarNode);
-                                            myNode = res;
-                                            vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
-                                        } else {
-                                            vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
-                                        }
-                                       // newNode.properties.displayName = res.alias;
-            
-                                        
-                                        //"/../assets/avatars/male/avatar1.gltf"
-            
-            
-                                        //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
-                                    });
-
-
-                                
-                      
-                    } else {
-
-                        vwf_view.kernel.createChild(nodeID, avatarName, newNode);
-                        vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
-                        //"/../assets/avatars/male/avatar1.gltf"
-                    }
-
-                    //
-                    
-
-                }
-
-
-                // if(_LCSUSER.is){
-                //     _LCSUSER.get('profile').get('alias').once(res => {
-                //         vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
-                //     })
-                // }
-
-
-
-
-            }
 
             let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect']; //'intersect', 
 
@@ -746,7 +668,7 @@ define(["module", "vwf/view"], function (module, view) {
             if (position && rotation && lastPosition && lastRotation) {
                 if (compareCoordinates(position, lastPosition, delta) || Math.abs(rotation.y - lastRotation.y) > delta) {
                     console.log("not equal!!")
-                    vwf_view.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
+                    self.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
                 }
             }
             self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
@@ -987,7 +909,95 @@ define(["module", "vwf/view"], function (module, view) {
 
     function createAvatar(nodeID) {
 
-        vwf_view.kernel.fireEvent(nodeID, "createAvatar")
+
+       // vwf_view.kernel.fireEvent(nodeID, "createAvatar");
+
+       var avatarName = 'avatar-' + self.kernel.moniker();
+
+           console.log("creating avatar...");
+
+           // let avatarID = self.kernel.moniker();
+           // var nodeName = 'avatar-' + avatarID;
+
+           var newNode = {
+               "id": avatarName,
+               "uri": avatarName,
+               "extends": "http://vwf.example.com/aframe/avatar.vwf",
+               "properties": {
+                   "localUrl": '',
+                   "remoteUrl": '',
+                   "displayName": 'Avatar ' + randId(),
+                   "sharing": { audio: true, video: true },
+                   "selectMode": false,
+                   "position": [0, 1.6, 0]
+               }
+           }
+
+           if (!self.state.nodes[avatarName]) {
+              
+
+               if (_LCSUSER.is) {
+
+                   _LCSUSER.get('profile').get('alias').once(alias => {
+                           if (alias){
+
+                               newNode.properties.displayName = alias;
+                               //vwf_view.kernel.callMethod(avatarName, "setMyName", [alias]);
+                           }
+                           vwf_view.kernel.createChild(nodeID, avatarName, newNode);
+                           });
+
+                           _LCSUSER.get('profile').get('avatarNode').not(res=>{
+                               //vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
+                           })
+
+                               _LCSUSER.get('profile').get('avatarNode').once(res => {
+                                   var myNode = null;
+                                   if (res) {
+                                       //myNode = JSON.parse(res.avatarNode);
+                                       myNode = res;
+                                       vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
+                                   } else {
+                                       vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
+                                   }
+                                  // newNode.properties.displayName = res.alias;
+       
+                                   
+                                   //"/../assets/avatars/male/avatar1.gltf"
+       
+       
+                                   //vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
+                               });
+
+
+                           
+                 
+               } else {
+
+                   vwf_view.kernel.createChild(nodeID, avatarName, newNode);
+                   vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
+
+                   //"/../assets/avatars/male/avatar1.gltf"
+               }
+
+               //
+               
+
+           }
+
+
+           // if(_LCSUSER.is){
+           //     _LCSUSER.get('profile').get('alias').once(res => {
+           //         vwf_view.kernel.callMethod(avatarName, 'setUserAvatar', [res] );
+           //     })
+           // }
+
+
+
+
+       
+
+
 
         // let avatarID = self.kernel.moniker();
         // var nodeName = 'avatar-' + avatarID;

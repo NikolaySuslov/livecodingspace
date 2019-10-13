@@ -9,6 +9,8 @@ coverage
 # production
 build
 certs
+radata
+radata-*.*
 
 # misc
 .DS_Store

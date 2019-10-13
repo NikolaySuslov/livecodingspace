@@ -645,6 +645,56 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
         reflectorGUI() {
 
+            let luminaryGlobalHB = {
+                $cell: true,
+                _luminarySwitch: null,
+                $components: [
+                  {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Use Global Heartbeat"
+                  },
+                  {
+                    $type: 'p'
+                  },
+                  _app.widgets.switch({
+                    'id': 'forceLuminary',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      let config = localStorage.getItem('lcs_config');
+                      this._switch.checked = JSON.parse(config).luminaryGlobalHB;
+                      
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': function (e) {
+    
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.luminaryGlobalHB = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.luminaryGlobalHB = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                            }
+                        }
+                    }
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-forceLuminary',
+                    $text: 'On / Off'
+                  }
+    
+                ]
+              }
+
+
             let reflectorGUI =
             {
                 $type: "div",
@@ -655,6 +705,10 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 _dbHost: null,
                 _refHostField: null,
                 _dbHostField: null,
+                _lpath: null,
+                _lpathField: null,
+                _hbpath: null,
+                _hbpathField: null,
                 _initData: function () {
                     this._reflectorHost = '';
                     this._dbHost = '';
@@ -666,6 +720,12 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     }
                     if (config.dbhost) {
                         this._dbHost =config.dbhost
+                    }
+                    if (config.luminaryPath) {
+                        this._lpath = config.luminaryPath
+                    }
+                    if (config.luminaryGlobalHBPath) {
+                        this._hbpath = config.luminaryGlobalHBPath
                     }
                 },
                 $init: function () {
@@ -685,7 +745,39 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                     {
                                         $type: "h4",
                                         class: "mdc-typography--headline4",
-                                        $text: "Connection settings"
+                                        $text: "Gun DB settings"
+                                    }
+                                ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "DB Host: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'dbhostInput',
+                                            "label": "DB Host",
+                                            "value": this._dbHost,
+                                            "type": "text",
+                                            "init": function() {
+                                                this._dbHostField = new mdc.textField.MDCTextField(this);
+                                            },
+                                            "style": 'width: 400px;'
+                                        }),
+                                    ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                    {
+                                        $type: "h4",
+                                        class: "mdc-typography--headline4",
+                                        $text: "Reflector settings"
                                     }
                                 ]
                                 },
@@ -714,23 +806,60 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
+                                    {
+                                        $type: "h4",
+                                        class: "mdc-typography--headline4",
+                                        $text: "Krestianstvo Luminary settings (experimental)"
+                                    }
+                                ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
                                         {
                                             $type: "span",
                                             class: "mdc-typography--headline5",
-                                            $text: "DB Host: "
+                                            $text: "Luminary Path: "
                                         },
                                         window._app.widgets.inputTextFieldOutlined({
-                                            "id": 'dbhostInput',
-                                            "label": "DB Host",
-                                            "value": this._dbHost,
+                                            "id": 'lpathInput',
+                                            "label": "Luminary Path",
+                                            "value": this._lpath,
                                             "type": "text",
                                             "init": function() {
-                                                this._dbHostField = new mdc.textField.MDCTextField(this);
+                                                this._lpathField = new mdc.textField.MDCTextField(this);
                                             },
                                             "style": 'width: 400px;'
                                         }),
                                     ]
                                 },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "Global Heartbeat Path: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'hbpathInput',
+                                            "label": "Global Heartbeat Path",
+                                            "value": this._hbpath,
+                                            "type": "text",
+                                            "init": function() {
+                                                this._hbpathField = new mdc.textField.MDCTextField(this);
+                                            },
+                                            "style": 'width: 400px;'
+                                        }),
+                                    ]
+                                },
+                               { 
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [luminaryGlobalHB ]
+                               },
                                 {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
@@ -745,6 +874,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         
                                                     config.reflector = this._refHostField.value;
                                                     config.dbhost = this._dbHostField.value;
+                                                    config.luminaryPath = this._lpathField.value;
+                                                    config.luminaryGlobalHBPath = this._hbpathField.value;
         
                                                     localStorage.setItem('lcs_config', JSON.stringify(config));
                                                     window.location.reload(true);

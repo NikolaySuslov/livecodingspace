@@ -378,12 +378,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     active: false 
                 },
 
-
-                { library: "vwf/model/aframeComponent", active: true },
-
-                { library: "vwf/kernel/view", active: true },
                 { library: "vwf/view/document", active: true },
-
+                { library: "vwf/model/aframeComponent", active: true },
+                { library: "vwf/kernel/view", active: true },
                 { library: "vwf/view/editor-new", active: false },
 
                 { library: "vwf/view/webrtc", 
@@ -443,10 +440,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     { library: "vwf/model/object", active: true }
                 ],
                 view: [
+                    { library: "vwf/view/document", active: true },
                     { library: "vwf/view/aframe", active: true },
                     { library: "vwf/view/aframeComponent", active: true },
-
-                    { library: "vwf/view/document", active: true },
                     { library: "vwf/view/editor-new", active: false },
 
                      { library: "vwf/view/ohm", active: true },
@@ -491,7 +487,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
            
             let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(function(res) {
+            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').once(function(res) {
                 
                 var conf = "";
 
@@ -599,7 +595,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
     
                     require( requireConfig, getActiveLibraries(requireArray, false), function( ready ) {
     
-                        ready( async function() {
+                        ready( function() {
     
                             // Merge any application configuration settings into the configuration
                             // object.
@@ -611,7 +607,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             // accepts three parameters: a world specification, model configuration parameters,
                             // and view configuration parameters.
     
-                            await vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
+                            vwf.initialize(application, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
     
                         } );
     
@@ -860,6 +856,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             //await _app.getApplicationState();
             await _app.getApplicationState()
+                .then(res => {return _app.chooseConnection(res)})
                 .then(res => {self.ready( application, res)})
 
         };
@@ -874,225 +871,37 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             // Connect to the reflector. This implementation uses the socket.io library, which
             // communicates using a channel back to the server that provided the client documents.
 
-            try {
+            if (_app.isLuminary){
+                //Use Luminary for connection
 
-                let objToRef = Object.assign({}, path);
+                vwf.namespace_ = _app.luminary.namespace;//_app.helpers.GetNamespace(path.path); //.split(".").join("_");
+                vwf.moniker_ = _app.luminary.clientID;
+                console.log('namespace: ' + vwf.namespace_, ' for client: ' + vwf.moniker_);
+    
+                //let heartbeat = _LCSDB.get('server').get('heartbeat'); 
+               var heartbeat = _LCSDB.get(vwf.namespace_).get('heartbeat');
 
-                if(path.saveObject){
-                    if ( path.saveObject[ "queue" ] ) {
-                        if ( path.saveObject[ "queue" ][ "time" ] ) {
-                            objToRef.saveObject = {
-                                "init": true,
-                                "queue":{
-                                    "time": path.saveObject[ "queue" ][ "time" ]
-                                }
-                            }
-                        }
-                    }
-                }
+                if(_app.isLuminaryGlobalHB && _app.luminaryGlobalHBPath ) {
+                    let hbPath = _app.luminaryGlobalHBPath.split('/');
+                    var heartbeat = _LCSDB;
+                    hbPath.forEach(el=>{
+                        heartbeat = heartbeat.get(el);
+                    })
+                } 
 
-            
-              
-
-                var options = {
-
-                    // The socket is relative to the application path.
-
-                    // resource: window.location.pathname.slice( 1,
-                    //      window.location.pathname.lastIndexOf("/") ),
-
-                    query: {
-                        pathname: window.location.pathname.slice( 1,
-                            window.location.pathname.lastIndexOf("/") ),
-                        appRoot: "./public",
-                        path: JSON.stringify(objToRef)//JSON.stringify(path)
-                      },
-                    // query: 'pathname=' + window.location.pathname.slice( 1,
-                    //     window.location.pathname.lastIndexOf("/") ),
-
-                    // Use a secure connection when the application comes from https.
-                    
-                    secure: window.location.protocol === "https:",
-
-                    // Don't attempt to reestablish lost connections. The client reloads after a
-                    // disconnection to recreate the application from scratch.
-
-                    //reconnect: false,
-                    reconnection: false,
-                    upgrade: false,
-                    transports: ['websocket']
-
-                };
-
-                if ( isSocketIO07() ) {
-
-                    //window.location.host
-            var host = window._app.reflectorHost; //localStorage.getItem('lcs_reflector'); 
-            //if(!host) host = 'http://localhost:3002'; //window.location.origin;       
-            socket = io.connect( host, options );
-                    
-
-                } else {  // Ruby Server -- only supports socket.io 0.6
-
-                    io.util.merge( options, {
-
-                        // For socket.io 0.6, specify the port since the default isn't correct when
-                        // using https.
-
-                        port: window.location.port ||
-                            ( window.location.protocol === "https:" ? 443 : 80 ),
-
-                        // The ruby socket.io server only supports WebSockets. Don't try the others.
-
-                        transports: [
-                            'websocket',
-                        ],
-
-                        // Increase the timeout because of starvation while loading the scene. The
-                        // server timeout must also be increased. (For socket.io 0.7+, the client
-                        // timeout is controlled by the server.)
-
-                        transportOptions: {
-                            "websocket": { timeout: 90000 },
-                        },
-
-                    } );
-
-                 socket = io.connect( undefined, options );
-                }
-
-            } catch ( e ) {
-
-                // If a connection to the reflector is not available, then run in single-user mode.
-                // Messages intended for the reflector will loop directly back to us in this case.
-                // Start a timer to monitor the incoming queue and dispatch the messages as though
-                // they were received from the server.
-
-                this.dispatch();
-
-                setInterval( function() {
-
-                    var fields = {
-                        time: vwf.now + 0.010, // TODO: there will be a slight skew here since the callback intervals won't be exactly 10 ms; increment using the actual delta time; also, support play/pause/stop and different playback rates as with connected mode.
-                        origin: "reflector",
-                    };
-
-                    queue.insert( fields, true ); // may invoke dispatch(), so call last before returning to the host
-
-                }, 10 );
-
-            }
-
-            if ( socket ) {
-
-                socket.on('connect_error', function(err) {
-                    console.log(err);
-                    var errDiv = document.createElement("div");
-                    errDiv.innerHTML = "<div class='vwf-err' style='z-index: 10; position: absolute; top: 80px; right: 50px'>Connection error!" + err + "</div>";
-                    document.querySelector('body').appendChild(errDiv);
-                    
-                });
-
-                socket.on( "connect", function() {
-
-                    vwf.logger.infox( "-socket", "connected" );
-
-                    if ( isSocketIO07() ) {
-                        vwf.moniker_ = this.id;                        
-                    } else {  //Ruby Server
-                        vwf.moniker_ = this.transport.sessionid;
-                    }
-
-                } );
-
-                // Configure a handler to receive messages from the server.
+                    _app.luminary.subscribeOnHeartbeat(heartbeat);
+                    _app.luminary.subscribeOnMessages();
                 
-                // Note that this example code doesn't implement a robust parser capable of handling
-                // arbitrary text and that the messages should be placed in a dedicated priority
-                // queue for best performance rather than resorting the queue as each message
-                // arrives. Additionally, overlapping messages may cause actions to be performed out
-                // of order in some cases if messages are not processed on a single thread.
 
-                socket.on( "message", function( message ) {
 
-                    // vwf.logger.debugx( "-socket", "message", message );
+                
 
-                    try {
+            } else {
+                //Use Reflector for connection
 
-                        if ( isSocketIO07() ) {
-                            var fields = message;
-                        } else { // Ruby Server - Unpack the arguements
-                            var fields = JSON.parse( message );
-                        }
+                _app.reflectorClient.connect(component_uri_or_json_or_object, path);
 
-                        fields.time = Number( fields.time );
-                        // TODO: other message validation (check node id, others?)
-
-                        fields.origin = "reflector";
-
-                        // Update the queue.  Messages in the queue are ordered by time, then by order of arrival.
-                        // Time is only advanced if the message has no action, meaning it is a tick.
-
-                        queue.insert( fields, !fields.action ); // may invoke dispatch(), so call last before returning to the host
-
-                        // Each message from the server allows us to move time forward. Parse the
-                        // timestamp from the message and call dispatch() to execute all queued
-                        // actions through that time, including the message just received.
-                    
-                        // The simulation may perform immediate actions at the current time or it
-                        // may post actions to the queue to be performed in the future. But we only
-                        // move time forward for items arriving in the queue from the reflector.
-
-                    } catch ( e ) {
-
-                        vwf.logger.warn( fields.action, fields.node, fields.member, fields.parameters,
-                            "exception performing action:", require( "vwf/utility" ).exceptionMessage( e ) );
-
-                    }
-
-                } );
-
-                socket.on( "disconnect", function() {
-
-                    vwf.logger.infox( "-socket", "disconnected" );
-
-                    // Reload to rejoin the application.
-
-                    window.location = window.location.href;
-
-                } );
-
-                socket.on( "error", function() { 
-
-                    //Overcome by compatibility.js websockets check
-                    document.querySelector('body').innerHTML = "<div class='vwf-err'>WebSockets connections are currently being blocked. Please check your proxy server settings.</div>";
-                    // jQuery('body').html("<div class='vwf-err'>WebSockets connections are currently being blocked. Please check your proxy server settings.</div>"); 
-
-                } );
-
-                if ( !isSocketIO07() ) {
-                    // Start communication with the reflector. 
-
-                    socket.connect();  // TODO: errors can occur here too, particularly if a local client contains the socket.io files but there is no server; do the loopback here instead of earlier in response to new io.Socket.
-                }
-
-            } else if ( component_uri_or_json_or_object ) {
-
-                // Load the application. The application is rooted in a single node constructed here
-                // as an instance of the component passed to initialize(). That component, its
-                // prototype(s), and its children, and their prototypes and children, flesh out the
-                // entire application.
-
-                // TODO: add note that this is only for a self-determined application; with socket, wait for reflection server to tell us.
-                // TODO: maybe depends on component_uri_or_json_or_object too; when to override and not connect to reflection server?
-
-                this.createNode( component_uri_or_json_or_object, "application" );
-
-            } else {  // TODO: also do this if component_uri_or_json_or_object was invalid and createNode() failed
-
-                // TODO: show a selection dialog
-
-            }
+        }
 
         };
 
@@ -1152,11 +961,15 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 // callback: callback_async,  // TODO: provisionally add fields to queue (or a holding queue) then execute callback when received back from reflector
             };
 
-            if ( socket ) {
+            if(_app.isLuminary){
+
+                _app.luminary.stampExternalMessage(fields);
+
+            } else if ( _app.reflectorClient.socket ) {
     
                 // Send the message.
                 var message = JSON.stringify( fields );
-                socket.send( message );
+                _app.reflectorClient.socket.send( message );
  
             } else {
                 
@@ -1192,15 +1005,19 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 action: actionName,
                 member: memberName,
                 parameters: require( "vwf/utility" ).transform( parameters, require( "vwf/utility" ).transforms.transit ),
-                result: require( "vwf/utility" ).transform( result, require( "vwf/utility" ).transforms.transit ),
+                result: require( "vwf/utility" ).transform(result, require( "vwf/utility").transforms.transit)
             };
 
-            if ( socket ) {
+            if(_app.isLuminary){
+
+                _app.luminary.stampExternalMessage(fields);
+
+            } else if ( _app.reflectorClient.socket ) {
 
                 // Send the message.
 
                 var message = JSON.stringify( fields );
-                socket.send( message );
+                _app.reflectorClient.socket.send( message );
 
             } else {
 
@@ -1671,7 +1488,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 // If `nodeComponent` is a URI, load the descriptor. `nodeComponent` may be a URI, a
                 // descriptor or an ID here.
 
-                function( series_callback_async /* ( err, results ) */ ) {
+               function( series_callback_async /* ( err, results ) */ ) {
 
                     if ( componentIsURI( nodeComponent ) ) { // URI  // TODO: allow non-vwf URIs (models, images, etc.) to pass through to stage 2 and pass directly to createChild()
 
@@ -1688,7 +1505,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                             components[nodeURI] = []; // [] => array of callbacks while loading => true
 
-                            loadComponent( nodeURI, undefined, function( nodeDescriptor ) /* async */ {
+                           loadComponent( nodeURI, undefined, function( nodeDescriptor ) /* async */ {
                                 nodeComponent = nodeDescriptor;
                                 series_callback_async(undefined, undefined);
                             }, function( errorMessage ) {
@@ -1744,7 +1561,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                         var prototypeURI = require( "vwf/utility" ).resolveURI( nodeComponent.includes, nodeURI || baseURI );
 
-                        loadComponent( prototypeURI, undefined, function( prototypeDescriptor ) /* async */ {
+                      loadComponent( prototypeURI, undefined, function( prototypeDescriptor ) /* async */ {
                             prototypeDescriptor = resolvedDescriptor( prototypeDescriptor, prototypeURI );
                             nodeComponent = mergeDescriptors( nodeComponent, prototypeDescriptor ); // modifies prototypeDescriptor
                             series_callback_async( undefined, undefined );
@@ -2414,7 +2231,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             async.series( [
 
-                function( series_callback_async /* ( err, results ) */ ) {
+              function( series_callback_async /* ( err, results ) */ ) {
 
                     // Rudimentary support for `{ includes: prototype }`, which absorbs a prototype
                     // descriptor into the child descriptor before creating the child. See the notes
@@ -2445,8 +2262,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                                 queue.suspend( "before beginning " + childID ); // suspend the queue
 
-                                async.nextTick( async function() {
-                                   await series_callback_async( undefined, undefined );
+                                async.nextTick( function() {
+                                   series_callback_async( undefined, undefined );
                                     queue.resume( "after beginning " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                                 } );
 
@@ -2465,8 +2282,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                         queue.suspend( "before beginning " + childID ); // suspend the queue
 
-                        async.nextTick( async function() {
-                            await series_callback_async( undefined, undefined );
+                        async.nextTick( function() {
+                            series_callback_async( undefined, undefined );
                             queue.resume( "after beginning " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                         } );
 
@@ -2598,11 +2415,11 @@ if ( ! childComponent.source ) {
                                 driver_ready = false;
                             }
 
-                            async function resume( err ) {
+                            function resume( err ) {
                                 window.clearTimeout( timeoutID );
                                 driver_ready = true;
                                 err && vwf.logger.warnx( "createChild", nodeID, childName + ":", err );
-                                await each_callback_async( err ); // resume createChild()
+                                each_callback_async( err ); // resume createChild()
                                 queue.resume( "after loading " + childComponent.source + " for " + childID + " in creatingNode" ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                             }
 
@@ -2623,7 +2440,7 @@ if ( ! childComponent.source ) {
                     // Call createdNode() on each view. The view is being notified of a node that has
                     // been constructed.
 
-                    async.forEachSeries( vwf.views, function( view, each_callback_async /* ( err ) */ ) {
+                    async.forEach( vwf.views, function( view, each_callback_async /* ( err ) */ ) {
 
                         var driver_ready = true;
                         var timeoutID;
@@ -2643,11 +2460,11 @@ if ( ! childComponent.source ) {
                                 driver_ready = false;
                             }
 
-                            async function resume( err ) {
+                            function resume( err ) {
                                 window.clearTimeout( timeoutID );
                                 driver_ready = true;
                                 err && vwf.logger.warnx( "createChild", nodeID, childName + ":", err );
-                                await each_callback_async( err ); // resume createChild()
+                                each_callback_async( err ); // resume createChild()
                                 queue.resume( "after loading " + childComponent.source + " for " + childID + " in createdNode" ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                             }
 
@@ -2935,8 +2752,8 @@ if ( ! childComponent.source ) {
 
                     queue.suspend( "before completing " + childID ); // suspend the queue
 
-                    async.nextTick( async function() {
-                        await callback_async( childID );
+                    async.nextTick( function() {
+                        callback_async( childID );
                         queue.resume( "after completing " + childID ); // resume the queue; may invoke dispatch(), so call last before returning to the host
                     } );
 
@@ -3240,8 +3057,8 @@ if ( ! childComponent.source ) {
         this.setProperty = function( nodeID, propertyName, propertyValue ) {
 
             this.logger.debuggx( "setProperty", function() {
-                return [ nodeID, propertyName, JSON.stringify( loggableValue( propertyValue ) ) ];
-            } );
+                 return [ nodeID, propertyName, JSON.stringify( loggableValue( propertyValue ) ) ];
+             } );
 
             var node = nodes.existing[nodeID];
 
@@ -3433,7 +3250,7 @@ if ( ! childComponent.source ) {
 
         this.getProperty = function( nodeID, propertyName, ignorePrototype ) {
 
-            this.logger.debuggx( "getProperty", nodeID, propertyName );
+             this.logger.debuggx( "getProperty", nodeID, propertyName );
 
             var propertyValue = undefined;
 
@@ -3748,9 +3565,9 @@ if ( ! childComponent.source ) {
 
         this.callMethod = function( nodeID, methodName, methodParameters ) {
 
-            this.logger.debuggx( "callMethod", function() {
-                return [ nodeID, methodName, JSON.stringify( loggableValues( methodParameters ) ) ];
-            } );
+             this.logger.debuggx( "callMethod", function() {
+                 return [ nodeID, methodName, JSON.stringify( loggableValues( methodParameters ) ) ];
+             } );
 
             // Call callingMethod() on each model. The first model to return a non-undefined value
             // dictates the return value.
@@ -4205,9 +4022,9 @@ if ( ! childComponent.source ) {
 
         this.fireEvent = function( nodeID, eventName, eventParameters ) {
 
-            this.logger.debuggx( "fireEvent", function() {
-                return [ nodeID, eventName, JSON.stringify( loggableValues( eventParameters ) ) ];
-            } );
+             this.logger.debuggx( "fireEvent", function() {
+                 return [ nodeID, eventName, JSON.stringify( loggableValues( eventParameters ) ) ];
+             } );
 
             // Encode any namespacing into the name. (Namespaced names were added in 0.6.21.)
 
@@ -4843,20 +4660,15 @@ if ( ! childComponent.source ) {
 
         // == Private functions ====================================================================
 
-        var isSocketIO07 = function() {
-            //return ( parseFloat( io.version ) >= 0.7 );
-            return true
-        }
-
         // -- loadComponent ------------------------------------------------------------------------
 
         /// @name module:vwf~loadComponent
 
-        var loadComponent = async function( nodeURI, baseURI, callback_async /* nodeDescriptor */, errback_async /* errorMessage */ ) {  // TODO: turn this into a generic xhr loader exposed as a kernel function?
+        var loadComponent = function( nodeURI, baseURI, callback_async /* nodeDescriptor */, errback_async /* errorMessage */ ) {  // TODO: turn this into a generic xhr loader exposed as a kernel function?
 
             if ( nodeURI == vwf.kutility.protoNodeURI ) {
 
-                await callback_async( vwf.kutility.protoNodeDescriptor );
+                callback_async( vwf.kutility.protoNodeDescriptor );
 
             } else if ( nodeURI.match( RegExp( "^data:application/json;base64," ) ) ) {
 
@@ -4864,7 +4676,7 @@ if ( ! childComponent.source ) {
                 // these ourselves since Chrome can't load data URIs due to cross origin
                 // restrictions.
 
-                await callback_async( JSON.parse( atob( nodeURI.substring( 29 ) ) ) );  // TODO: support all data URIs
+               callback_async( JSON.parse( atob( nodeURI.substring( 29 ) ) ) );  // TODO: support all data URIs
 
             } else {
 
@@ -4873,7 +4685,7 @@ if ( ! childComponent.source ) {
                 let fetchUrl =  remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) );
                 let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_") + '_yaml';
 
-                const parseComp = async function(f) {
+                const parseComp = function(f) {
 
                     let result = YAML.parse(f);
 
@@ -4881,7 +4693,7 @@ if ( ! childComponent.source ) {
                     // console.log(nativeObject);
  
                      if(nativeObject) {
-                         await callback_async( nativeObject );
+                         callback_async( nativeObject );
                          queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
      
                      } else {
@@ -4903,21 +4715,29 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
                    fileName = dbName;
-                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(function(r){
-                       //console.log(r);
-                       parseComp(r);
+                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').once(comp=>{
+                    parseComp (comp);
+                   })
+                   
+                //    (function(r){
+                //        //console.log(r);
+                //        parseComp(r);
 
-                   });
+                //    });
 
                 } else {
                     let worldName = dbName.split('/')[0];
                     //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
                    fileName = dbName.replace(worldName + '/', "");
-                   userDB.get('worlds').path(worldName).get(fileName).get('file').load(function(r){
-                    //console.log(r);
-                    parseComp(r);
+                   userDB.get('worlds').path(worldName).get(fileName).get('file').once(comp=>{
+                    parseComp (comp);
+                   })
+                   
+                //    (function(r){
+                //     //console.log(r);
+                //     parseComp(r);
 
-                });
+                // });
                 }
 
                 //console.log(source);
@@ -4936,7 +4756,7 @@ if ( ! childComponent.source ) {
 
         /// @name module:vwf~loadScript
 
-        var loadScript = async function( scriptURI, baseURI, callback_async /* scriptText */, errback_async /* errorMessage */ ) {
+        var loadScript = function( scriptURI, baseURI, callback_async /* scriptText */, errback_async /* errorMessage */ ) {
 
             if ( scriptURI.match( RegExp( "^data:application/javascript;base64," ) ) ) {
 
@@ -4944,7 +4764,7 @@ if ( ! childComponent.source ) {
                 // these ourselves since Chrome can't load data URIs due to cross origin
                 // restrictions.
 
-                await callback_async( atob( scriptURI.substring( 35 ) ) );  // TODO: support all data URIs
+               callback_async( atob( scriptURI.substring( 35 ) ) );  // TODO: support all data URIs
 
             } else {
 
@@ -4953,12 +4773,12 @@ if ( ! childComponent.source ) {
                 let fetchUrl = remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) );
                 let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_");
 
-                const parseComp = async function(res) {
+                const parseComp = function(res) {
 
                     let scriptText = res;
 
                     try {
-                        await callback_async( scriptText );
+                        callback_async( scriptText );
                         queue.resume( "after loading " + scriptURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
 
                     } catch (e) {
@@ -4980,18 +4800,24 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
-                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(function(r){
-                        //console.log(r);
-                        parseComp(r);
-                    });
+                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').once(comp=>{
+                        parseComp (comp);
+                       })
+                    // window._LCS_SYS_USER.get('proxy').get(fileName).get('file').once(function(r){
+                    //     //console.log(r);
+                    //     parseComp(r);
+                    // });
  
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
-                    userDB.get('worlds').path(worldName).get(fileName).get('file').load(function(r){
-                        //console.log(r);
-                        parseComp(r);
+                    userDB.get('worlds').path(worldName).get(fileName).get('file').once(comp=>{
+                        parseComp (comp);
+                       })
+                    // userDB.get('worlds').path(worldName).get(fileName).get('file').once(function(r){
+                    //     //console.log(r);
+                    //     parseComp(r);
     
-                    });
+                    // });
                 }
 
                // userDB.get(fileName).once(, {wait: 1000})

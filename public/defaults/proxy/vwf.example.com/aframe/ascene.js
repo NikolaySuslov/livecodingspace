@@ -1,5 +1,5 @@
 this.initialize = function () {
-    this.future(0).clientWatch();
+    this.future(3).clientWatch();
 };
 
 this.clientWatch = function () {

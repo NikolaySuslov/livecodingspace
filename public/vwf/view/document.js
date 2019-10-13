@@ -24,18 +24,10 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
             var self = this;
 
             // At the root node of the application, load the UI chrome if available.
+        
+           
 
-            let setInnerHtml = function(elm, html) {
-                elm.innerHTML = html;
-                Array.from(elm.querySelectorAll("script")).forEach(function(el) {
-                  let newEl = document.createElement("script");
-                  Array.from(el.attributes).forEach(function(el) { 
-                    newEl.setAttribute(el.name, el.value)
-                  });
-                  newEl.appendChild(document.createTextNode(el.innerHTML));
-                  el.parentNode.replaceChild(newEl, el);
-                })
-              }
+           
 
             if ( childID == this.kernel.application() &&
                     ( window.location.protocol == "http:" || window.location.protocol == "https:" ) ) {
@@ -58,39 +50,63 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
               let worldName = path.slice(1);
               let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-              userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(res) {
-                   
-                   var responseText = "";
-                   
-                   if (res) { 
-                    responseText = res//.file;
-                   }
 
-                     // If the overlay attached a `createdNode` handler, forward this first call
-                    // since the overlay will have missed it.
+              function loadDoc(doc){
 
-                   setInnerHtml(container, responseText);
+                var responseText = doc;
 
-                   if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
-                    self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
-                        childSource, childType, childURI, childName );
+                  // If the overlay attached a `createdNode` handler, forward this first call
+                 // since the overlay will have missed it.
+
+                setInnerHtml(container, responseText);
+
+                if ( self.createdNode !== Object.getPrototypeOf( self ).createdNode ) {
+                 self.createdNode( nodeID, childID, childExtendsID, childImplementsIDs,
+                     childSource, childType, childURI, childName );
+             }
+
+             // Remove the container div if an error occurred or if we received an empty
+             // result. The server sends an empty document when the application doesn't
+             // provide a chrome file.
+
+             if (  responseText == "" ) {
+                 container.remove();
+             }
+
+             // Resume the queue.
+
+             
+             //callback( true );
+
+              }
+
+              userDB.get('worlds').get(worldName).once(res=>{
+
+                if(res){
+                    if(Object.keys(res).includes(dbPath)){
+                        userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(res) { 
+                        loadDoc(res);
+                        callback( true );
+                        })
+                    } else {
+                        //NEED TO FIXED!!! Error: Callback was already called.
+                        userDB.get('worlds').get('empty').get(dbPath).get('file').once(function(res) { 
+                            loadDoc(res);
+                            callback( true );
+                            })
+                        //   var emptyDoc = '<!DOCTYPE html><html><head><script type=\"text\/javascript\">\r\n\r\n        vwf_view.satProperty = function (nodeID, propertyName, propertyValue) {\r\n            if (propertyValue === undefined || propertyValue == null) {\r\n                return;\r\n            }\r\n        }\r\n\r\n\r\n    <\/script>\r\n<\/head>\r\n\r\n<body>\r\n<\/body>\r\n\r\n<\/html>';
+                       
+                        //   loadDoc(emptyDoc);
+                        //   callback( true );
+                        
+
+                    }
                 }
-
-                // Remove the container div if an error occurred or if we received an empty
-                // result. The server sends an empty document when the application doesn't
-                // provide a chrome file.
-
-                if (  responseText == "" ) {
-                    container.remove();
-                }
-
-                // Resume the queue.
-
-                callback( true );
+                
+              })
 
 
-
-                })
+              
    
 
             // fetch("admin/chrome", {
@@ -161,5 +177,20 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
         // == View API =============================================================================
 
     } );
+
+
+    function setInnerHtml (elm, html) {
+        elm.innerHTML = html;
+        Array.from(elm.querySelectorAll("script")).forEach(function(el) {
+          let newEl = document.createElement("script");
+          Array.from(el.attributes).forEach(function(el) { 
+            newEl.setAttribute(el.name, el.value)
+          });
+          newEl.appendChild(document.createTextNode(el.innerHTML));
+          el.parentNode.replaceChild(newEl, el);
+        })
+      }
+
+
 
 } );

@@ -16,6 +16,25 @@ class Helpers {
         this.applicationRoot = "/"; //app
     }
 
+    reduceSaveObject(path) {
+        let obj = Object.assign({}, path);
+
+        if(path.saveObject){
+            if ( path.saveObject[ "queue" ] ) {
+                if ( path.saveObject[ "queue" ][ "time" ] ) {
+                    obj.saveObject = {
+                        "init": true,
+                        "queue":{
+                            "time": path.saveObject[ "queue" ][ "time" ]
+                        }
+                    }
+                }
+            }
+        }
+
+        return obj
+    }
+
 
     async Process(updatedURL) {
         var result =
@@ -91,6 +110,14 @@ class Helpers {
         return result;
     }
 
+    GetNamespace( processedURL ) {
+        if ( ( processedURL[ 'instance' ] ) && ( processedURL[ 'public_path' ] ) ) {
+            return this.JoinPath( processedURL[ 'public_path' ], processedURL[ 'application' ], processedURL[ 'instance' ] );
+        }
+        return undefined;
+    }
+
+
     async IsFileExist(path) {
 
         let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
@@ -98,9 +125,12 @@ class Helpers {
         var seperatorFixedPath = path.slice(1);//path.replace(/\//g, '/');
         let worldName = seperatorFixedPath.split('/')[0];
         let fileName = seperatorFixedPath.replace(worldName + '/', "");
-        let doc = await userDB.get('worlds').get(worldName).get(fileName).then();
-        if (doc) {
-            return true
+        let world = await userDB.get('worlds').get(worldName).promOnce();
+        if (world) {
+            let doc = Object.keys(world.data).includes(fileName);//(await userDB.get('worlds').get(worldName).get(fileName).promOnce()).data;
+            if (doc) {
+                return true
+            }
         }
         return false
     }
@@ -108,11 +138,14 @@ class Helpers {
     async IsExist(path) {
 
         let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-        var seperatorFixedPath = path.slice(1);//path.replace(/\//g, '/');
-        let doc = await  userDB.get('worlds').get(seperatorFixedPath).then();
+        var seperatorFixedPath = (path.slice(1)).split('/');//path.replace(/\//g, '/');
+        if(seperatorFixedPath.length == 1){
+        let doc = (await  userDB.get('worlds').get(seperatorFixedPath[0]).promOnce()).data; //(await  userDB.get('worlds').promOnce()).data;
+       // let doc = Object.keys(worlds).includes('index_vwf_yaml');//(await  userDB.get('worlds').get(seperatorFixedPath).promOnce()).data;
         if (doc) {
             return true
         }
+    }
         return false
     }
 
@@ -139,10 +172,27 @@ class Helpers {
 
         if (path.match(/\.vwf$/)) {
 
-            for (const res of this.template_extensions) {
-                let check = await this.IsFileExist(this.JoinPath(path + res).split(".").join("_"));
-                if (check) return res
-            }
+            // ["", ".yaml", ".json"]
+
+            let check1 = await this.IsFileExist(this.JoinPath(path + "").split(".").join("_"));
+            if(check1)
+                return ""
+
+            let check2 = await this.IsFileExist(this.JoinPath(path + ".yaml").split(".").join("_"));
+            if(check2)
+                return ".yaml"
+
+            let check3 = await this.IsFileExist(this.JoinPath(path + ".json").split(".").join("_"));
+            if(check3)
+                return ".json"
+
+
+
+
+            // for (const res of this.template_extensions) {
+            //     let check = await this.IsFileExist(this.JoinPath(path + res).split(".").join("_"));
+            //     if (check) return res
+            // }
         }
 
         return undefined;

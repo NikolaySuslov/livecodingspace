@@ -13,7 +13,18 @@ class IndexApp {
 
 
         this.worlds = {};
+        this.instances = {};
         //this.language = _LangManager.language;
+
+        if(!_app.isLuminary){
+            this.initReflectorConnection();
+        }
+
+
+    }
+
+    
+    initReflectorConnection(){
 
         this.options = {
 
@@ -61,8 +72,6 @@ class IndexApp {
         });
 
     }
-
-    
 
     initHTML() {
 
@@ -381,6 +390,59 @@ class IndexApp {
             }
         }
 
+        let luminaryFeature = {
+            $cell: true,
+            _luminarySwitch: null,
+            $components: [
+              {
+                $type: "p",
+                class: "mdc-typography--headline5",
+                $text: "Use Krestianstvo Luminary (experimental)"
+              },
+              {
+                $type: 'p'
+              },
+              _app.widgets.switch({
+                'id': 'forceLuminary',
+                'init': function () {
+                  this._switch = new mdc.switchControl.MDCSwitch(this);
+                  let config = localStorage.getItem('lcs_config');
+                  this._switch.checked = JSON.parse(config).luminary;
+                  
+                 // this._replaceSwitch = this._switch;
+                  
+                },
+                'onchange': function (e) {
+
+                    if (this._switch) {
+                        let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                        if (chkAttr) {
+                            let config = JSON.parse(localStorage.getItem('lcs_config'));
+                            config.luminary = true;
+                            localStorage.setItem('lcs_config', JSON.stringify(config));
+                            window.location.reload(true);
+                            //this._switch.checked = false;
+                        } else {
+                            let config = JSON.parse(localStorage.getItem('lcs_config'));
+                            config.luminary = false;
+                            localStorage.setItem('lcs_config', JSON.stringify(config));
+                            window.location.reload(true);
+                        }
+                    }
+                }
+              }
+              ),
+              {
+                $type: 'label',
+                for: 'input-forceLuminary',
+                $text: 'On / Off'
+              }
+
+            ]
+          }
+
+          
+
         let userGUI =
         {
             $type: "div",
@@ -459,6 +521,7 @@ class IndexApp {
                                 window.location.pathname = '/settings';
                             }
                         }),
+                        luminaryFeature,
                     {
                         $type: "h1",
                         class: "mdc-typography--headline3",
@@ -689,7 +752,7 @@ class IndexApp {
                                 {
                                     $type: "span",
                                     class: "mdc-list-item__secondary-text",
-                                    $text: _LangManager.language.t('users') + m[1].clients
+                                    $text: _app.isLuminary ? _LangManager.language.t('users') + Object.keys(m[1].clients).length : _LangManager.language.t('users') + m[1].clients
                                 }
                             ]
                         }
@@ -713,6 +776,52 @@ class IndexApp {
 
             },
             $init: function () {
+
+                if(_app.isLuminary){
+                    let luminaryPath = _app.luminaryPath;
+                    let ref = _LCSDB.get(luminaryPath);
+                    setInterval(function () {
+    
+                    ref.get('allclients').once().map().once(res => {
+    
+                        if (res) {
+                            if (res.id) {
+                                let clientTime = Gun.state.is(res, 'live');
+                                let now = Gun.time.is();
+    
+                                if (now - clientTime < 10000) {
+                                    let instance = res.user + res.instance;
+                                    //let data = JSON.stringify({[res.instance]: {instance: instance, clients: {}, user: res.user, loadInfo: {}}});
+                                    //console.log(data);
+                                    if(!self.instances[res.instance]) {
+                                    self.instances[res.instance] = {id: res.instance, instance: instance, clients: {[res.id]: res}, user: res.user, loadInfo: {} }
+                                    } else {
+                                        self.instances[res.instance].clients[res.id] = res
+                                    }
+                                    let data = JSON.stringify(self.instances);
+                                    self.parseOnlineData(data);
+                                    
+                                } else {
+                                    if(self.instances[res.instance]){
+                                    delete self.instances[res.instance].clients[res.id];
+                                    if(Object.keys(self.instances[res.instance].clients).length == 0){
+                                        delete self.instances[res.instance];
+                                        self.parseOnlineData(JSON.stringify({}));
+                                    }
+                                    }
+                                        
+                                    //ref.get('instances').get(res.instance).get(res.id).put(null);
+                                }
+    
+                            }
+                        }
+                    }
+                    )
+                }, 5000);
+    
+
+                }
+
                 this._refresh();
             },
             $update: function () {

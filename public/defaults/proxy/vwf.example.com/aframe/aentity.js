@@ -141,11 +141,11 @@ this.setOwner = function (param) {
 }
 
 this.updateMethod = function (methodName, methodBody, params) {
-    vwf_view.kernel.setMethod(this.id, methodName, { body: methodBody, type: "application/javascript", parameters: params});
+    vwf.setMethod(this.id, methodName, { body: methodBody, type: "application/javascript", parameters: params});
 }
 
 this.callMethod = function(methodName, params){
-    vwf_view.kernel.callMethod(this.id, methodName, params)
+    vwf.callMethod(this.id, methodName, params)
 }
 
 this.do = function() {

@@ -11,19 +11,25 @@ import page from '/lib/page.mjs';
 import { Helpers } from '/helpers.js';
 import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/widgets.js';
+import { ReflectorClient } from './reflector-client.js';
+import { Luminary } from '/luminary.js';
+
 
 
 class App {
   constructor() {
     console.log("app constructor");
     this.widgets = new Widgets;
-
     //globals
     window._app = this;
     window._cellWidgets = this.widgets;
     // window._LangManager = new Lang;
     window._noty = new Noty;
     this.helpers = new Helpers;
+
+    this.luminary = new Luminary;
+    this.reflectorClient = new ReflectorClient;
+    this.config = {};
 
     this.initDB();
     this.initUser();
@@ -71,15 +77,36 @@ class App {
     var config = JSON.parse(localStorage.getItem('lcs_config'));
     if (!config) {
       config = {
-        'dbhost': 'https://' + window.location.hostname + ':8080/gun', //'http://localhost:8080/gun',
+        'luminary': false,
+        'luminaryPath': 'luminary',
+        'luminaryGlobalHBPath': 'server/heartbeat',
+        'luminaryGlobalHB': false,
+        'dbhost':  window.location.origin + '/gun', // 'https://' + window.location.hostname + ':8080/gun', //'http://localhost:8080/gun',
         'reflector': 'https://' + window.location.hostname + ':3002',
         'language': 'en'
       }
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
+    if(!config.luminaryPath){
+      config.luminaryPath = 'luminary';
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
 
-    const opt = { peers: this.dbHost, localStorage: false, axe: false }
+    if(!config.luminaryGlobalHBPath){
+      config.luminaryGlobalHBPath = 'server/heartbeat';
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    if(!config.luminaryGlobalHB){
+      config.luminaryGlobalHB = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    this.config = config;
+
+    const opt = { peers: this.dbHost, localStorage: false, axe: false}
+   //const opt = { peers: this.dbHost, localStorage: false, until: 1000, chunk: 5, axe: false} //until: 5000, chunk: 5
     //opt.store = RindexedDB(opt);
     this.db = Gun(opt);
 
@@ -138,6 +165,46 @@ class App {
     _LCSDB.user().recall({ sessionStorage: 1 });
   }
 
+
+  async chooseConnection(data) {
+      if (this.isLuminary){
+        return await _app.luminary.connect(data) //use Luminary
+      } else {
+        return data //use Reflector
+      }
+  }
+
+  get isLuminary() {
+
+    return this.config.luminary;
+
+  }
+
+  get isLuminaryGlobalHB() {
+
+    return this.config.luminaryGlobalHB;
+
+  }
+
+  get luminaryGlobalHBPath() {
+
+    var res = "";
+    let config = localStorage.getItem('lcs_config');
+    if (config) {
+      res = JSON.parse(config).luminaryGlobalHBPath;
+    }
+    return res;
+  }
+
+  get luminaryPath() {
+
+    var res = "";
+    let config = localStorage.getItem('lcs_config');
+    if (config) {
+      res = JSON.parse(config).luminaryPath;
+    }
+    return res;
+  }
 
   get reflectorHost() {
 
@@ -947,8 +1014,8 @@ class App {
 
         if ((parsedRequest['instance'] == undefined) && (parsedRequest['private_path'] == undefined) && (parsedRequest['public_path'] !== "/") && (parsedRequest['application'] !== undefined)) {
 
-          page.redirect(pathname + '/' + app.helpers.GenerateInstanceID());
-
+            //page.redirect(pathname + '/' + app.helpers.GenerateInstanceID());
+            window.location.pathname = pathname + '/' + app.helpers.GenerateInstanceID()
         }
       })
     })
@@ -985,7 +1052,7 @@ class App {
         var userLibraries = { model: {}, view: {} };
         var application;
 
-        vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
+          vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
       })
     })
 
