@@ -85,7 +85,11 @@ class Luminary {
 
     stamp(source) {
 
-        let message = JSON.parse(source.tick);
+        var message = source.tick
+        if(typeof message == "string"){
+            message  = JSON.parse(source.tick);
+        }
+        
 
         // if(message.sender){
         //     console.log("HEARTBEAT FROM: " + message.sender);
@@ -244,11 +248,11 @@ class Luminary {
 
                                 if (!_app.isLuminaryGlobalHB) {
                                     let tickMsg = {
-                                        parameters: [],
+                                        parameters: "[]",
                                         time: 'tick', //hb
                                         sender: self.clientID
                                     };
-                                    instance.get('heartbeat').get('tick').put(JSON.stringify(tickMsg));
+                                    instance.get('heartbeat').get('tick').put(tickMsg);
                                     self.initHeartBeat();
                                 }
 
@@ -433,7 +437,7 @@ class Luminary {
         setInterval(function () {
 
             let message = {
-                parameters: [],
+                parameters: "[]",
                 time: 'tick', //hb
                 sender: self.clientID
 
@@ -441,7 +445,14 @@ class Luminary {
 
             instance.get('heartbeat').get('tick').once(data => {
                 if (data) {
-                    let res = JSON.parse(data);
+
+                    //let res = JSON.parse(data);
+
+                    var res = data
+                    if(typeof res == "string"){
+                        res = JSON.parse(source.tick);
+                    }
+
                     if (res.sender) {
 
                         let now = Gun.time.is();
@@ -451,7 +462,7 @@ class Luminary {
                             || (res.sender !== self.clientID && diff > 1000)) {
 
                             //console.log("TICK FROM" + self.clientID);    
-                            instance.get('heartbeat').get('tick').put(JSON.stringify(message), function (ack) {
+                            instance.get('heartbeat').get('tick').put(message, function (ack) {
                                 if (ack.err) {
                                     console.log('ERROR: ' + ack.err)
                                 }
