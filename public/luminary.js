@@ -450,7 +450,7 @@ class Luminary {
 
                     var res = data
                     if(typeof res == "string"){
-                        res = JSON.parse(source.tick);
+                        res = JSON.parse(data);
                     }
 
                     if (res.sender) {
