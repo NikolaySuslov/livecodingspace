@@ -1281,12 +1281,18 @@ class App {
     let newOwner = _LCSDB.user().is.pub;
 
     let myWorlds = (await _LCSDB.user(newOwner).get('worlds').promOnce()).data;
-    if (!myWorlds) _LCSDB.user(newOwner).get('worlds').put({});
+    //if (!myWorlds) _LCSDB.user(newOwner).get('worlds').put({});
+
+    _LCSDB.user(newOwner).get('worlds').not(res=>{
+      _LCSDB.user(newOwner).get('worlds').put({});
+    })
+
+    let checkExist = Object.keys(myWorlds).filter(el=> el == newWorldName);
 
     if (newWorldName) {
 
-      let worldProto = (await _LCSDB.user(newOwner).get('worlds').get(newWorldName).promOnce()).data;
-      if (worldProto) {
+      //let worldProto = (await _LCSDB.user(newOwner).get('worlds').get(newWorldName).promOnce()).data;
+      if (checkExist.length > 0) {
         console.log('already exist!');
         return
       }
@@ -1310,62 +1316,67 @@ class App {
       'published': true
     };
 
-    let fileNamesAll = (await _LCSDB.user(userPub).get('worlds').get(worldName).promOnce()).data;
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
+   // let fileNamesAll = 
+    await _LCSDB.user(userPub).get('worlds').get(worldName).load(all=> {
 
-    for (var doc in worldFileNames) {
+      let worldFileNames = Object.keys(all).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
-      let fn = worldFileNames[doc];
-      let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
-      let data = {
-        'file': JSON.stringify(res.file),
-        'modified': created
+      for (var doc in worldFileNames) {
+  
+        let fn = worldFileNames[doc];
+        let res = all[fn]; //(await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
+        let data = {
+          'file': JSON.stringify(res.file),
+          'modified': created
+        }
+        worldObj[fn] = data;
       }
-      worldObj[fn] = data;
-    }
-    console.log(worldObj);
-
-    // for (const obj of Object.keys(worldObj)) {
-    //   let myWorlds = _LCSDB.user().get('worlds');
-    //   let myNewWorld = myWorlds.get(worldID);
-    //   myNewWorld.get(obj).put(worldObj[obj]);
-    // }
-
-    //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
-    let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({});
-    myWorld.put(worldObj, function (res) {
-      console.log(res)
-    }); //.get(worldID) let myWorld =
-
-    // let myWorld = _LCSDB.user().get(worldID).put(worldObj);
-    // _LCSDB.user().get('worlds').set(myWorld);
-
-    _app.hideProgressBar();
-    console.log('CLONED!!!');
-
-    let appEl = document.createElement("div");
-    appEl.setAttribute("id", 'cloneLink');
-    let entry = document.querySelector('#worldActionsGUI');
-    if (entry) {
-      entry.appendChild(appEl);
-
-      document.querySelector("#cloneLink").$cell({
-        id: 'cloneLink',
-        $cell: true,
-        $type: "div",
-        $components: [
-          {
-            $type: "a",
-            class: "mdc-button mdc-button--raised mdc-card__action",
-            $text: "Go to new cloned World!",
-            onclick: function (e) {
-              let myName = _LCSDB.user().is.alias;
-              window.location.pathname = '/' + myName + '/' + worldID + '/about'
+      console.log(worldObj);
+  
+      // for (const obj of Object.keys(worldObj)) {
+      //   let myWorlds = _LCSDB.user().get('worlds');
+      //   let myNewWorld = myWorlds.get(worldID);
+      //   myNewWorld.get(obj).put(worldObj[obj]);
+      // }
+  
+      //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
+      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({});
+      myWorld.put(worldObj, function (res) {
+        console.log(res)
+      }); //.get(worldID) let myWorld =
+  
+      // let myWorld = _LCSDB.user().get(worldID).put(worldObj);
+      // _LCSDB.user().get('worlds').set(myWorld);
+  
+      _app.hideProgressBar();
+      console.log('CLONED!!!');
+  
+      let appEl = document.createElement("div");
+      appEl.setAttribute("id", 'cloneLink');
+      let entry = document.querySelector('#worldActionsGUI');
+      if (entry) {
+        entry.appendChild(appEl);
+  
+        document.querySelector("#cloneLink").$cell({
+          id: 'cloneLink',
+          $cell: true,
+          $type: "div",
+          $components: [
+            {
+              $type: "a",
+              class: "mdc-button mdc-button--raised mdc-card__action",
+              $text: "Go to new cloned World!",
+              onclick: function (e) {
+                let myName = _LCSDB.user().is.alias;
+                window.location.pathname = '/' + myName + '/' + worldID + '/about'
+              }
             }
-          }
-        ]
-      })
-    }
+          ]
+        })
+      }
+
+    },{wait: 500}).then();
+   
 
     //window.location.pathname = '/' + userName + '/' + worldID + '/about'
     //page()

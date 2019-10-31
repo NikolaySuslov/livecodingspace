@@ -80,30 +80,33 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
 
               }
 
-              userDB.get('worlds').get(worldName).once(res=>{
+              userDB.get('worlds').get(worldName).load(all=>{
 
-                if(res){
-                    if(Object.keys(res).includes(dbPath)){
-                        userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(res) { 
+                if(all){
+                    if(Object.keys(all).includes(dbPath)){
+
+                        //userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(res) { 
+                        let res = all[dbPath].file;
                         loadDoc(res);
                         callback( true );
-                        })
+                       // })
                     } else {
                         //NEED TO FIXED!!! Error: Callback was already called.
-                        userDB.get('worlds').get('empty').get(dbPath).get('file').once(function(res) { 
-                            loadDoc(res);
-                            callback( true );
-                            })
-                        //   var emptyDoc = '<!DOCTYPE html><html><head><script type=\"text\/javascript\">\r\n\r\n        vwf_view.satProperty = function (nodeID, propertyName, propertyValue) {\r\n            if (propertyValue === undefined || propertyValue == null) {\r\n                return;\r\n            }\r\n        }\r\n\r\n\r\n    <\/script>\r\n<\/head>\r\n\r\n<body>\r\n<\/body>\r\n\r\n<\/html>';
+                        // userDB.get('worlds').get('empty').get(dbPath).get('file').once(function(res) { 
+                        //     loadDoc(res);
+                        //     callback( true );
+                        //     },{wait:300})
+
+                          var emptyDoc = '<!DOCTYPE html><html><head><script type=\"text\/javascript\">\r\n\r\n        vwf_view.satProperty = function (nodeID, propertyName, propertyValue) {\r\n            if (propertyValue === undefined || propertyValue == null) {\r\n                return;\r\n            }\r\n        }\r\n\r\n\r\n    <\/script>\r\n<\/head>\r\n\r\n<body>\r\n<\/body>\r\n\r\n<\/html>';
                        
-                        //   loadDoc(emptyDoc);
-                        //   callback( true );
+                          loadDoc(emptyDoc);
+                          callback( true );
                         
 
                     }
                 }
                 
-              })
+              },{wait:300})
 
 
               
