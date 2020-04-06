@@ -429,6 +429,27 @@ class Helpers {
         }
     }
 
+    authUser(alias, pass){
+
+        _LCSDB.user().auth(alias, pass
+            //     , function(ack) {
+    
+            //     if (ack.err) {
+            //         new Noty({
+            //             text: ack.err,
+            //             timeout: 2000,
+            //             theme: 'mint',
+            //             layout: 'bottomRight',
+            //             type: 'error'
+            //         }).show();
+    
+            //     }
+             //}
+             );
+
+    }
+    
+
 }
 
 export { Helpers } 

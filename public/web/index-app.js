@@ -655,19 +655,24 @@ class IndexApp {
                                             "label": 'Sign IN',
                                             "onclick": function (e) {
                                                 e.preventDefault();
-                                                _LCSDB.user().auth(this._aliasField.value, this._passField.value, function(ack) {
+                                                let alias = this._aliasField.value;
+                                                let pass = this._passField.value
+                                                _app.helpers.authUser(alias, pass);
+                                                // _LCSDB.user().auth.call(_LCSDB, alias, pass
+                                                // //     , function(ack) {
 
-                                                    if (ack.err) {
-                                                        new Noty({
-                                                            text: ack.err,
-                                                            timeout: 2000,
-                                                            theme: 'mint',
-                                                            layout: 'bottomRight',
-                                                            type: 'error'
-                                                        }).show();
+                                                // //     if (ack.err) {
+                                                // //         new Noty({
+                                                // //             text: ack.err,
+                                                // //             timeout: 2000,
+                                                // //             theme: 'mint',
+                                                // //             layout: 'bottomRight',
+                                                // //             type: 'error'
+                                                // //         }).show();
 
-                                                    }
-                                                });
+                                                // //     }
+                                                //  //}
+                                                //  );
                                             }
                                         })
 
