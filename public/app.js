@@ -738,7 +738,7 @@ class App {
 
               //var source = (typeof(sourceToEdit) =="object") ? JSON.stringify(sourceToEdit): sourceToEdit;
               if (file.includes('_json')) {
-                source = JSON.stringify(source, null, '\t');
+                //source = source;//JSON.stringify(source, null, '\t');
               }
 
 
@@ -924,7 +924,12 @@ class App {
     }
 
     _app.indexApp.initApp();
-    await _app.indexApp.initWorldsProtosListForUser('app');
+    _LCSDB.get('~@app').once(res=>{
+      if (res){
+        _app.indexApp.initWorldsProtosListForUser('app');
+      }
+    })
+    
     //await _app.indexApp.getAppDetailsFromDB();
 
   }
@@ -1255,7 +1260,7 @@ class App {
     let worldObj = {};
     for (var doc in worldFileNames) {
       let fn = worldFileNames[doc];
-      let res = await (_LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
+      let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
       var data = {
         'file': res.file,
         'modified': res.modified,
@@ -1272,7 +1277,9 @@ class App {
     return worldObj
   }
 
-  async cloneWorldPrototype(worldName, userName, newWorldName) {
+  async cloneWorldPrototype(worldName, userName, newWorldName, stateFileName) {
+
+    let self = this;
 
     _app.showProgressBar();
 
@@ -1287,16 +1294,18 @@ class App {
       _LCSDB.user(newOwner).get('worlds').put({});
     })
 
+    if(myWorlds) {
     let checkExist = Object.keys(myWorlds).filter(el=> el == newWorldName);
 
     if (newWorldName) {
 
       //let worldProto = (await _LCSDB.user(newOwner).get('worlds').get(newWorldName).promOnce()).data;
-      if (checkExist.length > 0) {
+      if (checkExist.length > 0 && myWorlds[newWorldName]) {
         console.log('already exist!');
         return
       }
     }
+  }
 
     var worldID = window._app.helpers.GenerateInstanceID().toString();
     if (newWorldName) {
@@ -1326,7 +1335,7 @@ class App {
         let fn = worldFileNames[doc];
         let res = all[fn]; //(await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
         let data = {
-          'file': JSON.stringify(res.file),
+          'file': res.file, //JSON.stringify(res.file),
           'modified': created
         }
         worldObj[fn] = data;
@@ -1342,6 +1351,9 @@ class App {
       //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
       let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({});
       myWorld.put(worldObj, function (res) {
+        if(stateFileName){
+          self.saveStateAsFile(stateFileName)
+        }
         console.log(res)
       }); //.get(worldID) let myWorld =
   
@@ -1405,7 +1417,7 @@ class App {
     if (myWorldProtos)
       protosKeys = Object.keys(myWorldProtos);
 
-    if (protosKeys.includes(protoUserRoot)) {
+    if (protosKeys.includes(protoUserRoot) && myWorldProtos[protoUserRoot]) {
 
       let userProtoFiles = await this.getProtoWorldFiles(userPub, protoUserRoot);
       let myProtoFiles = await this.getProtoWorldFiles(_LCSDB.user().is.pub, protoUserRoot);
@@ -1427,9 +1439,10 @@ class App {
         noty.show();
       }
     } else {
-      await this.cloneWorldPrototype(protoUserRoot, userName, protoUserRoot);
-      this.saveStateAsFile(filename);
-    }
+      await this.cloneWorldPrototype(protoUserRoot, userName, protoUserRoot, filename);
+      //this.saveStateAsFile(filename);
+    
+    } 
   }
 
   //TODO: refactor and config save
@@ -1450,7 +1463,7 @@ class App {
     //remove all Ohm generated grammarsfrom state
 
     let jsonValue = _app.helpers.removeGrammarObj(jsonValuePure);
-    var jsonState = JSON.stringify(jsonValue);
+    var jsonState = JSON.stringify(jsonValue, null, '\t'); //JSON.stringify(jsonValue);
 
     let rootPath = this.helpers.getRoot(true);
 
@@ -1520,7 +1533,7 @@ class App {
         let obj = {
           'parent': userName + '/' + root,
           'owner': newOwner,
-          'file': JSON.stringify(file),
+          'file': file, //JSON.stringify(file),
           //'modified': modified,
           'created': modified
 
@@ -1955,47 +1968,62 @@ class App {
         db = _LCSDB.user();
     }
 
-    db.get('worlds').map(function (val, index) {
-      db.get('worlds').get(index).get('info_json').load(function (res) {
 
-        var doc = {};
+    db.get('worlds').once(res=>{
 
-        if (res && res !== 'null') {
+      if (res) {
 
-          if (res.file && res.file !== 'null') {
-
-            //let worldDesc = JSON.parse(res.file);
-
-            var worldDesc = {};
-            if (typeof (res.file) == 'object') {
-              worldDesc = res.file
-            } else {
-              worldDesc = JSON.parse(res.file)
+        db.get('worlds').map(function (val, index) {
+          db.get('worlds').get(index).get('info_json').load(function (res) {
+    
+            var doc = {};
+    
+            if (res && res !== 'null') {
+    
+              if (res.file && res.file !== 'null') {
+    
+                //let worldDesc = JSON.parse(res.file);
+    
+                var worldDesc = {};
+                if (typeof (res.file) == 'object') {
+                  worldDesc = res.file
+                } else {
+                  worldDesc = JSON.parse(res.file)
+                }
+    
+                let root = Object.keys(worldDesc)[0];
+                var appInfo = worldDesc[root]['en'];
+    
+                let langID = localStorage.getItem('krestianstvo_locale');
+                if (langID) {
+                  appInfo = worldDesc[root][langID]
+                }
+    
+                doc = {
+                  'worldName': index,
+                  'created': res.created ? res.created : res.modified,
+                  'modified': res.modified,
+                  'type': 'proto',
+                  'userAlias': userAlias,
+                  'info': appInfo
+                }
+              }
             }
+    
+            if (Object.keys(doc).length !== 0)
+              cb({ [index]: doc })
+          })
+        })
+    
 
-            let root = Object.keys(worldDesc)[0];
-            var appInfo = worldDesc[root]['en'];
 
-            let langID = localStorage.getItem('krestianstvo_locale');
-            if (langID) {
-              appInfo = worldDesc[root][langID]
-            }
 
-            doc = {
-              'worldName': index,
-              'created': res.created ? res.created : res.modified,
-              'modified': res.modified,
-              'type': 'proto',
-              'userAlias': userAlias,
-              'info': appInfo
-            }
-          }
-        }
+      }
 
-        if (Object.keys(doc).length !== 0)
-          cb({ [index]: doc })
-      })
     })
+
+ 
+
 
   }
 
