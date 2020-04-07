@@ -5,7 +5,7 @@ ADL VW Sandbox Apache 2.0 license(https://github.com/NikolaySuslov/livecodingspa
 */
 
 var fs = require('fs'),
-    argv = require('optimist').argv
+    argv = require('yargs').argv
    // logger = require('./logger')
 
 function parseConfigOptions() {
