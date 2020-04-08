@@ -1334,8 +1334,9 @@ class App {
   
         let fn = worldFileNames[doc];
         let res = all[fn]; //(await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
+        let fileData =  (typeof res.file == 'object')? JSON.stringify(res.file):res.file;
         let data = {
-          'file': res.file, //JSON.stringify(res.file),
+          'file': fileData, //JSON.stringify(res.file),
           'modified': created
         }
         worldObj[fn] = data;
@@ -1530,10 +1531,12 @@ class App {
         let newOwner = _LCSDB.user().is.pub;
         let userName = _LCSDB.user().is.alias;
 
+        let fileData =  (typeof file == 'object')? JSON.stringify(file):file;
+
         let obj = {
           'parent': userName + '/' + root,
           'owner': newOwner,
-          'file': file, //JSON.stringify(file),
+          'file': fileData, //file, //JSON.stringify(file),
           //'modified': modified,
           'created': modified
 
