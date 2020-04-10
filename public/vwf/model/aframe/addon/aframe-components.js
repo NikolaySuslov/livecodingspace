@@ -205,6 +205,8 @@ AFRAME.registerComponent('cursor-listener', {
 
 AFRAME.registerComponent('aabb-collider-listener', {
 
+    // If the target collidable object is moving, set <a-entity data-aabb-collider-dynamic> on the target. By default, collidable objects are presumed to be static for performance purposes.
+
     init: function () {
 
         // let self = this;

@@ -1166,14 +1166,34 @@ define([
                                                 "label": this._prop.name,
                                                 "value": this._prop.getValue(),
                                                 "change": function (e) {
-                                                    let propValue = this.value;
-                                                    try {
-                                                        propValue = JSON.parse(propValue);
-                                                        self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
-                                                    } catch (e) {
-                                                        // restore the original value on error
-                                                        this.value = propValue;
-                                                    }
+
+
+                                                       //set property
+
+                                                let value = this.value;
+                                                var propValue = value;
+
+                                              
+                                            if (_app.helpers.testJSON(value)){
+                                                        propValue = JSON.parse(value);
+                                                    }  else {
+                                                    propValue = value;
+                                                }
+
+                                                self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
+
+
+                                                    // let propValue = this.value;
+                                                    // try {
+                                                    //     propValue = JSON.parse(propValue);
+                                                    //     self.kernel.setProperty(this._currentNode, this._prop.name, propValue);
+                                                    // } catch (e) {
+                                                    //     // restore the original value on error
+                                                    //     this.value = propValue;
+                                                    // }
+
+
+
                                                 }
                                             })
                                         ]
@@ -1348,15 +1368,33 @@ define([
                                             "label": m.name,
                                             "value": m.getValue(),
                                             "change": function (e) {
-                                                let propValue = this.value;
-                                                try {
-                                                    propValue = JSON.parse(propValue);
-                                                    self.kernel.setProperty(this._currentNode, m.name, propValue);
+                                                //set property
 
-                                                } catch (e) {
-                                                    // restore the original value on error
-                                                    this.value = propValue;
+                                                let value = this.value;
+                                                var propValue = value;
+
+                                              
+                                            if (_app.helpers.testJSON(value)){
+                                                        propValue = JSON.parse(value);
+                                                    }  else {
+                                                    propValue = value;
+                                                    //this.value = JSON.parse(JSON.stringify(propValue));
                                                 }
+
+                                                 self.kernel.setProperty(this._currentNode, m.name, propValue);
+                                                 //this.value = propValue.toString();
+
+                                                // let propValue = this.value;
+                                                // try {
+                                                //     propValue = JSON.parse(propValue);
+                                                //     self.kernel.setProperty(this._currentNode, m.name, propValue);
+
+                                                // } catch (e) {
+                                                //     // restore the original value on error
+                                                //     this.value = propValue;
+                                                // }
+
+
                                             }
                                         })
 
@@ -2458,15 +2496,28 @@ define([
                                                     let editor = document.querySelector("#propAceEditor").env.editor;
                                                     let value = editor.getValue();
 
-                                                    try {
-                                                        let propValue = (this._prop.type == 'simple') ? (JSON.parse(value)) : (value)
-                                                        //propValue = JSON.parse(value);
-                                                        self.kernel.setProperty(this._editorNode, this._propName, propValue);
+                                                    var propValue = value;
 
-                                                    } catch (e) {
-                                                        // restore the original value on error
-                                                        this.value = propValue;
+                                                    if (this._prop.type == 'simple') {
+                                                        if (_app.helpers.testJSON(value)){
+                                                            propValue = JSON.parse(value);
+                                                        } 
+                                                    } else {
+                                                        propValue = value;
                                                     }
+                                                    
+                                                     self.kernel.setProperty(this._editorNode, this._propName, propValue);
+
+
+                                                    // try {
+                                                    //     let propValue = (this._prop.type == 'simple') ? (JSON.parse(value)) : (value)
+                                                    //     //propValue = JSON.parse(value);
+                                                    //     self.kernel.setProperty(this._editorNode, this._propName, propValue);
+
+                                                    // } catch (e) {
+                                                    //     // restore the original value on error
+                                                    //     this.value = propValue;
+                                                    // }
 
                                                 }
                                             }

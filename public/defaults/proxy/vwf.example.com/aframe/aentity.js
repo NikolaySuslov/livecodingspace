@@ -37,6 +37,7 @@ this.showCloseGizmo = function () {
 this.translationFromValue = function (propertyValue) {
 
     var value = goog.vec.Vec3.create();
+
     if (propertyValue.hasOwnProperty('x')) {
         value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y, propertyValue.z)
     }
@@ -44,8 +45,10 @@ this.translationFromValue = function (propertyValue) {
         value = goog.vec.Vec3.createFromArray(propertyValue);
     }
     else if (typeof propertyValue === 'string') {
-        let val = AFRAME.utils.coordinates.parse(propertyValue);
+
+        let val = propertyValue.includes(',') ? AFRAME.utils.coordinates.parse(propertyValue.split(',').join(' ')) : AFRAME.utils.coordinates.parse(propertyValue);
         value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+        
     } else if (propertyValue.hasOwnProperty('0')) {
         value = goog.vec.Vec3.createFromValues(propertyValue[0], propertyValue[1], propertyValue[2])
     }

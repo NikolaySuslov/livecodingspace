@@ -86,13 +86,21 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             }
 
             inputTextFieldStandart(obj){
+                var propValue = obj.value;
+                if (_app.helpers.testJSON(obj.value)){
+                    propValue = JSON.parse(obj.value);
+                }  else {
+                propValue = obj.value;
+            }
+
                 return {
                     $cell: true,
                     $type: "div",
                     class: "mdc-text-field text-field mdc-ripple-upgraded",
+                    _mdc: null,
                     $init: function(){
                     //new mdc.mdc.notchedOutline.MDCNotchedOutline(document.querySelector('.mdc-notched-outline'));
-                       new mdc.textField.MDCTextField.attachTo(this);
+                       this._mdc = new mdc.textField.MDCTextField.attachTo(this);
                     },
                     $components:[
                         {
@@ -100,7 +108,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             type: "text",
                             id: obj.id,
                             class: "mdc-text-field__input",
-                            value: obj.value,
+                            value: propValue,
                             onchange: obj.change
                         },
                         {
