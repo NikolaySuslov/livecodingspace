@@ -430,7 +430,10 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
           video.setAttribute("width", 640);
           video.setAttribute("height", 480);
 
-          if (local) video.setAttribute("muted", true);
+          if (local) {
+            video.setAttribute("muted", true);
+            video.volume = 0;
+          } 
         
         //   let audioID = '#audio-' + id;
         //   var audio = document.querySelector(audioID);
