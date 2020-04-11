@@ -910,6 +910,8 @@ function shimPeerConnection(window) {
     return;
   }
 
+  var addIceCandidateNullSupported = window.RTCPeerConnection.prototype.addIceCandidate.length === 0;
+
   // shim implicit creation of RTCSessionDescription/RTCIceCandidate
   if (browserDetails.version < 53) {
     ['setLocalDescription', 'setRemoteDescription', 'addIceCandidate'].forEach(function (method) {
@@ -925,7 +927,7 @@ function shimPeerConnection(window) {
   // support for addIceCandidate(null or undefined)
   var nativeAddIceCandidate = window.RTCPeerConnection.prototype.addIceCandidate;
   window.RTCPeerConnection.prototype.addIceCandidate = function addIceCandidate() {
-    if (!arguments[0]) {
+    if (!addIceCandidateNullSupported && !arguments[0]) {
       if (arguments[1]) {
         arguments[1].apply(null);
       }
@@ -2316,20 +2318,27 @@ function shimLocalStreamsAPI(window) {
     };
 
     window.RTCPeerConnection.prototype.addTrack = function addTrack(track) {
-      var stream = arguments[1];
-      if (stream) {
-        if (!this._localStreams) {
-          this._localStreams = [stream];
-        } else if (!this._localStreams.includes(stream)) {
-          this._localStreams.push(stream);
-        }
+      var _this2 = this;
+
+      for (var _len = arguments.length, streams = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        streams[_key - 1] = arguments[_key];
+      }
+
+      if (streams) {
+        streams.forEach(function (stream) {
+          if (!_this2._localStreams) {
+            _this2._localStreams = [stream];
+          } else if (!_this2._localStreams.includes(stream)) {
+            _this2._localStreams.push(stream);
+          }
+        });
       }
       return _addTrack.apply(this, arguments);
     };
   }
   if (!('removeStream' in window.RTCPeerConnection.prototype)) {
     window.RTCPeerConnection.prototype.removeStream = function removeStream(stream) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this._localStreams) {
         this._localStreams = [];
@@ -2342,7 +2351,7 @@ function shimLocalStreamsAPI(window) {
       var tracks = stream.getTracks();
       this.getSenders().forEach(function (sender) {
         if (tracks.includes(sender.track)) {
-          _this2.removeTrack(sender);
+          _this3.removeTrack(sender);
         }
       });
     };
@@ -2364,7 +2373,7 @@ function shimRemoteStreamsAPI(window) {
         return this._onaddstream;
       },
       set: function set(f) {
-        var _this3 = this;
+        var _this4 = this;
 
         if (this._onaddstream) {
           this.removeEventListener('addstream', this._onaddstream);
@@ -2373,16 +2382,16 @@ function shimRemoteStreamsAPI(window) {
         this.addEventListener('addstream', this._onaddstream = f);
         this.addEventListener('track', this._onaddstreampoly = function (e) {
           e.streams.forEach(function (stream) {
-            if (!_this3._remoteStreams) {
-              _this3._remoteStreams = [];
+            if (!_this4._remoteStreams) {
+              _this4._remoteStreams = [];
             }
-            if (_this3._remoteStreams.includes(stream)) {
+            if (_this4._remoteStreams.includes(stream)) {
               return;
             }
-            _this3._remoteStreams.push(stream);
+            _this4._remoteStreams.push(stream);
             var event = new Event('addstream');
             event.stream = stream;
-            _this3.dispatchEvent(event);
+            _this4.dispatchEvent(event);
           });
         });
       }
@@ -5034,22 +5043,76 @@ SDPUtils.writeDtlsParameters = function(params, setupType) {
   });
   return sdp;
 };
+
+// Parses a=crypto lines into
+//   https://rawgit.com/aboba/edgertc/master/msortc-rs4.html#dictionary-rtcsrtpsdesparameters-members
+SDPUtils.parseCryptoLine = function(line) {
+  var parts = line.substr(9).split(' ');
+  return {
+    tag: parseInt(parts[0], 10),
+    cryptoSuite: parts[1],
+    keyParams: parts[2],
+    sessionParams: parts.slice(3),
+  };
+};
+
+SDPUtils.writeCryptoLine = function(parameters) {
+  return 'a=crypto:' + parameters.tag + ' ' +
+    parameters.cryptoSuite + ' ' +
+    (typeof parameters.keyParams === 'object'
+      ? SDPUtils.writeCryptoKeyParams(parameters.keyParams)
+      : parameters.keyParams) +
+    (parameters.sessionParams ? ' ' + parameters.sessionParams.join(' ') : '') +
+    '\r\n';
+};
+
+// Parses the crypto key parameters into
+//   https://rawgit.com/aboba/edgertc/master/msortc-rs4.html#rtcsrtpkeyparam*
+SDPUtils.parseCryptoKeyParams = function(keyParams) {
+  if (keyParams.indexOf('inline:') !== 0) {
+    return null;
+  }
+  var parts = keyParams.substr(7).split('|');
+  return {
+    keyMethod: 'inline',
+    keySalt: parts[0],
+    lifeTime: parts[1],
+    mkiValue: parts[2] ? parts[2].split(':')[0] : undefined,
+    mkiLength: parts[2] ? parts[2].split(':')[1] : undefined,
+  };
+};
+
+SDPUtils.writeCryptoKeyParams = function(keyParams) {
+  return keyParams.keyMethod + ':'
+    + keyParams.keySalt +
+    (keyParams.lifeTime ? '|' + keyParams.lifeTime : '') +
+    (keyParams.mkiValue && keyParams.mkiLength
+      ? '|' + keyParams.mkiValue + ':' + keyParams.mkiLength
+      : '');
+};
+
+// Extracts all SDES paramters.
+SDPUtils.getCryptoParameters = function(mediaSection, sessionpart) {
+  var lines = SDPUtils.matchPrefix(mediaSection + sessionpart,
+    'a=crypto:');
+  return lines.map(SDPUtils.parseCryptoLine);
+};
+
 // Parses ICE information from SDP media section or sessionpart.
 // FIXME: for consistency with other functions this should only
 //   get the ice-ufrag and ice-pwd lines as input.
 SDPUtils.getIceParameters = function(mediaSection, sessionpart) {
-  var lines = SDPUtils.splitLines(mediaSection);
-  // Search in session part, too.
-  lines = lines.concat(SDPUtils.splitLines(sessionpart));
-  var iceParameters = {
-    usernameFragment: lines.filter(function(line) {
-      return line.indexOf('a=ice-ufrag:') === 0;
-    })[0].substr(12),
-    password: lines.filter(function(line) {
-      return line.indexOf('a=ice-pwd:') === 0;
-    })[0].substr(10)
+  var ufrag = SDPUtils.matchPrefix(mediaSection + sessionpart,
+    'a=ice-ufrag:')[0];
+  var pwd = SDPUtils.matchPrefix(mediaSection + sessionpart,
+    'a=ice-pwd:')[0];
+  if (!(ufrag && pwd)) {
+    return null;
+  }
+  return {
+    usernameFragment: ufrag.substr(12),
+    password: pwd.substr(10),
   };
-  return iceParameters;
 };
 
 // Serializes ICE parameters to SDP.
