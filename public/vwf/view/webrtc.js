@@ -431,7 +431,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
           video.setAttribute("height", 480);
 
           if (local) {
-            video.setAttribute("muted", true);
+            video.setAttribute("muted", false);
             video.volume = 0;
           } 
         
