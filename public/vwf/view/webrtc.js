@@ -529,7 +529,12 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
             var self = this;
 
             var constraints = {
-                audio: true,
+                //audio: true,
+                audio: {
+                    "sampleSize": 16,
+                    "channelCount": 2,
+                    "echoCancellation": true
+                },
                 video: true
               };
 
