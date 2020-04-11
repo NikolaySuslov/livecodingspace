@@ -34,6 +34,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 let init = obj.init ? obj.init: initFunc;
 
                 let style = obj.style ? obj.style: "";
+                let fieldStyle = obj.fieldStyle ? obj.fieldStyle: "";
 
                 return {
                     $cell: true,
@@ -48,7 +49,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             id: obj.id,
                             class: "mdc-text-field__input",
                             value: obj.value,
-                            onchange: obj.change
+                            onchange: obj.change,
+                            style: obj.fieldStyle
                         },
                         {
                             $type: "div",
@@ -565,37 +567,50 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             
         }
 
+        listTitle(obj){
+            return {
+                $type: "div",
+                class: "mdc-layout-grid__inner",
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__cell",
+                        $components: [
+                            {
+                                $type: "h3",
+                                class: "",
+                                $text: obj.text
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+
         gridListItem(obj) {
             return {
-                $cell: true,
-                $type: "li",
-                class: "mdc-grid-tile " + obj.styleClass,
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip " + obj.styleClass,
                 $components:[
                     {
-                        $cell: true,
-                        class: "mdc-grid-tile__primary",
+                        class: "tooltiptext",
+                        $type: "span",
+                        $text: obj.title
+                    },
+                    {
                         $type: "div",
                         style: "background-color: transparent;",
                         $components:[
                             {
-                                $cell: true,
-                                class: "mdc-grid-tile__primary-content tooltip",
+                                class: "",
                                 $type: "div",
                                 'aria-label': obj.title,
                                 alt: obj.title,
-                                style: "background-image: url("+ obj.imgSrc + ");",
+                                style: "background-image: url("+ obj.imgSrc + "); background-size: cover; background-repeat: no-repeat; height: "+ obj.imgSize + "; width: " + obj.imgSize + ";",
                                 onclick: obj.onclickfunc,
-                                $components:[
-                                    {
-                                        $cell: true,
-                                        class: "tooltiptext",
-                                        $type: "span",
-                                        $text: obj.title
-                                    }
-                                ]
+  
                             }
-                            
-                           
+
                         ]
                     }
                 ]

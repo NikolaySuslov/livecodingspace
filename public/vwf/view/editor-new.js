@@ -111,308 +111,280 @@ define([
                 $type: "div",
                 class: "propGrid max-width mdc-layout-grid mdc-layout-grid--align-left",
                 $components: [
+                    self.widgets.listTitle({text: 'Primitives'}),
                     {
-                        $type: "section",
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: make3DPrimitiveList()
+                    },
+                    self.widgets.listTitle({text: 'Lights'}),
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: makeLightsList()
+                    },
+                    self.widgets.listTitle({text: 'Objects'}),
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            self.widgets.gridListItem({
+                                imgSrc: "/vwf/view/lib/images/ui/icons/camera.png",
+                                title: 'Camera',
+                                imgSize: '30px',
+                                styleClass: "",
+                                onclickfunc: function () {
+                                    let avatarID = 'avatar-' + vwf.moniker_;
+                                    //let cubeName = self.GUID();
+                                    vwf_view.kernel.callMethod(vwf.application(), "createCamera", [null, null, avatarID])
+                                    //let cubeName = self.GUID();
+                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                                }
+
+
+
+                            }),
+                            self.widgets.gridListItem({
+                                imgSrc: "/vwf/view/lib/images/ui/icons/camera_offset.png",
+                                title: 'Camera with view offset',
+                                imgSize: '30px',
+                                styleClass: "",
+                                onclickfunc: function () {
+                                    let avatarID = 'avatar-' + vwf.moniker_;
+                                    //let cubeName = self.GUID();
+                                    vwf_view.kernel.callMethod(vwf.application(), "createCameraWithOffset", [null, null, avatarID])
+                                    //let cubeName = self.GUID();
+                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                                }
+                            })
+
+
+                        ]
+                    },
+                    self.widgets.listTitle({text: 'Assets'}),
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
                         $components: [
                             {
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text: "Primitives"
-                            },
-                            {
                                 $type: "div",
-                                class: "mdc-grid-list",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: make3DPrimitiveList()
-                                    }
-                                ]
-                            },
-                            //widgets.divider,
-                            {
-                                $type: "h3",
-                                $text: "Lights",
-                                class: "mdc-typography--title"
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-grid-list",
-                                $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: makeLightsList()
-                                    }
-                                ]
-                            },
-                            //widgets.divider,
-                            {
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text: "Objects"
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-grid-list",
-                                $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: [
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/camera.png",
-                                                title: 'Camera',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    let avatarID = 'avatar-' + vwf.moniker_;
-                                                    //let cubeName = self.GUID();
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createCamera", [null, null, avatarID])
-                                                    //let cubeName = self.GUID();
-                                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
-                                                }
-
-
-
-                                            }),
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/camera_offset.png",
-                                                title: 'Camera with view offset',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    let avatarID = 'avatar-' + vwf.moniker_;
-                                                    //let cubeName = self.GUID();
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createCameraWithOffset", [null, null, avatarID])
-                                                    //let cubeName = self.GUID();
-                                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
-                                                }
-                                            })
-
-
-                                        ]
-                                    }
-                                ]
-                            },
-                            //self.widgets.divider,
-                            {
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text: "Assets"
-
-                            },
                             self.widgets.inputTextFieldOutlined({
                                 "id": 'assetsrc',
+                                "fieldStyle": 'width: 400px',
                                 "label": "Enter URL to asset source",
                                 "value": '',
                                 "change": function (e) {
                                     console.log(this.value)
                                 }
-                            }),
-                            // self.widgets.textField({
-                            //     id: "assetsrc",
-                            //     value: "Enter URL to asset source",
-                            //     funconchange: function (e) {
-                            //         console.log(this.value)
-                            //     }
-                            // }),
+                            })
+                        ]
+                    }
+
+                        ]
+                    },
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
                             {
                                 $type: "div",
-                                class: "mdc-grid-list",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: [
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "Image",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        vwf_view.kernel.callMethod(vwf.application(), "createImage", [srcEl.value, null, null, avatarID])
 
-                                                    }
-                                                }
-                                            ),
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "Sound",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        vwf_view.kernel.callMethod(vwf.application(), "createAudio", [srcEl.value, null, null, avatarID])
-                                                    }
-                                                }
-                                            ),
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "Video",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        vwf_view.kernel.callMethod(vwf.application(), "createVideo", [srcEl.value, null, null, avatarID])
-                                                    }
-                                                }
-                                            ),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "Image",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                vwf_view.kernel.callMethod(vwf.application(), "createImage", [srcEl.value, null, null, avatarID])
 
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "GLTF",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        if (srcEl.value.includes('.gltf'))
-                                                            vwf_view.kernel.callMethod(vwf.application(), "createModel", ['GLTF', srcEl.value, avatarID])
-                                                    }
-                                                }
-                                            ),
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "DAE",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        if (srcEl.value.includes('.dae'))
-                                                            vwf_view.kernel.callMethod(vwf.application(), "createModel", ['DAE', srcEl.value, avatarID])
-                                                    }
-                                                }
-                                            ),
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "OBJ",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        if (srcEl.value.includes('.obj'))
-                                                            vwf_view.kernel.callMethod(vwf.application(), "createModel", ['OBJ', srcEl.value, avatarID])
-                                                    }
-                                                }
-                                            )
+                                            }
+                                        }
+                                    ),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "Sound",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                vwf_view.kernel.callMethod(vwf.application(), "createAudio", [srcEl.value, null, null, avatarID])
+                                            }
+                                        }
+                                    ),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "Video",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                vwf_view.kernel.callMethod(vwf.application(), "createVideo", [srcEl.value, null, null, avatarID])
+                                            }
+                                        }
+                                    ),
+
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "GLTF",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                if (srcEl.value.includes('.gltf'))
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createModel", ['GLTF', srcEl.value, avatarID])
+                                            }
+                                        }
+                                    ),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "DAE",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                if (srcEl.value.includes('.dae'))
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createModel", ['DAE', srcEl.value, avatarID])
+                                            }
+                                        }
+                                    ),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "OBJ",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                if (srcEl.value.includes('.obj'))
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createModel", ['OBJ', srcEl.value, avatarID])
+                                            }
+                                        }
+                                    )
 
 
-
-                                        ]
-                                    }
-                                ]
-                            },
-
-                            //self.widgets.divider,
-                            {
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text: "Resources"
-
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-grid-list",
-                                $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: [
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/3ditem.png",
-                                                title: 'Asset item',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    let srcEl = document.querySelector('#assetsrc');
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
-                                                }
-                                            }),
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/image.png",
-                                                title: 'Image',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    //let cubeName = self.GUID();
-                                                    let srcEl = document.querySelector('#assetsrc');
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['IMG', srcEl.value])
-                                                }
-                                            }),
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/video.png",
-                                                title: 'Video',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    let srcEl = document.querySelector('#assetsrc');
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['VIDEO', srcEl.value])
-                                                }
-                                            }),
-                                            self.widgets.gridListItem({
-                                                imgSrc: "/vwf/view/lib/images/ui/icons/sound.png",
-                                                title: 'Sound',
-                                                styleClass: "createListItem",
-                                                onclickfunc: function () {
-                                                    let srcEl = document.querySelector('#assetsrc');
-                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['AUDIO', srcEl.value])
-                                                }
-                                            }),
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "MTL",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#assetsrc');
-                                                        if (srcEl.value.includes('.mtl'))
-                                                            vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
-                                                    }
-                                                }
-                                            )
-
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "h3",
-                                class: "mdc-typography--title",
-                                $text: "Google Poly"
-
-                            },
-
-                            self.widgets.inputTextFieldOutlined({
-                                "id": 'googlepolyid',
-                                "label": "Enter Google Poly model ID",
-                                "value": '',
-                                "change": function (e) {
-                                    console.log(this.value)
-                                }
-                            }),
-                            // self.widgets.textField({
-                            //     id: "googlepolyid",
-                            //     value: "Enter Google Poly model ID",
-                            //     funconchange: function (e) {
-                            //         console.log(this.value)
-                            //     }
-                            // }),
-
-                            {
-                                $type: "div",
-                                class: "mdc-grid-list",
-                                $components: [
-                                    {
-                                        $type: "ul",
-                                        class: "mdc-grid-list__tiles",
-                                        $components: [
-                                            self.widgets.buttonSimple(
-                                                {
-                                                    label: "Load from Poly",
-                                                    onclick: function (e) {
-                                                        let srcEl = document.querySelector('#googlepolyid');
-                                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                                        vwf_view.kernel.callMethod(vwf.application(), "createGooglePoly", [srcEl.value, null, null, avatarID])
-                                                    }
-                                                }
-                                            )
-                                        ]
-                                    }
                                 ]
                             }
 
 
                         ]
+                    },
+                    self.widgets.listTitle({text: 'Resources'}),
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+
+                                    self.widgets.gridListItem({
+                                        imgSrc: "/vwf/view/lib/images/ui/icons/3ditem.png",
+                                        title: 'Asset item',
+                                        imgSize: '30px',
+                                        styleClass: "",
+                                        onclickfunc: function () {
+                                            let srcEl = document.querySelector('#assetsrc');
+                                            vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
+                                        }
+                                    }),
+                                    self.widgets.gridListItem({
+                                        imgSrc: "/vwf/view/lib/images/ui/icons/image.png",
+                                        title: 'Image',
+                                        imgSize: '30px',
+                                        styleClass: "",
+                                        onclickfunc: function () {
+                                            //let cubeName = self.GUID();
+                                            let srcEl = document.querySelector('#assetsrc');
+                                            vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['IMG', srcEl.value])
+                                        }
+                                    }),
+                                    self.widgets.gridListItem({
+                                        imgSrc: "/vwf/view/lib/images/ui/icons/video.png",
+                                        title: 'Video',
+                                        imgSize: '30px',
+                                        styleClass: "",
+                                        onclickfunc: function () {
+                                            let srcEl = document.querySelector('#assetsrc');
+                                            vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['VIDEO', srcEl.value])
+                                        }
+                                    }),
+                                    self.widgets.gridListItem({
+                                        imgSrc: "/vwf/view/lib/images/ui/icons/sound.png",
+                                        title: 'Sound',
+                                        imgSize: '30px',
+                                        styleClass: "",
+                                        onclickfunc: function () {
+                                            let srcEl = document.querySelector('#assetsrc');
+                                            vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['AUDIO', srcEl.value])
+                                        }
+                                    }),
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "MTL",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#assetsrc');
+                                                if (srcEl.value.includes('.mtl'))
+                                                    vwf_view.kernel.callMethod(vwf.application(), "createAssetResource", ['ITEM', srcEl.value])
+                                            }
+                                        }
+                                    )
+
+
+                        ]
+                    },
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    self.widgets.divider
+                                ]
+                            },
+                            
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $type: "h3",
+                                        class: "",
+                                        $text: 'Google Poly'
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    self.widgets.inputTextFieldOutlined({
+                                        "id": 'googlepolyid',
+                                        "fieldStyle": 'width: 400px',
+                                        "label": "Enter Google Poly model ID",
+                                        "value": '',
+                                        "change": function (e) {
+                                            console.log(this.value)
+                                        }
+                                    })
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    self.widgets.buttonSimple(
+                                        {
+                                            label: "Load from Poly",
+                                            onclick: function (e) {
+                                                let srcEl = document.querySelector('#googlepolyid');
+                                                let avatarID = 'avatar-' + vwf.moniker_;
+                                                vwf_view.kernel.callMethod(vwf.application(), "createGooglePoly", [srcEl.value, null, null, avatarID])
+                                            }
+                                        }
+                                    )
+                                ]
+                            }
+                        ]
                     }
+
+                  
 
                 ]
             }
@@ -442,7 +414,8 @@ define([
                 return nodeNames.map(el => {
                     return self.widgets.gridListItem({
                         imgSrc: "/vwf/view/lib/images/ui/icons/" + el.toLowerCase() + ".png",
-                        styleClass: "createListItem",
+                        imgSize: "30px",
+                        styleClass:"", //"createListItem",
                         title: el,
                         onclickfunc: function () {
                             let avatarID = 'avatar-' + vwf.moniker_;
@@ -458,7 +431,8 @@ define([
                 let nodeNames = ['Ambient', 'Directional', 'Hemisphere', 'Point', 'Spot'];
                 return nodeNames.map(el => {
                     return self.widgets.gridListItem({
-                        styleClass: "createListItem",
+                        imgSize: "30px",
+                        styleClass: "",
                         imgSrc: "/vwf/view/lib/images/ui/icons/light_" + el.toLowerCase() + ".png",
                         title: el,
                         onclickfunc: function () {
@@ -3164,8 +3138,7 @@ define([
                                     nodesCell
 
                                 ]
-                            }
-                        ]
+                            }]
                     }
                 ]
             }

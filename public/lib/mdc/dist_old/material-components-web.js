@@ -167,6 +167,8 @@ var floatingLabel = __importStar(__webpack_require__(/*! @material/floating-labe
 exports.floatingLabel = floatingLabel;
 var formField = __importStar(__webpack_require__(/*! @material/form-field/index */ "./packages/mdc-form-field/index.ts"));
 exports.formField = formField;
+var gridList = __importStar(__webpack_require__(/*! @material/grid-list/index */ "./packages/mdc-grid-list/index.ts"));
+exports.gridList = gridList;
 var iconButton = __importStar(__webpack_require__(/*! @material/icon-button/index */ "./packages/mdc-icon-button/index.ts"));
 exports.iconButton = iconButton;
 var lineRipple = __importStar(__webpack_require__(/*! @material/line-ripple/index */ "./packages/mdc-line-ripple/index.ts"));
@@ -214,6 +216,7 @@ index_1.default.register('MDCDialog', dialog.MDCDialog);
 index_1.default.register('MDCDrawer', drawer.MDCDrawer);
 index_1.default.register('MDCFloatingLabel', floatingLabel.MDCFloatingLabel);
 index_1.default.register('MDCFormField', formField.MDCFormField);
+index_1.default.register('MDCGridList', gridList.MDCGridList);
 index_1.default.register('MDCIconButtonToggle', iconButton.MDCIconButtonToggle);
 index_1.default.register('MDCLineRipple', lineRipple.MDCLineRipple);
 index_1.default.register('MDCLinearProgress', linearProgress.MDCLinearProgress);
@@ -1471,15 +1474,13 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
-var announce_1 = __webpack_require__(/*! @material/dom/announce */ "./packages/mdc-dom/announce.ts");
 var component_2 = __webpack_require__(/*! ../chip/component */ "./packages/mdc-chips/chip/component.ts");
 var foundation_1 = __webpack_require__(/*! ../chip/foundation */ "./packages/mdc-chips/chip/foundation.ts");
 var foundation_2 = __webpack_require__(/*! ./foundation */ "./packages/mdc-chips/chip-set/foundation.ts");
 var _a = foundation_1.MDCChipFoundation.strings,
     INTERACTION_EVENT = _a.INTERACTION_EVENT,
     SELECTION_EVENT = _a.SELECTION_EVENT,
-    REMOVAL_EVENT = _a.REMOVAL_EVENT,
-    NAVIGATION_EVENT = _a.NAVIGATION_EVENT;
+    REMOVAL_EVENT = _a.REMOVAL_EVENT;
 var CHIP_SELECTOR = foundation_2.MDCChipSetFoundation.strings.CHIP_SELECTOR;
 var idCounter = 0;
 var MDCChipSet = /** @class */function (_super) {
@@ -1527,21 +1528,17 @@ var MDCChipSet = /** @class */function (_super) {
             }
         });
         this.handleChipInteraction_ = function (evt) {
-            return _this.foundation_.handleChipInteraction(evt.detail);
+            return _this.foundation_.handleChipInteraction(evt.detail.chipId);
         };
         this.handleChipSelection_ = function (evt) {
-            return _this.foundation_.handleChipSelection(evt.detail);
+            return _this.foundation_.handleChipSelection(evt.detail.chipId, evt.detail.selected);
         };
         this.handleChipRemoval_ = function (evt) {
-            return _this.foundation_.handleChipRemoval(evt.detail);
-        };
-        this.handleChipNavigation_ = function (evt) {
-            return _this.foundation_.handleChipNavigation(evt.detail);
+            return _this.foundation_.handleChipRemoval(evt.detail.chipId);
         };
         this.listen(INTERACTION_EVENT, this.handleChipInteraction_);
         this.listen(SELECTION_EVENT, this.handleChipSelection_);
         this.listen(REMOVAL_EVENT, this.handleChipRemoval_);
-        this.listen(NAVIGATION_EVENT, this.handleChipNavigation_);
     };
     MDCChipSet.prototype.destroy = function () {
         this.chips_.forEach(function (chip) {
@@ -1550,7 +1547,6 @@ var MDCChipSet = /** @class */function (_super) {
         this.unlisten(INTERACTION_EVENT, this.handleChipInteraction_);
         this.unlisten(SELECTION_EVENT, this.handleChipSelection_);
         this.unlisten(REMOVAL_EVENT, this.handleChipRemoval_);
-        this.unlisten(NAVIGATION_EVENT, this.handleChipNavigation_);
         _super.prototype.destroy.call(this);
     };
     /**
@@ -1565,40 +1561,20 @@ var MDCChipSet = /** @class */function (_super) {
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
-            announceMessage: function announceMessage(message) {
-                announce_1.announce(message);
-            },
-            focusChipPrimaryActionAtIndex: function focusChipPrimaryActionAtIndex(index) {
-                _this.chips_[index].focusPrimaryAction();
-            },
-            focusChipTrailingActionAtIndex: function focusChipTrailingActionAtIndex(index) {
-                _this.chips_[index].focusTrailingAction();
-            },
-            getChipListCount: function getChipListCount() {
-                return _this.chips_.length;
-            },
-            getIndexOfChipById: function getIndexOfChipById(chipId) {
-                return _this.findChipIndex_(chipId);
-            },
             hasClass: function hasClass(className) {
                 return _this.root_.classList.contains(className);
             },
-            isRTL: function isRTL() {
-                return window.getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
-            },
-            removeChipAtIndex: function removeChipAtIndex(index) {
-                if (index >= 0 && index < _this.chips_.length) {
+            removeChip: function removeChip(chipId) {
+                var index = _this.findChipIndex_(chipId);
+                if (index >= 0) {
                     _this.chips_[index].destroy();
-                    _this.chips_[index].remove();
                     _this.chips_.splice(index, 1);
                 }
             },
-            removeFocusFromChipAtIndex: function removeFocusFromChipAtIndex(index) {
-                _this.chips_[index].removeFocus();
-            },
-            selectChipAtIndex: function selectChipAtIndex(index, selected, shouldNotifyClients) {
-                if (index >= 0 && index < _this.chips_.length) {
-                    _this.chips_[index].setSelectedFromChipSet(selected, shouldNotifyClients);
+            setSelected: function setSelected(chipId, selected) {
+                var index = _this.findChipIndex_(chipId);
+                if (index >= 0) {
+                    _this.chips_[index].selected = selected;
                 }
             }
         };
@@ -1739,8 +1715,7 @@ var __assign = this && this.__assign || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
-var constants_1 = __webpack_require__(/*! ../chip/constants */ "./packages/mdc-chips/chip/constants.ts");
-var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/chip-set/constants.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/chip-set/constants.ts");
 var MDCChipSetFoundation = /** @class */function (_super) {
     __extends(MDCChipSetFoundation, _super);
     function MDCChipSetFoundation(adapter) {
@@ -1753,14 +1728,14 @@ var MDCChipSetFoundation = /** @class */function (_super) {
     }
     Object.defineProperty(MDCChipSetFoundation, "strings", {
         get: function get() {
-            return constants_2.strings;
+            return constants_1.strings;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCChipSetFoundation, "cssClasses", {
         get: function get() {
-            return constants_2.cssClasses;
+            return constants_1.cssClasses;
         },
         enumerable: true,
         configurable: true
@@ -1768,34 +1743,13 @@ var MDCChipSetFoundation = /** @class */function (_super) {
     Object.defineProperty(MDCChipSetFoundation, "defaultAdapter", {
         get: function get() {
             return {
-                announceMessage: function announceMessage() {
-                    return undefined;
-                },
-                focusChipPrimaryActionAtIndex: function focusChipPrimaryActionAtIndex() {
-                    return undefined;
-                },
-                focusChipTrailingActionAtIndex: function focusChipTrailingActionAtIndex() {
-                    return undefined;
-                },
-                getChipListCount: function getChipListCount() {
-                    return -1;
-                },
-                getIndexOfChipById: function getIndexOfChipById() {
-                    return -1;
-                },
                 hasClass: function hasClass() {
                     return false;
                 },
-                isRTL: function isRTL() {
-                    return false;
-                },
-                removeChipAtIndex: function removeChipAtIndex() {
+                removeChip: function removeChip() {
                     return undefined;
                 },
-                removeFocusFromChipAtIndex: function removeFocusFromChipAtIndex() {
-                    return undefined;
-                },
-                selectChipAtIndex: function selectChipAtIndex() {
+                setSelected: function setSelected() {
                     return undefined;
                 }
             };
@@ -1811,33 +1765,31 @@ var MDCChipSetFoundation = /** @class */function (_super) {
     };
     /**
      * Selects the chip with the given id. Deselects all other chips if the chip set is of the choice variant.
-     * Does not notify clients of the updated selection state.
      */
     MDCChipSetFoundation.prototype.select = function (chipId) {
-        this.select_(chipId, false);
+        if (this.selectedChipIds_.indexOf(chipId) >= 0) {
+            return;
+        }
+        if (this.adapter_.hasClass(constants_1.cssClasses.CHOICE) && this.selectedChipIds_.length > 0) {
+            var previouslySelectedChip = this.selectedChipIds_[0];
+            this.selectedChipIds_.length = 0;
+            this.adapter_.setSelected(previouslySelectedChip, false);
+        }
+        this.selectedChipIds_.push(chipId);
+        this.adapter_.setSelected(chipId, true);
     };
     /**
      * Handles a chip interaction event
      */
-    MDCChipSetFoundation.prototype.handleChipInteraction = function (_a) {
-        var chipId = _a.chipId;
-        var index = this.adapter_.getIndexOfChipById(chipId);
-        this.removeFocusFromChipsExcept_(index);
-        if (this.adapter_.hasClass(constants_2.cssClasses.CHOICE) || this.adapter_.hasClass(constants_2.cssClasses.FILTER)) {
+    MDCChipSetFoundation.prototype.handleChipInteraction = function (chipId) {
+        if (this.adapter_.hasClass(constants_1.cssClasses.CHOICE) || this.adapter_.hasClass(constants_1.cssClasses.FILTER)) {
             this.toggleSelect_(chipId);
         }
     };
     /**
      * Handles a chip selection event, used to handle discrepancy when selection state is set directly on the Chip.
      */
-    MDCChipSetFoundation.prototype.handleChipSelection = function (_a) {
-        var chipId = _a.chipId,
-            selected = _a.selected,
-            shouldIgnore = _a.shouldIgnore;
-        // Early exit if we should ignore the event
-        if (shouldIgnore) {
-            return;
-        }
+    MDCChipSetFoundation.prototype.handleChipSelection = function (chipId, selected) {
         var chipIsSelected = this.selectedChipIds_.indexOf(chipId) >= 0;
         if (selected && !chipIsSelected) {
             this.select(chipId);
@@ -1848,131 +1800,29 @@ var MDCChipSetFoundation = /** @class */function (_super) {
     /**
      * Handles the event when a chip is removed.
      */
-    MDCChipSetFoundation.prototype.handleChipRemoval = function (_a) {
-        var chipId = _a.chipId,
-            removedAnnouncement = _a.removedAnnouncement;
-        if (removedAnnouncement) {
-            this.adapter_.announceMessage(removedAnnouncement);
-        }
-        var index = this.adapter_.getIndexOfChipById(chipId);
-        this.deselectAndNotifyClients_(chipId);
-        this.adapter_.removeChipAtIndex(index);
-        var maxIndex = this.adapter_.getChipListCount() - 1;
-        var nextIndex = Math.min(index, maxIndex);
-        this.removeFocusFromChipsExcept_(nextIndex);
-        // After removing a chip, we should focus the trailing action for the next chip.
-        this.adapter_.focusChipTrailingActionAtIndex(nextIndex);
+    MDCChipSetFoundation.prototype.handleChipRemoval = function (chipId) {
+        this.deselect_(chipId);
+        this.adapter_.removeChip(chipId);
     };
     /**
-     * Handles a chip navigation event.
+     * Deselects the chip with the given id.
      */
-    MDCChipSetFoundation.prototype.handleChipNavigation = function (_a) {
-        var chipId = _a.chipId,
-            key = _a.key,
-            source = _a.source;
-        var maxIndex = this.adapter_.getChipListCount() - 1;
-        var index = this.adapter_.getIndexOfChipById(chipId);
-        // Early exit if the index is out of range or the key is unusable
-        if (index === -1 || !constants_1.navigationKeys.has(key)) {
-            return;
-        }
-        var isRTL = this.adapter_.isRTL();
-        var shouldIncrement = key === constants_1.strings.ARROW_RIGHT_KEY && !isRTL || key === constants_1.strings.ARROW_LEFT_KEY && isRTL || key === constants_1.strings.ARROW_DOWN_KEY;
-        var isHome = key === constants_1.strings.HOME_KEY;
-        var isEnd = key === constants_1.strings.END_KEY;
-        if (shouldIncrement) {
-            index++;
-        } else if (isHome) {
-            index = 0;
-        } else if (isEnd) {
-            index = maxIndex;
-        } else {
-            index--;
-        }
-        // Early exit if the index is out of bounds
-        if (index < 0 || index > maxIndex) {
-            return;
-        }
-        this.removeFocusFromChipsExcept_(index);
-        this.focusChipAction_(index, key, source);
-    };
-    MDCChipSetFoundation.prototype.focusChipAction_ = function (index, key, source) {
-        var shouldJumpChips = constants_1.jumpChipKeys.has(key);
-        if (shouldJumpChips && source === constants_1.EventSource.PRIMARY) {
-            return this.adapter_.focusChipPrimaryActionAtIndex(index);
-        }
-        if (shouldJumpChips && source === constants_1.EventSource.TRAILING) {
-            return this.adapter_.focusChipTrailingActionAtIndex(index);
-        }
-        var dir = this.getDirection_(key);
-        if (dir === constants_1.Direction.LEFT) {
-            return this.adapter_.focusChipTrailingActionAtIndex(index);
-        }
-        if (dir === constants_1.Direction.RIGHT) {
-            return this.adapter_.focusChipPrimaryActionAtIndex(index);
-        }
-    };
-    MDCChipSetFoundation.prototype.getDirection_ = function (key) {
-        var isRTL = this.adapter_.isRTL();
-        if (key === constants_1.strings.ARROW_LEFT_KEY && !isRTL || key === constants_1.strings.ARROW_RIGHT_KEY && isRTL) {
-            return constants_1.Direction.LEFT;
-        }
-        return constants_1.Direction.RIGHT;
-    };
-    /**
-     * Deselects the chip with the given id and optionally notifies clients.
-     */
-    MDCChipSetFoundation.prototype.deselect_ = function (chipId, shouldNotifyClients) {
-        if (shouldNotifyClients === void 0) {
-            shouldNotifyClients = false;
-        }
+    MDCChipSetFoundation.prototype.deselect_ = function (chipId) {
         var index = this.selectedChipIds_.indexOf(chipId);
         if (index >= 0) {
             this.selectedChipIds_.splice(index, 1);
-            var chipIndex = this.adapter_.getIndexOfChipById(chipId);
-            this.adapter_.selectChipAtIndex(chipIndex, /** isSelected */false, shouldNotifyClients);
+            this.adapter_.setSelected(chipId, false);
         }
-    };
-    /**
-     * Deselects the chip with the given id and notifies clients.
-     */
-    MDCChipSetFoundation.prototype.deselectAndNotifyClients_ = function (chipId) {
-        this.deselect_(chipId, true);
     };
     /**
      * Toggles selection of the chip with the given id.
      */
     MDCChipSetFoundation.prototype.toggleSelect_ = function (chipId) {
         if (this.selectedChipIds_.indexOf(chipId) >= 0) {
-            this.deselectAndNotifyClients_(chipId);
+            this.deselect_(chipId);
         } else {
-            this.selectAndNotifyClients_(chipId);
+            this.select(chipId);
         }
-    };
-    MDCChipSetFoundation.prototype.removeFocusFromChipsExcept_ = function (index) {
-        var chipCount = this.adapter_.getChipListCount();
-        for (var i = 0; i < chipCount; i++) {
-            if (i !== index) {
-                this.adapter_.removeFocusFromChipAtIndex(i);
-            }
-        }
-    };
-    MDCChipSetFoundation.prototype.selectAndNotifyClients_ = function (chipId) {
-        this.select_(chipId, true);
-    };
-    MDCChipSetFoundation.prototype.select_ = function (chipId, shouldNotifyClients) {
-        if (this.selectedChipIds_.indexOf(chipId) >= 0) {
-            return;
-        }
-        if (this.adapter_.hasClass(constants_2.cssClasses.CHOICE) && this.selectedChipIds_.length > 0) {
-            var previouslySelectedChip = this.selectedChipIds_[0];
-            var previouslySelectedIndex = this.adapter_.getIndexOfChipById(previouslySelectedChip);
-            this.selectedChipIds_ = [];
-            this.adapter_.selectChipAtIndex(previouslySelectedIndex, /** isSelected */false, shouldNotifyClients);
-        }
-        this.selectedChipIds_.push(chipId);
-        var index = this.adapter_.getIndexOfChipById(chipId);
-        this.adapter_.selectChipAtIndex(index, /** isSelected */true, shouldNotifyClients);
     };
     return MDCChipSetFoundation;
 }(foundation_1.MDCFoundation);
@@ -2162,8 +2012,6 @@ var MDCChip = /** @class */function (_super) {
         this.leadingIcon_ = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
         this.trailingIcon_ = this.root_.querySelector(constants_1.strings.TRAILING_ICON_SELECTOR);
         this.checkmark_ = this.root_.querySelector(constants_1.strings.CHECKMARK_SELECTOR);
-        this.primaryAction_ = this.root_.querySelector(constants_1.strings.PRIMARY_ACTION_SELECTOR);
-        this.trailingAction_ = this.root_.querySelector(constants_1.strings.TRAILING_ACTION_SELECTOR);
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var rippleAdapter = __assign({}, component_2.MDCRipple.createAdapter(this), { computeBoundingRect: function computeBoundingRect() {
@@ -2182,14 +2030,10 @@ var MDCChip = /** @class */function (_super) {
         this.handleTrailingIconInteraction_ = function (evt) {
             return _this.foundation_.handleTrailingIconInteraction(evt);
         };
-        this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
-        };
         INTERACTION_EVENTS.forEach(function (evtType) {
             _this.listen(evtType, _this.handleInteraction_);
         });
         this.listen('transitionend', this.handleTransitionEnd_);
-        this.listen('keydown', this.handleKeydown_);
         if (this.trailingIcon_) {
             INTERACTION_EVENTS.forEach(function (evtType) {
                 _this.trailingIcon_.addEventListener(evtType, _this.handleTrailingIconInteraction_);
@@ -2203,7 +2047,6 @@ var MDCChip = /** @class */function (_super) {
             _this.unlisten(evtType, _this.handleInteraction_);
         });
         this.unlisten('transitionend', this.handleTransitionEnd_);
-        this.unlisten('keydown', this.handleKeydown_);
         if (this.trailingIcon_) {
             INTERACTION_EVENTS.forEach(function (evtType) {
                 _this.trailingIcon_.removeEventListener(evtType, _this.handleTrailingIconInteraction_);
@@ -2233,19 +2076,6 @@ var MDCChip = /** @class */function (_super) {
             eventTargetHasClass: function eventTargetHasClass(target, className) {
                 return target ? target.classList.contains(className) : false;
             },
-            focusPrimaryAction: function focusPrimaryAction() {
-                if (_this.primaryAction_) {
-                    _this.primaryAction_.focus();
-                }
-            },
-            focusTrailingAction: function focusTrailingAction() {
-                if (_this.trailingAction_) {
-                    _this.trailingAction_.focus();
-                }
-            },
-            getAttribute: function getAttribute(attr) {
-                return _this.root_.getAttribute(attr);
-            },
             getCheckmarkBoundingClientRect: function getCheckmarkBoundingClientRect() {
                 return _this.checkmark_ ? _this.checkmark_.getBoundingClientRect() : null;
             },
@@ -2261,23 +2091,14 @@ var MDCChip = /** @class */function (_super) {
             hasLeadingIcon: function hasLeadingIcon() {
                 return !!_this.leadingIcon_;
             },
-            hasTrailingAction: function hasTrailingAction() {
-                return !!_this.trailingAction_;
-            },
-            isRTL: function isRTL() {
-                return window.getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
-            },
             notifyInteraction: function notifyInteraction() {
                 return _this.emit(constants_1.strings.INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
             },
-            notifyNavigation: function notifyNavigation(key, source) {
-                return _this.emit(constants_1.strings.NAVIGATION_EVENT, { chipId: _this.id, key: key, source: source }, true /* shouldBubble */);
+            notifyRemoval: function notifyRemoval() {
+                return _this.emit(constants_1.strings.REMOVAL_EVENT, { chipId: _this.id, root: _this.root_ }, true /* shouldBubble */);
             },
-            notifyRemoval: function notifyRemoval(removedAnnouncement) {
-                _this.emit(constants_1.strings.REMOVAL_EVENT, { chipId: _this.id, removedAnnouncement: removedAnnouncement }, true /* shouldBubble */);
-            },
-            notifySelection: function notifySelection(selected, shouldIgnore) {
-                return _this.emit(constants_1.strings.SELECTION_EVENT, { chipId: _this.id, selected: selected, shouldIgnore: shouldIgnore }, true /* shouldBubble */);
+            notifySelection: function notifySelection(selected) {
+                return _this.emit(constants_1.strings.SELECTION_EVENT, { chipId: _this.id, selected: selected }, true /* shouldBubble */);
             },
             notifyTrailingIconInteraction: function notifyTrailingIconInteraction() {
                 return _this.emit(constants_1.strings.TRAILING_ICON_INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
@@ -2290,39 +2111,14 @@ var MDCChip = /** @class */function (_super) {
                     _this.leadingIcon_.classList.remove(className);
                 }
             },
-            setPrimaryActionAttr: function setPrimaryActionAttr(attr, value) {
-                if (_this.primaryAction_) {
-                    _this.primaryAction_.setAttribute(attr, value);
-                }
+            setAttr: function setAttr(attr, value) {
+                return _this.root_.setAttribute(attr, value);
             },
             setStyleProperty: function setStyleProperty(propertyName, value) {
                 return _this.root_.style.setProperty(propertyName, value);
-            },
-            setTrailingActionAttr: function setTrailingActionAttr(attr, value) {
-                if (_this.trailingAction_) {
-                    _this.trailingAction_.setAttribute(attr, value);
-                }
             }
         };
         return new foundation_2.MDCChipFoundation(adapter);
-    };
-    MDCChip.prototype.setSelectedFromChipSet = function (selected, shouldNotifyClients) {
-        this.foundation_.setSelectedFromChipSet(selected, shouldNotifyClients);
-    };
-    MDCChip.prototype.focusPrimaryAction = function () {
-        this.foundation_.focusPrimaryAction();
-    };
-    MDCChip.prototype.focusTrailingAction = function () {
-        this.foundation_.focusTrailingAction();
-    };
-    MDCChip.prototype.removeFocus = function () {
-        this.foundation_.removeFocus();
-    };
-    MDCChip.prototype.remove = function () {
-        var parent = this.root_.parentNode;
-        if (parent !== null) {
-            parent.removeChild(this.root_);
-        }
     };
     return MDCChip;
 }(component_1.MDCComponent);
@@ -2363,70 +2159,25 @@ exports.MDCChip = MDCChip;
  */
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Direction;
-(function (Direction) {
-    Direction[Direction["RIGHT"] = 0] = "RIGHT";
-    Direction[Direction["LEFT"] = 1] = "LEFT";
-})(Direction = exports.Direction || (exports.Direction = {}));
-var EventSource;
-(function (EventSource) {
-    EventSource[EventSource["PRIMARY"] = 0] = "PRIMARY";
-    EventSource[EventSource["TRAILING"] = 1] = "TRAILING";
-    EventSource[EventSource["NONE"] = 2] = "NONE";
-})(EventSource = exports.EventSource || (exports.EventSource = {}));
 exports.strings = {
-    ADDED_ANNOUNCEMENT_ATTRIBUTE: 'data-mdc-chip-added-announcement',
     ARIA_CHECKED: 'aria-checked',
-    ARROW_DOWN_KEY: 'ArrowDown',
-    ARROW_LEFT_KEY: 'ArrowLeft',
-    ARROW_RIGHT_KEY: 'ArrowRight',
-    ARROW_UP_KEY: 'ArrowUp',
-    BACKSPACE_KEY: 'Backspace',
     CHECKMARK_SELECTOR: '.mdc-chip__checkmark',
-    DELETE_KEY: 'Delete',
-    END_KEY: 'End',
-    ENTER_KEY: 'Enter',
     ENTRY_ANIMATION_NAME: 'mdc-chip-entry',
-    HOME_KEY: 'Home',
     INTERACTION_EVENT: 'MDCChip:interaction',
     LEADING_ICON_SELECTOR: '.mdc-chip__icon--leading',
-    NAVIGATION_EVENT: 'MDCChip:navigation',
-    PRIMARY_ACTION_SELECTOR: '.mdc-chip__primary-action',
-    REMOVED_ANNOUNCEMENT_ATTRIBUTE: 'data-mdc-chip-removed-announcement',
     REMOVAL_EVENT: 'MDCChip:removal',
     SELECTION_EVENT: 'MDCChip:selection',
-    SPACEBAR_KEY: ' ',
-    TAB_INDEX: 'tabindex',
-    TRAILING_ACTION_SELECTOR: '.mdc-chip__trailing-action',
     TRAILING_ICON_INTERACTION_EVENT: 'MDCChip:trailingIconInteraction',
     TRAILING_ICON_SELECTOR: '.mdc-chip__icon--trailing'
 };
 exports.cssClasses = {
     CHECKMARK: 'mdc-chip__checkmark',
     CHIP_EXIT: 'mdc-chip--exit',
-    DELETABLE: 'mdc-chip--deletable',
     HIDDEN_LEADING_ICON: 'mdc-chip__icon--leading-hidden',
     LEADING_ICON: 'mdc-chip__icon--leading',
-    PRIMARY_ACTION: 'mdc-chip__primary-action',
     SELECTED: 'mdc-chip--selected',
-    TEXT: 'mdc-chip__text',
-    TRAILING_ACTION: 'mdc-chip__trailing-action',
     TRAILING_ICON: 'mdc-chip__icon--trailing'
 };
-exports.navigationKeys = new Set();
-// IE11 has no support for new Set with iterable so we need to initialize this by hand
-exports.navigationKeys.add(exports.strings.ARROW_LEFT_KEY);
-exports.navigationKeys.add(exports.strings.ARROW_RIGHT_KEY);
-exports.navigationKeys.add(exports.strings.ARROW_DOWN_KEY);
-exports.navigationKeys.add(exports.strings.ARROW_UP_KEY);
-exports.navigationKeys.add(exports.strings.END_KEY);
-exports.navigationKeys.add(exports.strings.HOME_KEY);
-exports.jumpChipKeys = new Set();
-// IE11 has no support for new Set with iterable so we need to initialize this by hand
-exports.jumpChipKeys.add(exports.strings.ARROW_UP_KEY);
-exports.jumpChipKeys.add(exports.strings.ARROW_DOWN_KEY);
-exports.jumpChipKeys.add(exports.strings.HOME_KEY);
-exports.jumpChipKeys.add(exports.strings.END_KEY);
 
 /***/ }),
 
@@ -2508,7 +2259,9 @@ var MDCChipFoundation = /** @class */function (_super) {
     __extends(MDCChipFoundation, _super);
     function MDCChipFoundation(adapter) {
         var _this = _super.call(this, __assign({}, MDCChipFoundation.defaultAdapter, adapter)) || this;
-        /** Whether a trailing icon click should immediately trigger exit/removal of the chip. */
+        /**
+         * Whether a trailing icon click should immediately trigger exit/removal of the chip.
+         */
         _this.shouldRemoveOnTrailingIconClick_ = true;
         return _this;
     }
@@ -2538,15 +2291,6 @@ var MDCChipFoundation = /** @class */function (_super) {
                 eventTargetHasClass: function eventTargetHasClass() {
                     return false;
                 },
-                focusPrimaryAction: function focusPrimaryAction() {
-                    return undefined;
-                },
-                focusTrailingAction: function focusTrailingAction() {
-                    return undefined;
-                },
-                getAttribute: function getAttribute() {
-                    return null;
-                },
                 getCheckmarkBoundingClientRect: function getCheckmarkBoundingClientRect() {
                     return emptyClientRect;
                 },
@@ -2562,16 +2306,7 @@ var MDCChipFoundation = /** @class */function (_super) {
                 hasLeadingIcon: function hasLeadingIcon() {
                     return false;
                 },
-                hasTrailingAction: function hasTrailingAction() {
-                    return false;
-                },
-                isRTL: function isRTL() {
-                    return false;
-                },
                 notifyInteraction: function notifyInteraction() {
-                    return undefined;
-                },
-                notifyNavigation: function notifyNavigation() {
                     return undefined;
                 },
                 notifyRemoval: function notifyRemoval() {
@@ -2589,13 +2324,10 @@ var MDCChipFoundation = /** @class */function (_super) {
                 removeClassFromLeadingIcon: function removeClassFromLeadingIcon() {
                     return undefined;
                 },
-                setPrimaryActionAttr: function setPrimaryActionAttr() {
+                setAttr: function setAttr() {
                     return undefined;
                 },
                 setStyleProperty: function setStyleProperty() {
-                    return undefined;
-                },
-                setTrailingActionAttr: function setTrailingActionAttr() {
                     return undefined;
                 }
             };
@@ -2607,14 +2339,14 @@ var MDCChipFoundation = /** @class */function (_super) {
         return this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
     };
     MDCChipFoundation.prototype.setSelected = function (selected) {
-        this.setSelected_(selected);
-        this.notifySelection_(selected);
-    };
-    MDCChipFoundation.prototype.setSelectedFromChipSet = function (selected, shouldNotifyClients) {
-        this.setSelected_(selected);
-        if (shouldNotifyClients) {
-            this.notifyIgnoredSelection_(selected);
+        if (selected) {
+            this.adapter_.addClass(constants_1.cssClasses.SELECTED);
+            this.adapter_.setAttr(constants_1.strings.ARIA_CHECKED, 'true');
+        } else {
+            this.adapter_.removeClass(constants_1.cssClasses.SELECTED);
+            this.adapter_.setAttr(constants_1.strings.ARIA_CHECKED, 'false');
         }
+        this.adapter_.notifySelection(selected);
     };
     MDCChipFoundation.prototype.getShouldRemoveOnTrailingIconClick = function () {
         return this.shouldRemoveOnTrailingIconClick_;
@@ -2662,9 +2394,9 @@ var MDCChipFoundation = /** @class */function (_super) {
      * Handles an interaction event on the root element.
      */
     MDCChipFoundation.prototype.handleInteraction = function (evt) {
-        if (this.shouldHandleInteraction_(evt)) {
+        var isEnter = evt.key === 'Enter' || evt.keyCode === 13;
+        if (evt.type === 'click' || isEnter) {
             this.adapter_.notifyInteraction();
-            this.focusPrimaryAction_();
         }
     };
     /**
@@ -2673,42 +2405,35 @@ var MDCChipFoundation = /** @class */function (_super) {
     MDCChipFoundation.prototype.handleTransitionEnd = function (evt) {
         var _this = this;
         // Handle transition end event on the chip when it is about to be removed.
-        var shouldHandle = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHIP_EXIT);
-        var widthIsAnimating = evt.propertyName === 'width';
-        var opacityIsAnimating = evt.propertyName === 'opacity';
-        if (shouldHandle && opacityIsAnimating) {
-            // See: https://css-tricks.com/using-css-transitions-auto-dimensions/#article-header-id-5
-            var chipWidth_1 = this.adapter_.getComputedStyleValue('width');
-            // On the next frame (once we get the computed width), explicitly set the chip's width
-            // to its current pixel width, so we aren't transitioning out of 'auto'.
-            requestAnimationFrame(function () {
-                _this.adapter_.setStyleProperty('width', chipWidth_1);
-                // To mitigate jitter, start transitioning padding and margin before width.
-                _this.adapter_.setStyleProperty('padding', '0');
-                _this.adapter_.setStyleProperty('margin', '0');
-                // On the next frame (once width is explicitly set), transition width to 0.
+        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHIP_EXIT)) {
+            if (evt.propertyName === 'width') {
+                this.adapter_.notifyRemoval();
+            } else if (evt.propertyName === 'opacity') {
+                // See: https://css-tricks.com/using-css-transitions-auto-dimensions/#article-header-id-5
+                var chipWidth_1 = this.adapter_.getComputedStyleValue('width');
+                // On the next frame (once we get the computed width), explicitly set the chip's width
+                // to its current pixel width, so we aren't transitioning out of 'auto'.
                 requestAnimationFrame(function () {
-                    _this.adapter_.setStyleProperty('width', '0');
+                    _this.adapter_.setStyleProperty('width', chipWidth_1);
+                    // To mitigate jitter, start transitioning padding and margin before width.
+                    _this.adapter_.setStyleProperty('padding', '0');
+                    _this.adapter_.setStyleProperty('margin', '0');
+                    // On the next frame (once width is explicitly set), transition width to 0.
+                    requestAnimationFrame(function () {
+                        _this.adapter_.setStyleProperty('width', '0');
+                    });
                 });
-            });
+            }
             return;
-        }
-        if (shouldHandle && widthIsAnimating) {
-            this.removeFocus_();
-            var removedAnnouncement = this.adapter_.getAttribute(constants_1.strings.REMOVED_ANNOUNCEMENT_ATTRIBUTE);
-            this.adapter_.notifyRemoval(removedAnnouncement);
         }
         // Handle a transition end event on the leading icon or checkmark, since the transition end event bubbles.
-        if (!opacityIsAnimating) {
+        if (evt.propertyName !== 'opacity') {
             return;
         }
-        var shouldHideLeadingIcon = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.LEADING_ICON) && this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
-        var shouldShowLeadingIcon = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHECKMARK) && !this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
-        if (shouldHideLeadingIcon) {
-            return this.adapter_.addClassToLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
-        }
-        if (shouldShowLeadingIcon) {
-            return this.adapter_.removeClassFromLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.LEADING_ICON) && this.adapter_.hasClass(constants_1.cssClasses.SELECTED)) {
+            this.adapter_.addClassToLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+        } else if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHECKMARK) && !this.adapter_.hasClass(constants_1.cssClasses.SELECTED)) {
+            this.adapter_.removeClassFromLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
         }
     };
     /**
@@ -2716,122 +2441,14 @@ var MDCChipFoundation = /** @class */function (_super) {
      * prevent the ripple from activating on interaction with the trailing icon.
      */
     MDCChipFoundation.prototype.handleTrailingIconInteraction = function (evt) {
-        if (this.shouldHandleInteraction_(evt)) {
-            this.adapter_.notifyTrailingIconInteraction();
-            this.removeChip_(evt);
-        }
-    };
-    /**
-     * Handles a keydown event from the root element.
-     */
-    MDCChipFoundation.prototype.handleKeydown = function (evt) {
-        if (this.shouldRemoveChip_(evt)) {
-            return this.removeChip_(evt);
-        }
-        var key = evt.key;
-        // Early exit if the key is not usable
-        if (!constants_1.navigationKeys.has(key)) {
-            return;
-        }
-        // Prevent default behavior for movement keys which could include scrolling
-        evt.preventDefault();
-        this.focusNextAction_(evt);
-    };
-    MDCChipFoundation.prototype.removeFocus = function () {
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.focusPrimaryAction = function () {
-        this.focusPrimaryAction_();
-    };
-    MDCChipFoundation.prototype.focusTrailingAction = function () {
-        if (!this.adapter_.hasTrailingAction()) {
-            return this.focusPrimaryAction_();
-        }
-        this.focusTrailingAction_();
-    };
-    MDCChipFoundation.prototype.focusNextAction_ = function (evt) {
-        var key = evt.key;
-        var hasTrailingAction = this.adapter_.hasTrailingAction();
-        var dir = this.getDirection_(key);
-        var source = this.getEvtSource_(evt);
-        // Early exit if the key should jump keys or the chip only has one action (i.e. no trailing action)
-        if (constants_1.jumpChipKeys.has(key) || !hasTrailingAction) {
-            this.adapter_.notifyNavigation(key, source);
-            return;
-        }
-        if (source === constants_1.EventSource.PRIMARY && dir === constants_1.Direction.RIGHT) {
-            return this.focusTrailingAction_();
-        }
-        if (source === constants_1.EventSource.TRAILING && dir === constants_1.Direction.LEFT) {
-            return this.focusPrimaryAction_();
-        }
-        this.adapter_.notifyNavigation(key, constants_1.EventSource.NONE);
-    };
-    MDCChipFoundation.prototype.getEvtSource_ = function (evt) {
-        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.PRIMARY_ACTION)) {
-            return constants_1.EventSource.PRIMARY;
-        }
-        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.TRAILING_ACTION)) {
-            return constants_1.EventSource.TRAILING;
-        }
-        return constants_1.EventSource.NONE;
-    };
-    MDCChipFoundation.prototype.getDirection_ = function (key) {
-        var isRTL = this.adapter_.isRTL();
-        if (key === constants_1.strings.ARROW_LEFT_KEY && !isRTL || key === constants_1.strings.ARROW_RIGHT_KEY && isRTL) {
-            return constants_1.Direction.LEFT;
-        }
-        return constants_1.Direction.RIGHT;
-    };
-    MDCChipFoundation.prototype.focusPrimaryAction_ = function () {
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '0');
-        this.adapter_.focusPrimaryAction();
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.focusTrailingAction_ = function () {
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '0');
-        this.adapter_.focusTrailingAction();
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.removeFocus_ = function () {
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.removeChip_ = function (evt) {
+        var isEnter = evt.key === 'Enter' || evt.keyCode === 13;
         evt.stopPropagation();
-        // Prevent default behavior for backspace on Firefox which causes a page
-        // navigation.
-        evt.preventDefault();
-        if (this.shouldRemoveOnTrailingIconClick_) {
-            this.beginExit();
+        if (evt.type === 'click' || isEnter) {
+            this.adapter_.notifyTrailingIconInteraction();
+            if (this.shouldRemoveOnTrailingIconClick_) {
+                this.beginExit();
+            }
         }
-    };
-    MDCChipFoundation.prototype.shouldHandleInteraction_ = function (evt) {
-        if (evt.type === 'click') {
-            return true;
-        }
-        var keyEvt = evt;
-        return keyEvt.key === constants_1.strings.ENTER_KEY || keyEvt.key === constants_1.strings.SPACEBAR_KEY;
-    };
-    MDCChipFoundation.prototype.shouldRemoveChip_ = function (evt) {
-        var isDeletable = this.adapter_.hasClass(constants_1.cssClasses.DELETABLE);
-        return isDeletable && (evt.key === constants_1.strings.BACKSPACE_KEY || evt.key === constants_1.strings.DELETE_KEY);
-    };
-    MDCChipFoundation.prototype.setSelected_ = function (selected) {
-        if (selected) {
-            this.adapter_.addClass(constants_1.cssClasses.SELECTED);
-            this.adapter_.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'true');
-        } else {
-            this.adapter_.removeClass(constants_1.cssClasses.SELECTED);
-            this.adapter_.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'false');
-        }
-    };
-    MDCChipFoundation.prototype.notifySelection_ = function (selected) {
-        this.adapter_.notifySelection(selected, false);
-    };
-    MDCChipFoundation.prototype.notifyIgnoredSelection_ = function (selected) {
-        this.adapter_.notifySelection(selected, true);
     };
     return MDCChipFoundation;
 }(foundation_1.MDCFoundation);
@@ -3670,7 +3287,6 @@ var __importStar = this && this.__importStar || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
-var focus_trap_1 = __webpack_require__(/*! @material/dom/focus-trap */ "./packages/mdc-dom/focus-trap.ts");
 var ponyfill_1 = __webpack_require__(/*! @material/dom/ponyfill */ "./packages/mdc-dom/ponyfill.ts");
 var component_2 = __webpack_require__(/*! @material/ripple/component */ "./packages/mdc-ripple/component.ts");
 var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-dialog/foundation.ts");
@@ -3723,11 +3339,6 @@ var MDCDialog = /** @class */function (_super) {
     };
     MDCDialog.prototype.initialize = function (focusTrapFactory) {
         var e_1, _a;
-        if (focusTrapFactory === void 0) {
-            focusTrapFactory = function focusTrapFactory(el, focusOptions) {
-                return new focus_trap_1.FocusTrap(el, focusOptions);
-            };
-        }
         var container = this.root_.querySelector(strings.CONTAINER_SELECTOR);
         if (!container) {
             throw new Error("Dialog component requires a " + strings.CONTAINER_SELECTOR + " container element");
@@ -3850,7 +3461,7 @@ var MDCDialog = /** @class */function (_super) {
                 return _this.emit(strings.OPENING_EVENT, {});
             },
             releaseFocus: function releaseFocus() {
-                return _this.focusTrap_.releaseFocus();
+                return _this.focusTrap_.deactivate();
             },
             removeBodyClass: function removeBodyClass(className) {
                 return document.body.classList.remove(className);
@@ -3865,7 +3476,7 @@ var MDCDialog = /** @class */function (_super) {
                 });
             },
             trapFocus: function trapFocus() {
-                return _this.focusTrap_.trapFocus();
+                return _this.focusTrap_.activate();
             }
         };
         return new foundation_1.MDCDialogFoundation(adapter);
@@ -4337,6 +3948,530 @@ __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-dialog/foundati
 
 /***/ }),
 
+/***/ "./packages/mdc-dialog/node_modules/focus-trap/index.js":
+/*!**************************************************************!*\
+  !*** ./packages/mdc-dialog/node_modules/focus-trap/index.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var tabbable = __webpack_require__(/*! tabbable */ "./packages/mdc-dialog/node_modules/tabbable/index.js");
+var xtend = __webpack_require__(/*! xtend */ "./packages/mdc-dialog/node_modules/xtend/immutable.js");
+
+var activeFocusTraps = (function() {
+  var trapQueue = [];
+  return {
+    activateTrap: function(trap) {
+      if (trapQueue.length > 0) {
+        var activeTrap = trapQueue[trapQueue.length - 1];
+        if (activeTrap !== trap) {
+          activeTrap.pause();
+        }
+      }
+
+      var trapIndex = trapQueue.indexOf(trap);
+      if (trapIndex === -1) {
+        trapQueue.push(trap);
+      } else {
+        // move this existing trap to the front of the queue
+        trapQueue.splice(trapIndex, 1);
+        trapQueue.push(trap);
+      }
+    },
+
+    deactivateTrap: function(trap) {
+      var trapIndex = trapQueue.indexOf(trap);
+      if (trapIndex !== -1) {
+        trapQueue.splice(trapIndex, 1);
+      }
+
+      if (trapQueue.length > 0) {
+        trapQueue[trapQueue.length - 1].unpause();
+      }
+    }
+  };
+})();
+
+function focusTrap(element, userOptions) {
+  var doc = document;
+  var container =
+    typeof element === 'string' ? doc.querySelector(element) : element;
+
+  var config = xtend(
+    {
+      returnFocusOnDeactivate: true,
+      escapeDeactivates: true
+    },
+    userOptions
+  );
+
+  var state = {
+    firstTabbableNode: null,
+    lastTabbableNode: null,
+    nodeFocusedBeforeActivation: null,
+    mostRecentlyFocusedNode: null,
+    active: false,
+    paused: false
+  };
+
+  var trap = {
+    activate: activate,
+    deactivate: deactivate,
+    pause: pause,
+    unpause: unpause
+  };
+
+  return trap;
+
+  function activate(activateOptions) {
+    if (state.active) return;
+
+    updateTabbableNodes();
+
+    state.active = true;
+    state.paused = false;
+    state.nodeFocusedBeforeActivation = doc.activeElement;
+
+    var onActivate =
+      activateOptions && activateOptions.onActivate
+        ? activateOptions.onActivate
+        : config.onActivate;
+    if (onActivate) {
+      onActivate();
+    }
+
+    addListeners();
+    return trap;
+  }
+
+  function deactivate(deactivateOptions) {
+    if (!state.active) return;
+
+    removeListeners();
+    state.active = false;
+    state.paused = false;
+
+    activeFocusTraps.deactivateTrap(trap);
+
+    var onDeactivate =
+      deactivateOptions && deactivateOptions.onDeactivate !== undefined
+        ? deactivateOptions.onDeactivate
+        : config.onDeactivate;
+    if (onDeactivate) {
+      onDeactivate();
+    }
+
+    var returnFocus =
+      deactivateOptions && deactivateOptions.returnFocus !== undefined
+        ? deactivateOptions.returnFocus
+        : config.returnFocusOnDeactivate;
+    if (returnFocus) {
+      delay(function() {
+        tryFocus(state.nodeFocusedBeforeActivation);
+      });
+    }
+
+    return trap;
+  }
+
+  function pause() {
+    if (state.paused || !state.active) return;
+    state.paused = true;
+    removeListeners();
+  }
+
+  function unpause() {
+    if (!state.paused || !state.active) return;
+    state.paused = false;
+    updateTabbableNodes();
+    addListeners();
+  }
+
+  function addListeners() {
+    if (!state.active) return;
+
+    // There can be only one listening focus trap at a time
+    activeFocusTraps.activateTrap(trap);
+
+    // Delay ensures that the focused element doesn't capture the event
+    // that caused the focus trap activation.
+    delay(function() {
+      tryFocus(getInitialFocusNode());
+    });
+    doc.addEventListener('focusin', checkFocusIn, true);
+    doc.addEventListener('mousedown', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('touchstart', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('click', checkClick, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('keydown', checkKey, {
+      capture: true,
+      passive: false
+    });
+
+    return trap;
+  }
+
+  function removeListeners() {
+    if (!state.active) return;
+
+    doc.removeEventListener('focusin', checkFocusIn, true);
+    doc.removeEventListener('mousedown', checkPointerDown, true);
+    doc.removeEventListener('touchstart', checkPointerDown, true);
+    doc.removeEventListener('click', checkClick, true);
+    doc.removeEventListener('keydown', checkKey, true);
+
+    return trap;
+  }
+
+  function getNodeForOption(optionName) {
+    var optionValue = config[optionName];
+    var node = optionValue;
+    if (!optionValue) {
+      return null;
+    }
+    if (typeof optionValue === 'string') {
+      node = doc.querySelector(optionValue);
+      if (!node) {
+        throw new Error('`' + optionName + '` refers to no known node');
+      }
+    }
+    if (typeof optionValue === 'function') {
+      node = optionValue();
+      if (!node) {
+        throw new Error('`' + optionName + '` did not return a node');
+      }
+    }
+    return node;
+  }
+
+  function getInitialFocusNode() {
+    var node;
+    if (getNodeForOption('initialFocus') !== null) {
+      node = getNodeForOption('initialFocus');
+    } else if (container.contains(doc.activeElement)) {
+      node = doc.activeElement;
+    } else {
+      node = state.firstTabbableNode || getNodeForOption('fallbackFocus');
+    }
+
+    if (!node) {
+      throw new Error(
+        "You can't have a focus-trap without at least one focusable element"
+      );
+    }
+
+    return node;
+  }
+
+  // This needs to be done on mousedown and touchstart instead of click
+  // so that it precedes the focus event.
+  function checkPointerDown(e) {
+    if (container.contains(e.target)) return;
+    if (config.clickOutsideDeactivates) {
+      deactivate({
+        returnFocus: !tabbable.isFocusable(e.target)
+      });
+    } else {
+      e.preventDefault();
+    }
+  }
+
+  // In case focus escapes the trap for some strange reason, pull it back in.
+  function checkFocusIn(e) {
+    // In Firefox when you Tab out of an iframe the Document is briefly focused.
+    if (container.contains(e.target) || e.target instanceof Document) {
+      return;
+    }
+    e.stopImmediatePropagation();
+    tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
+  }
+
+  function checkKey(e) {
+    if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
+      e.preventDefault();
+      deactivate();
+      return;
+    }
+    if (isTabEvent(e)) {
+      checkTab(e);
+      return;
+    }
+  }
+
+  // Hijack Tab events on the first and last focusable nodes of the trap,
+  // in order to prevent focus from escaping. If it escapes for even a
+  // moment it can end up scrolling the page and causing confusion so we
+  // kind of need to capture the action at the keydown phase.
+  function checkTab(e) {
+    updateTabbableNodes();
+    if (e.shiftKey && e.target === state.firstTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.lastTabbableNode);
+      return;
+    }
+    if (!e.shiftKey && e.target === state.lastTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.firstTabbableNode);
+      return;
+    }
+  }
+
+  function checkClick(e) {
+    if (config.clickOutsideDeactivates) return;
+    if (container.contains(e.target)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
+  function updateTabbableNodes() {
+    var tabbableNodes = tabbable(container);
+    state.firstTabbableNode = tabbableNodes[0] || getInitialFocusNode();
+    state.lastTabbableNode =
+      tabbableNodes[tabbableNodes.length - 1] || getInitialFocusNode();
+  }
+
+  function tryFocus(node) {
+    if (node === doc.activeElement) return;
+    if (!node || !node.focus) {
+      tryFocus(getInitialFocusNode());
+      return;
+    }
+
+    node.focus();
+    state.mostRecentlyFocusedNode = node;
+    if (isSelectableInput(node)) {
+      node.select();
+    }
+  }
+}
+
+function isSelectableInput(node) {
+  return (
+    node.tagName &&
+    node.tagName.toLowerCase() === 'input' &&
+    typeof node.select === 'function'
+  );
+}
+
+function isEscapeEvent(e) {
+  return e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27;
+}
+
+function isTabEvent(e) {
+  return e.key === 'Tab' || e.keyCode === 9;
+}
+
+function delay(fn) {
+  return setTimeout(fn, 0);
+}
+
+module.exports = focusTrap;
+
+
+/***/ }),
+
+/***/ "./packages/mdc-dialog/node_modules/tabbable/index.js":
+/*!************************************************************!*\
+  !*** ./packages/mdc-dialog/node_modules/tabbable/index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var candidateSelectors = [
+  'input',
+  'select',
+  'textarea',
+  'a[href]',
+  'button',
+  '[tabindex]',
+  'audio[controls]',
+  'video[controls]',
+  '[contenteditable]:not([contenteditable="false"])',
+];
+var candidateSelector = candidateSelectors.join(',');
+
+var matches = typeof Element === 'undefined'
+  ? function () {}
+  : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+
+function tabbable(el, options) {
+  options = options || {};
+
+  var regularTabbables = [];
+  var orderedTabbables = [];
+
+  var candidates = el.querySelectorAll(candidateSelector);
+
+  if (options.includeContainer) {
+    if (matches.call(el, candidateSelector)) {
+      candidates = Array.prototype.slice.apply(candidates);
+      candidates.unshift(el);
+    }
+  }
+
+  var i, candidate, candidateTabindex;
+  for (i = 0; i < candidates.length; i++) {
+    candidate = candidates[i];
+
+    if (!isNodeMatchingSelectorTabbable(candidate)) continue;
+
+    candidateTabindex = getTabindex(candidate);
+    if (candidateTabindex === 0) {
+      regularTabbables.push(candidate);
+    } else {
+      orderedTabbables.push({
+        documentOrder: i,
+        tabIndex: candidateTabindex,
+        node: candidate,
+      });
+    }
+  }
+
+  var tabbableNodes = orderedTabbables
+    .sort(sortOrderedTabbables)
+    .map(function(a) { return a.node })
+    .concat(regularTabbables);
+
+  return tabbableNodes;
+}
+
+tabbable.isTabbable = isTabbable;
+tabbable.isFocusable = isFocusable;
+
+function isNodeMatchingSelectorTabbable(node) {
+  if (
+    !isNodeMatchingSelectorFocusable(node)
+    || isNonTabbableRadio(node)
+    || getTabindex(node) < 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function isTabbable(node) {
+  if (!node) throw new Error('No node provided');
+  if (matches.call(node, candidateSelector) === false) return false;
+  return isNodeMatchingSelectorTabbable(node);
+}
+
+function isNodeMatchingSelectorFocusable(node) {
+  if (
+    node.disabled
+    || isHiddenInput(node)
+    || isHidden(node)
+  ) {
+    return false;
+  }
+  return true;
+}
+
+var focusableCandidateSelector = candidateSelectors.concat('iframe').join(',');
+function isFocusable(node) {
+  if (!node) throw new Error('No node provided');
+  if (matches.call(node, focusableCandidateSelector) === false) return false;
+  return isNodeMatchingSelectorFocusable(node);
+}
+
+function getTabindex(node) {
+  var tabindexAttr = parseInt(node.getAttribute('tabindex'), 10);
+  if (!isNaN(tabindexAttr)) return tabindexAttr;
+  // Browsers do not return `tabIndex` correctly for contentEditable nodes;
+  // so if they don't have a tabindex attribute specifically set, assume it's 0.
+  if (isContentEditable(node)) return 0;
+  return node.tabIndex;
+}
+
+function sortOrderedTabbables(a, b) {
+  return a.tabIndex === b.tabIndex ? a.documentOrder - b.documentOrder : a.tabIndex - b.tabIndex;
+}
+
+function isContentEditable(node) {
+  return node.contentEditable === 'true';
+}
+
+function isInput(node) {
+  return node.tagName === 'INPUT';
+}
+
+function isHiddenInput(node) {
+  return isInput(node) && node.type === 'hidden';
+}
+
+function isRadio(node) {
+  return isInput(node) && node.type === 'radio';
+}
+
+function isNonTabbableRadio(node) {
+  return isRadio(node) && !isTabbableRadio(node);
+}
+
+function getCheckedRadio(nodes) {
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].checked) {
+      return nodes[i];
+    }
+  }
+}
+
+function isTabbableRadio(node) {
+  if (!node.name) return true;
+  // This won't account for the edge case where you have radio groups with the same
+  // in separate forms on the same page.
+  var radioSet = node.ownerDocument.querySelectorAll('input[type="radio"][name="' + node.name + '"]');
+  var checked = getCheckedRadio(radioSet);
+  return !checked || checked === node;
+}
+
+function isHidden(node) {
+  // offsetParent being null will allow detecting cases where an element is invisible or inside an invisible element,
+  // as long as the element does not use position: fixed. For them, their visibility has to be checked directly as well.
+  return node.offsetParent === null || getComputedStyle(node).visibility === 'hidden';
+}
+
+module.exports = tabbable;
+
+
+/***/ }),
+
+/***/ "./packages/mdc-dialog/node_modules/xtend/immutable.js":
+/*!*************************************************************!*\
+  !*** ./packages/mdc-dialog/node_modules/xtend/immutable.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+
+/***/ }),
+
 /***/ "./packages/mdc-dialog/util.ts":
 /*!*************************************!*\
   !*** ./packages/mdc-dialog/util.ts ***!
@@ -4369,9 +4504,20 @@ __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-dialog/foundati
  * THE SOFTWARE.
  */
 
+var __importDefault = this && this.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var focus_trap_1 = __importDefault(__webpack_require__(/*! focus-trap */ "./packages/mdc-dialog/node_modules/focus-trap/index.js"));
 function createFocusTrapInstance(surfaceEl, focusTrapFactory, initialFocusEl) {
-    return focusTrapFactory(surfaceEl, { initialFocusEl: initialFocusEl });
+    if (focusTrapFactory === void 0) {
+        focusTrapFactory = focus_trap_1.default;
+    }
+    return focusTrapFactory(surfaceEl, {
+        clickOutsideDeactivates: true,
+        escapeDeactivates: false,
+        initialFocus: initialFocusEl
+    });
 }
 exports.createFocusTrapInstance = createFocusTrapInstance;
 function isScrollable(el) {
@@ -4386,104 +4532,6 @@ function areTopsMisaligned(els) {
     return tops.size > 1;
 }
 exports.areTopsMisaligned = areTopsMisaligned;
-
-/***/ }),
-
-/***/ "./packages/mdc-dom/announce.ts":
-/*!**************************************!*\
-  !*** ./packages/mdc-dom/announce.ts ***!
-  \**************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * @license
- * Copyright 2020 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Priorities for the announce function
- */
-var AnnouncerPriority;
-(function (AnnouncerPriority) {
-    AnnouncerPriority["POLITE"] = "polite";
-    AnnouncerPriority["ASSERTIVE"] = "assertive";
-})(AnnouncerPriority = exports.AnnouncerPriority || (exports.AnnouncerPriority = {}));
-/**
- * Announces the given message with optional priority, defaulting to "polite"
- */
-function announce(message, priority) {
-    Announcer.getInstance().say(message, priority);
-}
-exports.announce = announce;
-var Announcer = /** @class */function () {
-    // Constructor made private to ensure only the singleton is used
-    function Announcer() {
-        this.liveRegions = new Map();
-    }
-    Announcer.getInstance = function () {
-        if (!Announcer.instance) {
-            Announcer.instance = new Announcer();
-        }
-        return Announcer.instance;
-    };
-    Announcer.prototype.say = function (message, priority) {
-        if (priority === void 0) {
-            priority = AnnouncerPriority.POLITE;
-        }
-        var liveRegion = this.getLiveRegion(priority);
-        // Reset the region to pick up the message, even if the message is the
-        // exact same as before.
-        liveRegion.textContent = '';
-        // Timeout is necessary for screen readers like NVDA and VoiceOver.
-        setTimeout(function () {
-            liveRegion.textContent = message;
-        }, 1);
-    };
-    Announcer.prototype.getLiveRegion = function (priority) {
-        var existingLiveRegion = this.liveRegions.get(priority);
-        if (existingLiveRegion && document.body.contains(existingLiveRegion)) {
-            return existingLiveRegion;
-        }
-        var liveRegion = this.createLiveRegion(priority);
-        this.liveRegions.set(priority, liveRegion);
-        return liveRegion;
-    };
-    Announcer.prototype.createLiveRegion = function (priority) {
-        var el = document.createElement('div');
-        el.style.position = 'absolute';
-        el.style.top = '-9999px';
-        el.style.left = '-9999px';
-        el.style.height = '1px';
-        el.style.overflow = 'hidden';
-        el.setAttribute('aria-atomic', 'true');
-        el.setAttribute('aria-live', priority);
-        document.body.appendChild(el);
-        return el;
-    };
-    return Announcer;
-}();
 
 /***/ }),
 
@@ -4521,179 +4569,38 @@ var Announcer = /** @class */function () {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
+ * Stores result from applyPassive to avoid redundant processing to detect
+ * passive event listener support.
+ */
+var supportsPassive_;
+/**
  * Determine whether the current browser supports passive event listeners, and
  * if so, use them.
  */
-function applyPassive(globalObj) {
+function applyPassive(globalObj, forceRefresh) {
     if (globalObj === void 0) {
         globalObj = window;
     }
-    return supportsPassiveOption(globalObj) ? { passive: true } : false;
+    if (forceRefresh === void 0) {
+        forceRefresh = false;
+    }
+    if (supportsPassive_ === undefined || forceRefresh) {
+        var isSupported_1 = false;
+        try {
+            globalObj.document.addEventListener('test', function () {
+                return undefined;
+            }, {
+                get passive() {
+                    isSupported_1 = true;
+                    return isSupported_1;
+                }
+            });
+        } catch (e) {} // tslint:disable-line:no-empty cannot throw error due to tests. tslint also disables console.log.
+        supportsPassive_ = isSupported_1;
+    }
+    return supportsPassive_ ? { passive: true } : false;
 }
 exports.applyPassive = applyPassive;
-function supportsPassiveOption(globalObj) {
-    if (globalObj === void 0) {
-        globalObj = window;
-    }
-    // See
-    // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-    var passiveSupported = false;
-    try {
-        var options = {
-            // This function will be called when the browser
-            // attempts to access the passive property.
-            get passive() {
-                passiveSupported = true;
-                return false;
-            }
-        };
-        var handler = function handler() {};
-        globalObj.document.addEventListener('test', handler, options);
-        globalObj.document.removeEventListener('test', handler, options);
-    } catch (err) {
-        passiveSupported = false;
-    }
-    return passiveSupported;
-}
-
-/***/ }),
-
-/***/ "./packages/mdc-dom/focus-trap.ts":
-/*!****************************************!*\
-  !*** ./packages/mdc-dom/focus-trap.ts ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * @license
- * Copyright 2020 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var FOCUS_SENTINEL_CLASS = 'mdc-dom-focus-sentinel';
-/**
- * Utility to trap focus in a given root element, e.g. for modal components such
- * as dialogs. The root should have at least one focusable child element,
- * for setting initial focus when trapping focus.
- * Also tracks the previously focused element, and restores focus to that
- * element when releasing focus.
- */
-var FocusTrap = /** @class */function () {
-    function FocusTrap(root, options) {
-        if (options === void 0) {
-            options = {};
-        }
-        this.root = root;
-        this.options = options;
-        // Previously focused element before trapping focus.
-        this.elFocusedBeforeTrapFocus = null;
-    }
-    /**
-     * Traps focus in `root`. Also focuses on either `initialFocusEl` if set;
-     * otherwises sets initial focus to the first focusable child element.
-     */
-    FocusTrap.prototype.trapFocus = function () {
-        var focusableEls = this.getFocusableElements(this.root);
-        if (focusableEls.length === 0) {
-            throw new Error('FocusTrap: Element must have at least one focusable child.');
-        }
-        this.elFocusedBeforeTrapFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-        this.wrapTabFocus(this.root, focusableEls);
-        if (!this.options.skipInitialFocus) {
-            this.focusInitialElement(focusableEls, this.options.initialFocusEl);
-        }
-    };
-    /**
-     * Releases focus from `root`. Also restores focus to the previously focused
-     * element.
-     */
-    FocusTrap.prototype.releaseFocus = function () {
-        [].slice.call(this.root.querySelectorAll("." + FOCUS_SENTINEL_CLASS)).forEach(function (sentinelEl) {
-            sentinelEl.parentElement.removeChild(sentinelEl);
-        });
-        if (this.elFocusedBeforeTrapFocus) {
-            this.elFocusedBeforeTrapFocus.focus();
-        }
-    };
-    /**
-     * Wraps tab focus within `el` by adding two hidden sentinel divs which are
-     * used to mark the beginning and the end of the tabbable region. When
-     * focused, these sentinel elements redirect focus to the first/last
-     * children elements of the tabbable region, ensuring that focus is trapped
-     * within that region.
-     */
-    FocusTrap.prototype.wrapTabFocus = function (el, focusableEls) {
-        var sentinelStart = this.createSentinel();
-        var sentinelEnd = this.createSentinel();
-        sentinelStart.addEventListener('focus', function () {
-            if (focusableEls.length > 0) {
-                focusableEls[focusableEls.length - 1].focus();
-            }
-        });
-        sentinelEnd.addEventListener('focus', function () {
-            if (focusableEls.length > 0) {
-                focusableEls[0].focus();
-            }
-        });
-        el.insertBefore(sentinelStart, el.children[0]);
-        el.appendChild(sentinelEnd);
-    };
-    /**
-     * Focuses on `initialFocusEl` if defined and a child of the root element.
-     * Otherwise, focuses on the first focusable child element of the root.
-     */
-    FocusTrap.prototype.focusInitialElement = function (focusableEls, initialFocusEl) {
-        var focusIndex = 0;
-        if (initialFocusEl) {
-            focusIndex = Math.max(focusableEls.indexOf(initialFocusEl), 0);
-        }
-        focusableEls[focusIndex].focus();
-    };
-    FocusTrap.prototype.getFocusableElements = function (root) {
-        var focusableEls = [].slice.call(root.querySelectorAll('[autofocus], [tabindex], a, input, textarea, select, button'));
-        return focusableEls.filter(function (el) {
-            var isDisabledOrHidden = el.getAttribute('aria-disabled') === 'true' || el.getAttribute('disabled') != null || el.getAttribute('hidden') != null || el.getAttribute('aria-hidden') === 'true';
-            var isTabbableAndVisible = el.tabIndex >= 0 && el.getBoundingClientRect().width > 0 && !el.classList.contains(FOCUS_SENTINEL_CLASS) && !isDisabledOrHidden;
-            var isProgrammaticallyHidden = false;
-            if (isTabbableAndVisible) {
-                var style = getComputedStyle(el);
-                isProgrammaticallyHidden = style.display === 'none' || style.visibility === 'hidden';
-            }
-            return isTabbableAndVisible && !isProgrammaticallyHidden;
-        });
-    };
-    FocusTrap.prototype.createSentinel = function () {
-        var sentinel = document.createElement('div');
-        sentinel.setAttribute('tabindex', '0');
-        // Don't announce in screen readers.
-        sentinel.setAttribute('aria-hidden', 'true');
-        sentinel.classList.add(FOCUS_SENTINEL_CLASS);
-        return sentinel;
-    };
-    return FocusTrap;
-}();
-exports.FocusTrap = FocusTrap;
 
 /***/ }),
 
@@ -4740,8 +4647,6 @@ var __importStar = this && this.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var events = __importStar(__webpack_require__(/*! ./events */ "./packages/mdc-dom/events.ts"));
 exports.events = events;
-var focusTrap = __importStar(__webpack_require__(/*! ./focus-trap */ "./packages/mdc-dom/focus-trap.ts"));
-exports.focusTrap = focusTrap;
 var ponyfill = __importStar(__webpack_require__(/*! ./ponyfill */ "./packages/mdc-dom/ponyfill.ts"));
 exports.ponyfill = ponyfill;
 
@@ -4803,32 +4708,6 @@ function matches(element, selector) {
     return nativeMatches.call(element, selector);
 }
 exports.matches = matches;
-/**
- * Used to compute the estimated scroll width of elements. When an element is
- * hidden due to display: none; being applied to a parent element, the width is
- * returned as 0. However, the element will have a true width once no longer
- * inside a display: none context. This method computes an estimated width when
- * the element is hidden or returns the true width when the element is visble.
- * @param {Element} element the element whose width to estimate
- */
-function estimateScrollWidth(element) {
-    // Check the offsetParent. If the element inherits display: none from any
-    // parent, the offsetParent property will be null (see
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent).
-    // This check ensures we only clone the node when necessary.
-    var htmlEl = element;
-    if (htmlEl.offsetParent !== null) {
-        return htmlEl.scrollWidth;
-    }
-    var clone = htmlEl.cloneNode(true);
-    clone.style.setProperty('position', 'absolute');
-    clone.style.setProperty('transform', 'translate(-9999px, -9999px)');
-    document.documentElement.appendChild(clone);
-    var scrollWidth = clone.scrollWidth;
-    document.documentElement.removeChild(clone);
-    return scrollWidth;
-}
-exports.estimateScrollWidth = estimateScrollWidth;
 
 /***/ }),
 
@@ -4883,6 +4762,9 @@ var __extends = this && this.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
+var __importDefault = this && this.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
 var __importStar = this && this.__importStar || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -4893,9 +4775,9 @@ var __importStar = this && this.__importStar || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
-var focus_trap_1 = __webpack_require__(/*! @material/dom/focus-trap */ "./packages/mdc-dom/focus-trap.ts");
 var component_2 = __webpack_require__(/*! @material/list/component */ "./packages/mdc-list/component.ts");
 var foundation_1 = __webpack_require__(/*! @material/list/foundation */ "./packages/mdc-list/foundation.ts");
+var focus_trap_1 = __importDefault(__webpack_require__(/*! focus-trap */ "./packages/mdc-drawer/node_modules/focus-trap/index.js"));
 var foundation_2 = __webpack_require__(/*! ./dismissible/foundation */ "./packages/mdc-drawer/dismissible/foundation.ts");
 var foundation_3 = __webpack_require__(/*! ./modal/foundation */ "./packages/mdc-drawer/modal/foundation.ts");
 var util = __importStar(__webpack_require__(/*! ./util */ "./packages/mdc-drawer/util.ts"));
@@ -4943,9 +4825,7 @@ var MDCDrawer = /** @class */function (_super) {
     });
     MDCDrawer.prototype.initialize = function (focusTrapFactory, listFactory) {
         if (focusTrapFactory === void 0) {
-            focusTrapFactory = function focusTrapFactory(el) {
-                return new focus_trap_1.FocusTrap(el);
-            };
+            focusTrapFactory = focus_trap_1.default;
         }
         if (listFactory === void 0) {
             listFactory = function listFactory(el) {
@@ -5033,10 +4913,10 @@ var MDCDrawer = /** @class */function (_super) {
                 return _this.emit(strings.OPEN_EVENT, {}, true /* shouldBubble */);
             },
             trapFocus: function trapFocus() {
-                return _this.focusTrap_.trapFocus();
+                return _this.focusTrap_.activate();
             },
             releaseFocus: function releaseFocus() {
-                return _this.focusTrap_.releaseFocus();
+                return _this.focusTrap_.deactivate();
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -5505,6 +5385,530 @@ exports.default = MDCModalDrawerFoundation;
 
 /***/ }),
 
+/***/ "./packages/mdc-drawer/node_modules/focus-trap/index.js":
+/*!**************************************************************!*\
+  !*** ./packages/mdc-drawer/node_modules/focus-trap/index.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var tabbable = __webpack_require__(/*! tabbable */ "./packages/mdc-drawer/node_modules/tabbable/index.js");
+var xtend = __webpack_require__(/*! xtend */ "./packages/mdc-drawer/node_modules/xtend/immutable.js");
+
+var activeFocusTraps = (function() {
+  var trapQueue = [];
+  return {
+    activateTrap: function(trap) {
+      if (trapQueue.length > 0) {
+        var activeTrap = trapQueue[trapQueue.length - 1];
+        if (activeTrap !== trap) {
+          activeTrap.pause();
+        }
+      }
+
+      var trapIndex = trapQueue.indexOf(trap);
+      if (trapIndex === -1) {
+        trapQueue.push(trap);
+      } else {
+        // move this existing trap to the front of the queue
+        trapQueue.splice(trapIndex, 1);
+        trapQueue.push(trap);
+      }
+    },
+
+    deactivateTrap: function(trap) {
+      var trapIndex = trapQueue.indexOf(trap);
+      if (trapIndex !== -1) {
+        trapQueue.splice(trapIndex, 1);
+      }
+
+      if (trapQueue.length > 0) {
+        trapQueue[trapQueue.length - 1].unpause();
+      }
+    }
+  };
+})();
+
+function focusTrap(element, userOptions) {
+  var doc = document;
+  var container =
+    typeof element === 'string' ? doc.querySelector(element) : element;
+
+  var config = xtend(
+    {
+      returnFocusOnDeactivate: true,
+      escapeDeactivates: true
+    },
+    userOptions
+  );
+
+  var state = {
+    firstTabbableNode: null,
+    lastTabbableNode: null,
+    nodeFocusedBeforeActivation: null,
+    mostRecentlyFocusedNode: null,
+    active: false,
+    paused: false
+  };
+
+  var trap = {
+    activate: activate,
+    deactivate: deactivate,
+    pause: pause,
+    unpause: unpause
+  };
+
+  return trap;
+
+  function activate(activateOptions) {
+    if (state.active) return;
+
+    updateTabbableNodes();
+
+    state.active = true;
+    state.paused = false;
+    state.nodeFocusedBeforeActivation = doc.activeElement;
+
+    var onActivate =
+      activateOptions && activateOptions.onActivate
+        ? activateOptions.onActivate
+        : config.onActivate;
+    if (onActivate) {
+      onActivate();
+    }
+
+    addListeners();
+    return trap;
+  }
+
+  function deactivate(deactivateOptions) {
+    if (!state.active) return;
+
+    removeListeners();
+    state.active = false;
+    state.paused = false;
+
+    activeFocusTraps.deactivateTrap(trap);
+
+    var onDeactivate =
+      deactivateOptions && deactivateOptions.onDeactivate !== undefined
+        ? deactivateOptions.onDeactivate
+        : config.onDeactivate;
+    if (onDeactivate) {
+      onDeactivate();
+    }
+
+    var returnFocus =
+      deactivateOptions && deactivateOptions.returnFocus !== undefined
+        ? deactivateOptions.returnFocus
+        : config.returnFocusOnDeactivate;
+    if (returnFocus) {
+      delay(function() {
+        tryFocus(state.nodeFocusedBeforeActivation);
+      });
+    }
+
+    return trap;
+  }
+
+  function pause() {
+    if (state.paused || !state.active) return;
+    state.paused = true;
+    removeListeners();
+  }
+
+  function unpause() {
+    if (!state.paused || !state.active) return;
+    state.paused = false;
+    updateTabbableNodes();
+    addListeners();
+  }
+
+  function addListeners() {
+    if (!state.active) return;
+
+    // There can be only one listening focus trap at a time
+    activeFocusTraps.activateTrap(trap);
+
+    // Delay ensures that the focused element doesn't capture the event
+    // that caused the focus trap activation.
+    delay(function() {
+      tryFocus(getInitialFocusNode());
+    });
+    doc.addEventListener('focusin', checkFocusIn, true);
+    doc.addEventListener('mousedown', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('touchstart', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('click', checkClick, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('keydown', checkKey, {
+      capture: true,
+      passive: false
+    });
+
+    return trap;
+  }
+
+  function removeListeners() {
+    if (!state.active) return;
+
+    doc.removeEventListener('focusin', checkFocusIn, true);
+    doc.removeEventListener('mousedown', checkPointerDown, true);
+    doc.removeEventListener('touchstart', checkPointerDown, true);
+    doc.removeEventListener('click', checkClick, true);
+    doc.removeEventListener('keydown', checkKey, true);
+
+    return trap;
+  }
+
+  function getNodeForOption(optionName) {
+    var optionValue = config[optionName];
+    var node = optionValue;
+    if (!optionValue) {
+      return null;
+    }
+    if (typeof optionValue === 'string') {
+      node = doc.querySelector(optionValue);
+      if (!node) {
+        throw new Error('`' + optionName + '` refers to no known node');
+      }
+    }
+    if (typeof optionValue === 'function') {
+      node = optionValue();
+      if (!node) {
+        throw new Error('`' + optionName + '` did not return a node');
+      }
+    }
+    return node;
+  }
+
+  function getInitialFocusNode() {
+    var node;
+    if (getNodeForOption('initialFocus') !== null) {
+      node = getNodeForOption('initialFocus');
+    } else if (container.contains(doc.activeElement)) {
+      node = doc.activeElement;
+    } else {
+      node = state.firstTabbableNode || getNodeForOption('fallbackFocus');
+    }
+
+    if (!node) {
+      throw new Error(
+        "You can't have a focus-trap without at least one focusable element"
+      );
+    }
+
+    return node;
+  }
+
+  // This needs to be done on mousedown and touchstart instead of click
+  // so that it precedes the focus event.
+  function checkPointerDown(e) {
+    if (container.contains(e.target)) return;
+    if (config.clickOutsideDeactivates) {
+      deactivate({
+        returnFocus: !tabbable.isFocusable(e.target)
+      });
+    } else {
+      e.preventDefault();
+    }
+  }
+
+  // In case focus escapes the trap for some strange reason, pull it back in.
+  function checkFocusIn(e) {
+    // In Firefox when you Tab out of an iframe the Document is briefly focused.
+    if (container.contains(e.target) || e.target instanceof Document) {
+      return;
+    }
+    e.stopImmediatePropagation();
+    tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
+  }
+
+  function checkKey(e) {
+    if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
+      e.preventDefault();
+      deactivate();
+      return;
+    }
+    if (isTabEvent(e)) {
+      checkTab(e);
+      return;
+    }
+  }
+
+  // Hijack Tab events on the first and last focusable nodes of the trap,
+  // in order to prevent focus from escaping. If it escapes for even a
+  // moment it can end up scrolling the page and causing confusion so we
+  // kind of need to capture the action at the keydown phase.
+  function checkTab(e) {
+    updateTabbableNodes();
+    if (e.shiftKey && e.target === state.firstTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.lastTabbableNode);
+      return;
+    }
+    if (!e.shiftKey && e.target === state.lastTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.firstTabbableNode);
+      return;
+    }
+  }
+
+  function checkClick(e) {
+    if (config.clickOutsideDeactivates) return;
+    if (container.contains(e.target)) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
+  function updateTabbableNodes() {
+    var tabbableNodes = tabbable(container);
+    state.firstTabbableNode = tabbableNodes[0] || getInitialFocusNode();
+    state.lastTabbableNode =
+      tabbableNodes[tabbableNodes.length - 1] || getInitialFocusNode();
+  }
+
+  function tryFocus(node) {
+    if (node === doc.activeElement) return;
+    if (!node || !node.focus) {
+      tryFocus(getInitialFocusNode());
+      return;
+    }
+
+    node.focus();
+    state.mostRecentlyFocusedNode = node;
+    if (isSelectableInput(node)) {
+      node.select();
+    }
+  }
+}
+
+function isSelectableInput(node) {
+  return (
+    node.tagName &&
+    node.tagName.toLowerCase() === 'input' &&
+    typeof node.select === 'function'
+  );
+}
+
+function isEscapeEvent(e) {
+  return e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27;
+}
+
+function isTabEvent(e) {
+  return e.key === 'Tab' || e.keyCode === 9;
+}
+
+function delay(fn) {
+  return setTimeout(fn, 0);
+}
+
+module.exports = focusTrap;
+
+
+/***/ }),
+
+/***/ "./packages/mdc-drawer/node_modules/tabbable/index.js":
+/*!************************************************************!*\
+  !*** ./packages/mdc-drawer/node_modules/tabbable/index.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var candidateSelectors = [
+  'input',
+  'select',
+  'textarea',
+  'a[href]',
+  'button',
+  '[tabindex]',
+  'audio[controls]',
+  'video[controls]',
+  '[contenteditable]:not([contenteditable="false"])',
+];
+var candidateSelector = candidateSelectors.join(',');
+
+var matches = typeof Element === 'undefined'
+  ? function () {}
+  : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+
+function tabbable(el, options) {
+  options = options || {};
+
+  var regularTabbables = [];
+  var orderedTabbables = [];
+
+  var candidates = el.querySelectorAll(candidateSelector);
+
+  if (options.includeContainer) {
+    if (matches.call(el, candidateSelector)) {
+      candidates = Array.prototype.slice.apply(candidates);
+      candidates.unshift(el);
+    }
+  }
+
+  var i, candidate, candidateTabindex;
+  for (i = 0; i < candidates.length; i++) {
+    candidate = candidates[i];
+
+    if (!isNodeMatchingSelectorTabbable(candidate)) continue;
+
+    candidateTabindex = getTabindex(candidate);
+    if (candidateTabindex === 0) {
+      regularTabbables.push(candidate);
+    } else {
+      orderedTabbables.push({
+        documentOrder: i,
+        tabIndex: candidateTabindex,
+        node: candidate,
+      });
+    }
+  }
+
+  var tabbableNodes = orderedTabbables
+    .sort(sortOrderedTabbables)
+    .map(function(a) { return a.node })
+    .concat(regularTabbables);
+
+  return tabbableNodes;
+}
+
+tabbable.isTabbable = isTabbable;
+tabbable.isFocusable = isFocusable;
+
+function isNodeMatchingSelectorTabbable(node) {
+  if (
+    !isNodeMatchingSelectorFocusable(node)
+    || isNonTabbableRadio(node)
+    || getTabindex(node) < 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
+function isTabbable(node) {
+  if (!node) throw new Error('No node provided');
+  if (matches.call(node, candidateSelector) === false) return false;
+  return isNodeMatchingSelectorTabbable(node);
+}
+
+function isNodeMatchingSelectorFocusable(node) {
+  if (
+    node.disabled
+    || isHiddenInput(node)
+    || isHidden(node)
+  ) {
+    return false;
+  }
+  return true;
+}
+
+var focusableCandidateSelector = candidateSelectors.concat('iframe').join(',');
+function isFocusable(node) {
+  if (!node) throw new Error('No node provided');
+  if (matches.call(node, focusableCandidateSelector) === false) return false;
+  return isNodeMatchingSelectorFocusable(node);
+}
+
+function getTabindex(node) {
+  var tabindexAttr = parseInt(node.getAttribute('tabindex'), 10);
+  if (!isNaN(tabindexAttr)) return tabindexAttr;
+  // Browsers do not return `tabIndex` correctly for contentEditable nodes;
+  // so if they don't have a tabindex attribute specifically set, assume it's 0.
+  if (isContentEditable(node)) return 0;
+  return node.tabIndex;
+}
+
+function sortOrderedTabbables(a, b) {
+  return a.tabIndex === b.tabIndex ? a.documentOrder - b.documentOrder : a.tabIndex - b.tabIndex;
+}
+
+function isContentEditable(node) {
+  return node.contentEditable === 'true';
+}
+
+function isInput(node) {
+  return node.tagName === 'INPUT';
+}
+
+function isHiddenInput(node) {
+  return isInput(node) && node.type === 'hidden';
+}
+
+function isRadio(node) {
+  return isInput(node) && node.type === 'radio';
+}
+
+function isNonTabbableRadio(node) {
+  return isRadio(node) && !isTabbableRadio(node);
+}
+
+function getCheckedRadio(nodes) {
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i].checked) {
+      return nodes[i];
+    }
+  }
+}
+
+function isTabbableRadio(node) {
+  if (!node.name) return true;
+  // This won't account for the edge case where you have radio groups with the same
+  // in separate forms on the same page.
+  var radioSet = node.ownerDocument.querySelectorAll('input[type="radio"][name="' + node.name + '"]');
+  var checked = getCheckedRadio(radioSet);
+  return !checked || checked === node;
+}
+
+function isHidden(node) {
+  // offsetParent being null will allow detecting cases where an element is invisible or inside an invisible element,
+  // as long as the element does not use position: fixed. For them, their visibility has to be checked directly as well.
+  return node.offsetParent === null || getComputedStyle(node).visibility === 'hidden';
+}
+
+module.exports = tabbable;
+
+
+/***/ }),
+
+/***/ "./packages/mdc-drawer/node_modules/xtend/immutable.js":
+/*!*************************************************************!*\
+  !*** ./packages/mdc-drawer/node_modules/xtend/immutable.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+
+/***/ }),
+
 /***/ "./packages/mdc-drawer/util.ts":
 /*!*************************************!*\
   !*** ./packages/mdc-drawer/util.ts ***!
@@ -5537,11 +5941,20 @@ exports.default = MDCModalDrawerFoundation;
  * THE SOFTWARE.
  */
 
+var __importDefault = this && this.__importDefault || function (mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+var focus_trap_1 = __importDefault(__webpack_require__(/*! focus-trap */ "./packages/mdc-drawer/node_modules/focus-trap/index.js"));
 function createFocusTrapInstance(surfaceEl, focusTrapFactory) {
+    if (focusTrapFactory === void 0) {
+        focusTrapFactory = focus_trap_1.default;
+    }
     return focusTrapFactory(surfaceEl, {
-        // Component handles focusing on active nav item.
-        skipInitialFocus: true
+        clickOutsideDeactivates: true,
+        escapeDeactivates: false,
+        initialFocus: undefined,
+        returnFocusOnDeactivate: false
     });
 }
 exports.createFocusTrapInstance = createFocusTrapInstance;
@@ -5601,7 +6014,6 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
-var ponyfill_1 = __webpack_require__(/*! @material/dom/ponyfill */ "./packages/mdc-dom/ponyfill.ts");
 var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-floating-label/foundation.ts");
 var MDCFloatingLabel = /** @class */function (_super) {
     __extends(MDCFloatingLabel, _super);
@@ -5641,7 +6053,7 @@ var MDCFloatingLabel = /** @class */function (_super) {
                 return _this.root_.classList.remove(className);
             },
             getWidth: function getWidth() {
-                return ponyfill_1.estimateScrollWidth(_this.root_);
+                return _this.root_.scrollWidth;
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -6232,6 +6644,326 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(/*! ./component */ "./packages/mdc-form-field/component.ts"));
 __export(__webpack_require__(/*! ./constants */ "./packages/mdc-form-field/constants.ts"));
 __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-form-field/foundation.ts"));
+
+/***/ }),
+
+/***/ "./packages/mdc-grid-list/component.ts":
+/*!*********************************************!*\
+  !*** ./packages/mdc-grid-list/component.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
+var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-grid-list/foundation.ts");
+var MDCGridList = /** @class */function (_super) {
+    __extends(MDCGridList, _super);
+    function MDCGridList() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    MDCGridList.attachTo = function (root) {
+        return new MDCGridList(root);
+    };
+    MDCGridList.prototype.getDefaultFoundation = function () {
+        var _this = this;
+        // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
+        // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
+        var adapter = {
+            deregisterResizeHandler: function deregisterResizeHandler(handler) {
+                return window.removeEventListener('resize', handler);
+            },
+            getNumberOfTiles: function getNumberOfTiles() {
+                return _this.root_.querySelectorAll(foundation_1.MDCGridListFoundation.strings.TILE_SELECTOR).length;
+            },
+            getOffsetWidth: function getOffsetWidth() {
+                return _this.root_.offsetWidth;
+            },
+            getOffsetWidthForTileAtIndex: function getOffsetWidthForTileAtIndex(index) {
+                var tileEl = _this.root_.querySelectorAll(foundation_1.MDCGridListFoundation.strings.TILE_SELECTOR)[index];
+                return tileEl.offsetWidth;
+            },
+            registerResizeHandler: function registerResizeHandler(handler) {
+                return window.addEventListener('resize', handler);
+            },
+            setStyleForTilesElement: function setStyleForTilesElement(property, value) {
+                var tilesEl = _this.root_.querySelector(foundation_1.MDCGridListFoundation.strings.TILES_SELECTOR);
+                tilesEl.style[property] = value;
+            }
+        };
+        return new foundation_1.MDCGridListFoundation(adapter);
+    };
+    return MDCGridList;
+}(component_1.MDCComponent);
+exports.MDCGridList = MDCGridList;
+
+/***/ }),
+
+/***/ "./packages/mdc-grid-list/constants.ts":
+/*!*********************************************!*\
+  !*** ./packages/mdc-grid-list/constants.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.strings = {
+  TILES_SELECTOR: '.mdc-grid-list__tiles',
+  TILE_SELECTOR: '.mdc-grid-tile'
+};
+
+/***/ }),
+
+/***/ "./packages/mdc-grid-list/foundation.ts":
+/*!**********************************************!*\
+  !*** ./packages/mdc-grid-list/foundation.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2016 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+var __assign = this && this.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-grid-list/constants.ts");
+var MDCGridListFoundation = /** @class */function (_super) {
+    __extends(MDCGridListFoundation, _super);
+    /* istanbul ignore next: optional argument is not a branch statement */
+    function MDCGridListFoundation(adapter) {
+        var _this = _super.call(this, __assign({}, MDCGridListFoundation.defaultAdapter, adapter)) || this;
+        _this.resizeFrame_ = 0;
+        _this.resizeHandler_ = _this.alignCenter.bind(_this);
+        return _this;
+    }
+    Object.defineProperty(MDCGridListFoundation, "strings", {
+        get: function get() {
+            return constants_1.strings;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCGridListFoundation, "defaultAdapter", {
+        get: function get() {
+            return {
+                deregisterResizeHandler: function deregisterResizeHandler() {
+                    return undefined;
+                },
+                getNumberOfTiles: function getNumberOfTiles() {
+                    return 0;
+                },
+                getOffsetWidth: function getOffsetWidth() {
+                    return 0;
+                },
+                getOffsetWidthForTileAtIndex: function getOffsetWidthForTileAtIndex() {
+                    return 0;
+                },
+                registerResizeHandler: function registerResizeHandler() {
+                    return undefined;
+                },
+                setStyleForTilesElement: function setStyleForTilesElement() {
+                    return undefined;
+                }
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MDCGridListFoundation.prototype.init = function () {
+        this.alignCenter();
+        this.adapter_.registerResizeHandler(this.resizeHandler_);
+    };
+    MDCGridListFoundation.prototype.destroy = function () {
+        this.adapter_.deregisterResizeHandler(this.resizeHandler_);
+    };
+    MDCGridListFoundation.prototype.alignCenter = function () {
+        var _this = this;
+        cancelAnimationFrame(this.resizeFrame_);
+        this.resizeFrame_ = requestAnimationFrame(function () {
+            _this.alignCenter_();
+            _this.resizeFrame_ = 0;
+        });
+    };
+    MDCGridListFoundation.prototype.alignCenter_ = function () {
+        if (this.adapter_.getNumberOfTiles() === 0) {
+            return;
+        }
+        var gridWidth = this.adapter_.getOffsetWidth();
+        var itemWidth = this.adapter_.getOffsetWidthForTileAtIndex(0);
+        var tilesWidth = itemWidth * Math.floor(gridWidth / itemWidth);
+        this.adapter_.setStyleForTilesElement('width', tilesWidth + "px");
+    };
+    return MDCGridListFoundation;
+}(foundation_1.MDCFoundation);
+exports.MDCGridListFoundation = MDCGridListFoundation;
+// tslint:disable-next-line:no-default-export Needed for backward compatibility with MDC Web v0.44.0 and earlier.
+exports.default = MDCGridListFoundation;
+
+/***/ }),
+
+/***/ "./packages/mdc-grid-list/index.ts":
+/*!*****************************************!*\
+  !*** ./packages/mdc-grid-list/index.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2019 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./component */ "./packages/mdc-grid-list/component.ts"));
+__export(__webpack_require__(/*! ./constants */ "./packages/mdc-grid-list/constants.ts"));
+__export(__webpack_require__(/*! ./foundation */ "./packages/mdc-grid-list/foundation.ts"));
 
 /***/ }),
 
@@ -7041,9 +7773,6 @@ var MDCLinearProgress = /** @class */function (_super) {
             addClass: function addClass(className) {
                 return _this.root_.classList.add(className);
             },
-            forceLayout: function forceLayout() {
-                return _this.root_.offsetWidth;
-            },
             getBuffer: function getBuffer() {
                 return _this.root_.querySelector(foundation_1.MDCLinearProgressFoundation.strings.BUFFER_SELECTOR);
             },
@@ -7053,14 +7782,8 @@ var MDCLinearProgress = /** @class */function (_super) {
             hasClass: function hasClass(className) {
                 return _this.root_.classList.contains(className);
             },
-            removeAttribute: function removeAttribute(attributeName) {
-                _this.root_.removeAttribute(attributeName);
-            },
             removeClass: function removeClass(className) {
                 return _this.root_.classList.remove(className);
-            },
-            setAttribute: function setAttribute(attributeName, value) {
-                _this.root_.setAttribute(attributeName, value);
             },
             setStyle: function setStyle(el, styleProperty, value) {
                 return el.style.setProperty(styleProperty, value);
@@ -7113,7 +7836,6 @@ exports.cssClasses = {
     REVERSED_CLASS: 'mdc-linear-progress--reversed'
 };
 exports.strings = {
-    ARIA_VALUENOW: 'aria-valuenow',
     BUFFER_SELECTOR: '.mdc-linear-progress__buffer',
     PRIMARY_BAR_SELECTOR: '.mdc-linear-progress__primary-bar'
 };
@@ -7212,9 +7934,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
                 addClass: function addClass() {
                     return undefined;
                 },
-                forceLayout: function forceLayout() {
-                    return undefined;
-                },
                 getBuffer: function getBuffer() {
                     return null;
                 },
@@ -7224,13 +7943,7 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
                 hasClass: function hasClass() {
                     return false;
                 },
-                removeAttribute: function removeAttribute() {
-                    return undefined;
-                },
                 removeClass: function removeClass() {
-                    return undefined;
-                },
-                setAttribute: function setAttribute() {
                     return undefined;
                 },
                 setStyle: function setStyle() {
@@ -7245,28 +7958,14 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
         this.isDeterminate_ = !this.adapter_.hasClass(constants_1.cssClasses.INDETERMINATE_CLASS);
         this.isReversed_ = this.adapter_.hasClass(constants_1.cssClasses.REVERSED_CLASS);
         this.progress_ = 0;
-        this.buffer_ = 1;
     };
     MDCLinearProgressFoundation.prototype.setDeterminate = function (isDeterminate) {
         this.isDeterminate_ = isDeterminate;
         if (this.isDeterminate_) {
             this.adapter_.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, this.progress_.toString());
             this.setScale_(this.adapter_.getPrimaryBar(), this.progress_);
-            this.setScale_(this.adapter_.getBuffer(), this.buffer_);
         } else {
-            if (this.isReversed_) {
-                // Adding/removing REVERSED_CLASS starts a translate animation, while
-                // adding INDETERMINATE_CLASS starts a scale animation. Here, we reset
-                // the translate animation in order to keep it in sync with the new
-                // scale animation that will start from adding INDETERMINATE_CLASS
-                // below.
-                this.adapter_.removeClass(constants_1.cssClasses.REVERSED_CLASS);
-                this.adapter_.forceLayout();
-                this.adapter_.addClass(constants_1.cssClasses.REVERSED_CLASS);
-            }
             this.adapter_.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.removeAttribute(constants_1.strings.ARIA_VALUENOW);
             this.setScale_(this.adapter_.getPrimaryBar(), 1);
             this.setScale_(this.adapter_.getBuffer(), 1);
         }
@@ -7275,27 +7974,15 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
         this.progress_ = value;
         if (this.isDeterminate_) {
             this.setScale_(this.adapter_.getPrimaryBar(), value);
-            this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, value.toString());
         }
     };
     MDCLinearProgressFoundation.prototype.setBuffer = function (value) {
-        this.buffer_ = value;
         if (this.isDeterminate_) {
             this.setScale_(this.adapter_.getBuffer(), value);
         }
     };
     MDCLinearProgressFoundation.prototype.setReverse = function (isReversed) {
         this.isReversed_ = isReversed;
-        if (!this.isDeterminate_) {
-            // Adding INDETERMINATE_CLASS starts a scale animation, while
-            // adding/removing REVERSED_CLASS starts a translate animation. Here, we
-            // reset the scale animation in order to keep it in sync with the new
-            // translate animation that will start from adding/removing REVERSED_CLASS
-            // below.
-            this.adapter_.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.forceLayout();
-            this.adapter_.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-        }
         if (this.isReversed_) {
             this.adapter_.addClass(constants_1.cssClasses.REVERSED_CLASS);
         } else {
@@ -7576,9 +8263,6 @@ var MDCList = /** @class */function (_super) {
             isRootFocused: function isRootFocused() {
                 return document.activeElement === _this.root_;
             },
-            listItemAtIndexHasClass: function listItemAtIndexHasClass(index, className) {
-                return _this.listElements[index].classList.contains(className);
-            },
             notifyAction: function notifyAction(index) {
                 _this.emit(constants_1.strings.ACTION_EVENT, { index: index }, /** shouldBubble */true);
             },
@@ -7716,11 +8400,11 @@ var strings = {
     ARIA_ORIENTATION_HORIZONTAL: 'horizontal',
     ARIA_ROLE_CHECKBOX_SELECTOR: '[role="checkbox"]',
     ARIA_SELECTED: 'aria-selected',
-    CHECKBOX_RADIO_SELECTOR: 'input[type="checkbox"], input[type="radio"]',
-    CHECKBOX_SELECTOR: 'input[type="checkbox"]',
+    CHECKBOX_RADIO_SELECTOR: 'input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled)',
+    CHECKBOX_SELECTOR: 'input[type="checkbox"]:not(:disabled)',
     CHILD_ELEMENTS_TO_TOGGLE_TABINDEX: "\n    ." + cssClasses.LIST_ITEM_CLASS + " button:not(:disabled),\n    ." + cssClasses.LIST_ITEM_CLASS + " a\n  ",
     FOCUSABLE_CHILD_ELEMENTS: "\n    ." + cssClasses.LIST_ITEM_CLASS + " button:not(:disabled),\n    ." + cssClasses.LIST_ITEM_CLASS + " a,\n    ." + cssClasses.LIST_ITEM_CLASS + " input[type=\"radio\"]:not(:disabled),\n    ." + cssClasses.LIST_ITEM_CLASS + " input[type=\"checkbox\"]:not(:disabled)\n  ",
-    RADIO_SELECTOR: 'input[type="radio"]'
+    RADIO_SELECTOR: 'input[type="radio"]:not(:disabled)'
 };
 exports.strings = strings;
 var numbers = {
@@ -7867,9 +8551,6 @@ var MDCListFoundation = /** @class */function (_super) {
                     return false;
                 },
                 isRootFocused: function isRootFocused() {
-                    return false;
-                },
-                listItemAtIndexHasClass: function listItemAtIndexHasClass() {
                     return false;
                 },
                 notifyAction: function notifyAction() {
@@ -8222,16 +8903,9 @@ var MDCListFoundation = /** @class */function (_super) {
         var listSize = this.adapter_.getListItemCount();
         return index >= 0 && index < listSize;
     };
-    /**
-     * Sets selected index on user action, toggles checkbox / radio based on toggleCheckbox value.
-     * User interaction should not toggle list item(s) when disabled.
-     */
     MDCListFoundation.prototype.setSelectedIndexOnAction_ = function (index, toggleCheckbox) {
         if (toggleCheckbox === void 0) {
             toggleCheckbox = true;
-        }
-        if (this.adapter_.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS)) {
-            return;
         }
         if (this.isCheckboxList_) {
             this.toggleCheckboxAtIndex_(index, toggleCheckbox);
@@ -8429,6 +9103,14 @@ var MDCMenuSurface = /** @class */function (_super) {
         enumerable: true,
         configurable: true
     });
+    /**
+     * Removes the menu-surface from it's current location and appends it to the
+     * body to overcome any overflow:hidden issues.
+     */
+    MDCMenuSurface.prototype.hoistMenuToBody = function () {
+        document.body.appendChild(this.root_);
+        this.setIsHoisted(true);
+    };
     /** Sets the foundation to use page offsets for an positioning when the menu is hoisted to the body. */
     MDCMenuSurface.prototype.setIsHoisted = function (isHoisted) {
         this.foundation_.setIsHoisted(isHoisted);
@@ -9220,6 +9902,9 @@ var __importStar = this && this.__importStar || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = __importStar(__webpack_require__(/*! ./util */ "./packages/mdc-menu-surface/util.ts"));
 exports.util = util;
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu-surface/constants.ts");
+exports.Corner = constants_1.Corner;
+exports.CornerBit = constants_1.CornerBit;
 __export(__webpack_require__(/*! ./component */ "./packages/mdc-menu-surface/component.ts"));
 __export(__webpack_require__(/*! ./constants */ "./packages/mdc-menu-surface/constants.ts"));
 __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-menu-surface/foundation.ts"));
@@ -9483,6 +10168,9 @@ var MDCMenu = /** @class */function (_super) {
     };
     MDCMenu.prototype.setFixedPosition = function (isFixed) {
         this.menuSurface_.setFixedPosition(isFixed);
+    };
+    MDCMenu.prototype.hoistMenuToBody = function () {
+        this.menuSurface_.hoistMenuToBody();
     };
     MDCMenu.prototype.setIsHoisted = function (isHoisted) {
         this.menuSurface_.setIsHoisted(isHoisted);
@@ -11431,13 +12119,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
         };
         this.maxRadius_ = this.adapter_.isUnbounded() ? maxDim : getBoundedRadius();
         // Ripple is sized as a fraction of the largest dimension of the surface, then scales up using a CSS scale transform
-        var initialSize = Math.floor(maxDim * MDCRippleFoundation.numbers.INITIAL_ORIGIN_SCALE);
-        // Unbounded ripple size should always be even number to equally center align.
-        if (this.adapter_.isUnbounded() && initialSize % 2 !== 0) {
-            this.initialSize_ = initialSize - 1;
-        } else {
-            this.initialSize_ = initialSize;
-        }
+        this.initialSize_ = Math.floor(maxDim * MDCRippleFoundation.numbers.INITIAL_ORIGIN_SCALE);
         this.fgScale_ = "" + this.maxRadius_ / this.initialSize_;
         this.updateLayoutCssVars_();
     };
@@ -11536,6 +12218,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * detect CSS custom variable support.
  */
 var supportsCssVariables_;
+function detectEdgePseudoVarBug(windowObj) {
+    // Detect versions of Edge with buggy var() support
+    // See: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/11495448/
+    var document = windowObj.document;
+    var node = document.createElement('div');
+    node.className = 'mdc-ripple-surface--test-edge-var-bug';
+    // Append to head instead of body because this script might be invoked in the
+    // head, in which case the body doesn't exist yet. The probe works either way.
+    document.head.appendChild(node);
+    // The bug exists if ::before style ends up propagating to the parent element.
+    // Additionally, getComputedStyle returns null in iframes with display: "none" in Firefox,
+    // but Firefox is known to support CSS custom properties correctly.
+    // See: https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+    var computedStyle = windowObj.getComputedStyle(node);
+    var hasPseudoVarBug = computedStyle !== null && computedStyle.borderTopStyle === 'solid';
+    if (node.parentNode) {
+        node.parentNode.removeChild(node);
+    }
+    return hasPseudoVarBug;
+}
 function supportsCssVariables(windowObj, forceRefresh) {
     if (forceRefresh === void 0) {
         forceRefresh = false;
@@ -11553,7 +12255,11 @@ function supportsCssVariables(windowObj, forceRefresh) {
     // See: https://bugs.webkit.org/show_bug.cgi?id=154669
     // See: README section on Safari
     var weAreFeatureDetectingSafari10plus = CSS.supports('(--css-vars: yes)') && CSS.supports('color', '#00000000');
-    supportsCssVars = explicitlySupportsCssVars || weAreFeatureDetectingSafari10plus;
+    if (explicitlySupportsCssVars || weAreFeatureDetectingSafari10plus) {
+        supportsCssVars = !detectEdgePseudoVarBug(windowObj);
+    } else {
+        supportsCssVars = false;
+    }
     if (!forceRefresh) {
         supportsCssVariables_ = supportsCssVars;
     }
@@ -11671,6 +12377,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-select/
 var foundation_2 = __webpack_require__(/*! ./foundation */ "./packages/mdc-select/foundation.ts");
 var component_7 = __webpack_require__(/*! ./helper-text/component */ "./packages/mdc-select/helper-text/component.ts");
 var component_8 = __webpack_require__(/*! ./icon/component */ "./packages/mdc-select/icon/component.ts");
+var VALIDATION_ATTR_WHITELIST = ['required', 'aria-required'];
 var MDCSelect = /** @class */function (_super) {
     __extends(MDCSelect, _super);
     function MDCSelect() {
@@ -11710,18 +12417,23 @@ var MDCSelect = /** @class */function (_super) {
                 return new component_7.MDCSelectHelperText(el);
             };
         }
-        this.selectAnchor_ = this.root_.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
+        this.isMenuOpen_ = false;
+        this.nativeControl_ = this.root_.querySelector(constants_1.strings.NATIVE_CONTROL_SELECTOR);
         this.selectedText_ = this.root_.querySelector(constants_1.strings.SELECTED_TEXT_SELECTOR);
-        if (!this.selectedText_) {
-            throw new Error('MDCSelect: Missing required element: The following selector must be present: ' + ("'" + constants_1.strings.SELECTED_TEXT_SELECTOR + "'"));
+        var targetElement = this.nativeControl_ || this.selectedText_;
+        if (!targetElement) {
+            throw new Error('MDCSelect: Missing required element: Exactly one of the following selectors must be present: ' + ("'" + constants_1.strings.NATIVE_CONTROL_SELECTOR + "' or '" + constants_1.strings.SELECTED_TEXT_SELECTOR + "'"));
         }
-        if (this.selectedText_.hasAttribute(constants_1.strings.ARIA_CONTROLS)) {
-            var helperTextElement = document.getElementById(this.selectedText_.getAttribute(constants_1.strings.ARIA_CONTROLS));
+        this.targetElement_ = targetElement;
+        if (this.targetElement_.hasAttribute(constants_1.strings.ARIA_CONTROLS)) {
+            var helperTextElement = document.getElementById(this.targetElement_.getAttribute(constants_1.strings.ARIA_CONTROLS));
             if (helperTextElement) {
                 this.helperText_ = helperTextFactory(helperTextElement);
             }
         }
-        this.menuSetup_(menuFactory);
+        if (this.selectedText_) {
+            this.enhancedSelectSetup_(menuFactory);
+        }
         var labelElement = this.root_.querySelector(constants_1.strings.LABEL_SELECTOR);
         this.label_ = labelElement ? labelFactory(labelElement) : null;
         var lineRippleElement = this.root_.querySelector(constants_1.strings.LINE_RIPPLE_SELECTOR);
@@ -11730,11 +12442,18 @@ var MDCSelect = /** @class */function (_super) {
         this.outline_ = outlineElement ? outlineFactory(outlineElement) : null;
         var leadingIcon = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
         if (leadingIcon) {
+            this.root_.classList.add(constants_1.cssClasses.WITH_LEADING_ICON);
             this.leadingIcon_ = iconFactory(leadingIcon);
+            if (this.menuElement_) {
+                this.menuElement_.classList.add(constants_1.cssClasses.WITH_LEADING_ICON);
+            }
         }
         if (!this.root_.classList.contains(constants_1.cssClasses.OUTLINED)) {
-            this.ripple_ = this.createRipple_();
+            this.ripple = this.createRipple_();
         }
+        // The required state needs to be sync'd before the mutation observer is added.
+        this.initialSyncRequiredState_();
+        this.addMutationObserverForRequired_();
     };
     /**
      * Initializes the select's event listeners and internal state based
@@ -11743,7 +12462,7 @@ var MDCSelect = /** @class */function (_super) {
     MDCSelect.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.handleChange_ = function () {
-            return _this.foundation_.handleChange();
+            return _this.foundation_.handleChange( /* didChange */true);
         };
         this.handleFocus_ = function () {
             return _this.foundation_.handleFocus();
@@ -11752,44 +12471,78 @@ var MDCSelect = /** @class */function (_super) {
             return _this.foundation_.handleBlur();
         };
         this.handleClick_ = function (evt) {
-            _this.selectedText_.focus();
+            if (_this.selectedText_) {
+                _this.selectedText_.focus();
+            }
             _this.foundation_.handleClick(_this.getNormalizedXCoordinate_(evt));
         };
         this.handleKeydown_ = function (evt) {
             return _this.foundation_.handleKeydown(evt);
         };
-        this.handleMenuItemAction_ = function (evt) {
-            return _this.foundation_.handleMenuItemAction(evt.detail.index);
+        this.handleMenuSelected_ = function (evtData) {
+            return _this.selectedIndex = evtData.detail.index;
         };
         this.handleMenuOpened_ = function () {
-            return _this.foundation_.handleMenuOpened();
+            _this.foundation_.handleMenuOpened();
+            if (_this.menu_.items.length === 0) {
+                return;
+            }
+            // Menu should open to the last selected element, should open to first menu item otherwise.
+            var focusItemIndex = _this.selectedIndex >= 0 ? _this.selectedIndex : 0;
+            var focusItemEl = _this.menu_.items[focusItemIndex];
+            focusItemEl.focus();
         };
         this.handleMenuClosed_ = function () {
-            return _this.foundation_.handleMenuClosed();
+            _this.foundation_.handleMenuClosed();
+            // isMenuOpen_ is used to track the state of the menu opening or closing since the menu.open function
+            // will return false if the menu is still closing and this method listens to the closed event which
+            // occurs after the menu is already closed.
+            _this.isMenuOpen_ = false;
+            _this.selectedText_.removeAttribute('aria-expanded');
+            if (document.activeElement !== _this.selectedText_) {
+                _this.foundation_.handleBlur();
+            }
         };
-        this.selectedText_.addEventListener('focus', this.handleFocus_);
-        this.selectedText_.addEventListener('blur', this.handleBlur_);
-        this.selectedText_.addEventListener('click', this.handleClick_);
-        this.selectedText_.addEventListener('keydown', this.handleKeydown_);
-        this.menu_.listen(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
-        this.menu_.listen(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
-        this.menu_.listen(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction_);
-        this.foundation_.init();
-        // Sets disabled state in foundation
-        this.disabled = this.root_.classList.contains(constants_1.cssClasses.DISABLED);
+        this.targetElement_.addEventListener('change', this.handleChange_);
+        this.targetElement_.addEventListener('focus', this.handleFocus_);
+        this.targetElement_.addEventListener('blur', this.handleBlur_);
+        this.targetElement_.addEventListener('click', this.handleClick_);
+        if (this.menuElement_) {
+            this.selectedText_.addEventListener('keydown', this.handleKeydown_);
+            this.menu_.listen(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
+            this.menu_.listen(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
+            this.menu_.listen(menuConstants.strings.SELECTED_EVENT, this.handleMenuSelected_);
+            if (this.hiddenInput_ && this.hiddenInput_.value) {
+                // If the hidden input already has a value, use it to restore the select's value.
+                // This can happen e.g. if the user goes back or (in some browsers) refreshes the page.
+                var enhancedAdapterMethods = this.getEnhancedSelectAdapterMethods_();
+                enhancedAdapterMethods.setValue(this.hiddenInput_.value);
+            } else if (this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR)) {
+                // If an element is selected, the select should set the initial selected text.
+                var enhancedAdapterMethods = this.getEnhancedSelectAdapterMethods_();
+                enhancedAdapterMethods.setValue(enhancedAdapterMethods.getValue());
+            }
+        }
+        // Initially sync floating label
+        this.foundation_.handleChange( /* didChange */false);
+        if (this.root_.classList.contains(constants_1.cssClasses.DISABLED) || this.nativeControl_ && this.nativeControl_.disabled) {
+            this.disabled = true;
+        }
     };
     MDCSelect.prototype.destroy = function () {
-        this.selectedText_.removeEventListener('change', this.handleChange_);
-        this.selectedText_.removeEventListener('focus', this.handleFocus_);
-        this.selectedText_.removeEventListener('blur', this.handleBlur_);
-        this.selectedText_.removeEventListener('keydown', this.handleKeydown_);
-        this.selectedText_.removeEventListener('click', this.handleClick_);
-        this.menu_.unlisten(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
-        this.menu_.unlisten(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
-        this.menu_.unlisten(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction_);
-        this.menu_.destroy();
-        if (this.ripple_) {
-            this.ripple_.destroy();
+        this.targetElement_.removeEventListener('change', this.handleChange_);
+        this.targetElement_.removeEventListener('focus', this.handleFocus_);
+        this.targetElement_.removeEventListener('blur', this.handleBlur_);
+        this.targetElement_.removeEventListener('keydown', this.handleKeydown_);
+        this.targetElement_.removeEventListener('click', this.handleClick_);
+        if (this.menu_) {
+            this.menu_.unlisten(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
+            this.menu_.unlisten(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
+            this.menu_.unlisten(menuConstants.strings.SELECTED_EVENT, this.handleMenuSelected_);
+            this.menu_.destroy();
+        }
+        if (this.ripple) {
+            this.ripple.destroy();
         }
         if (this.outline_) {
             this.outline_.destroy();
@@ -11799,6 +12552,9 @@ var MDCSelect = /** @class */function (_super) {
         }
         if (this.helperText_) {
             this.helperText_.destroy();
+        }
+        if (this.validationObserver_) {
+            this.validationObserver_.disconnect();
         }
         _super.prototype.destroy.call(this);
     };
@@ -11814,17 +12570,24 @@ var MDCSelect = /** @class */function (_super) {
     });
     Object.defineProperty(MDCSelect.prototype, "selectedIndex", {
         get: function get() {
-            return this.foundation_.getSelectedIndex();
+            var selectedIndex = -1;
+            if (this.menuElement_ && this.menu_) {
+                var selectedEl = this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
+                selectedIndex = this.menu_.items.indexOf(selectedEl);
+            } else if (this.nativeControl_) {
+                selectedIndex = this.nativeControl_.selectedIndex;
+            }
+            return selectedIndex;
         },
         set: function set(selectedIndex) {
-            this.foundation_.setSelectedIndex(selectedIndex, /** closeMenu */true);
+            this.foundation_.setSelectedIndex(selectedIndex);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelect.prototype, "disabled", {
         get: function get() {
-            return this.foundation_.getDisabled();
+            return this.root_.classList.contains(constants_1.cssClasses.DISABLED) || (this.nativeControl_ ? this.nativeControl_.disabled : false);
         },
         set: function set(disabled) {
             this.foundation_.setDisabled(disabled);
@@ -11880,13 +12643,25 @@ var MDCSelect = /** @class */function (_super) {
          * Returns whether the select is required.
          */
         get: function get() {
-            return this.foundation_.getRequired();
+            if (this.nativeControl_) {
+                return this.nativeControl_.required;
+            } else {
+                return this.selectedText_.getAttribute('aria-required') === 'true';
+            }
         },
         /**
          * Sets the control to the required state.
          */
         set: function set(isRequired) {
-            this.foundation_.setRequired(isRequired);
+            if (this.nativeControl_) {
+                this.nativeControl_.required = isRequired;
+            } else {
+                if (isRequired) {
+                    this.selectedText_.setAttribute('aria-required', isRequired.toString());
+                } else {
+                    this.selectedText_.removeAttribute('aria-required');
+                }
+            }
         },
         enumerable: true,
         configurable: true
@@ -11900,94 +12675,131 @@ var MDCSelect = /** @class */function (_super) {
     MDCSelect.prototype.getDefaultFoundation = function () {
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
-        var adapter = __assign({}, this.getSelectAdapterMethods_(), this.getCommonAdapterMethods_(), this.getOutlineAdapterMethods_(), this.getLabelAdapterMethods_());
+        var adapter = __assign({}, this.nativeControl_ ? this.getNativeSelectAdapterMethods_() : this.getEnhancedSelectAdapterMethods_(), this.getCommonAdapterMethods_(), this.getOutlineAdapterMethods_(), this.getLabelAdapterMethods_());
         return new foundation_2.MDCSelectFoundation(adapter, this.getFoundationMap_());
     };
     /**
-     * Handles setup for the menu.
+     * Handles setup for the enhanced menu.
      */
-    MDCSelect.prototype.menuSetup_ = function (menuFactory) {
+    MDCSelect.prototype.enhancedSelectSetup_ = function (menuFactory) {
+        var isDisabled = this.root_.classList.contains(constants_1.cssClasses.DISABLED);
+        this.selectedText_.setAttribute('tabindex', isDisabled ? '-1' : '0');
+        this.hiddenInput_ = this.root_.querySelector(constants_1.strings.HIDDEN_INPUT_SELECTOR);
         this.menuElement_ = this.root_.querySelector(constants_1.strings.MENU_SELECTOR);
         this.menu_ = menuFactory(this.menuElement_);
+        this.menu_.hoistMenuToBody();
+        this.menu_.setAnchorElement(this.root_);
+        this.menu_.setAnchorCorner(menuSurfaceConstants.Corner.BOTTOM_START);
+        this.menu_.wrapFocus = false;
     };
     MDCSelect.prototype.createRipple_ = function () {
         var _this = this;
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
-        var adapter = __assign({}, component_6.MDCRipple.createAdapter({ root_: this.selectAnchor_ }), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
-                return _this.selectedText_.addEventListener(evtType, handler);
+        var adapter = __assign({}, component_6.MDCRipple.createAdapter(this), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
+                return _this.targetElement_.addEventListener(evtType, handler);
             }, deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
-                return _this.selectedText_.removeEventListener(evtType, handler);
+                return _this.targetElement_.removeEventListener(evtType, handler);
             } });
         // tslint:enable:object-literal-sort-keys
-        return new component_6.MDCRipple(this.selectAnchor_, new foundation_1.MDCRippleFoundation(adapter));
+        return new component_6.MDCRipple(this.root_, new foundation_1.MDCRippleFoundation(adapter));
     };
-    MDCSelect.prototype.getSelectAdapterMethods_ = function () {
+    MDCSelect.prototype.getNativeSelectAdapterMethods_ = function () {
         var _this = this;
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
-            getSelectedMenuItem: function getSelectedMenuItem() {
-                return _this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
+            getValue: function getValue() {
+                return _this.nativeControl_.value;
             },
-            getMenuItemAttr: function getMenuItemAttr(menuItem, attr) {
-                return menuItem.getAttribute(attr);
-            },
-            setSelectedText: function setSelectedText(text) {
-                return _this.selectedText_.textContent = text;
-            },
-            isSelectedTextFocused: function isSelectedTextFocused() {
-                return document.activeElement === _this.selectedText_;
-            },
-            getSelectedTextAttr: function getSelectedTextAttr(attr) {
-                return _this.selectedText_.getAttribute(attr);
-            },
-            setSelectedTextAttr: function setSelectedTextAttr(attr, value) {
-                return _this.selectedText_.setAttribute(attr, value);
+            setValue: function setValue(value) {
+                _this.nativeControl_.value = value;
             },
             openMenu: function openMenu() {
-                return _this.menu_.open = true;
+                return undefined;
             },
             closeMenu: function closeMenu() {
-                return _this.menu_.open = false;
+                return undefined;
             },
-            getAnchorElement: function getAnchorElement() {
-                return _this.root_.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
+            isMenuOpen: function isMenuOpen() {
+                return false;
             },
-            setMenuAnchorElement: function setMenuAnchorElement(anchorEl) {
-                return _this.menu_.setAnchorElement(anchorEl);
+            setSelectedIndex: function setSelectedIndex(index) {
+                _this.nativeControl_.selectedIndex = index;
             },
-            setMenuAnchorCorner: function setMenuAnchorCorner(anchorCorner) {
-                return _this.menu_.setAnchorCorner(anchorCorner);
+            setDisabled: function setDisabled(isDisabled) {
+                _this.nativeControl_.disabled = isDisabled;
             },
-            setMenuWrapFocus: function setMenuWrapFocus(wrapFocus) {
-                return _this.menu_.wrapFocus = wrapFocus;
+            setValid: function setValid(isValid) {
+                if (isValid) {
+                    _this.root_.classList.remove(constants_1.cssClasses.INVALID);
+                } else {
+                    _this.root_.classList.add(constants_1.cssClasses.INVALID);
+                }
             },
-            setAttributeAtIndex: function setAttributeAtIndex(index, attributeName, attributeValue) {
-                return _this.menu_.items[index].setAttribute(attributeName, attributeValue);
+            checkValidity: function checkValidity() {
+                return _this.nativeControl_.checkValidity();
+            }
+        };
+        // tslint:enable:object-literal-sort-keys
+    };
+    MDCSelect.prototype.getEnhancedSelectAdapterMethods_ = function () {
+        var _this = this;
+        // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
+        return {
+            getValue: function getValue() {
+                var listItem = _this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
+                if (listItem && listItem.hasAttribute(constants_1.strings.ENHANCED_VALUE_ATTR)) {
+                    return listItem.getAttribute(constants_1.strings.ENHANCED_VALUE_ATTR) || '';
+                }
+                return '';
             },
-            removeAttributeAtIndex: function removeAttributeAtIndex(index, attributeName) {
-                return _this.menu_.items[index].removeAttribute(attributeName);
+            setValue: function setValue(value) {
+                var element = _this.menuElement_.querySelector("[" + constants_1.strings.ENHANCED_VALUE_ATTR + "=\"" + value + "\"]");
+                _this.setEnhancedSelectedIndex_(element ? _this.menu_.items.indexOf(element) : -1);
             },
-            focusMenuItemAtIndex: function focusMenuItemAtIndex(index) {
-                return _this.menu_.items[index].focus();
+            openMenu: function openMenu() {
+                if (_this.menu_ && !_this.menu_.open) {
+                    _this.menu_.open = true;
+                    _this.isMenuOpen_ = true;
+                    _this.selectedText_.setAttribute('aria-expanded', 'true');
+                }
             },
-            getMenuItemCount: function getMenuItemCount() {
-                return _this.menu_.items.length;
+            closeMenu: function closeMenu() {
+                if (_this.menu_ && _this.menu_.open) {
+                    _this.menu_.open = false;
+                }
             },
-            getMenuItemValues: function getMenuItemValues() {
-                return _this.menu_.items.map(function (el) {
-                    return el.getAttribute(constants_1.strings.VALUE_ATTR) || '';
-                });
+            isMenuOpen: function isMenuOpen() {
+                return Boolean(_this.menu_) && _this.isMenuOpen_;
             },
-            getMenuItemTextAtIndex: function getMenuItemTextAtIndex(index) {
-                return _this.menu_.items[index].textContent;
+            setSelectedIndex: function setSelectedIndex(index) {
+                return _this.setEnhancedSelectedIndex_(index);
             },
-            addClassAtIndex: function addClassAtIndex(index, className) {
-                return _this.menu_.items[index].classList.add(className);
+            setDisabled: function setDisabled(isDisabled) {
+                _this.selectedText_.setAttribute('tabindex', isDisabled ? '-1' : '0');
+                _this.selectedText_.setAttribute('aria-disabled', isDisabled.toString());
+                if (_this.hiddenInput_) {
+                    _this.hiddenInput_.disabled = isDisabled;
+                }
             },
-            removeClassAtIndex: function removeClassAtIndex(index, className) {
-                return _this.menu_.items[index].classList.remove(className);
+            checkValidity: function checkValidity() {
+                var classList = _this.root_.classList;
+                if (classList.contains(constants_1.cssClasses.REQUIRED) && !classList.contains(constants_1.cssClasses.DISABLED)) {
+                    // See notes for required attribute under https://www.w3.org/TR/html52/sec-forms.html#the-select-element
+                    // TL;DR: Invalid if no index is selected, or if the first index is selected and has an empty value.
+                    return _this.selectedIndex !== -1 && (_this.selectedIndex !== 0 || Boolean(_this.value));
+                } else {
+                    return true;
+                }
+            },
+            setValid: function setValid(isValid) {
+                _this.selectedText_.setAttribute('aria-invalid', (!isValid).toString());
+                if (isValid) {
+                    _this.root_.classList.remove(constants_1.cssClasses.INVALID);
+                } else {
+                    _this.root_.classList.add(constants_1.cssClasses.INVALID);
+                }
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -12039,11 +12851,7 @@ var MDCSelect = /** @class */function (_super) {
     };
     MDCSelect.prototype.getLabelAdapterMethods_ = function () {
         var _this = this;
-        // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
-            hasLabel: function hasLabel() {
-                return !!_this.label_;
-            },
             floatLabel: function floatLabel(shouldFloat) {
                 return _this.label_ && _this.label_.float(shouldFloat);
             },
@@ -12051,7 +12859,6 @@ var MDCSelect = /** @class */function (_super) {
                 return _this.label_ ? _this.label_.getWidth() : 0;
             }
         };
-        // tslint:enable:object-literal-sort-keys
     };
     /**
      * Calculates where the line ripple should start based on the x coordinate within the component.
@@ -12072,6 +12879,72 @@ var MDCSelect = /** @class */function (_super) {
             helperText: this.helperText_ ? this.helperText_.foundation : undefined,
             leadingIcon: this.leadingIcon_ ? this.leadingIcon_.foundation : undefined
         };
+    };
+    MDCSelect.prototype.setEnhancedSelectedIndex_ = function (index) {
+        var selectedItem = this.menu_.items[index];
+        this.selectedText_.textContent = selectedItem ? selectedItem.textContent.trim() : '';
+        var previouslySelected = this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
+        if (previouslySelected) {
+            previouslySelected.classList.remove(constants_1.cssClasses.SELECTED_ITEM_CLASS);
+            previouslySelected.removeAttribute(constants_1.strings.ARIA_SELECTED_ATTR);
+        }
+        if (selectedItem) {
+            selectedItem.classList.add(constants_1.cssClasses.SELECTED_ITEM_CLASS);
+            selectedItem.setAttribute(constants_1.strings.ARIA_SELECTED_ATTR, 'true');
+        }
+        // Synchronize hidden input's value with data-value attribute of selected item.
+        // This code path is also followed when setting value directly, so this covers all cases.
+        if (this.hiddenInput_) {
+            this.hiddenInput_.value = selectedItem ? selectedItem.getAttribute(constants_1.strings.ENHANCED_VALUE_ATTR) || '' : '';
+        }
+        this.layout();
+    };
+    MDCSelect.prototype.initialSyncRequiredState_ = function () {
+        var isRequired = this.targetElement_.required || this.targetElement_.getAttribute('aria-required') === 'true' || this.root_.classList.contains(constants_1.cssClasses.REQUIRED);
+        if (isRequired) {
+            if (this.nativeControl_) {
+                this.nativeControl_.required = true;
+            } else {
+                this.selectedText_.setAttribute('aria-required', 'true');
+            }
+            this.root_.classList.add(constants_1.cssClasses.REQUIRED);
+        }
+    };
+    MDCSelect.prototype.addMutationObserverForRequired_ = function () {
+        var _this = this;
+        var observerHandler = function observerHandler(attributesList) {
+            attributesList.some(function (attributeName) {
+                if (VALIDATION_ATTR_WHITELIST.indexOf(attributeName) === -1) {
+                    return false;
+                }
+                if (_this.selectedText_) {
+                    if (_this.selectedText_.getAttribute('aria-required') === 'true') {
+                        _this.root_.classList.add(constants_1.cssClasses.REQUIRED);
+                    } else {
+                        _this.root_.classList.remove(constants_1.cssClasses.REQUIRED);
+                    }
+                } else {
+                    if (_this.nativeControl_.required) {
+                        _this.root_.classList.add(constants_1.cssClasses.REQUIRED);
+                    } else {
+                        _this.root_.classList.remove(constants_1.cssClasses.REQUIRED);
+                    }
+                }
+                return true;
+            });
+        };
+        var getAttributesList = function getAttributesList(mutationsList) {
+            return mutationsList.map(function (mutation) {
+                return mutation.attributeName;
+            }).filter(function (attributeName) {
+                return attributeName;
+            });
+        };
+        var observer = new MutationObserver(function (mutationsList) {
+            return observerHandler(getAttributesList(mutationsList));
+        });
+        observer.observe(this.targetElement_, { attributes: true });
+        this.validationObserver_ = observer;
     };
     return MDCSelect;
 }(component_1.MDCComponent);
@@ -12128,20 +13001,20 @@ var strings = {
     ARIA_CONTROLS: 'aria-controls',
     ARIA_SELECTED_ATTR: 'aria-selected',
     CHANGE_EVENT: 'MDCSelect:change',
+    ENHANCED_VALUE_ATTR: 'data-value',
+    HIDDEN_INPUT_SELECTOR: 'input[type="hidden"]',
     LABEL_SELECTOR: '.mdc-floating-label',
     LEADING_ICON_SELECTOR: '.mdc-select__icon',
     LINE_RIPPLE_SELECTOR: '.mdc-line-ripple',
     MENU_SELECTOR: '.mdc-select__menu',
+    NATIVE_CONTROL_SELECTOR: '.mdc-select__native-control',
     OUTLINE_SELECTOR: '.mdc-notched-outline',
     SELECTED_ITEM_SELECTOR: "." + cssClasses.SELECTED_ITEM_CLASS,
-    SELECTED_TEXT_SELECTOR: '.mdc-select__selected-text',
-    SELECT_ANCHOR_SELECTOR: '.mdc-select__anchor',
-    VALUE_ATTR: 'data-value'
+    SELECTED_TEXT_SELECTOR: '.mdc-select__selected-text'
 };
 exports.strings = strings;
 var numbers = {
-    LABEL_SCALE: 0.75,
-    UNSET_INDEX: -1
+    LABEL_SCALE: 0.75
 };
 exports.numbers = numbers;
 
@@ -12212,8 +13085,7 @@ var __assign = this && this.__assign || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
-var constants_1 = __webpack_require__(/*! @material/menu-surface/constants */ "./packages/mdc-menu-surface/constants.ts");
-var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-select/constants.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-select/constants.ts");
 var MDCSelectFoundation = /** @class */function (_super) {
     __extends(MDCSelectFoundation, _super);
     /* istanbul ignore next: optional argument is not a branch statement */
@@ -12226,36 +13098,27 @@ var MDCSelectFoundation = /** @class */function (_super) {
             foundationMap = {};
         }
         var _this = _super.call(this, __assign({}, MDCSelectFoundation.defaultAdapter, adapter)) || this;
-        // Index of the currently selected menu item.
-        _this.selectedIndex_ = constants_2.numbers.UNSET_INDEX;
-        // Disabled state
-        _this.disabled_ = false;
-        // isMenuOpen_ is used to track the state of the menu by listening to the MDCMenuSurface:closed event
-        // For reference, menu.open will return false if the menu is still closing, but isMenuOpen_ returns false only after
-        // the menu has closed
-        _this.isMenuOpen_ = false;
         _this.leadingIcon_ = foundationMap.leadingIcon;
         _this.helperText_ = foundationMap.helperText;
-        _this.menuItemValues_ = _this.adapter_.getMenuItemValues();
         return _this;
     }
     Object.defineProperty(MDCSelectFoundation, "cssClasses", {
         get: function get() {
-            return constants_2.cssClasses;
+            return constants_1.cssClasses;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelectFoundation, "numbers", {
         get: function get() {
-            return constants_2.numbers;
+            return constants_1.numbers;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelectFoundation, "strings", {
         get: function get() {
-            return constants_2.strings;
+            return constants_1.strings;
         },
         enumerable: true,
         configurable: true
@@ -12282,11 +13145,11 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 deactivateBottomLine: function deactivateBottomLine() {
                     return undefined;
                 },
-                getSelectedMenuItem: function getSelectedMenuItem() {
-                    return null;
+                setValue: function setValue() {
+                    return undefined;
                 },
-                hasLabel: function hasLabel() {
-                    return false;
+                getValue: function getValue() {
+                    return '';
                 },
                 floatLabel: function floatLabel() {
                     return undefined;
@@ -12303,67 +13166,31 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 closeOutline: function closeOutline() {
                     return undefined;
                 },
-                setRippleCenter: function setRippleCenter() {
-                    return undefined;
-                },
-                notifyChange: function notifyChange() {
-                    return undefined;
-                },
-                setSelectedText: function setSelectedText() {
-                    return undefined;
-                },
-                isSelectedTextFocused: function isSelectedTextFocused() {
-                    return false;
-                },
-                getSelectedTextAttr: function getSelectedTextAttr() {
-                    return '';
-                },
-                setSelectedTextAttr: function setSelectedTextAttr() {
-                    return undefined;
-                },
                 openMenu: function openMenu() {
                     return undefined;
                 },
                 closeMenu: function closeMenu() {
                     return undefined;
                 },
-                getAnchorElement: function getAnchorElement() {
-                    return null;
+                isMenuOpen: function isMenuOpen() {
+                    return false;
                 },
-                setMenuAnchorElement: function setMenuAnchorElement() {
+                setSelectedIndex: function setSelectedIndex() {
                     return undefined;
                 },
-                setMenuAnchorCorner: function setMenuAnchorCorner() {
+                setDisabled: function setDisabled() {
                     return undefined;
                 },
-                setMenuWrapFocus: function setMenuWrapFocus() {
+                setRippleCenter: function setRippleCenter() {
                     return undefined;
                 },
-                setAttributeAtIndex: function setAttributeAtIndex() {
+                notifyChange: function notifyChange() {
                     return undefined;
                 },
-                removeAttributeAtIndex: function removeAttributeAtIndex() {
-                    return undefined;
+                checkValidity: function checkValidity() {
+                    return false;
                 },
-                focusMenuItemAtIndex: function focusMenuItemAtIndex() {
-                    return undefined;
-                },
-                getMenuItemCount: function getMenuItemCount() {
-                    return 0;
-                },
-                getMenuItemValues: function getMenuItemValues() {
-                    return [];
-                },
-                getMenuItemTextAtIndex: function getMenuItemTextAtIndex() {
-                    return '';
-                },
-                getMenuItemAttr: function getMenuItemAttr() {
-                    return '';
-                },
-                addClassAtIndex: function addClassAtIndex() {
-                    return undefined;
-                },
-                removeClassAtIndex: function removeClassAtIndex() {
+                setValid: function setValid() {
                     return undefined;
                 }
             };
@@ -12372,66 +13199,31 @@ var MDCSelectFoundation = /** @class */function (_super) {
         enumerable: true,
         configurable: true
     });
-    /** Returns the index of the currently selected menu item, or -1 if none. */
-    MDCSelectFoundation.prototype.getSelectedIndex = function () {
-        return this.selectedIndex_;
-    };
-    MDCSelectFoundation.prototype.setSelectedIndex = function (index, closeMenu) {
-        if (closeMenu === void 0) {
-            closeMenu = false;
-        }
-        if (index >= this.adapter_.getMenuItemCount()) {
-            return;
-        }
-        var previouslySelectedIndex = this.selectedIndex_;
-        this.selectedIndex_ = index;
-        if (this.selectedIndex_ === constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.setSelectedText('');
-        } else {
-            this.adapter_.setSelectedText(this.adapter_.getMenuItemTextAtIndex(this.selectedIndex_).trim());
-        }
-        if (previouslySelectedIndex !== constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.removeClassAtIndex(previouslySelectedIndex, constants_2.cssClasses.SELECTED_ITEM_CLASS);
-            this.adapter_.removeAttributeAtIndex(previouslySelectedIndex, constants_2.strings.ARIA_SELECTED_ATTR);
-        }
-        if (this.selectedIndex_ !== constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.addClassAtIndex(this.selectedIndex_, constants_2.cssClasses.SELECTED_ITEM_CLASS);
-            this.adapter_.setAttributeAtIndex(this.selectedIndex_, constants_2.strings.ARIA_SELECTED_ATTR, 'true');
-        }
-        this.layout();
-        if (closeMenu) {
-            this.adapter_.closeMenu();
-        }
-        this.handleChange();
+    MDCSelectFoundation.prototype.setSelectedIndex = function (index) {
+        this.adapter_.setSelectedIndex(index);
+        this.adapter_.closeMenu();
+        var didChange = true;
+        this.handleChange(didChange);
     };
     MDCSelectFoundation.prototype.setValue = function (value) {
-        var index = this.menuItemValues_.indexOf(value);
-        this.setSelectedIndex(index);
-        this.handleChange();
+        this.adapter_.setValue(value);
+        var didChange = true;
+        this.handleChange(didChange);
     };
     MDCSelectFoundation.prototype.getValue = function () {
-        var listItem = this.adapter_.getSelectedMenuItem();
-        if (listItem) {
-            return this.adapter_.getMenuItemAttr(listItem, constants_2.strings.VALUE_ATTR) || '';
-        }
-        return '';
-    };
-    MDCSelectFoundation.prototype.getDisabled = function () {
-        return this.disabled_;
+        return this.adapter_.getValue();
     };
     MDCSelectFoundation.prototype.setDisabled = function (isDisabled) {
-        this.disabled_ = isDisabled;
-        if (this.disabled_) {
-            this.adapter_.addClass(constants_2.cssClasses.DISABLED);
-            this.adapter_.closeMenu();
+        if (isDisabled) {
+            this.adapter_.addClass(constants_1.cssClasses.DISABLED);
         } else {
-            this.adapter_.removeClass(constants_2.cssClasses.DISABLED);
+            this.adapter_.removeClass(constants_1.cssClasses.DISABLED);
         }
+        this.adapter_.setDisabled(isDisabled);
+        this.adapter_.closeMenu();
         if (this.leadingIcon_) {
-            this.leadingIcon_.setDisabled(this.disabled_);
+            this.leadingIcon_.setDisabled(isDisabled);
         }
-        this.adapter_.setSelectedTextAttr('tabindex', this.disabled_ ? '-1' : '0');
-        this.adapter_.setSelectedTextAttr('aria-disabled', this.disabled_.toString());
     };
     /**
      * @param content Sets the content of the helper text.
@@ -12442,55 +13234,46 @@ var MDCSelectFoundation = /** @class */function (_super) {
         }
     };
     MDCSelectFoundation.prototype.layout = function () {
-        if (this.adapter_.hasLabel()) {
-            var openNotch = this.getValue().length > 0;
-            this.notchOutline(openNotch);
-        }
+        var openNotch = this.getValue().length > 0;
+        this.notchOutline(openNotch);
     };
     MDCSelectFoundation.prototype.handleMenuOpened = function () {
-        if (this.adapter_.getMenuItemValues().length === 0) {
-            return;
-        }
-        this.adapter_.addClass(constants_2.cssClasses.ACTIVATED);
-        // Menu should open to the last selected element, should open to first menu item otherwise.
-        var focusItemIndex = this.selectedIndex_ >= 0 ? this.selectedIndex_ : 0;
-        this.adapter_.focusMenuItemAtIndex(focusItemIndex);
+        this.adapter_.addClass(constants_1.cssClasses.ACTIVATED);
     };
     MDCSelectFoundation.prototype.handleMenuClosed = function () {
-        this.adapter_.removeClass(constants_2.cssClasses.ACTIVATED);
-        this.isMenuOpen_ = false;
-        this.adapter_.setSelectedTextAttr('aria-expanded', 'false');
-        // Unfocus the select if menu is closed without a selection
-        if (!this.adapter_.isSelectedTextFocused()) {
-            this.blur_();
-        }
+        this.adapter_.removeClass(constants_1.cssClasses.ACTIVATED);
     };
     /**
      * Handles value changes, via change event or programmatic updates.
      */
-    MDCSelectFoundation.prototype.handleChange = function () {
-        this.updateLabel_();
-        this.adapter_.notifyChange(this.getValue());
-        var isRequired = this.adapter_.hasClass(constants_2.cssClasses.REQUIRED);
-        if (isRequired) {
-            this.setValid(this.isValid());
-            if (this.helperText_) {
-                this.helperText_.setValidity(this.isValid());
+    MDCSelectFoundation.prototype.handleChange = function (didChange) {
+        if (didChange === void 0) {
+            didChange = true;
+        }
+        var value = this.getValue();
+        var optionHasValue = value.length > 0;
+        var isRequired = this.adapter_.hasClass(constants_1.cssClasses.REQUIRED);
+        this.notchOutline(optionHasValue);
+        if (!this.adapter_.hasClass(constants_1.cssClasses.FOCUSED)) {
+            this.adapter_.floatLabel(optionHasValue);
+        }
+        if (didChange) {
+            this.adapter_.notifyChange(value);
+            if (isRequired) {
+                this.setValid(this.isValid());
+                if (this.helperText_) {
+                    this.helperText_.setValidity(this.isValid());
+                }
             }
         }
-    };
-    MDCSelectFoundation.prototype.handleMenuItemAction = function (index) {
-        this.setSelectedIndex(index, /** closeMenu */true);
     };
     /**
      * Handles focus events from select element.
      */
     MDCSelectFoundation.prototype.handleFocus = function () {
-        this.adapter_.addClass(constants_2.cssClasses.FOCUSED);
-        if (this.adapter_.hasLabel()) {
-            this.notchOutline(true);
-            this.adapter_.floatLabel(true);
-        }
+        this.adapter_.addClass(constants_1.cssClasses.FOCUSED);
+        this.adapter_.floatLabel(true);
+        this.notchOutline(true);
         this.adapter_.activateBottomLine();
         if (this.helperText_) {
             this.helperText_.showToScreenReader();
@@ -12500,32 +13283,37 @@ var MDCSelectFoundation = /** @class */function (_super) {
      * Handles blur events from select element.
      */
     MDCSelectFoundation.prototype.handleBlur = function () {
-        if (this.isMenuOpen_) {
+        if (this.adapter_.isMenuOpen()) {
             return;
         }
-        this.blur_();
+        this.adapter_.removeClass(constants_1.cssClasses.FOCUSED);
+        this.handleChange(false);
+        this.adapter_.deactivateBottomLine();
+        var isRequired = this.adapter_.hasClass(constants_1.cssClasses.REQUIRED);
+        if (isRequired) {
+            this.setValid(this.isValid());
+            if (this.helperText_) {
+                this.helperText_.setValidity(this.isValid());
+            }
+        }
     };
     MDCSelectFoundation.prototype.handleClick = function (normalizedX) {
-        if (this.isMenuOpen_) {
+        if (this.adapter_.isMenuOpen()) {
             return;
         }
         this.adapter_.setRippleCenter(normalizedX);
         this.adapter_.openMenu();
-        this.isMenuOpen_ = true;
-        this.adapter_.setSelectedTextAttr('aria-expanded', 'true');
     };
     MDCSelectFoundation.prototype.handleKeydown = function (event) {
-        if (this.isMenuOpen_) {
+        if (this.adapter_.isMenuOpen()) {
             return;
         }
         var isEnter = event.key === 'Enter' || event.keyCode === 13;
         var isSpace = event.key === 'Space' || event.keyCode === 32;
         var arrowUp = event.key === 'ArrowUp' || event.keyCode === 38;
         var arrowDown = event.key === 'ArrowDown' || event.keyCode === 40;
-        if (this.adapter_.hasClass(constants_2.cssClasses.FOCUSED) && (isEnter || isSpace || arrowUp || arrowDown)) {
+        if (this.adapter_.hasClass(constants_1.cssClasses.FOCUSED) && (isEnter || isSpace || arrowUp || arrowDown)) {
             this.adapter_.openMenu();
-            this.isMenuOpen_ = true;
-            this.adapter_.setSelectedTextAttr('aria-expanded', 'true');
             event.preventDefault();
         }
     };
@@ -12536,9 +13324,9 @@ var MDCSelectFoundation = /** @class */function (_super) {
         if (!this.adapter_.hasOutline()) {
             return;
         }
-        var isFocused = this.adapter_.hasClass(constants_2.cssClasses.FOCUSED);
+        var isFocused = this.adapter_.hasClass(constants_1.cssClasses.FOCUSED);
         if (openNotch) {
-            var labelScale = constants_2.numbers.LABEL_SCALE;
+            var labelScale = constants_1.numbers.LABEL_SCALE;
             var labelWidth = this.adapter_.getLabelWidth() * labelScale;
             this.adapter_.notchOutline(labelWidth);
         } else if (!isFocused) {
@@ -12562,73 +13350,10 @@ var MDCSelectFoundation = /** @class */function (_super) {
         }
     };
     MDCSelectFoundation.prototype.setValid = function (isValid) {
-        this.adapter_.setSelectedTextAttr('aria-invalid', (!isValid).toString());
-        if (isValid) {
-            this.adapter_.removeClass(constants_2.cssClasses.INVALID);
-        } else {
-            this.adapter_.addClass(constants_2.cssClasses.INVALID);
-        }
+        this.adapter_.setValid(isValid);
     };
     MDCSelectFoundation.prototype.isValid = function () {
-        if (this.adapter_.hasClass(constants_2.cssClasses.REQUIRED) && !this.adapter_.hasClass(constants_2.cssClasses.DISABLED)) {
-            // See notes for required attribute under https://www.w3.org/TR/html52/sec-forms.html#the-select-element
-            // TL;DR: Invalid if no index is selected, or if the first index is selected and has an empty value.
-            return this.selectedIndex_ !== constants_2.numbers.UNSET_INDEX && (this.selectedIndex_ !== 0 || Boolean(this.getValue()));
-        }
-        return true;
-    };
-    MDCSelectFoundation.prototype.setRequired = function (isRequired) {
-        if (isRequired) {
-            this.adapter_.addClass(constants_2.cssClasses.REQUIRED);
-        } else {
-            this.adapter_.removeClass(constants_2.cssClasses.REQUIRED);
-        }
-        this.adapter_.setSelectedTextAttr('aria-required', isRequired.toString());
-    };
-    MDCSelectFoundation.prototype.getRequired = function () {
-        return this.adapter_.getSelectedTextAttr('aria-required') === 'true';
-    };
-    MDCSelectFoundation.prototype.init = function () {
-        var anchorEl = this.adapter_.getAnchorElement();
-        if (anchorEl) {
-            this.adapter_.setMenuAnchorElement(anchorEl);
-            this.adapter_.setMenuAnchorCorner(constants_1.Corner.BOTTOM_START);
-        }
-        this.adapter_.setMenuWrapFocus(false);
-        var value = this.getValue();
-        if (value) {
-            this.setValue(value);
-        }
-        // Initially sync floating label
-        this.updateLabel_();
-    };
-    /**
-     * Notches the outline and floats the label when appropriate.
-     */
-    MDCSelectFoundation.prototype.updateLabel_ = function () {
-        var value = this.getValue();
-        var optionHasValue = value.length > 0;
-        if (this.adapter_.hasLabel()) {
-            this.notchOutline(optionHasValue);
-            if (!this.adapter_.hasClass(constants_2.cssClasses.FOCUSED)) {
-                this.adapter_.floatLabel(optionHasValue);
-            }
-        }
-    };
-    /**
-     * Unfocuses the select component.
-     */
-    MDCSelectFoundation.prototype.blur_ = function () {
-        this.adapter_.removeClass(constants_2.cssClasses.FOCUSED);
-        this.updateLabel_();
-        this.adapter_.deactivateBottomLine();
-        var isRequired = this.adapter_.hasClass(constants_2.cssClasses.REQUIRED);
-        if (isRequired) {
-            this.setValid(this.isValid());
-            if (this.helperText_) {
-                this.helperText_.setValidity(this.isValid());
-            }
-        }
+        return this.adapter_.checkValidity();
     };
     return MDCSelectFoundation;
 }(foundation_1.MDCFoundation);
@@ -13534,11 +14259,9 @@ var MDCSlider = /** @class */function (_super) {
     };
     MDCSlider.prototype.getDefaultFoundation = function () {
         var _this = this;
-        // DO NOT INLINE this variable. For backward compatibility, foundations take
-        // a Partial<MDCFooAdapter>. To ensure we don't accidentally omit any
-        // methods, we need a separate, strongly typed adapter variable.
-        // tslint:disable:object-literal-sort-keys Methods should be in the same
-        // order as the adapter interface.
+        // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
+        // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
+        // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             hasClass: function hasClass(className) {
                 return _this.root_.classList.contains(className);
@@ -13603,17 +14326,24 @@ var MDCSlider = /** @class */function (_super) {
             setMarkerValue: function setMarkerValue(value) {
                 return _this.pinValueMarker_.innerText = value.toLocaleString();
             },
-            setTrackMarkers: function setTrackMarkers(step, max, min) {
-                var stepStr = step.toLocaleString();
-                var maxStr = max.toLocaleString();
-                var minStr = min.toLocaleString();
-                // keep calculation in css for better rounding/subpixel behavior
-                var markerAmount = "((" + maxStr + " - " + minStr + ") / " + stepStr + ")";
-                var markerWidth = "2px";
-                var markerBkgdImage = "linear-gradient(to right, currentColor " + markerWidth + ", transparent 0)";
-                var markerBkgdLayout = "0 center / calc((100% - " + markerWidth + ") / " + markerAmount + ") 100% repeat-x";
-                var markerBkgdShorthand = markerBkgdImage + " " + markerBkgdLayout;
-                _this.trackMarkerContainer_.style.setProperty('background', markerBkgdShorthand);
+            appendTrackMarkers: function appendTrackMarkers(numMarkers) {
+                var frag = document.createDocumentFragment();
+                for (var i = 0; i < numMarkers; i++) {
+                    var marker = document.createElement('div');
+                    marker.classList.add('mdc-slider__track-marker');
+                    frag.appendChild(marker);
+                }
+                _this.trackMarkerContainer_.appendChild(frag);
+            },
+            removeTrackMarkers: function removeTrackMarkers() {
+                while (_this.trackMarkerContainer_.firstChild) {
+                    _this.trackMarkerContainer_.removeChild(_this.trackMarkerContainer_.firstChild);
+                }
+            },
+            setLastTrackMarkersStyleProperty: function setLastTrackMarkersStyleProperty(propertyName, value) {
+                // We remove and append new nodes, thus, the last track marker must be dynamically found.
+                var lastTrackMarker = _this.root_.querySelector(constants_1.strings.LAST_TRACK_MARKER_SELECTOR);
+                lastTrackMarker.style.setProperty(propertyName, value);
             },
             isRTL: function isRTL() {
                 return getComputedStyle(_this.root_).direction === 'rtl';
@@ -13716,6 +14446,7 @@ var strings = {
     ARIA_VALUENOW: 'aria-valuenow',
     CHANGE_EVENT: 'MDCSlider:change',
     INPUT_EVENT: 'MDCSlider:input',
+    LAST_TRACK_MARKER_SELECTOR: '.mdc-slider__track-marker:last-child',
     PIN_VALUE_MARKER_SELECTOR: '.mdc-slider__pin-value-marker',
     STEP_DATA_ATTR: 'data-step',
     THUMB_CONTAINER_SELECTOR: '.mdc-slider__thumb-container',
@@ -13819,8 +14550,8 @@ var MDCSliderFoundation = /** @class */function (_super) {
     function MDCSliderFoundation(adapter) {
         var _this = _super.call(this, __assign({}, MDCSliderFoundation.defaultAdapter, adapter)) || this;
         /**
-         * We set this to NaN since we want it to be a number, but we can't use '0' or
-         * '-1' because those could be valid tabindices set by the client code.
+         * We set this to NaN since we want it to be a number, but we can't use '0' or '-1'
+         * because those could be valid tabindices set by the client code.
          */
         _this.savedTabIndex_ = NaN;
         _this.active_ = false;
@@ -13877,8 +14608,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
     });
     Object.defineProperty(MDCSliderFoundation, "defaultAdapter", {
         get: function get() {
-            // tslint:disable:object-literal-sort-keys Methods should be in the same
-            // order as the adapter interface.
+            // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
             return {
                 hasClass: function hasClass() {
                     return false;
@@ -13943,7 +14673,13 @@ var MDCSliderFoundation = /** @class */function (_super) {
                 setMarkerValue: function setMarkerValue() {
                     return undefined;
                 },
-                setTrackMarkers: function setTrackMarkers() {
+                appendTrackMarkers: function appendTrackMarkers() {
+                    return undefined;
+                },
+                removeTrackMarkers: function removeTrackMarkers() {
+                    return undefined;
+                },
+                setLastTrackMarkersStyleProperty: function setLastTrackMarkersStyleProperty() {
                     return undefined;
                 },
                 isRTL: function isRTL() {
@@ -13986,7 +14722,23 @@ var MDCSliderFoundation = /** @class */function (_super) {
     };
     MDCSliderFoundation.prototype.setupTrackMarker = function () {
         if (this.isDiscrete_ && this.hasTrackMarker_ && this.getStep() !== 0) {
-            this.adapter_.setTrackMarkers(this.getStep(), this.getMax(), this.getMin());
+            var min = this.getMin();
+            var max = this.getMax();
+            var step = this.getStep();
+            var numMarkers = (max - min) / step;
+            // In case distance between max & min is indivisible to step,
+            // we place the secondary to last marker proportionally at where thumb
+            // could reach and place the last marker at max value
+            var indivisible = Math.ceil(numMarkers) !== numMarkers;
+            if (indivisible) {
+                numMarkers = Math.ceil(numMarkers);
+            }
+            this.adapter_.removeTrackMarkers();
+            this.adapter_.appendTrackMarkers(numMarkers);
+            if (indivisible) {
+                var lastStepRatio = (max - numMarkers * step) / step + 1;
+                this.adapter_.setLastTrackMarkersStyleProperty('flex-grow', String(lastStepRatio));
+            }
         }
     };
     MDCSliderFoundation.prototype.layout = function () {
@@ -14070,10 +14822,9 @@ var MDCSliderFoundation = /** @class */function (_super) {
             _this.handleMove_(moveEvent);
         };
         var moveEventType = MOVE_EVENT_MAP[downEvent.type];
-        // Note: upHandler is [de]registered on ALL potential pointer-related
-        // release event types, since some browsers do not always fire these
-        // consistently in pairs. (See
-        // https://github.com/material-components/material-components-web/issues/1192)
+        // Note: upHandler is [de]registered on ALL potential pointer-related release event types, since some browsers
+        // do not always fire these consistently in pairs.
+        // (See https://github.com/material-components/material-components-web/issues/1192)
         var upHandler = function upHandler() {
             _this.handleUp_();
             _this.adapter_.deregisterBodyInteractionHandler(moveEventType, moveHandler);
@@ -14102,30 +14853,30 @@ var MDCSliderFoundation = /** @class */function (_super) {
         this.adapter_.notifyChange();
     };
     /**
-     * Returns the clientX of the event
+     * Returns the pageX of the event
      */
-    MDCSliderFoundation.prototype.getClientX_ = function (evt) {
+    MDCSliderFoundation.prototype.getPageX_ = function (evt) {
         if (evt.targetTouches && evt.targetTouches.length > 0) {
-            return evt.targetTouches[0].clientX;
+            return evt.targetTouches[0].pageX;
         }
-        return evt.clientX;
+        return evt.pageX;
     };
     /**
      * Sets the slider value from an event
      */
     MDCSliderFoundation.prototype.setValueFromEvt_ = function (evt) {
-        var clientX = this.getClientX_(evt);
-        var value = this.computeValueFromClientX_(clientX);
+        var pageX = this.getPageX_(evt);
+        var value = this.computeValueFromPageX_(pageX);
         this.setValue_(value, true);
     };
     /**
-     * Computes the new value from the clientX position
+     * Computes the new value from the pageX position
      */
-    MDCSliderFoundation.prototype.computeValueFromClientX_ = function (clientX) {
+    MDCSliderFoundation.prototype.computeValueFromPageX_ = function (pageX) {
         var _a = this,
             max = _a.max_,
             min = _a.min_;
-        var xPos = clientX - this.rect_.left;
+        var xPos = pageX - this.rect_.left;
         var pctComplete = xPos / this.rect_.width;
         if (this.adapter_.isRTL()) {
             pctComplete = 1 - pctComplete;
@@ -14143,8 +14894,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
         if (isNaN(value)) {
             return;
         }
-        // Prevent page from scrolling due to key presses that would normally scroll
-        // the page
+        // Prevent page from scrolling due to key presses that would normally scroll the page
         evt.preventDefault();
         this.adapter_.addClass(constants_1.cssClasses.FOCUS);
         this.setValue_(value, true);
@@ -14244,7 +14994,6 @@ var MDCSliderFoundation = /** @class */function (_super) {
         } else if (value > max) {
             value = max;
         }
-        value = value || 0; // coerce -0 to 0
         this.value_ = value;
         this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, String(this.value_));
         this.updateUIForCurrentValue_();
@@ -14318,8 +15067,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
     return MDCSliderFoundation;
 }(foundation_1.MDCFoundation);
 exports.MDCSliderFoundation = MDCSliderFoundation;
-// tslint:disable-next-line:no-default-export Needed for backward compatibility
-// with MDC Web v0.44.0 and earlier.
+// tslint:disable-next-line:no-default-export Needed for backward compatibility with MDC Web v0.44.0 and earlier.
 exports.default = MDCSliderFoundation;
 
 /***/ }),
@@ -14652,7 +15400,6 @@ var strings = {
 exports.strings = strings;
 var numbers = {
     DEFAULT_AUTO_DISMISS_TIMEOUT_MS: 5000,
-    INDETERMINATE: -1,
     MAX_AUTO_DISMISS_TIMEOUT_MS: 10000,
     MIN_AUTO_DISMISS_TIMEOUT_MS: 4000,
     // These variables need to be kept in sync with the values in _variables.scss.
@@ -14824,14 +15571,11 @@ var MDCSnackbarFoundation = /** @class */function (_super) {
         this.runNextAnimationFrame_(function () {
             _this.adapter_.addClass(OPEN);
             _this.animationTimer_ = setTimeout(function () {
-                var timeoutMs = _this.getTimeoutMs();
                 _this.handleAnimationTimerEnd_();
                 _this.adapter_.notifyOpened();
-                if (timeoutMs !== constants_1.numbers.INDETERMINATE) {
-                    _this.autoDismissTimer_ = setTimeout(function () {
-                        _this.close(REASON_DISMISS);
-                    }, timeoutMs);
-                }
+                _this.autoDismissTimer_ = setTimeout(function () {
+                    _this.close(REASON_DISMISS);
+                }, _this.getTimeoutMs());
             }, constants_1.numbers.SNACKBAR_ANIMATION_OPEN_TIME_MS);
         });
     };
@@ -14873,11 +15617,10 @@ var MDCSnackbarFoundation = /** @class */function (_super) {
         // Use shorter variable names to make the code more readable
         var minValue = constants_1.numbers.MIN_AUTO_DISMISS_TIMEOUT_MS;
         var maxValue = constants_1.numbers.MAX_AUTO_DISMISS_TIMEOUT_MS;
-        var indeterminateValue = constants_1.numbers.INDETERMINATE;
-        if (timeoutMs === constants_1.numbers.INDETERMINATE || timeoutMs <= maxValue && timeoutMs >= minValue) {
+        if (timeoutMs <= maxValue && timeoutMs >= minValue) {
             this.autoDismissTimeoutMs_ = timeoutMs;
         } else {
-            throw new Error("\n        timeoutMs must be an integer in the range " + minValue + "\u2013" + maxValue + "\n        (or " + indeterminateValue + " to disable), but got '" + timeoutMs + "'");
+            throw new Error("timeoutMs must be an integer in the range " + minValue + "\u2013" + maxValue + ", but got '" + timeoutMs + "'");
         }
     };
     MDCSnackbarFoundation.prototype.getCloseOnEscape = function () {
@@ -15221,9 +15964,6 @@ var MDCSwitch = /** @class */function (_super) {
             },
             setNativeControlDisabled: function setNativeControlDisabled(disabled) {
                 return _this.nativeControl_.disabled = disabled;
-            },
-            setNativeControlAttr: function setNativeControlAttr(attr, value) {
-                return _this.nativeControl_.setAttribute(attr, value);
             }
         };
         return new foundation_2.MDCSwitchFoundation(adapter);
@@ -15274,7 +16014,7 @@ var MDCSwitch = /** @class */function (_super) {
             }, registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 _this.nativeControl_.addEventListener(evtType, handler, events_1.applyPassive());
             }, removeClass: function removeClass(className) {
-                rippleSurface.classList.remove(className);
+                return rippleSurface.classList.remove(className);
             }, updateCssVariable: function updateCssVariable(varName, value) {
                 rippleSurface.style.setProperty(varName, value);
             } });
@@ -15337,8 +16077,6 @@ var cssClasses = {
 exports.cssClasses = cssClasses;
 /** String constants used by the switch. */
 var strings = {
-    /** Aria attribute for checked or unchecked state of switch */
-    ARIA_CHECKED_ATTR: 'aria-checked',
     /** A CSS selector used to locate the native HTML control for the switch.  */
     NATIVE_CONTROL_SELECTOR: '.mdc-switch__native-control',
     /** A CSS selector used to locate the ripple surface element for the switch. */
@@ -15450,9 +16188,6 @@ var MDCSwitchFoundation = /** @class */function (_super) {
                 },
                 setNativeControlDisabled: function setNativeControlDisabled() {
                     return undefined;
-                },
-                setNativeControlAttr: function setNativeControlAttr() {
-                    return undefined;
                 }
             };
         },
@@ -15462,7 +16197,6 @@ var MDCSwitchFoundation = /** @class */function (_super) {
     /** Sets the checked state of the switch. */
     MDCSwitchFoundation.prototype.setChecked = function (checked) {
         this.adapter_.setNativeControlChecked(checked);
-        this.updateAriaChecked_(checked);
         this.updateCheckedStyling_(checked);
     };
     /** Sets the disabled state of the switch. */
@@ -15477,7 +16211,6 @@ var MDCSwitchFoundation = /** @class */function (_super) {
     /** Handles the change event for the switch native control. */
     MDCSwitchFoundation.prototype.handleChange = function (evt) {
         var nativeControl = evt.target;
-        this.updateAriaChecked_(nativeControl.checked);
         this.updateCheckedStyling_(nativeControl.checked);
     };
     /** Updates the styling of the switch based on its checked state. */
@@ -15487,9 +16220,6 @@ var MDCSwitchFoundation = /** @class */function (_super) {
         } else {
             this.adapter_.removeClass(constants_1.cssClasses.CHECKED);
         }
-    };
-    MDCSwitchFoundation.prototype.updateAriaChecked_ = function (checked) {
-        this.adapter_.setNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR, "" + !!checked);
     };
     return MDCSwitchFoundation;
 }(foundation_1.MDCFoundation);
@@ -17251,7 +17981,7 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         this.adapter_.removeClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
     };
     /**
-     * Increment the scroll value by the scrollXIncrement using animation.
+     * Increment the scroll value by the scrollXIncrement
      * @param scrollXIncrement The value by which to increment the scroll position
      */
     MDCTabScrollerFoundation.prototype.incrementScroll = function (scrollXIncrement) {
@@ -17259,23 +17989,10 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         if (scrollXIncrement === 0) {
             return;
         }
-        this.animate_(this.getIncrementScrollOperation_(scrollXIncrement));
-    };
-    /**
-     * Increment the scroll value by the scrollXIncrement without animation.
-     * @param scrollXIncrement The value by which to increment the scroll position
-     */
-    MDCTabScrollerFoundation.prototype.incrementScrollImmediate = function (scrollXIncrement) {
-        // Early exit for non-operational increment values
-        if (scrollXIncrement === 0) {
-            return;
+        if (this.isRTL_()) {
+            return this.incrementScrollRTL_(scrollXIncrement);
         }
-        var operation = this.getIncrementScrollOperation_(scrollXIncrement);
-        if (operation.scrollDelta === 0) {
-            return;
-        }
-        this.stopScrollAnimation_();
-        this.adapter_.setScrollAreaScrollLeft(operation.finalScrollPosition);
+        this.incrementScroll_(scrollXIncrement);
     };
     /**
      * Scrolls to the given scrollX value
@@ -17366,22 +18083,26 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         this.animate_(animation);
     };
     /**
-     * Internal method to compute the increment scroll operation values.
-     * @param scrollX The desired scroll position increment
-     * @return MDCTabScrollerAnimation with the sanitized values for performing the scroll operation.
+     * Internal increment scroll method
+     * @param scrollX The new scroll position increment
      */
-    MDCTabScrollerFoundation.prototype.getIncrementScrollOperation_ = function (scrollX) {
-        if (this.isRTL_()) {
-            return this.getRTLScroller().incrementScrollRTL(scrollX);
-        }
+    MDCTabScrollerFoundation.prototype.incrementScroll_ = function (scrollX) {
         var currentScrollX = this.getScrollPosition();
         var targetScrollX = scrollX + currentScrollX;
         var safeScrollX = this.clampScrollValue_(targetScrollX);
         var scrollDelta = safeScrollX - currentScrollX;
-        return {
+        this.animate_({
             finalScrollPosition: safeScrollX,
             scrollDelta: scrollDelta
-        };
+        });
+    };
+    /**
+     * Internal increment scroll RTL method
+     * @param scrollX The new scroll position RTL increment
+     */
+    MDCTabScrollerFoundation.prototype.incrementScrollRTL_ = function (scrollX) {
+        var animation = this.getRTLScroller().incrementScrollRTL(scrollX);
+        this.animate_(animation);
     };
     /**
      * Animates the tab scrolling
@@ -18891,12 +19612,22 @@ var MDCTextField = /** @class */function (_super) {
             characterCounterEl = nextElementSibling.querySelector(characterCounterStrings.ROOT_SELECTOR);
         }
         this.characterCounter_ = characterCounterEl ? characterCounterFactory(characterCounterEl) : null;
-        // Leading icon
-        var leadingIconEl = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
-        this.leadingIcon_ = leadingIconEl ? iconFactory(leadingIconEl) : null;
-        // Trailing icon
-        var trailingIconEl = this.root_.querySelector(constants_1.strings.TRAILING_ICON_SELECTOR);
-        this.trailingIcon_ = trailingIconEl ? iconFactory(trailingIconEl) : null;
+        this.leadingIcon_ = null;
+        this.trailingIcon_ = null;
+        var iconElements = this.root_.querySelectorAll(constants_1.strings.ICON_SELECTOR);
+        if (iconElements.length > 0) {
+            if (iconElements.length > 1) {
+                // Has both icons.
+                this.leadingIcon_ = iconFactory(iconElements[0]);
+                this.trailingIcon_ = iconFactory(iconElements[1]);
+            } else {
+                if (this.root_.classList.contains(constants_1.cssClasses.WITH_LEADING_ICON)) {
+                    this.leadingIcon_ = iconFactory(iconElements[0]);
+                } else {
+                    this.trailingIcon_ = iconFactory(iconElements[0]);
+                }
+            }
+        }
         this.ripple = this.createRipple_(rippleFactory);
     };
     MDCTextField.prototype.destroy = function () {
@@ -19332,12 +20063,11 @@ exports.MDCTextField = MDCTextField;
 Object.defineProperty(exports, "__esModule", { value: true });
 var strings = {
     ARIA_CONTROLS: 'aria-controls',
+    ICON_SELECTOR: '.mdc-text-field__icon',
     INPUT_SELECTOR: '.mdc-text-field__input',
     LABEL_SELECTOR: '.mdc-floating-label',
-    LEADING_ICON_SELECTOR: '.mdc-text-field__icon--leading',
     LINE_RIPPLE_SELECTOR: '.mdc-line-ripple',
-    OUTLINE_SELECTOR: '.mdc-notched-outline',
-    TRAILING_ICON_SELECTOR: '.mdc-text-field__icon--trailing'
+    OUTLINE_SELECTOR: '.mdc-notched-outline'
 };
 exports.strings = strings;
 var cssClasses = {
@@ -19512,14 +20242,14 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     });
     Object.defineProperty(MDCTextFieldFoundation.prototype, "shouldFloat", {
         get: function get() {
-            return this.shouldAlwaysFloat_ || this.isFocused_ || !!this.getValue() || this.isBadInput_();
+            return this.shouldAlwaysFloat_ || this.isFocused_ || Boolean(this.getValue()) || this.isBadInput_();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCTextFieldFoundation.prototype, "shouldShake", {
         get: function get() {
-            return !this.isFocused_ && !this.isValid() && !!this.getValue();
+            return !this.isFocused_ && !this.isValid() && Boolean(this.getValue());
         },
         enumerable: true,
         configurable: true
@@ -19770,7 +20500,7 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     MDCTextFieldFoundation.prototype.setValid = function (isValid) {
         this.isValid_ = isValid;
         this.styleValidity_(isValid);
-        var shouldShake = !isValid && !this.isFocused_ && !!this.getValue();
+        var shouldShake = !isValid && !this.isFocused_;
         if (this.adapter_.hasLabel()) {
             this.adapter_.shakeLabel(shouldShake);
         }
@@ -20615,8 +21345,6 @@ var MDCTextFieldIconFoundation = /** @class */function (_super) {
     MDCTextFieldIconFoundation.prototype.handleInteraction = function (evt) {
         var isEnterKey = evt.key === 'Enter' || evt.keyCode === 13;
         if (evt.type === 'click' || isEnterKey) {
-            evt.preventDefault(); // stop click from causing host label to focus
-            // input
             this.adapter_.notifyIconAction();
         }
     };

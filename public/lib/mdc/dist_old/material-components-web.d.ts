@@ -10,6 +10,7 @@
 //   ../../@material/drawer/index
 //   ../../@material/floating-label/index
 //   ../../@material/form-field/index
+//   ../../@material/grid-list/index
 //   ../../@material/icon-button/index
 //   ../../@material/line-ripple/index
 //   ../../@material/linear-progress/index
@@ -63,6 +64,7 @@ declare module 'material-components-web' {
     import * as drawer from '@material/drawer/index';
     import * as floatingLabel from '@material/floating-label/index';
     import * as formField from '@material/form-field/index';
+    import * as gridList from '@material/grid-list/index';
     import * as iconButton from '@material/icon-button/index';
     import * as lineRipple from '@material/line-ripple/index';
     import * as linearProgress from '@material/linear-progress/index';
@@ -82,6 +84,6 @@ declare module 'material-components-web' {
     import * as tab from '@material/tab/index';
     import * as textField from '@material/textfield/index';
     import * as topAppBar from '@material/top-app-bar/index';
-    export { autoInit, base, checkbox, chips, dataTable, dialog, dom, drawer, floatingLabel, formField, iconButton, lineRipple, linearProgress, list, menu, menuSurface, notchedOutline, radio, ripple, select, slider, snackbar, switchControl, tab, tabBar, tabIndicator, tabScroller, textField, topAppBar, };
+    export { autoInit, base, checkbox, chips, dataTable, dialog, dom, drawer, floatingLabel, formField, gridList, iconButton, lineRipple, linearProgress, list, menu, menuSurface, notchedOutline, radio, ripple, select, slider, snackbar, switchControl, tab, tabBar, tabIndicator, tabScroller, textField, topAppBar, };
 }
 
