@@ -387,6 +387,11 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
             let str = this.local.stream;
             if ( str ) {
               
+             
+                let videoAsset = document.querySelector('#video-avatar-' + self.kernel.moniker());
+                if (videoAsset) 
+                    videoAsset.volume = 0;
+
                 var tracks = str.getVideoTracks();
     
                 tracks.forEach(function(track) {
@@ -398,6 +403,10 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
         muteAudio: function ( mute ) {
             let str = this.local.stream;
             if ( str ) {
+
+                let videoAsset = document.querySelector('#video-avatar-' + self.kernel.moniker());
+                if (videoAsset) 
+                    videoAsset.volume = 0;
               
                 var tracks = str.getAudioTracks();
     
@@ -430,9 +439,12 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
           video.setAttribute("width", 640);
           video.setAttribute("height", 480);
 
+
           if (local) {
+           // video.muted = false;  
             video.setAttribute("muted", false);
-            video.volume = 0;
+            //video.setAttribute("volume", 0);
+            //video.volume = 0;
           } 
         
         //   let audioID = '#audio-' + id;
@@ -491,7 +503,8 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
 
     function displayVideo( id, stream, url, name, destMoniker, local) {
         
-        let va = createVideoElementAsAsset(name, local);
+        let assetName = 'video-avatar-'+id;
+        let va = createVideoElementAsAsset(assetName, local);
         //video.setAttribute('src', url);
         va.srcObject = stream;
 
@@ -499,7 +512,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
         //var source = audioCtx.createMediaStreamSource(stream);
         //va.audio.src = stream;
 
-        this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [name]);
+        this.kernel.callMethod( 'avatar-'+id, "setVideoTexture", [assetName]);
         
         return id;
     }

@@ -68248,7 +68248,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onEnterVR: function () {
-    var xrSession = this.el.xrSession;
+    var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
@@ -82072,7 +82072,8 @@ if (!window.hasNativeWebXRImplementation && !window.hasNativeWebVRImplementation
   var polyfillConfig = {
     BUFFER_SCALE: bufferScale,
     CARDBOARD_UI_DISABLED: true,
-    ROTATE_INSTRUCTIONS_DISABLED: true
+    ROTATE_INSTRUCTIONS_DISABLED: true,
+    MOBILE_WAKE_LOCK: !!window.cordova
   };
   window.webvrpolyfill = new WebVRPolyfill(polyfillConfig);
 }
@@ -82098,7 +82099,7 @@ if (window.document.currentScript && window.document.currentScript.parentNode !=
 }
 
 // Error if not using a server.
-if (window.location.protocol === 'file:') {
+if (!window.cordova && window.location.protocol === 'file:') {
   error(
     'This HTML file is currently being served via the file:// protocol. ' +
     'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
@@ -82144,7 +82145,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-03-20, Commit #a52d7e77)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-04-15, Commit #0be54ec7)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
