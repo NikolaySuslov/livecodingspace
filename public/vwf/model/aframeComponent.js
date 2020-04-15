@@ -121,6 +121,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     ],
                     'aabb-collider':[
                         "collideNonVisible", "debug",  "enabled", "objects", "interval"
+                    ],
+                    'mirror': [
+                        "camera", "renderothermirror"
                     ]
 
             }
@@ -386,6 +389,21 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                         self.aframeComponentDef['A-SOUND'].forEach(element => {
                             element == propertyName ? parentNodeAF.setAttribute('sound', element, propertyValue) :
+                                value = undefined;
+                        })
+                    }
+                }
+
+               
+
+                if (value === undefined && isAMirrorDefinition(node.prototypes)) {
+                    if (aframeObject.el.getAttribute(aframeObject.compName)) {
+
+                        value = propertyValue;
+                        let parentNodeAF = aframeObject.el;
+
+                        self.aframeComponentDef['mirror'].forEach(element => {
+                            element == propertyName ? parentNodeAF.setAttribute('mirror', element, propertyValue) :
                                 value = undefined;
                         })
                     }
@@ -846,6 +864,20 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     })
                 }
 
+                if (value === undefined && isAMirrorDefinition(node.prototypes)) {
+                    value = propertyValue;
+
+                    // let parentNodeAF = self.state.nodes[node.parentID].aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    self.aframeComponentDef['mirror'].forEach(element => {
+                        if (element == propertyName) {
+                            value = parentNodeAF.getAttribute('mirror').element;
+                        }
+
+                    })
+                }
+
                 if (value === undefined && isAAabbColliderDefinition(node.prototypes)) {
                     value = propertyValue;
 
@@ -1096,7 +1128,16 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         return found;
     }
 
-    
+    function isAMirrorDefinition(prototypes) {
+        var found = false;
+        if (prototypes) {
+            for (var i = 0; i < prototypes.length && !found; i++) {
+                found = (prototypes[i] == "http://vwf.example.com/aframe/a-mirror-component.vwf");
+            }
+        }
+        return found;
+    }
+
 
     function isARayCasterDefinition(prototypes) {
         var found = false;
@@ -1240,6 +1281,14 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "aabb-collider";
+            aframeObj.el.setAttribute(aframeObj.compName, {});
+
+        }
+
+        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/a-mirror-component.vwf")) {
+
+            // aframeObj.el.setAttribute(node.type, {});
+            aframeObj.compName = "mirror";
             aframeObj.el.setAttribute(aframeObj.compName, {});
 
         }

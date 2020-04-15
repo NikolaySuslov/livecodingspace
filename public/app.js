@@ -1130,6 +1130,7 @@ class App {
 
     let revs = await userDB.get('documents').get(public_path).get(docName).get('revs').promOnce();
     if (revs) {
+      if(revs.data) {
       for (const res of Object.keys(revs.data)) {
         if (res !== '_') {
           let el = await userDB.get('documents').get(public_path).get(docName).get('revs').get(res).promOnce();
@@ -1138,6 +1139,7 @@ class App {
         }
       }
       return result
+    }
     }
   }
 
