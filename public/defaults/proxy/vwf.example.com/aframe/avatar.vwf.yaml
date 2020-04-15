@@ -19,6 +19,7 @@ methods:
         parameters:
             - bool
     createSimpleAvatar:
+    resetAvatar:
     createAvatarFromGLTF:
         parameters:
             - modelSrc
@@ -60,5 +61,6 @@ methods:
     changeCostume:
          parameters:
             - val
+            - restore
 scripts:
 - source: "http://vwf.example.com/aframe/avatar.js"

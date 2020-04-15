@@ -37,6 +37,7 @@ this.modelBodyDef = {
 }
 
 this.findWorldAvatarCostume = function () {
+    
     let scene = this.getScene();
     let def = scene.defaultAvatarCostume;
 
@@ -72,12 +73,16 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
     let myBodyDef = this.simpleBodyDef;
     //let myHandDef = this.simpleVrControllerDef;
 
+    if(!this.displayName)
+        this.displayName = 'Avatar ' + this.random().toString(36).substr(2, 9);
+
     myBodyDef.children.material.properties.color = myColor;
 
     var defaultNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            "position": [0, userHeight, 0] //-userHeight
+            "position": [0, userHeight, 0], //-userHeight
+            "meta": "avatarCostume"
         },
         "methods": {
             "randomize":{
@@ -243,18 +248,18 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
    if (nodeDef){
     newNode = Object.assign({}, nodeDef);
     newNode.properties.position = [0, userHeight, 0];
-    newNode.children.myName.properties.value = this.displayName;
+    //newNode.children.myName.properties.value = this.displayName;
    //newNode = Object.assign(defaultNode, nodeDef);
 }
 
     //2. check for default avatar costume in world...
-    let defaultWorldCostume = this.findWorldAvatarCostume();
-    if(defaultWorldCostume) {
-        newNode = Object.assign({}, defaultWorldCostume);
-        newNode.properties.visible = true;
-        newNode.properties.position = [0, userHeight, 0];
-        newNode.children.myName.properties.value = this.displayName;
-    }
+    // let defaultWorldCostume = this.findWorldAvatarCostume();
+    // if(defaultWorldCostume) {
+    //     newNode = Object.assign({}, defaultWorldCostume);
+    //     newNode.properties.visible = true;
+    //     newNode.properties.position = [0, userHeight, 0];
+    //     newNode.children.myName.properties.value = this.displayName;
+    // }
     
 
      //3. check for model...
@@ -294,7 +299,9 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
 
     this.children.create("avatarNode", newNode, function(child){
 
-       child.randomize();
+        if (!nodeDef) {
+          child.randomize();
+        }
 
     });
 
@@ -359,11 +366,14 @@ this.setUserAvatar = function(aName){
 
 }
 
-this.changeCostume = function(val){
+this.changeCostume = function(val, restore){
 
     let userHeight = -1.6;
 
+    var myNameValue = this.displayName;
+
     if (this.avatarNode) {
+        myNameValue = this.avatarNode.children.myName.properties.value;
         this.children.delete(this.avatarNode);
         //this.children.delete(this.interpolation);
     }
@@ -371,25 +381,41 @@ this.changeCostume = function(val){
     newNode.properties.position = [0, userHeight, 0];
     newNode.properties.visible = true;
     newNode.properties.meta = "avatarCostume";
-    newNode.children.myName.properties.value = this.displayName;
+    if(!restore)
+        newNode.children.myName.properties.value = myNameValue;
     this.children.create("avatarNode", newNode);
+
+}
+
+this.resetAvatar = function(){
+
+    if (this.avatarNode) {
+        //myNameValue = this.avatarNode.children.myName.properties.value;
+        this.children.delete(this.avatarNode);
+        this.children.delete(this.interpolation);
+    }
+
+    this.createAvatarBody();
 
 }
 
 this.createSimpleAvatar = function(){
        if (this.avatarNode.myBody) {
         this.avatarNode.children.delete(this.avatarNode.myBody);
+       }
+
         var myColor = this.getRandomColor();
         if (this.avatarNode.myHead){
             myColor = this.avatarNode.myHead.visual.material.color;
         }
+
         let myBodyDef = this.simpleBodyDef;
         myBodyDef.children.material.properties.color = myColor;
 
         this.avatarNode.children.create("myBody", myBodyDef);
         this.avatarNode.myHead.visual.properties.visible = true;
 
-       }
+       
 }
 
 this.createAvatarFromGLTF = function(modelSrc){

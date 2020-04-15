@@ -474,8 +474,13 @@ define([
                         let nodeID = 'avatar-' + self.kernel.moniker();
                         _LCSUSER.get('profile').get('avatarNode').once(res => {
                             if (res) {
-                                //myNode = JSON.parse(res.avatarNode);
-                                vwf_view.kernel.callMethod(nodeID, "changeCostume", [res]);
+                                var myNode = res;
+
+                                if (_app.helpers.testJSON(res)){
+                                    myNode = JSON.parse(res);
+                                }  
+
+                                vwf_view.kernel.callMethod(nodeID, "changeCostume", [myNode, true]);
                             }
                         })
                     }
@@ -582,6 +587,15 @@ define([
                                                 this.$text = vis ? 'Show Avatar' : 'Show Avatar';
                                                 vwf_view.kernel.callMethod(avatarID, "showHideAvatar", [!vis]);
                                                 //controlEl.setAttribute('visible', !vis);
+                                            }
+                                        }
+                                    ),
+                                    self.widgets.buttonStroked(
+                                        {
+                                            "label": "Reset Avatar",
+                                            "onclick": function (e) {
+                                                let avatarID = 'avatar-' + self.kernel.moniker();
+                                                vwf_view.kernel.callMethod(avatarID, "resetAvatar", []);
                                             }
                                         }
                                     )

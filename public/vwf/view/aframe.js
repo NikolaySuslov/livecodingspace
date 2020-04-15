@@ -926,7 +926,7 @@ define(["module", "vwf/view"], function (module, view) {
                "properties": {
                    "localUrl": '',
                    "remoteUrl": '',
-                   "displayName": 'Avatar ' + randId(),
+                  // "displayName": 'Avatar ' + randId(),
                    "sharing": { audio: true, video: true },
                    "selectMode": false,
                    "position": [0, 1.6, 0]
@@ -955,7 +955,13 @@ define(["module", "vwf/view"], function (module, view) {
                                    var myNode = null;
                                    if (res) {
                                        //myNode = JSON.parse(res.avatarNode);
-                                       myNode = res;
+
+                                       var myNode = res;
+
+                                       if (_app.helpers.testJSON(res)){
+                                           myNode = JSON.parse(res);
+                                       }  
+
                                        vwf_view.kernel.callMethod(avatarName, "createAvatarBody", [myNode, null]);
                                    } else {
                                        vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
