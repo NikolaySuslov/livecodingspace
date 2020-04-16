@@ -292,6 +292,25 @@ this.lightProto = function (lightType) {
     return node
 }
 
+this.mirrorProto = function () {
+
+    let newNode = this.cubeProto();
+    newNode.properties.width = 3;
+    newNode.properties.height = 4;
+    newNode.properties.depth= 0.1;
+    newNode.children.material.properties.color = "white";
+
+    newNode.children.mirrorComponent = {
+        "extends": "http://vwf.example.com/aframe/a-mirror-component.vwf",
+        "type": "component",
+        "properties": {
+            "camera": "avatarControl"
+        }
+    }
+
+    return newNode
+}
+
 this.cameraProto = function () {
 
     let newNode = this.cubeProto();
@@ -593,6 +612,41 @@ this.createPrimitive = function (type, params, name, node, avatar) {
         if (displayName) {
             newNode.properties.displayName = displayName;
         }
+        this.children.create(nodeName, newNode, function( child ) {
+            if (avatar) child.lookAt(self.children[avatar].worldPosition());
+          });
+    }
+
+}
+
+this.createMirror = function (name, node, avatar) {
+
+    var position = "0 0 0";
+
+    var nodeName = name;
+    if (!nodeName) {
+        nodeName = this.GUID();
+    }
+
+    if (avatar) {
+
+        let myAvatar = this.children[avatar];
+        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+
+        if (cursorNode) {
+            position = cursorNode.worldPosition();
+            //console.log(position);
+        }
+
+    }
+
+    var newNode = this.mirrorProto();
+    newNode.properties.displayName = "mirror";
+
+    var self = this;
+
+    if (newNode) {
+        newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });

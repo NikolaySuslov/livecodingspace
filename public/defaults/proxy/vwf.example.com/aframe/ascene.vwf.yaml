@@ -25,6 +25,7 @@ methods:
   cylinderProto:
   coneProto:
   textProto:
+  mirrorProto:
   lightProto:
     parameters:
       - lightType
@@ -64,6 +65,11 @@ methods:
   createGooglePoly:
     parameters:
       - polyID
+      - name
+      - node
+      - avatar
+  createMirror:
+    parameters:
       - name
       - node
       - avatar

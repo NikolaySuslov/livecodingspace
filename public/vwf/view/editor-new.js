@@ -141,8 +141,6 @@ define([
                                     // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
                                 }
 
-
-
                             }),
                             self.widgets.gridListItem({
                                 imgSrc: "/vwf/view/lib/images/ui/icons/camera_offset.png",
@@ -156,7 +154,21 @@ define([
                                     //let cubeName = self.GUID();
                                     // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
                                 }
-                            })
+                            }),
+                            self.widgets.gridListItem({
+                                imgSrc: "/vwf/view/lib/images/ui/icons/mirror.png",
+                                title: 'Mirror',
+                                imgSize: '30px',
+                                styleClass: "",
+                                onclickfunc: function () {
+                                    let avatarID = 'avatar-' + vwf.moniker_;
+                                    //let cubeName = self.GUID();
+                                    vwf_view.kernel.callMethod(vwf.application(), "createMirror", [null, null, avatarID])
+                                    //let cubeName = self.GUID();
+                                    // vwf_view.kernel.callMethod(vwf.application(), "createFloor")
+                                }
+
+                            }),
 
 
                         ]

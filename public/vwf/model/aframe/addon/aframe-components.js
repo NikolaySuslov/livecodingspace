@@ -11,7 +11,7 @@ AFRAME.registerComponent('scene-utils', {
 
 
     init: function () {
-
+        this.mirrors = {};
 
         const sceneEnterVR = (e) => {
 
@@ -52,10 +52,16 @@ AFRAME.registerComponent('scene-utils', {
     },
 
     update: function () {
+
     },
 
-    tick: function (t) {
-    }
+     tick: function (t) {
+
+            Object.values(this.mirrors).forEach(el => {
+                el.mirrorTick.call(el)
+            })
+
+     }
 })
 
 
@@ -182,9 +188,9 @@ AFRAME.registerComponent('gizmo', {
 
     },
 
-    tick: function (t) {
-       // this.transformControls.update();
-    }
+    // tick: function (t) {
+    //    // this.transformControls.update();
+    // }
 
 });
 
@@ -357,9 +363,9 @@ AFRAME.registerComponent('envmap', {
     /**
      * On each frame, update the 'time' uniform in the shaders.
      */
-    tick: function (t) {
+    // tick: function (t) {
 
-    }
+    // }
 })
 
 //https://threejs.org/examples/webgl_shaders_sky.html
@@ -429,9 +435,9 @@ AFRAME.registerComponent('skyshader', {
 
     },
 
-    tick: function (t) {
+    // tick: function (t) {
 
-    }
+    // }
 })
 
 AFRAME.registerComponent('sun', {
@@ -453,8 +459,8 @@ AFRAME.registerComponent('sun', {
     update: function () {
     },
 
-    tick: function (t) {
-    }
+    // tick: function (t) {
+    // }
 })
 
 AFRAME.registerComponent('gearvrcontrol', {
@@ -476,8 +482,8 @@ AFRAME.registerComponent('gearvrcontrol', {
     update: function () {
     },
 
-    tick: function (t) {
-    }
+    // tick: function (t) {
+    // }
 })
 
 
@@ -504,8 +510,8 @@ AFRAME.registerComponent('wmrvrcontrol', {
         });
     },
 
-    tick: function (t) {
-    }
+    // tick: function (t) {
+    // }
 })
 
 AFRAME.registerComponent('streamsound', {
@@ -581,8 +587,8 @@ AFRAME.registerComponent('streamsound', {
 
     },
 
-    tick: function (t) {
-    }
+    // tick: function (t) {
+    // }
 })
 
 
@@ -637,9 +643,9 @@ AFRAME.registerComponent('viewoffset', {
             this.data.height)
     },
 
-    tick: function (t) {
+    // tick: function (t) {
 
-    }
+    // }
 })
 
 AFRAME.registerComponent("virtual-gamepad-controls", {
@@ -1196,6 +1202,7 @@ THREE.ShaderLib[ 'mirror' ] = {
 
 THREE.Mirror = function ( renderer, camera, options ) {
 
+    
 	THREE.Object3D.call( this );
 
 	this.name = 'mirror_' + this.id;
@@ -1248,14 +1255,18 @@ THREE.Mirror = function ( renderer, camera, options ) {
 		this.camera = new THREE.PerspectiveCamera();
 		console.log( this.name + ': camera is not a Perspective Camera!' );
 
-	}
+    }
+
 
 	this.textureMatrix = new THREE.Matrix4();
 
 	this.mirrorCamera = this.camera.clone();
-	this.mirrorCamera.matrixAutoUpdate = true;
+    this.mirrorCamera.matrixAutoUpdate = true;
+
 
 	var parameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBuffer: false };
+
+    //this.currentRenderTarget = this.renderer.getRenderTarget();
 
 	this.renderTarget = new THREE.WebGLRenderTarget( width, height, parameters );
 	this.renderTarget2 = new THREE.WebGLRenderTarget( width, height, parameters );
@@ -1283,14 +1294,16 @@ THREE.Mirror = function ( renderer, camera, options ) {
 	}
 
 	this.updateTextureMatrix();
-	this.render();
+    this.render();
+    
+
 
 };
 
 THREE.Mirror.prototype = Object.create( THREE.Object3D.prototype );
 THREE.Mirror.prototype.constructor = THREE.Mirror;
 
-THREE.Mirror.prototype.renderWithMirror = function ( otherMirror ) {
+THREE.Mirror.prototype.renderWithMirror = function ( otherMirror, aScene ) {
 
 	// update the mirror matrix to mirror the current view
 	this.updateTextureMatrix();
@@ -1301,11 +1314,11 @@ THREE.Mirror.prototype.renderWithMirror = function ( otherMirror ) {
 	otherMirror.camera = this.mirrorCamera;
 
 	// render the other mirror in temp texture
-	otherMirror.renderTemp();
+	otherMirror.renderTemp(aScene);
 	otherMirror.material.uniforms.mirrorSampler.value = otherMirror.renderTarget2.texture;
 
 	// render the current mirror
-	this.render();
+	this.render(aScene);
 	this.matrixNeedsUpdate = true;
 
 	// restore material and camera of other mirror
@@ -1391,24 +1404,25 @@ THREE.Mirror.prototype.updateTextureMatrix = function () {
 
 };
 
-THREE.Mirror.prototype.render = function () {
+THREE.Mirror.prototype.render = function (aScene) {
 
 	if ( this.matrixNeedsUpdate ) this.updateTextureMatrix();
 
 	this.matrixNeedsUpdate = true;
 
 	// Render the mirrored view of the current scene into the target texture
-	var scene = this;
+	//var scene = aScene //this;
 
-	while ( scene.parent !== null ) {
+	// while ( scene.parent !== null ) {
 
-		scene = scene.parent;
+	// 	scene = scene.parent;
 
-	}
+	// }
 
     //this.renderer.setRenderTarget( null );
 
-	if ( scene !== undefined && scene instanceof THREE.Scene ) {
+    if ( aScene !== undefined) //&& scene instanceof THREE.Scene ) 
+    {
 
 		// We can't render ourself to ourself
 		var visible = this.material.visible;
@@ -1416,9 +1430,8 @@ THREE.Mirror.prototype.render = function () {
 
         this.renderer.clear();
         this.renderer.setRenderTarget( this.renderTarget);
-        this.renderer.render( scene, this.mirrorCamera );
-        this.renderer.setRenderTarget( null );
-        // this.renderer.clear();
+        this.renderer.render( aScene.object3D, this.mirrorCamera);
+        this.renderer.setRenderTarget(null);
    
 
 		//this.renderer.render( scene, this.mirrorCamera, this.renderTarget, true );
@@ -1429,26 +1442,27 @@ THREE.Mirror.prototype.render = function () {
 
 };
 
-THREE.Mirror.prototype.renderTemp = function () {
+THREE.Mirror.prototype.renderTemp = function (aScene) {
 
 	if ( this.matrixNeedsUpdate ) this.updateTextureMatrix();
 
 	this.matrixNeedsUpdate = true;
 
-	// Render the mirrored view of the current scene into the target texture
-	var scene = this;
+    // Render the mirrored view of the current scene into the target texture
+    
+	// var scene = this;
 
-	while ( scene.parent !== null ) {
+	// while ( scene.parent !== null ) {
 
-		scene = scene.parent;
+	// 	scene = scene.parent;
 
-	}
+	// }
 
-	if ( scene !== undefined && scene instanceof THREE.Scene ) {
-
+	if ( aScene !== undefined) //&& scene instanceof THREE.Scene ) {
+{
         this.renderer.clear();
         this.renderer.setRenderTarget( this.renderTarget2);
-        this.renderer.render( scene, this.mirrorCamera );
+        this.renderer.render( aScene.object3D, this.mirrorCamera );
         this.renderer.setRenderTarget( null );
 
 		//this.renderer.render( scene, this.mirrorCamera, this.renderTarget2, true );
@@ -1465,7 +1479,7 @@ AFRAME.registerComponent('mirror', {
     init: function () {
         var scene = this.el.sceneEl;
         this.cameraID = this.data.camera;
-        scene.addEventListener('loaded',this.OnRenderLoaded()); //this.OnRenderLoaded.bind(this)
+        scene.addEventListener('render-target-loaded',this.OnRenderLoaded()); //this.OnRenderLoaded.bind(this)
     },
 
     // update: function (old) {
@@ -1487,38 +1501,57 @@ AFRAME.registerComponent('mirror', {
         if (cameraEl){
         let camera = cameraEl.getObject3D('camera'); //document.querySelector('#avatarControl').getObject3D('camera');
         var scene = this.el.sceneEl;
+        // this.renderer = new THREE.WebGLRenderer({
+        //     antialias: true,
+        // });
         this.renderer = scene.renderer;
         this.mirror = new THREE.Mirror( this.renderer, camera, { clipBias: 0.003, textureWidth: window.innerWidth, textureHeight: window.innerHeight, color: 0x777777, debugMode: false} );
-        mirrorObj.material =this.mirror.material;
+        mirrorObj.material = this.mirror.material;
         //mirrorObj.children = [];
         mirrorObj.add(this.mirror);
         }
+
+        //As of A-Frame tick (behaviours) priority issue need to place mirror tick onto upper tick()
+        this.el.sceneEl.components['scene-utils'].mirrors[this.el.id] = this;
+
     },
-    tick: function () {
-        //this.mirror.render();
-        if(!this.data.renderothermirror)
-            {
-                this.mirror.render();
-            }
-        else
-            {
-                var mirrors = [];
-                var mirrorEls = document.querySelectorAll("[mirror]");
-                for(var i=0;i<mirrorEls.length;i++)
+
+    remove: function () {
+        delete this.el.sceneEl.components['scene-utils'].mirrors[this.el.id]
+    },
+
+    mirrorTick: function () {
+
+        //    //this.mirror.render();
+
+            if(!this.data.renderothermirror)
                 {
-                    if(mirrorEls[i]!=this.el)
+                    this.mirror.render(this.el.sceneEl);
+                }
+            else
+                {
+                    var mirrors = [];
+                    var mirrorEls = document.querySelectorAll("[mirror]");
+                    for(var i=0;i<mirrorEls.length;i++)
                     {
-                        mirrors.push(mirrorEls[i].components.mirror.mirror);
-                    }   
+                        if(mirrorEls[i]!=this.el)
+                        {
+                            mirrors.push(mirrorEls[i].components.mirror.mirror);
+                        }   
+                    }
+                    if(mirrors.length === 0)
+                    {
+                        this.mirror.render(this.el.sceneEl);
+                    }
+                    for(var i = 0; i<mirrors.length;i++)
+                    {
+                        this.mirror.renderWithMirror(mirrors[i], this.el.sceneEl);
+                    }
                 }
-                if(mirrors.length === 0)
-                {
-                    this.mirror.render();
-                }
-                for(var i = 0; i<mirrors.length;i++)
-                {
-                    this.mirror.renderWithMirror(mirrors[i]);
-                }
-            }
-    }
+         },
+
+    // tick: function () {
+
+    //  }
+
     });
