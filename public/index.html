@@ -14,95 +14,22 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
     
     <title>Live Coding Space 0.2</title>
     <!-- <script type="text/javascript" src="/lib/page.js"></script> -->
-    <script type="text/javascript" src="/lib/yamljs/dist/yaml.js"></script>
 
-    <script type="text/javascript" src="/lib/compatibilitycheck.js"></script>
-
-    <script type="text/javascript" src="/lib/socket.io/socket.io.js"></script>
-    <!-- <script type="text/javascript" src="socket.io-sessionid-patch.js"></script> -->
-    <script src="/vwf/view/webrtc/adapter-latest.js"></script>
-
-    <script src="/lib/gundb/gun.js"></script>
-    <script src="/lib/gundb/sea.js"></script>
-    <script src="/lib/gundb/lib/then.js"></script>
-    <script src="/lib/gundb/lib/path.js"></script>
-    <script src="/lib/gundb/lib/not.js"></script>
-    <script src="/lib/gundb/lib/open.js"></script>
-    <script src="/lib/gundb/lib/load.js"></script>
-    <script src="/lib/gundb/lib/promise.js"></script>
-    <script src="/lib/gundb/lib/time.js"></script>
-    <script src="/lib/gundb/lib/bye.js"></script>
-
-   <script src="/lib/gundb/lib/webrtc.js"></script> 
-  <script src="/lib/gundb/nts.js"></script>
-
-   <script src="/lib/gundb/lib/radix.js"></script>
-    <script src="/lib/gundb/lib/radisk.js"></script>
-    <script src="/lib/gundb/lib/store.js"></script>
-    <script src="/lib/gundb/lib/rindexed.js"></script>
+    <script type="text/javascript" src="/lib/loadjs/loadjs.js"></script>
+    <script type="text/javascript" src="/loadLibs.js"></script>
   
-    <!-- <script src="/gun/as.js"></script>
-  <script src="/gun/nts.js"></script> -->
-
-    <script type="text/javascript" src="/lib/cell.js"></script>
-    <script type="text/javascript" src="/lib/he.js"></script>
-
-    <!-- signals for AR.js 
-    <script type="text/javascript" src="/lib/signals/signals.min.js"></script> -->
-
-    <script type="text/javascript" src="/lib/draggabilly/draggabilly.pkgd.js"></script>
-    <script type="text/javascript" src="/lib/screenfull/screenfull.min.js"></script>
-
     <link href="/lib/noty/noty.css" rel="stylesheet">
     <link href="/lib/noty/themes/mint.css" rel="stylesheet">
-    <script type="text/javascript" src="/lib/noty/noty.js"></script>
-
-    <script type="text/javascript" src="/lib/polyglot/polyglot.min.js"></script>
-    <!-- <script type="text/javascript" src="/vwf/view/lib/polyglot/language.js"></script> -->
-
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-
     <link rel="stylesheet" href="/lib/mdc/dist/material-components-web.min.css">
-    <script src="/lib/mdc/dist/material-components-web.min.js"></script>
-
-    <!-- <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
-  <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script> -->
-
-  <script type="text/javascript" src="/vwf/model/aframe/addon/virtualgc/nipplejs.js"></script>
-  <link rel="stylesheet" type="text/css" href="/vwf/model/aframe/addon/virtualgc/virtual-gamepad-controls.css" />
-
-    <script type="text/javascript" src="/lib/lively.vm_standalone.js"></script>
-    <script type="text/javascript" src="/lib/async/async.min.js"></script>
-    <script type="text/javascript" src="/lib/require.js"></script>
-    <script type="text/javascript" src="/lib/crypto.js"></script>
-    <script type="text/javascript" src="/lib/md5.js"></script>
-    <script type="text/javascript" src="/lib/alea.js"></script>
-    <script type="text/javascript" src="/lib/mash.js"></script>
-    <script type="text/javascript" src="/lib/ace/ace.js"></script>
-   
-   
+    <link rel="stylesheet" type="text/css" href="/vwf/model/aframe/addon/virtualgc/virtual-gamepad-controls.css" />
+    <link rel="stylesheet" type="text/css" href="/lib/index.css" />
 
     <script type="text/javascript" src="/lib/closure/base.js"></script>
     <script type="text/javascript">goog.require('goog.vec.Vec2')</script>
     <script type="text/javascript">goog.require('goog.vec.Mat4')</script>
     <script type="text/javascript">goog.require('goog.vec.Quaternion')</script>
-
-
-    <script type="text/javascript" src="/vwf.js"></script>
-
-    <link rel="stylesheet" type="text/css" href="/lib/index.css" />
-
-    <script type="module">
-        //localStorage.clear();
-        let oldGunStorage = localStorage.getItem('gun/');
-        if(oldGunStorage){
-            localStorage.removeItem('gun/');
-        }
-        import { App } from '/app.js';
-        window.onload = new App;
-    </script>
-
-
+  
 </head>
 
 <body class="mdc-typography">
@@ -137,50 +64,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}' data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
             fullscreen
         </i>
-
-
-
     </div>
-
-
-
-    <script>
-        mdc.autoInit();
-        window.addEventListener("load", function (event) {
-
-            console.log("All resources finished loading!");
-
-        });
-
-        const iconEl = document.querySelector('#hideui');
-        const compHideUI = new mdc.iconButton.MDCIconButtonToggle(iconEl);
-        iconEl.addEventListener('MDCIconButtonToggle:change', (e) => {
-
-            let ui = document.querySelector('.mdc-top-app-bar');
-            if (ui) {
-
-                let chkAttr = e.detail.isOn;
-                if (chkAttr) {
-                    ui.style.visibility = 'visible'
-                } else {
-                    ui.style.visibility = 'hidden'
-                }
-            }
-
-        });
-
-        const fullScreenToggle = document.querySelector('#fullscreenui');
-        const compfullScreen = new mdc.iconButton.MDCIconButtonToggle(fullScreenToggle);
-        fullScreenToggle.addEventListener('MDCIconButtonToggle:change', (e) => {
-
-            if (screenfull.enabled) {
-                screenfull.toggle();
-            } else {
-                // Ignore or do something else
-            }
-        });
-
-    </script>
 </body>
-
 </html>
