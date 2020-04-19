@@ -740,6 +740,8 @@ class App {
               if (file.includes('_json') && (typeof source !== 'object')) {
                 source = (typeof JSON.parse(source) == 'object') ? JSON.stringify(JSON.parse(source), null, '\t') : source 
                 //source = source;//JSON.stringify(source, null, '\t');
+              } else if (typeof source == 'object') {
+                  source = JSON.stringify(source, null, '\t')
               }
 
 
