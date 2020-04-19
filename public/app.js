@@ -1051,7 +1051,9 @@ class App {
 
       let pathToParse = pathname.replace('/' + user, "");
 
-      app.helpers.Process(pathToParse).then(parsedRequest => {
+      app.loadAppLibs()
+        .then(libs => {return app.helpers.Process(pathToParse)})  //app.helpers.Process(pathToParse)
+        .then(parsedRequest => {
 
         localStorage.setItem('lcs_app', JSON.stringify({ path: parsedRequest }));
 
@@ -1061,6 +1063,27 @@ class App {
           vwf.loadConfiguration(application, userLibraries, compatibilityCheck);
       })
     })
+
+  }
+
+  async loadAppLibs(){
+
+   return loadjs([ 
+        '/lib/compatibilitycheck.js',
+        '/vwf/view/webrtc/adapter-latest.js',
+        '/lib/draggabilly/draggabilly.pkgd.js',
+        '/vwf/model/aframe/addon/virtualgc/nipplejs.js',
+        '/lib/lively.vm_standalone.js',
+        '/lib/require.js',
+        '/lib/crypto.js',
+        '/lib/md5.js',
+        '/lib/alea.js',
+        '/lib/mash.js',
+        '/vwf.js'
+        ], {
+            async: false,
+            returnPromise: true
+        })
 
   }
 

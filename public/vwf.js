@@ -274,7 +274,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         //     [1] vwf.loadConfiguration( ..., { "vwf/model/glge": [ "#scene, "second param" ] }, { ... } )
         //     [2] vwf.loadConfiguration( ..., { "vwf/model/glge": "#scene" }, { ... } )
         //     [3] vwf.loadConfiguration( ..., { "vwf/model/javascript": undefined }, { ... } )
-       this.loadConfiguration = async function(/* [ componentURI|componentObject ] { modelInitializers }
+       this.loadConfiguration = function(/* [ componentURI|componentObject ] { modelInitializers }
             { viewInitializers } */) {
             var args = Array.prototype.slice.call( arguments );
 
