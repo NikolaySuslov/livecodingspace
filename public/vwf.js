@@ -290,139 +290,36 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             var requireConfig = {
                 baseUrl: '/',
                 waitSeconds: 0,
-                shim: {
-                   
-                     "vwf/model/aframe/addon/aframe-interpolation": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-                    "vwf/model/aframe/extras/aframe-extras.loaders": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-                    "vwf/model/aframe/addon/aframe-sun-sky": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-
-                    "vwf/model/aframe/extras/aframe-extras.controls.min": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-                    "vwf/model/aframe/addon/SkyShader": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-
-                    "vwf/model/aframe/addon/BVHLoader": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-                    "vwf/model/aframe/addon/TransformControls": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-                    "vwf/model/aframe/addon/THREE.MeshLine": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-
-                    "vwf/model/aframe/kframe/aframe-aabb-collider-component.min": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    },
-
-                    "vwf/model/aframe/addon/aframe-components": {
-                        deps: [ "vwf/model/aframe/aframe-master.min",
-                        "vwf/model/aframe/extras/aframe-extras.loaders",
-                        "vwf/model/aframe/addon/aframe-sun-sky",
-                        "vwf/model/aframe/addon/SkyShader",
-                        "vwf/model/aframe/addon/BVHLoader",
-                        "vwf/model/aframe/addon/TransformControls",
-                        "vwf/model/aframe/addon/THREE.MeshLine",
-                        "vwf/model/aframe/kframe/aframe-aabb-collider-component.min"
-                    ]
-                    },
-                    "vwf/view/arjs/aframe-ar": {
-                        deps: [ "vwf/model/aframe/aframe-master.min" ]
-                    }
-
-                }
+                shim: {  }
             };
-
-            //jQuery = require("jquery");
-
             var requireArray = [
                 { library: "domReady", active: true },
                 { library: "vwf/configuration", active: true },
+
                 { library: "vwf/kernel/model", active: true },
-                { library: "vwf/model/javascript", active: true },
 
                 { library: "vwf/model/object", active: true },
+                { library: "vwf/model/javascript", active: true },
+                { library: "vwf/model/aframe", active: true},
+                { library: "vwf/model/aframeComponent", active: true },
                 { library: "vwf/model/stage/log", active: true },
-
                 { library: "vwf/model/ohm", active: true },
                 { library: "vwf/model/osc", active: true },
-              
 
-                { library: "vwf/model/aframe/addon/aframe-components", 
-                linkedLibraries: [ "vwf/model/aframe/addon/SkyShader" ], 
-                active: false 
-            },
 
-                  { library: "vwf/model/aframe", 
-                    linkedLibraries: [ "vwf/model/aframe/aframe-master.min",
-                    "vwf/model/aframe/extras/aframe-extras.loaders",
-                    "vwf/model/aframe/addon/aframe-interpolation",
-                    "vwf/model/aframe/addon/aframe-sun-sky",
-                    "vwf/model/aframe/addon/aframe-components",
-                    "vwf/model/aframe/addon/SkyShader",
-                    "vwf/model/aframe/extras/aframe-extras.controls.min",
-                    "vwf/model/aframe/addon/BVHLoader",
-                    "vwf/model/aframe/addon/TransformControls",
-                    "vwf/model/aframe/addon/THREE.MeshLine",
-                    "vwf/model/aframe/kframe/aframe-aabb-collider-component.min"
-                       
-                 ], 
-                    active: false 
-                },
+                { library: "vwf/kernel/view", active: true },
 
                 { library: "vwf/view/document", active: true },
-                { library: "vwf/model/aframeComponent", active: true },
-                { library: "vwf/kernel/view", active: true },
+                { library: "vwf/view/aframe", active: true },
+                { library: "vwf/view/aframeComponent", active: true },
                 { library: "vwf/view/editor-new", active: false },
-
-                { library: "vwf/view/webrtc", 
-             //       linkedLibraries: ["vwf/view/webrtc/adapter"],  
-                    active: true 
-                },
-
+                { library: "vwf/view/webrtc", active: true },
                 { library: "vwf/view/ohm", active: true },
                 { library: "vwf/view/osc", active: true },
-
-                { library: "vwf/view/aframe-ar-driver", 
-                linkedLibraries: [ "vwf/model/aframe/aframe-master.min"],
-                active: false
-            },
-
-                
-                 { library: "vwf/view/aframe", active: true },
-                { library: "vwf/model/aframe/aframe-master.min", active: false },
-                { library: "vwf/model/aframe/extras/aframe-extras.loaders", active: false },
-                { library: "vwf/model/aframe/addon/aframe-interpolation", active: false },
-                { library: "vwf/model/aframe/addon/aframe-sun-sky", active: false },
-                { library: "vwf/model/aframe/addon/aframe-components", active: false },
-                { library: "vwf/model/aframe/addon/BVHLoader", active: false },
-                { library: "vwf/model/aframe/addon/TransformControls", active: false },
-                { library: "vwf/model/aframe/addon/THREE.MeshLine", active: false },
-                { library: "vwf/model/aframe/kframe/aframe-aabb-collider-component.min", active: false },
-                
-                
-                
-                
-                { library: "vwf/model/aframe/addon/SkyShader", active: false },
-                { library: "vwf/model/aframe/extras/aframe-extras.controls.min", active: false },
-
-                { library: "vwf/view/aframeComponent", active: true },
+                { library: "vwf/view/aframe-ar-driver", active: false },
 
                 { library: "vwf/kernel/utility", active: true },
                 { library: "vwf/utility", active: true },
-               // { library: "vwf/view/webrtc/adapter", active: false },
-
-                //{ library: "vwf/view/webrtc/adapterWebRTC", active: false },
-
-                // { library: "vwf/admin", active: false }
 
                
             ];
@@ -430,24 +327,24 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             var initializers = {
                 model: [
                     { library: "vwf/model/javascript", active: true },
-
-                     { library: "vwf/model/ohm", active: true },
-                     { library: "vwf/model/osc", active: true },
-                  
-                     { library: "vwf/model/aframe", active: true },
-                     { library: "vwf/model/aframeComponent", active: true },
+                    { library: "vwf/model/aframe", active: true },
+                    { library: "vwf/model/aframeComponent", active: true },
+                    { library: "vwf/model/ohm", active: true },
+                    { library: "vwf/model/osc", active: true },
 
                     { library: "vwf/model/object", active: true }
+                    
                 ],
                 view: [
                     { library: "vwf/view/document", active: true },
+
+                    { library: "vwf/view/ohm", active: true },
+                    { library: "vwf/view/osc", active: true },
+
                     { library: "vwf/view/aframe", active: true },
                     { library: "vwf/view/aframeComponent", active: true },
+                    { library: "vwf/view/aframe-ar-driver", active: false },
                     { library: "vwf/view/editor-new", active: false },
-
-                     { library: "vwf/view/ohm", active: true },
-                     { library: "vwf/view/osc", active: true },
-                     { library: "vwf/view/aframe-ar-driver", active: false },
 
                     { library: "vwf/view/webrtc", active: true}
 
@@ -579,18 +476,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     // Load default renderer if no other librarys specified
                     if(Object.keys(userLibraries["model"]).length == 0 && Object.keys(userLibraries["view"]).length == 0) {
                         // requireArray["vwf/model/threejs"].active = true;
-                        // requireArray["vwf/view/threejs"].active = true;
-                        // requireArray["vwf/model/threejs/three"].active = true;
-                        // requireArray["vwf/model/threejs/js/loaders/ColladaLoader"].active = true;
-                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTF-parser"].active = true;
-                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoader"].active = true;
-                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFAnimation"].active = true;
-                        // requireArray["vwf/model/threejs/js/loaders/gltf/glTFLoaderUtils"].active = true;
-                        // requireArray["vwf/model/threejs/js/stereo/DeviceOrientationControls"].active = true;
-                        // requireArray["vwf/model/threejs/js/stereo/OrbitControls"].active = true;
-                        // requireArray["vwf/model/threejs/js/stereo/StereoEffect"].active = true;
-                        // initializers["model"]["vwf/model/threejs"].active = true;
-                        // initializers["view"]["vwf/view/threejs"].active = true;
                     }
     
                     require( requireConfig, getActiveLibraries(requireArray, false), function( ready ) {
@@ -618,9 +503,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                   
 
             })
-
-
-            
 
             // jQuery.getJSON("admin/config", function(configLibraries) {
             // }).always(function(jqXHR, textStatus) { 

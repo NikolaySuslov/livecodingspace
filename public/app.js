@@ -1068,6 +1068,24 @@ class App {
 
   async loadAppLibs(){
 
+    await loadjs([
+      '/vwf/model/aframe/aframe-master.min.js',
+     '/vwf/model/aframe/extras/aframe-extras.loaders.js',
+      '/vwf/model/aframe/extras/aframe-extras.controls.min.js',
+      '/vwf/model/aframe/kframe/aframe-aabb-collider-component.min.js',
+      '/vwf/model/aframe/addon/aframe-interpolation.js',
+      '/vwf/model/aframe/addon/aframe-sun-sky.js',
+      '/vwf/model/aframe/addon/SkyShader.js',
+      '/vwf/model/aframe/addon/BVHLoader.js',
+      '/vwf/model/aframe/addon/TransformControls.js',
+      '/vwf/model/aframe/addon/THREE.MeshLine.js',
+      '/vwf/model/aframe/addon/aframe-components.js',
+      '/vwf/view/arjs/aframe-ar.js'
+    ],{
+      async: false,
+      returnPromise: true
+    });
+
    return loadjs([ 
         '/lib/compatibilitycheck.js',
         '/vwf/view/webrtc/adapter-latest.js',
