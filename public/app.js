@@ -737,7 +737,7 @@ class App {
               //console.log(source);
 
               //var source = (typeof(sourceToEdit) =="object") ? JSON.stringify(sourceToEdit): sourceToEdit;
-              if (file.includes('_json')) {
+              if (file.includes('_json') && (typeof source !== 'object')) {
                 source = (typeof JSON.parse(source) == 'object') ? JSON.stringify(JSON.parse(source), null, '\t') : source 
                 //source = source;//JSON.stringify(source, null, '\t');
               }
