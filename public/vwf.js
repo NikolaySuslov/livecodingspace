@@ -283,6 +283,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             }
 
             var userLibraries = args.shift() || {};
+            var conf = args.shift() || {};
             var applicationConfig = {};
 
             var callback = args.shift();
@@ -378,27 +379,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 return activeLibraryList;
             }
 
-            let path =  JSON.parse(localStorage.getItem('lcs_app')).path.public_path;
-            let appName = JSON.parse(localStorage.getItem('lcs_app')).path.application.split(".").join("_");
-            let dbPath = appName + '_config_yaml';
-           
-            let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-
-            userDB.get('worlds').get(path.slice(1)).get(dbPath).get('file').load(function(res) {
-                
-                var conf = "";
-
-                if (res) {
-                    let config = YAML.parse(res);
-                    conf = config
-                } 
-
-                let manualSettings = localStorage.getItem('lcs_app_manual_settings');
-                if(manualSettings){
-                    let manualConf = JSON.parse(manualSettings);
-                    conf.model = manualConf.model;
-                    conf.view = manualConf.view;
-                }
 
                 let confPromise = new Promise((resolve, reject) => {
                       resolve(conf); 
@@ -502,7 +482,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                   
 
-            })
+            
 
             // jQuery.getJSON("admin/config", function(configLibraries) {
             // }).always(function(jqXHR, textStatus) { 
@@ -4597,7 +4577,11 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
                    fileName = dbName;
-                   window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(comp=>{
+                   let dbNode = window._LCS_SYS_USER.get('proxy').get(fileName).get('file');
+
+                   let nodeProm = new Promise(res => dbNode.once(res))
+
+                   nodeProm.then(comp=>{
                     parseComp (comp);
                    })
                    
@@ -4611,7 +4595,10 @@ if ( ! childComponent.source ) {
                     let worldName = dbName.split('/')[0];
                     //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
                    fileName = dbName.replace(worldName + '/', "");
-                   userDB.get('worlds').path(worldName).get(fileName).get('file').load(comp=>{
+                   let dbNode = userDB.get('worlds').path(worldName).get(fileName).get('file');
+
+                   let nodeProm = new Promise(res => dbNode.once(res))
+                   nodeProm.then(comp=>{
                     parseComp (comp);
                    })
                    
@@ -4682,7 +4669,10 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
-                    window._LCS_SYS_USER.get('proxy').get(fileName).get('file').load(comp=>{
+                    let dbNode = window._LCS_SYS_USER.get('proxy').get(fileName).get('file');
+                    let nodeProm = new Promise(res => dbNode.once(res))
+
+                    nodeProm.then(comp=>{
                         parseComp (comp);
                        })
                     // window._LCS_SYS_USER.get('proxy').get(fileName).get('file').once(function(r){
@@ -4692,7 +4682,10 @@ if ( ! childComponent.source ) {
  
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
-                    userDB.get('worlds').path(worldName).get(fileName).get('file').load(comp=>{
+
+                    let dbNode = userDB.get('worlds').path(worldName).get(fileName).get('file');
+                    let nodeProm = new Promise(res => dbNode.once(res))
+                    nodeProm.then(comp=>{
                         parseComp (comp);
                        })
                     // userDB.get('worlds').path(worldName).get(fileName).get('file').once(function(r){

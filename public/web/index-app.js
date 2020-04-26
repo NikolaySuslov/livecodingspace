@@ -16,15 +16,15 @@ class IndexApp {
         this.instances = {};
         //this.language = _LangManager.language;
 
-        if(!_app.isLuminary){
+        if (!_app.isLuminary) {
             this.initReflectorConnection();
         }
 
 
     }
 
-    
-    initReflectorConnection(){
+
+    initReflectorConnection() {
 
         this.options = {
 
@@ -95,6 +95,29 @@ class IndexApp {
             entry.appendChild(appEl);
         })
 
+        document.querySelector("#worldsGUI").$cell({
+            id: "worldsGUI",
+            $cell: true,
+            $type: "div",
+            _comps: [],
+            _wcards: {},
+            $components: [],
+            $refresh: function (comps) {
+                //do update;
+                //this._userAlias = user;
+                this._comps = comps;
+            },
+            $init: function () {
+                console.log('init comp...');
+            },
+
+            $update: function () {
+                //do update;
+                console.log('update me');
+                this.$components = this._comps;
+            }
+        });
+
         //init CELL
         document.querySelector("#userLobby").$cell({
             id: "userLobby",
@@ -105,24 +128,6 @@ class IndexApp {
                 this.$components = self.initUserGUI()
             }
         });
-
-        document.querySelector("#worldsGUI").$cell({
-            id: 'worldsGUI',
-            $cell: true,
-            $type: "div",
-            $components: [],
-            _comps: [],
-            _refresh: async function (data, fn) {
-                _app.showProgressBar();
-                this._comps = await fn.call(self, data);
-                this.$update();
-                _app.hideProgressBar();
-            },
-            $update: async function () {
-                this.$components = this._comps
-            }
-        });
-
 
     }
 
@@ -164,97 +169,14 @@ class IndexApp {
     }
 
     async initWorldsProtosListForUser(userAlias) {
-        document.querySelector("#worldsGUI").$components = [];
-        await document.querySelector("#worldsGUI")._refresh(userAlias, this.getWorldsProtosListForUser);
-    }
-
-    async initWorldsStatesListForUser(userAlias) {
-        document.querySelector("#worldsGUI").$components = [];
-        await document.querySelector("#worldsGUI")._refresh(userAlias, this.getWorldsStatesListForUser);
-    }
-
-
-    async getWorldsStatesListForUser(userAlias) {
-
-        let worldsGUI = [];
-
-
-        let worlds = this.createWorldsGUI(userAlias, 'allStates' );
-
-        await _app.getAllStateWorldsInfoForUser(userAlias, function (data) {
-            let doc = document.querySelector("#allStates_" + userAlias);
-            if (doc) {
-                Object.assign(doc._states, data);
-                doc.$update();
-            }
-        }
-            );
-            worldsGUI.push(worlds);
-        // Object.entries(data).forEach(el => {
-
-        //     let worlds = this.createWorldsGUI(userAlias, el[0]);
-        //     worlds._states = el[1];
-        //     worlds.$update();
-        //     worldsGUI.push(worlds);
-
-        // })
-
-
-        return [
-            {
-                $type: "div",
-                class: "mdc-layout-grid",
-                $components: [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "h1",
-                                        class: "mdc-typography--headline4",
-                                        $text: 'States for ' + userAlias
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [].concat(worldsGUI)
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-
-    async getWorldsProtosListForUser(userAlias) {
-
-
-        let worldsGUI = [];
-
-        //let data = await _app.getAllProtoWorldsInfoForUser(userAlias);
+        let doc = document.querySelector("#worldsGUI");
+        //doc.$components = [];
+        let allInfo = await _app.getAllProtoWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
 
         let worlds = this.createWorldsGUI(userAlias);
+        worlds._refresh(allInfo);
 
-        await _app.getAllProtoWorldsInfoForUser(userAlias, function (data) {
-
-            let doc = document.querySelector("#allWorlds_" + userAlias);
-            if (doc) {
-                Object.assign(doc._states, data);
-                doc.$update();
-            }
-        })
-
-        //worlds._states = data;
-        //worlds.$update();
-        worldsGUI.push(worlds);
-
-        return [
+        let components = [
             {
                 $type: "div",
                 class: "mdc-layout-grid",
@@ -277,18 +199,78 @@ class IndexApp {
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [].concat(worldsGUI)
+                                $components: [worlds]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+
+        doc.$refresh(components);
+
+        //initiate update world cards
+        doc._wcards = worlds;
+        doc._wcards.$update();
+
+        console.log(allInfo);
+
+    }
+
+    async initWorldsStatesListForUser(userAlias) {
+
+        let doc = document.querySelector("#worldsGUI");
+        //doc.$components = [];
+        let allInfo = await _app.getAllStateWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
+
+        let worlds = this.createWorldsGUI(userAlias, 'allStates');
+        worlds._refresh(allInfo);
+        let components = [
+            {
+                $type: "div",
+                class: "mdc-layout-grid",
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $type: "h1",
+                                        class: "mdc-typography--headline4",
+                                        $text: 'States for ' + userAlias
+                                    }
+                                ]
                             },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [].concat(worlds)
+                            }
                         ]
                     }
                 ]
             }
         ]
+
+        doc.$refresh(components);
+
+        //initiate update world cards
+        doc._wcards = worlds;
+        doc._wcards.$update();
+
+        console.log(allInfo);
+
     }
+
 
     initUser() {
 
-        _LCSDB.on('auth', function(ack) {
+        _LCSDB.on('auth', function (ack) {
 
             if (ack.sea.pub) {
 
@@ -300,13 +282,13 @@ class IndexApp {
                 // document.querySelector('#worldGUI').$update();
                 // document.querySelector('#main').$update();
 
-                _LCSDB.get('users').get(alias).not(function(res) {
+                _LCSDB.get('users').get(alias).not(function (res) {
                     let userObj = {
                         alias: alias,
                         pub: ack.sea.pub
                     }
                     _LCSDB.get('users').get(alias).put(userObj);
-                  })
+                })
 
                 _LCSDB.user().get('profile').once(function (data) { console.log(data) })
 
@@ -368,7 +350,7 @@ class IndexApp {
                             "onclick": function (e) {
                                 e.preventDefault();
                                 //page("/app/worlds/states")
-                                 window.location.pathname = "/app/worlds/states"
+                                window.location.pathname = "/app/worlds/states"
                                 //_app.indexApp.getAppDetailsFromDefaultDB('states');
 
                             }
@@ -394,54 +376,54 @@ class IndexApp {
             $cell: true,
             _luminarySwitch: null,
             $components: [
-              {
-                $type: "p",
-                class: "mdc-typography--headline5",
-                $text: "Use Krestianstvo Luminary (experimental)"
-              },
-              {
-                $type: 'p'
-              },
-              _app.widgets.switch({
-                'id': 'forceLuminary',
-                'init': function () {
-                  this._switch = new mdc.switchControl.MDCSwitch(this);
-                  let config = localStorage.getItem('lcs_config');
-                  this._switch.checked = JSON.parse(config).luminary;
-                  
-                 // this._replaceSwitch = this._switch;
-                  
+                {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Use Krestianstvo Luminary (experimental)"
                 },
-                'onchange': function (e) {
+                {
+                    $type: 'p'
+                },
+                _app.widgets.switch({
+                    'id': 'forceLuminary',
+                    'init': function () {
+                        this._switch = new mdc.switchControl.MDCSwitch(this);
+                        let config = localStorage.getItem('lcs_config');
+                        this._switch.checked = JSON.parse(config).luminary;
 
-                    if (this._switch) {
-                        let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                        if (chkAttr) {
-                            let config = JSON.parse(localStorage.getItem('lcs_config'));
-                            config.luminary = true;
-                            localStorage.setItem('lcs_config', JSON.stringify(config));
-                            window.location.reload(true);
-                            //this._switch.checked = false;
-                        } else {
-                            let config = JSON.parse(localStorage.getItem('lcs_config'));
-                            config.luminary = false;
-                            localStorage.setItem('lcs_config', JSON.stringify(config));
-                            window.location.reload(true);
+                        // this._replaceSwitch = this._switch;
+
+                    },
+                    'onchange': function (e) {
+
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.luminary = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                window.location.reload(true);
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.luminary = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                window.location.reload(true);
+                            }
                         }
                     }
                 }
-              }
-              ),
-              {
-                $type: 'label',
-                for: 'input-forceLuminary',
-                $text: 'On / Off'
-              }
+                ),
+                {
+                    $type: 'label',
+                    for: 'input-forceLuminary',
+                    $text: 'On / Off'
+                }
 
             ]
-          }
+        }
 
-          
+
 
         let userGUI =
         {
@@ -463,13 +445,12 @@ class IndexApp {
                                 "label": 'Sign OUT',
                                 "onclick": function (e) {
                                     _LCSDB.user().leave();
-                                    setTimeout(() =>  
-                                   {
-                                    //window.sessionStorage.removeItem('alias');
-                                    //window.sessionStorage.removeItem('tmp');
-                                    window.location.reload(true);
-                                }, 1);
-                                   
+                                    setTimeout(() => {
+                                        //window.sessionStorage.removeItem('alias');
+                                        //window.sessionStorage.removeItem('tmp');
+                                        window.location.reload(true);
+                                    }, 1);
+
                                 }
                             }),
                         {
@@ -504,7 +485,7 @@ class IndexApp {
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSDB.user().is.alias;
-                                     window.location.pathname = '/' + alias + '/worlds/states'
+                                    window.location.pathname = '/' + alias + '/worlds/states'
                                     //page('/' + alias + '/worlds/states');
                                     // page.redirect('/' + alias + '/worlds/states');
                                     //_app.indexApp.getWorldsFromUserDB(alias);       
@@ -522,7 +503,7 @@ class IndexApp {
                                 window.location.pathname = '/settings';
                             }
                         }), _app.widgets.emptyDiv,
-                        _app.widgets.divider,
+                    _app.widgets.divider,
                     {
                         $type: "h1",
                         class: "mdc-typography--headline3",
@@ -626,7 +607,7 @@ class IndexApp {
                                                 } else {
                                                     //
                                                     _LCSDB.user().create(alias, pass,
-                                                        function(ack) {
+                                                        function (ack) {
                                                             if (!ack.wait) { }
                                                             if (ack.err) {
                                                                 console.log(ack.err)
@@ -638,11 +619,11 @@ class IndexApp {
                                                                     'pub': ack.pub
                                                                 };
                                                                 _LCSDB.get('users').get(alias).put(userObj);
-                                                                
+
                                                             }
                                                             _LCSDB.user().auth(alias, pass);
                                                         });
-                                                        
+
                                                 }
                                             }
                                         }),
@@ -746,7 +727,7 @@ class IndexApp {
                                             $type: "a",
                                             $text: m[0],
                                             //target: "_blank",
-                                           // href: window.location.protocol + "//" + window.location.host + "/" + m[1].user + m[0],
+                                            // href: window.location.protocol + "//" + window.location.host + "/" + m[1].user + m[0],
                                             onclick: function (e) {
                                                 self.checkForManualSettings();
                                                 window.location.pathname = "/" + m[1].user + m[0];
@@ -783,48 +764,48 @@ class IndexApp {
             },
             $init: function () {
 
-                if(_app.isLuminary){
+                if (_app.isLuminary) {
                     let luminaryPath = _app.luminaryPath;
                     let ref = _LCSDB.get(luminaryPath);
                     setInterval(function () {
-    
-                    ref.get('allclients').once().map().once(res => {
-    
-                        if (res) {
-                            if (res.id) {
-                                let clientTime = Gun.state.is(res, 'live');
-                                let now = Gun.time.is();
-    
-                                if (now - clientTime < 10000) {
-                                    let instance = res.user + res.instance;
-                                    //let data = JSON.stringify({[res.instance]: {instance: instance, clients: {}, user: res.user, loadInfo: {}}});
-                                    //console.log(data);
-                                    if(!self.instances[res.instance]) {
-                                    self.instances[res.instance] = {id: res.instance, instance: instance, clients: {[res.id]: res}, user: res.user, loadInfo: {} }
+
+                        ref.get('allclients').once().map().once(res => {
+
+                            if (res) {
+                                if (res.id) {
+                                    let clientTime = Gun.state.is(res, 'live');
+                                    let now = Gun.time.is();
+
+                                    if (now - clientTime < 10000) {
+                                        let instance = res.user + res.instance;
+                                        //let data = JSON.stringify({[res.instance]: {instance: instance, clients: {}, user: res.user, loadInfo: {}}});
+                                        //console.log(data);
+                                        if (!self.instances[res.instance]) {
+                                            self.instances[res.instance] = { id: res.instance, instance: instance, clients: { [res.id]: res }, user: res.user, loadInfo: {} }
+                                        } else {
+                                            self.instances[res.instance].clients[res.id] = res
+                                        }
+                                        let data = JSON.stringify(self.instances);
+                                        self.parseOnlineData(data);
+
                                     } else {
-                                        self.instances[res.instance].clients[res.id] = res
+                                        if (self.instances[res.instance]) {
+                                            delete self.instances[res.instance].clients[res.id];
+                                            if (Object.keys(self.instances[res.instance].clients).length == 0) {
+                                                delete self.instances[res.instance];
+                                                self.parseOnlineData(JSON.stringify({}));
+                                            }
+                                        }
+
+                                        //ref.get('instances').get(res.instance).get(res.id).put(null);
                                     }
-                                    let data = JSON.stringify(self.instances);
-                                    self.parseOnlineData(data);
-                                    
-                                } else {
-                                    if(self.instances[res.instance]){
-                                    delete self.instances[res.instance].clients[res.id];
-                                    if(Object.keys(self.instances[res.instance].clients).length == 0){
-                                        delete self.instances[res.instance];
-                                        self.parseOnlineData(JSON.stringify({}));
-                                    }
-                                    }
-                                        
-                                    //ref.get('instances').get(res.instance).get(res.id).put(null);
+
                                 }
-    
                             }
                         }
-                    }
-                    )
-                }, 5000);
-    
+                        )
+                    }, 5000);
+
 
                 }
 
@@ -917,9 +898,9 @@ class IndexApp {
                     //target: "_blank",
                     //href: "/" + desc.userAlias + '/' + desc.worldName,
                     onclick: function (e) {
-                            self.checkForManualSettings();
-                            window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
-                           
+                        self.checkForManualSettings();
+                        window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
+
                         //self.refresh();
                     }
                 });
@@ -956,6 +937,13 @@ class IndexApp {
 
 
                 online.push(onlineGUI);
+                if(!desc.info){
+                    desc.info = {
+                        imgUrl: "/defaults/worlds/webrtc/webimg.jpg",
+                        text: "..no text",
+                        title: "..no title"
+                    }
+                }
 
                 return {
                     $cell: true,
@@ -1067,7 +1055,7 @@ class IndexApp {
                     $type: "div",
                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                     $components: [
-                       
+
                         card
 
                         //self.createWorldCard(data[1].userAlias, data[1].worldName, data[0])
@@ -1078,11 +1066,11 @@ class IndexApp {
             },
             $update: function () {
                 let cards = Object.entries(this._states)
-                .filter(el => Object.keys(el[1]).length !== 0)
-                .sort(function (el1, el2) {
-                    return parseInt(el2[1].created) - parseInt(el1[1].created)
-                })
-                .map(this._makeWorldCard);
+                    .filter(el => Object.keys(el[1]).length !== 0)
+                    .sort(function (el1, el2) {
+                        return parseInt(el2[1].created) - parseInt(el1[1].created)
+                    })
+                    .map(this._makeWorldCard);
 
                 this.$components = [
                     {
@@ -1125,45 +1113,45 @@ class IndexApp {
 
     checkForManualSettings() {
         console.log("check for manual settings");
-                            let manualSettings = localStorage.getItem('lcs_app_manual_settings');
-                            if(manualSettings){
-                                localStorage.removeItem('lcs_app_manual_settings');
-                            }
-                          
-                            let el = document.querySelector('#runWorldGUI');
-                            if (el) {
-                                if (el._arSwitch.checked){
+        let manualSettings = localStorage.getItem('lcs_app_manual_settings');
+        if (manualSettings) {
+            localStorage.removeItem('lcs_app_manual_settings');
+        }
 
-                                let arSettings = {
-                                    model:{
-                                        'vwf/model/aframe': null
-                                }, 
-                                    view:{
-                                        'vwf/view/aframe' : null,
-                                        'vwf/view/editor-new': null
-                                }
-                            }
+        let el = document.querySelector('#runWorldGUI');
+        if (el) {
+            if (el._arSwitch.checked) {
 
-                                    localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
-                                } 
+                let arSettings = {
+                    model: {
+                        'vwf/model/aframe': null
+                    },
+                    view: {
+                        'vwf/view/aframe': null,
+                        'vwf/view/editor-new': null
+                    }
+                }
 
-                                if (el._turnArOnSwitch.checked){
+                localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
+            }
 
-                                    let arSettings = {
-                                        model:{
-                                            'vwf/model/aframe': null
-                                    }, 
-                                        view:{
-                                            'vwf/view/aframe' : null,
-                                            'vwf/view/aframe-ar-driver': null
-                                    }
-                                }
-    
-                                        localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
-                                    } 
-    
-                                
-                            }
+            if (el._turnArOnSwitch.checked) {
+
+                let arSettings = {
+                    model: {
+                        'vwf/model/aframe': null
+                    },
+                    view: {
+                        'vwf/view/aframe': null,
+                        'vwf/view/aframe-ar-driver': null
+                    }
+                }
+
+                localStorage.setItem('lcs_app_manual_settings', JSON.stringify(arSettings));
+            }
+
+
+        }
     }
 
 

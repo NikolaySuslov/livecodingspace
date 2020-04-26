@@ -424,9 +424,10 @@ class WorldApp {
 
 
         if (!saveName) {
-            info = await _app.getWorldInfo(user, space);
+            info = await _app.getAllProtoWorldsInfoForUser(user.user, space) //await _app.getWorldInfo(user, space);
         } else {
-            info = await _app.getStateInfo(user, space, saveName);
+            let loadName = space + "/load/" + saveName;
+            info = await _app.getAllStateWorldsInfoForUser(user.user, space, loadName) //await _app.getStateInfo(user, space, saveName);
         }
         worldCardGUI._worldInfo = info;
         worldCardGUI.$update();
@@ -434,7 +435,7 @@ class WorldApp {
 
 
         if (!saveName) {
-            let statesData = await _app.getSaveStates(user, space);
+            let statesData = await _app.getAllStateWorldsInfoForUser(user.user, space) //await _app.getSaveStates(user, space);
             //let worldStates = this.createWorldStatesGUI();
             let worldStates = document.querySelector("#worldStatesGUI");
             worldStates._states = statesData;

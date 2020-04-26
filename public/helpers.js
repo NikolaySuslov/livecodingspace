@@ -35,35 +35,6 @@ class Helpers {
         return obj
     }
 
-
-    async Process(updatedURL) {
-        var result =
-            { 'public_path': "/", 'application': undefined, 'instance': undefined, 'private_path': undefined };
-        var segments = this.GenerateSegments(updatedURL);
-        var extension = undefined;
-
-        while ((segments.length > 0) && (await this.IsExist(this.JoinPath(result['public_path'], segments[0])))) {
-            result['public_path'] = this.JoinPath(result['public_path'], segments.shift());
-        }
-
-        if ((segments.length > 0) && (extension = await this.GetExtension(this.JoinPath(result['public_path'], segments[0])))) {
-            result['application'] = segments.shift();
-        } else if (extension = await this.GetExtension(this.JoinPath(result['public_path'], "index.vwf"))) {
-            result['application'] = "index.vwf";
-        }
-
-        if (extension) {
-            if ((segments.length > 0) && (this.IsInstanceID(segments[0]))) {
-                result['instance'] = segments.shift();
-            }
-            if (segments.length > 0) {
-                result['private_path'] = segments.join("/");
-            }
-        }
-
-        return result;
-    }
-
     // IsInstanceID tests if the passed in potential Instance ID 
     // is a valid instance id.
     IsInstanceID(potentialInstanceID) {
@@ -117,37 +88,6 @@ class Helpers {
         return undefined;
     }
 
-
-    async IsFileExist(path) {
-
-        let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-
-        var seperatorFixedPath = path.slice(1);//path.replace(/\//g, '/');
-        let worldName = seperatorFixedPath.split('/')[0];
-        let fileName = seperatorFixedPath.replace(worldName + '/', "");
-        let world = await userDB.get('worlds').get(worldName).promOnce();
-        if (world) {
-            let doc = Object.keys(world.data).includes(fileName);//(await userDB.get('worlds').get(worldName).get(fileName).promOnce()).data;
-            if (doc) {
-                return true
-            }
-        }
-        return false
-    }
-
-    async IsExist(path) {
-
-        let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-        var seperatorFixedPath = (path.slice(1)).split('/');//path.replace(/\//g, '/');
-        if(seperatorFixedPath.length == 1){
-        let doc = (await  userDB.get('worlds').get(seperatorFixedPath[0]).promOnce()).data; //(await  userDB.get('worlds').promOnce()).data;
-       // let doc = Object.keys(worlds).includes('index_vwf_yaml');//(await  userDB.get('worlds').get(seperatorFixedPath).promOnce()).data;
-        if (doc) {
-            return true
-        }
-    }
-        return false
-    }
 
 
     // GenerateSegments takes a string, breaks it into
