@@ -1211,7 +1211,7 @@ class App {
 
 
     let loadObj = {
-      loadInfo: loadInfo,
+      loadInfo: loadInfo ? loadInfo: {},
       path: dataJson.path,
       saveObject: saveInfo,
       user: userAlias
