@@ -214,7 +214,7 @@ class IndexApp {
         doc._wcards = worlds;
         doc._wcards.$update();
 
-        console.log(allInfo);
+        //console.log(allInfo);
 
     }
 
@@ -263,7 +263,7 @@ class IndexApp {
         doc._wcards = worlds;
         doc._wcards.$update();
 
-        console.log(allInfo);
+        //console.log(allInfo);
 
     }
 

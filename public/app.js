@@ -2026,7 +2026,7 @@ class App {
       )
 
 
-    console.log('All states: ', list)
+    //console.log('All states: ', list)
 
 
     let docs = {};
@@ -2125,7 +2125,7 @@ class App {
       }
       }))).then(r => { return r })
 
-    console.log(list);
+    //console.log(list);
 
     let docs = {};
 

@@ -402,6 +402,16 @@ class Helpers {
         }
     }
 
+    async getUserPub(userName) {
+
+        let alias = '~@' + userName;
+        let user = await (new Promise(res=>_LCSDB.get(alias).once(res)));
+       
+        if(user)
+            return Object.keys(user)[1].slice(1)
+
+    }
+
 }
 
 export { Helpers } 
