@@ -675,6 +675,54 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
         reflectorGUI() {
 
+            let webrtcConnection = {
+                $cell: true,
+                $components: [
+                  {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Use WebRTC for connection"
+                  },
+                  {
+                    $type: 'p'
+                  },
+                  _app.widgets.switch({
+                    'id': 'forceWebRTC',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      let config = localStorage.getItem('lcs_config');
+                      this._switch.checked = JSON.parse(config).webrtc;
+                      
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': function (e) {
+    
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.webrtc = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.webrtc = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                            }
+                        }
+                    }
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-forceWebRTC',
+                    $text: 'On / Off'
+                  }
+    
+                ]
+              }
+
             let luminaryGlobalHB = {
                 $cell: true,
                 _luminarySwitch: null,
@@ -757,6 +805,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     if (config.luminaryGlobalHBPath) {
                         this._hbpath = config.luminaryGlobalHBPath
                     }
+
                 },
                 $init: function () {
                     this._initData();
@@ -832,6 +881,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                         }),
                                     ]
                                 },
+                                { 
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [webrtcConnection ]
+                                   },
                                 {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",

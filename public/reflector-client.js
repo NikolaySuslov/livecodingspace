@@ -5,12 +5,12 @@ Copyright (c) 2014-2019 Nikolai Suslov and the Krestianstvo.org project contribu
 Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
 */
 
-import { Helpers } from '/helpers.js';
+//import { Helpers } from '/helpers.js';
 
 class ReflectorClient {
     constructor() {
         console.log("reflector client constructor");
-        this.helpers = new Helpers;
+        this.helpers = _app.helpers; //new Helpers;
         this.socket = undefined;
     }
 

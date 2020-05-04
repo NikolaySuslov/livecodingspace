@@ -87,6 +87,7 @@ class App {
         'luminaryGlobalHB': false,
         'dbhost': window.location.origin + '/gun', // 'https://' + window.location.hostname + ':8080/gun', //'http://localhost:8080/gun',
         'reflector': 'https://' + window.location.hostname + ':3002',
+        'webrtc': false,
         'language': 'en'
       }
       localStorage.setItem('lcs_config', JSON.stringify(config));
@@ -107,9 +108,16 @@ class App {
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
+    if (!config.webrtc) {
+      config.webrtc = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
     this.config = config;
 
-    const opt = { peers: this.dbHost, localStorage: false, RTCPeerConnection: false, axe: false }
+    let webrtcConnection = this.config.webrtc;
+
+    const opt = { peers: this.dbHost, localStorage: false, RTCPeerConnection: webrtcConnection, axe: false }
     //const opt = { peers: this.dbHost, localStorage: false, until: 1000, chunk: 5, axe: false} //until: 5000, chunk: 5
     //opt.store = RindexedDB(opt);
     this.db = Gun(opt);
@@ -194,6 +202,12 @@ class App {
   get isLuminaryGlobalHB() {
 
     return this.config.luminaryGlobalHB;
+
+  }
+
+  get isWebRTC() {
+
+    return this.config.webrtc;
 
   }
 

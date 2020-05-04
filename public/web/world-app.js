@@ -7,7 +7,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
 class WorldApp {
     constructor(userAlias, worldName, saveName) {
-        console.log("app constructor");
+        console.log("world app constructor");
 
         this.userAlias = userAlias;
         this.worldName = worldName;

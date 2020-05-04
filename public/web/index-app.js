@@ -9,7 +9,7 @@ import { Header } from '/web/header.js';
 
 class IndexApp {
     constructor() {
-        console.log("app constructor");
+        console.log("index app constructor");
 
 
         this.worlds = {};

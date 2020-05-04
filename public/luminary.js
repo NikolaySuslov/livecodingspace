@@ -3,12 +3,12 @@ The MIT License (MIT)
 Copyright (c) 2014-2019 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 */
 
-import { Helpers } from '/helpers.js';
+//import { Helpers } from '/helpers.js';
 
 class Luminary {
     constructor() {
         console.log("luminary constructor");
-        this.helpers = new Helpers;
+        this.helpers = _app.helpers; //new Helpers;
         this.info = {};
         this.pendingList = [];
         this.status = { pending: true, initialized: false, trials: 3 };
