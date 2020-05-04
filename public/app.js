@@ -125,18 +125,18 @@ class App {
     this.user = this.db.user();
     window._LCSDB = this.db;
     window._LCSUSER = this.user;
-    window._LCS_SYS_USER = undefined;
+    //window._LCS_SYS_USER = undefined;
     window._LCS_WORLD_USER = undefined;
 
     // _LCSDB.get('lcs/app').load();
     // _LCSDB.get('users').load();
 
-    _q(_LCSDB).get('lcs/app').get('pub').data().then(function (res) {
+    // _q(_LCSDB).get('lcs/app').get('pub').data().then(function (res) {
 
-      if (res) {
-        window._LCS_SYS_USER = _LCSDB.user(res);
-      }
-    });
+    //   if (res) {
+    //     window._LCS_SYS_USER = _LCSDB.user(res);
+    //   }
+    // });
 
     // _LCSDB.get('lcs/app').get('pub').once(function (res) {
 
@@ -696,7 +696,7 @@ class App {
 
       },
       $init: function () {
-        console.log('init d&d area');
+        console.log('init d&d area for worlds protos');
         this._refresh('Drag & Drop a folder with world files here...');
         let self = this;
         DragDrop("#ddWorlds",
@@ -787,6 +787,97 @@ class App {
       }
     }
 
+ 
+    let dragDropProxyArea = {
+      $cell: true,
+      $type: 'div',
+      id: "ddProxy",
+      class: 'dragdropArea',
+      _ddText: '',
+      _refresh: function (aText) {
+        this._ddText = aText;
+
+      },
+      $init: function () {
+        console.log('init d&d area for proxy files');
+        this._refresh('Drag & Drop a folder with proxy files here...');
+        let self = this;
+        DragDrop("#ddProxy",
+        {
+          onDrop: function (files, pos, fileList, directories) {
+            console.log('onDrop: ' + files.length + ' files at ' + pos.x + ', ' + pos.y);
+            //let worldsObj = {};
+            let proxy = _LCSDB.user().get('proxy');
+
+            files.forEach(function (file) {
+
+              let proxyObj = {};
+
+              if ((file.name.indexOf('.yaml') !== -1) ||
+                (file.type == "text/javascript") || 
+                (file.type == "text/html") || 
+                (file.type == "application/json")) {
+
+              console.log('- ' + file.name + ' (' + file.size + ') (' + file.type + ')');
+
+              // convert the file to a Buffer that we can use!
+              const reader = new FileReader()
+              reader.addEventListener('load', e => {
+                // e.target.result is an ArrayBuffer
+                const arr = new Uint8Array(e.target.result)
+                const fileBuffer = new buffer.Buffer(arr);
+                const fileSource = fileBuffer.toString();
+                // do something with the buffer!
+
+                  var entryName = file.fullPath.slice(1).split(".").join("_");
+                  let userPub = _LCSDB.user().is.pub;
+          
+                  let created = new Date().valueOf();
+            
+                      let obj = {
+                        'owner': userPub,
+                        'file': fileSource,
+                        'modified': created,
+                        'created': created
+                      }
+                    proxyObj[entryName] = obj;
+                    console.log(proxyObj);
+                    proxy.put(proxyObj);
+
+                  
+              })
+              reader.addEventListener('error', err => {
+                console.error('FileReader error' + err)
+              })
+              reader.readAsArrayBuffer(file)
+
+            }
+
+            })
+            //console.log('Worlds', worldsObj);
+            console.log('files array', files)
+            console.log('FileList object', fileList)
+            console.log('directories array', directories)
+            self._refresh(directories.map(el=>{return el.name}).toString());
+          },
+          onDropText: function (text, pos) {
+            console.log('onDropText: ' + text + ' at ' + pos.x + ', ' + pos.y)
+          }
+        }
+        )
+      },
+      $update: function () {
+
+        this.$components = [
+          {
+            $type: "h5",
+            class: "mdc-typography--headline5",
+            $text: this._ddText
+          }
+        ]
+
+      }
+    }
 
     let userProfile = {
       $type: 'div',
@@ -799,10 +890,12 @@ class App {
         this._status = "user is not signed in..."
       },
       $update: function () {
-        var ddarea = {};
+        var ddWorldArea = {}
+        var ddProxyArea = {}
 
         if(_LCSDB.user().is){
-          ddarea = dragDropWorldsArea
+          ddWorldArea = dragDropWorldsArea
+          ddProxyArea = dragDropProxyArea
         }
 
         this.$components = [
@@ -817,7 +910,13 @@ class App {
             class: "mdc-typography--headline4",
             $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
           },
-          ddarea
+          ddWorldArea,
+          {
+            $type: "h4",
+            class: "mdc-typography--headline4",
+            $text: 'Load proxy files:' //"Profile for: " + this.db.user().is.alias
+          },
+          ddProxyArea
         ]
       }
     }

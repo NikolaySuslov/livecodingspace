@@ -4577,7 +4577,7 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
                    fileName = dbName;
-                   let dbNode = window._LCS_SYS_USER.get('proxy').get(fileName).get('file');
+                   let dbNode = userDB.get('proxy').get(fileName).get('file');
 
                    let nodeProm = new Promise(res => dbNode.once(res))
 
@@ -4669,7 +4669,7 @@ if ( ! childComponent.source ) {
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
-                    let dbNode = window._LCS_SYS_USER.get('proxy').get(fileName).get('file');
+                    let dbNode = userDB.get('proxy').get(fileName).get('file');
                     let nodeProm = new Promise(res => dbNode.once(res))
 
                     nodeProm.then(comp=>{
