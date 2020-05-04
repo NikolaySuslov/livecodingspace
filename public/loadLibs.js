@@ -11,6 +11,8 @@ loadjs([
     '/lib/mdc/dist/material-components-web.min.js',
     '/lib/ace/ace.js',
     '/lib/yamljs/dist/yaml.js',
+    '/lib/wt/drag-drop.js',
+    '/lib/wt/buffer5.6.0.min.js'
 ],'forall', {
     async: false
 });

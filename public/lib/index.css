@@ -465,3 +465,16 @@ text-shadow: 0px 0px 0 rgba(0, 0, 0, 0.3);
 #hello {
   color: rgb(95, 95, 95)
 }
+
+
+.dragdropArea {
+  width: 400px;
+  height: 200px;
+  border-width: medium;
+  border: rgb(3, 81, 137);
+  border-style: dotted;
+}
+
+.drag {
+  border: 5px solid rgba(195, 0, 0, 0.751);
+}

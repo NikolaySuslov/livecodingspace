@@ -676,8 +676,8 @@ class App {
     _LCSDB.on('auth',
       async function (ack) {
         if (ack.sea.pub) {
-          document.querySelector("#profile")._status = "User: " + _LCSDB.user().is.alias //+' pub: ' + this.db.user().is.pub;
-          document.querySelector("#profile").$update();
+          document.querySelector("#profile")._refresh("User: " + _LCSDB.user().is.alias); //+' pub: ' + this.db.user().is.pub;
+          //document.querySelector("#profile").$update();
         }
       })
 
@@ -685,23 +685,145 @@ class App {
     el.setAttribute("id", "userProfile");
     document.body.appendChild(el);
 
+    let dragDropWorldsArea = {
+      $cell: true,
+      $type: 'div',
+      id: "ddWorlds",
+      class: 'dragdropArea',
+      _ddText: '',
+      _refresh: function (aText) {
+        this._ddText = aText;
+
+      },
+      $init: function () {
+        console.log('init d&d area');
+        this._refresh('Drag & Drop a folder with world files here...');
+        let self = this;
+        DragDrop("#ddWorlds",
+        {
+          onDrop: function (files, pos, fileList, directories) {
+            console.log('onDrop: ' + files.length + ' files at ' + pos.x + ', ' + pos.y);
+            //let worldsObj = {};
+            let worlds = _LCSDB.user().get('worlds');
+
+            files.forEach(function (file) {
+              let world = {};
+
+              if ((file.name.indexOf('.yaml') !== -1) ||
+                (file.type == "text/javascript") || 
+                (file.type == "text/html") || 
+                (file.type == "application/json")) {
+
+              console.log('- ' + file.name + ' (' + file.size + ') (' + file.type + ')');
+
+              // convert the file to a Buffer that we can use!
+              const reader = new FileReader()
+              reader.addEventListener('load', e => {
+                // e.target.result is an ArrayBuffer
+                const arr = new Uint8Array(e.target.result)
+                const fileBuffer = new buffer.Buffer(arr);
+                const fileSource = fileBuffer.toString();
+                // do something with the buffer!
+
+                  var entryName = file.fullPath.slice(1).split(".").join("_");
+                  let worldName = entryName.split("/")[0];
+                  let userPub = _LCSDB.user().is.pub;
+          
+                    //let modified = new Date().valueOf();
+                    let created = new Date().valueOf();
+          
+                    let obj = {
+                      'file': fileSource,
+                      'modified': created,
+                      'created': created
+          
+                    }
+
+                      world[worldName] = {
+                        'parent': '-',
+                        'owner': userPub,
+                        'featured': true,
+                        'published': true
+                      }
+                    
+          
+                    let entry = entryName.replace(worldName + '/', "");
+                    world[worldName][entry] = obj;
+                    console.log(world);
+
+                    worlds.put(world);
+                  
+              })
+              reader.addEventListener('error', err => {
+                console.error('FileReader error' + err)
+              })
+              reader.readAsArrayBuffer(file)
+
+            }
+
+            })
+            //console.log('Worlds', worldsObj);
+            console.log('files array', files)
+            console.log('FileList object', fileList)
+            console.log('directories array', directories)
+            self._refresh(directories.map(el=>{return el.name}).toString());
+          },
+          onDropText: function (text, pos) {
+            console.log('onDropText: ' + text + ' at ' + pos.x + ', ' + pos.y)
+          }
+        }
+        )
+      },
+      $update: function () {
+
+        this.$components = [
+          {
+            $type: "h5",
+            class: "mdc-typography--headline5",
+            $text: this._ddText
+          }
+        ]
+
+      }
+    }
+
+
     let userProfile = {
       $type: 'div',
       id: "profile",
       _status: "",
+      _refresh: function(status){
+        this._status = status;
+      },
       $init: function () {
         this._status = "user is not signed in..."
       },
       $update: function () {
+        var ddarea = {};
+
+        if(_LCSDB.user().is){
+          ddarea = dragDropWorldsArea
+        }
+
         this.$components = [
           {
-            $type: "h1",
-            class: "mdc-typography--headline4",
+            $type: "h3",
+            class: "mdc-typography--headline3",
             $text: this._status //"Profile for: " + this.db.user().is.alias
-          }
+          },
+          _app.widgets.divider,
+          {
+            $type: "h4",
+            class: "mdc-typography--headline4",
+            $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
+          },
+          ddarea
         ]
       }
     }
+
+   
+
 
     document.querySelector("#userProfile").$cell({
       $cell: true,
@@ -2016,10 +2138,15 @@ class App {
       )
       .then(r => Promise.all(Object.keys(r).map(k => {
         let objEl = r[k][1];
+        if(objEl){
         let obj = Object.entries(objEl).filter(el => el[0].includes('_info_vwf_json'));
         if (obj) {
           return { world: r[k][0], states: obj }
         }
+      } else {
+        return { world: r[k][0], states: [] }
+      }
+
       }
 
       )
