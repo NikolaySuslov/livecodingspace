@@ -109,14 +109,12 @@ class App {
 
     this.config = config;
 
-    const opt = { peers: this.dbHost, localStorage: false, axe: false }
+    const opt = { peers: this.dbHost, localStorage: false, RTCPeerConnection: false, axe: false }
     //const opt = { peers: this.dbHost, localStorage: false, until: 1000, chunk: 5, axe: false} //until: 5000, chunk: 5
     //opt.store = RindexedDB(opt);
     this.db = Gun(opt);
-    this.q =
 
-
-      this.user = this.db.user();
+    this.user = this.db.user();
     window._LCSDB = this.db;
     window._LCSUSER = this.user;
     window._LCS_SYS_USER = undefined;

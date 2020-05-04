@@ -16,7 +16,7 @@ loadjs([
 });
 
 
-loadjs(['/lib/gundb/gun.js',
+loadjs(['/lib/gundb/gun.min.js',
         '/lib/gundb/sea.js',
         '/lib/gundb/lib/then.js',
         '/lib/gundb/lib/path.js',
@@ -26,7 +26,7 @@ loadjs(['/lib/gundb/gun.js',
         '/lib/gundb/lib/promise.js',
         '/lib/gundb/lib/time.js',
         '/lib/gundb/lib/bye.js',
-        '/lib/gundb/lib/webrtc.js',
+       '/lib/gundb/lib/webrtc.js',
         '/lib/gundb/nts.js',
         '/lib/gundb/lib/radix.js',
         '/lib/gundb/lib/radisk.js',
