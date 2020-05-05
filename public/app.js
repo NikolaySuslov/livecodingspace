@@ -1822,6 +1822,8 @@ class App {
 
       if(!all.proxy){
         worldObj.proxy = userPub;
+      } else {
+        worldObj.proxy = all.proxy;
       }
 
       console.log(worldObj);
