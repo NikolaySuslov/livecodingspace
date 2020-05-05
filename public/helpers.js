@@ -412,6 +412,15 @@ class Helpers {
 
     }
 
+    async getUserAlias(userPub) {
+
+        let user = await (new Promise(res=>_LCSDB.user(userPub).get('alias').once(res)));
+       
+        if(user)
+            return user
+
+    }
+
 }
 
 export { Helpers } 

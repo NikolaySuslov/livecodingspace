@@ -260,6 +260,55 @@ class WorldApp {
                                     }
                                 }
                             );
+
+
+                            let proxyID = worldCardGUI._worldInfo.proxy;
+
+                            userGUI.push(
+                                {
+                                    $type: "div",
+                                    style: "margin-top: 20px;",
+                                    _proxyName: null,
+                                    _proxyNameField: null,
+                                    $components:
+                                        [
+  
+                                            window._app.widgets.inputTextFieldOutlined({
+                                                "id": 'proxyName',
+                                                "label": proxyID,
+                                                "value": this._proxyName,
+                                                "type": "text",
+                                                "init": function () {
+                                                    this._proxyNameField = new mdc.textField.MDCTextField(this);
+                                                    
+                                                    if(!proxyID){
+                                                        //document.querySelector('#proxyName').value = res;
+                                                    } else {
+                                                        _app.helpers.getUserAlias(proxyID).then(res=>{
+                                                            document.querySelector('#proxyName').value = res;
+                                                        })
+                                                    }
+                                                }
+                                            }),
+                                            {
+                                                $type: "a",
+                                                class: "mdc-button mdc-button--raised mdc-card__action actionButton",
+                                                $text: 'Set proxy', //self.language.t('set proxy'),//"clone",
+                                                onclick: function (e) {
+                                                    //console.log('clone');
+                                                    let newProxyName = this._proxyNameField.value;
+                                                    _app.setNewProxyForWorld(desc.worldName, newProxyName);
+                                                    //_app.cloneWorldPrototype(desc.worldName, desc.userAlias, newProtoName);
+                                                    //self.refresh();
+                                                }
+                                            }
+                                            
+                                           
+                                        ]
+                                }
+                            )
+
+
                             
                         }
 
@@ -284,7 +333,6 @@ class WorldApp {
 
                     if (desc.type == 'proto') {
                         let worldID = window._app.helpers.GenerateInstanceID().toString();
-
                         userGUI.push(
                             {
                                 $type: "div",
@@ -313,6 +361,7 @@ class WorldApp {
                                                 //self.refresh();
                                             }
                                         }
+                                        
                                     ]
                             }
                         )
@@ -520,11 +569,16 @@ class WorldApp {
         //     });
 
         let self = this;
-     _LCSDB.get('users').get(this.userAlias).get('pub').once(function (res) {
 
+       _app.helpers.getUserPub(this.userAlias).then(res=>{
             self.makeGUI(res)
+       })
 
-        });
+    //  _LCSDB.get('users').get(this.userAlias).get('pub').once(function (res) {
+
+    //         self.makeGUI(res)
+
+    //     });
 
 
 

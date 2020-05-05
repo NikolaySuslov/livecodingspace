@@ -282,13 +282,13 @@ class IndexApp {
                 // document.querySelector('#worldGUI').$update();
                 // document.querySelector('#main').$update();
 
-                _LCSDB.get('users').get(alias).not(function (res) {
-                    let userObj = {
-                        alias: alias,
-                        pub: ack.sea.pub
-                    }
-                    _LCSDB.get('users').get(alias).put(userObj);
-                })
+                // _LCSDB.get('users').get(alias).not(function (res) {
+                //     let userObj = {
+                //         alias: alias,
+                //         pub: ack.sea.pub
+                //     }
+                //     _LCSDB.get('users').get(alias).put(userObj);
+                // })
 
                 _LCSDB.user().get('profile').once(function (data) { console.log(data) })
 
@@ -301,6 +301,12 @@ class IndexApp {
                     let profile = { 'alias': alias };
                     _LCSDB.user().get('profile').put(profile);
                 })
+
+                // not load proxy by default
+                // _LCSDB.user().get('proxy').not(res=>{
+                //     console.log('user has no proxy');
+                //     window._app.loadProxyDefaults();
+                // });
 
                 let actionsGUI = document.querySelector('#worldActionsGUI');
                 if (actionsGUI)

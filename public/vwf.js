@@ -45,6 +45,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         /// 
         /// @private
 
+        this.proxy = undefined;
+
         this.configuration = undefined; // require( "vwf/configuration" ).active; // "active" updates in place and changes don't invalidate the reference  // TODO: assign here after converting vwf.js to a RequireJS module and listing "vwf/configuration" as a dependency
 
         /// Kernel utility functions and objects.
@@ -4571,13 +4573,13 @@ if ( ! childComponent.source ) {
 
 
             var fileName = "";
-            let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);    
-                
+           // let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);    
+            let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
 
                 if(dbName.includes("vwf_example_com")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
                    fileName = dbName;
-                   let dbNode = userDB.get('proxy').get(fileName).get('file');
+                   let dbNode = proxyDB.get('proxy').get(fileName).get('file');
 
                    let nodeProm = new Promise(res => dbNode.once(res))
 
@@ -4595,7 +4597,7 @@ if ( ! childComponent.source ) {
                     let worldName = dbName.split('/')[0];
                     //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
                    fileName = dbName.replace(worldName + '/', "");
-                   let dbNode = userDB.get('worlds').path(worldName).get(fileName).get('file');
+                   let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName).get('file');
 
                    let nodeProm = new Promise(res => dbNode.once(res))
                    nodeProm.then(comp=>{
@@ -4664,12 +4666,14 @@ if ( ! childComponent.source ) {
                 //var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
                 var fileName = "";
 
-                let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);  
+                //let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);  
+
+                let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
 
                 if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
                     fileName = dbName;
-                    let dbNode = userDB.get('proxy').get(fileName).get('file');
+                    let dbNode = proxyDB.get('proxy').get(fileName).get('file');
                     let nodeProm = new Promise(res => dbNode.once(res))
 
                     nodeProm.then(comp=>{
@@ -4683,7 +4687,7 @@ if ( ! childComponent.source ) {
                 } else {
                     fileName = dbName.replace(worldName + '/', "");
 
-                    let dbNode = userDB.get('worlds').path(worldName).get(fileName).get('file');
+                    let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName).get('file');
                     let nodeProm = new Promise(res => dbNode.once(res))
                     nodeProm.then(comp=>{
                         parseComp (comp);

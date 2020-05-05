@@ -347,7 +347,8 @@ class App {
               'parent': '-',
               'owner': userPub,
               'featured': true,
-              'published': true
+              'published': true,
+              'proxy': userPub
             }
           }
 
@@ -743,7 +744,8 @@ class App {
                         'parent': '-',
                         'owner': userPub,
                         'featured': true,
-                        'published': true
+                        'published': true,
+                        'proxy': userPub
                       }
                     
           
@@ -879,6 +881,37 @@ class App {
       }
     }
 
+    let loadDefaultsProxy = {
+      $type: 'div',
+      $components: [
+        {
+          $type: "button",
+          class: "mdc-button mdc-button--raised",
+          $text: "Load default Proxy from LiveCoding.space server",
+          onclick: async function (e) {
+            console.log("user action");
+            await window._app.loadProxyDefaults();
+          }
+        }
+      ]
+    }
+
+    let loadEmpty = {
+      $type: 'div',
+      $components: [
+        {
+          $type: "button",
+          id: "loadDefaults",
+          class: "mdc-button mdc-button--raised",
+          $text: "Init empty world",
+          onclick: function (e) {
+            console.log("user action");
+            window._app.loadEmptyDefaultProto();
+          }
+        }
+      ]
+    }
+
     let userProfile = {
       $type: 'div',
       id: "profile",
@@ -890,34 +923,50 @@ class App {
         this._status = "user is not signed in..."
       },
       $update: function () {
-        var ddWorldArea = {}
-        var ddProxyArea = {}
 
         if(_LCSDB.user().is){
-          ddWorldArea = dragDropWorldsArea
-          ddProxyArea = dragDropProxyArea
+
+          this.$components = [
+            {
+              $type: "h3",
+              class: "mdc-typography--headline3",
+              $text: this._status //"Profile for: " + this.db.user().is.alias
+            },
+            _app.widgets.divider,
+            {
+              $type: "h4",
+              class: "mdc-typography--headline4",
+              $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
+            },
+            dragDropWorldsArea,
+            {
+              $type: "p"
+            },
+            loadEmpty,
+            {
+              $type: "h4",
+              class: "mdc-typography--headline4",
+              $text: 'Load proxy files:' //"Profile for: " + this.db.user().is.alias
+            },
+            dragDropProxyArea,
+            {
+              $type: "p"
+            },
+            loadDefaultsProxy
+          ]
+        } else {
+          this.$components = [
+            {
+              $type: "h3",
+              class: "mdc-typography--headline3",
+              $text: this._status //"Profile for: " + this.db.user().is.alias
+            },
+            _app.widgets.divider
+          ]
+
         }
 
-        this.$components = [
-          {
-            $type: "h3",
-            class: "mdc-typography--headline3",
-            $text: this._status //"Profile for: " + this.db.user().is.alias
-          },
-          _app.widgets.divider,
-          {
-            $type: "h4",
-            class: "mdc-typography--headline4",
-            $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
-          },
-          ddWorldArea,
-          {
-            $type: "h4",
-            class: "mdc-typography--headline4",
-            $text: 'Load proxy files:' //"Profile for: " + this.db.user().is.alias
-          },
-          ddProxyArea
-        ]
+       
       }
     }
 
@@ -1043,7 +1092,8 @@ class App {
                           let newInfo = editor.getValue();
                           let fixedState = newInfo; //_app.fixSaveState(newInfo, worldName, oldProtoName);
 
-                          let userPub = (await _LCSDB.get('users').get(user).get('pub').promOnce()).data;
+                          //let userPub = (await _LCSDB.get('users').get(user).get('pub').promOnce()).data;
+                          let userPub = await _app.helpers.getUserPub(user);
                           let revs = await _app.lookupSaveRevisions(worldName, saveName, userPub);
                           let lastRevision = revs.sort()[0];
 
@@ -1226,33 +1276,33 @@ class App {
 
   }
 
-  async setUserPaths(user) {
+  // async setUserPaths(user) {
 
-    await _q(_LCSDB).get('users').get(user).get('pub').data().then(function (res) {
-      if (res)
-        window._LCS_WORLD_USER = {
-          alias: user,
-          pub: res
-        }
-    })
-
-
-    //let users = _LCSDB.get('users');
-    // await _LCSDB.get('users').get(user).get('pub').then(function (res) {
-    //   if (res)
-    //     window._LCS_WORLD_USER = {
-    //       alias: user,
-    //       pub: res
-    //     }
-    // })
+  //   await _q(_LCSDB).get('users').get(user).get('pub').data().then(function (res) {
+  //     if (res)
+  //       window._LCS_WORLD_USER = {
+  //         alias: user,
+  //         pub: res
+  //       }
+  //   })
 
 
-    // await _LCSDB.get('users').get(user).get('pub').once(res => {
-    //   if (res)
-    //     window._LCS_WORLD_USER = _LCSDB.user(res);
-    // }).then();
+  //   //let users = _LCSDB.get('users');
+  //   // await _LCSDB.get('users').get(user).get('pub').then(function (res) {
+  //   //   if (res)
+  //   //     window._LCS_WORLD_USER = {
+  //   //       alias: user,
+  //   //       pub: res
+  //   //     }
+  //   // })
 
-  }
+
+  //   // await _LCSDB.get('users').get(user).get('pub').once(res => {
+  //   //   if (res)
+  //   //     window._LCS_WORLD_USER = _LCSDB.user(res);
+  //   // }).then();
+
+  // }
 
   HandleParsableRequestGenID(ctx) {
 
@@ -1264,7 +1314,8 @@ class App {
 
     //await app.setUserPaths(user);
 
-    _q(_LCSDB).get('users').get(user).get('pub').data().then(function (res) {
+   // _q(_LCSDB).get('users').get(user).get('pub').data().then(function (res) {
+    _app.helpers.getUserPub(user).then(function (res) {
       if (res)
         window._LCS_WORLD_USER = {
           alias: user,
@@ -1316,7 +1367,8 @@ class App {
     //await app.setUserPaths(user);
 
     //_q(_LCSDB).get('users').get(user).get('pub').data()
-    new Promise(res => _LCSDB.get('users').get(user).get('pub').once(res)).then(function (res) {
+    //new Promise(res => _LCSDB.get('users').get(user).get('pub').once(res)).then(function (res) {
+    _app.helpers.getUserPub(user).then(function (res) {
       if (res)
         window._LCS_WORLD_USER = {
           alias: user,
@@ -1364,6 +1416,13 @@ class App {
         conf.model = manualConf.model;
         conf.view = manualConf.view;
       }
+
+      //check & set default proxy for world
+      if(val.proxy){
+        vwf.proxy = val.proxy;
+      }
+
+
       return conf
 
     }).then(res => {
@@ -1644,7 +1703,8 @@ class App {
     _app.showProgressBar();
 
     //let users = await _LCSDB.get('users').then();
-    let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
+    //let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
+    let userPub = await _app.helpers.getUserPub(userName);
     let newOwner = _LCSDB.user().is.pub;
 
     let myWorlds = (await _LCSDB.user(newOwner).get('worlds').promOnce()).data;
@@ -1688,7 +1748,7 @@ class App {
     // let fileNamesAll = 
     await _LCSDB.user(userPub).get('worlds').get(worldName).load(all => {
 
-      let worldFileNames = Object.keys(all).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
+      let worldFileNames = Object.keys(all).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'proxy') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
 
       for (var doc in worldFileNames) {
 
@@ -1701,6 +1761,11 @@ class App {
         }
         worldObj[fn] = data;
       }
+
+      if(!all.proxy){
+        worldObj.proxy = userPub;
+      }
+
       console.log(worldObj);
 
       // for (const obj of Object.keys(worldObj)) {
@@ -1768,7 +1833,8 @@ class App {
 
     // let users = await _LCSDB.get('users').then();
 
-    let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
+    // let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
+    let userPub = await _app.helpers.getUserPub(userName);
     let protoUserRoot = this.helpers.getRoot(true).root;
     //let myName = this.db.user().is.alias;
 
@@ -2216,7 +2282,8 @@ class App {
   async getAllStateWorldsInfoForUser(userAlias, worldName, saveName) {
 
 
-    let userPub = await new Promise(res => _LCSDB.get('users').get(userAlias).get('pub').once(res));
+    //let userPub = await new Promise(res => _LCSDB.get('users').get(userAlias).get('pub').once(res));
+    let userPub = await _app.helpers.getUserPub(userAlias);
 
     var db = _LCSDB.user(userPub);
 
@@ -2334,7 +2401,8 @@ class App {
 
   async getAllProtoWorldsInfoForUser(userAlias, worldName) {
 
-    let userPub = await new Promise(res => _LCSDB.get('users').get(userAlias).get('pub').once(res));
+    //let userPub = await new Promise(res => _LCSDB.get('users').get(userAlias).get('pub').once(res));
+    let userPub = await _app.helpers.getUserPub(userAlias);
 
     var db = _LCSDB.user(userPub);
 
@@ -2358,7 +2426,7 @@ class App {
         if(objEl){
           let obj = objEl.info_json;
         if (obj) {
-          return _LCSDB.get(obj["#"]).then(res => { return { world: r[k][0], info: res } })
+          return _LCSDB.get(obj["#"]).then(res => { return { world: r[k], info: res } })
         }
       }
       }))).then(r => { return r })
@@ -2372,7 +2440,8 @@ class App {
 
         let doc = {}
         let res = el.info;
-        let index = el.world;
+        let index = el.world[0];
+        let proxy = el.world[1].proxy;
 
         if (res && res !== 'null') {
 
@@ -2399,6 +2468,7 @@ class App {
               'worldName': index,
               'created': res.created ? res.created : res.modified,
               'modified': res.modified,
+              'proxy': proxy,
               'type': 'proto',
               'userAlias': userAlias,
               'info': appInfo
@@ -2418,6 +2488,17 @@ class App {
 
     return docs
 
+  }
+
+
+  async setNewProxyForWorld(worldName, proxyName){
+
+    if(_LCSDB.user().is){
+      let newProxy = await _app.helpers.getUserPub(proxyName)
+      if(newProxy)
+        _LCSDB.user().get('worlds').get(worldName).put({'proxy': newProxy})
+    }
+    
   }
 
 
