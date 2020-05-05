@@ -6,7 +6,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 //import page from '/lib/page.mjs';
 
 class WorldApp {
+
     constructor(userAlias, worldName, saveName) {
+
         console.log("world app constructor");
 
         this.userAlias = userAlias;
@@ -28,7 +30,6 @@ class WorldApp {
 
 
     createWorldStatesGUI() {
-        let self = this;
 
         let worldStatesGUI = {
             id: "worldStatesGUI",
@@ -38,27 +39,21 @@ class WorldApp {
             _refresh: function (data) {
                 this._states = data
             },
-            $init: async function () {
-                //this._refresh();
-            },
             _makeWorldCard: function (data) {
                 let cardID = data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
                 let card = _app.indexApp.createWorldCard(cardID, 'min');
-                card._worldInfo = data[1];
-                card.$update();
+                card._refresh(data[1]);
+                card._updateComps();
                 return {
                     $cell: true,
                     $type: "div",
                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                    $components: [
-                        card
-                        //self.createWorldCard(data[1].userAlias, data[1].worldName, data[0])
-                        //this._worldCardDef(appInfo)
-                    ]
+                    $components: [card]
                 }
                 //console.log(data);
             },
-            $update: function () {
+            $update: function(){},
+            _updateComps: function () {
                 this.$components = [
                     {
                         $type: "div",
@@ -93,8 +88,6 @@ class WorldApp {
                         ]
 
                     }
-
-
                 ]
             }
         }
@@ -280,7 +273,6 @@ class WorldApp {
                                                 "type": "text",
                                                 "init": function () {
                                                     this._proxyNameField = new mdc.textField.MDCTextField(this);
-                                                    
                                                     if(!proxyID){
                                                         //document.querySelector('#proxyName').value = res;
                                                     } else {
@@ -402,6 +394,13 @@ class WorldApp {
             $cell: true,
             $type: "div",
             _runWorldGUI: {},
+            _worldsComps: {},
+            _refresh: function(comps){
+                this._worldsComps = comps
+            },
+            $init: function(){
+                //this._worldsComps = worldCardGUI; 
+            },
             $update: function(){
                 this.$components = [
                 {
@@ -427,7 +426,8 @@ class WorldApp {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
                                     $components: [
-                                        worldCardGUI,
+                                        //worldCardGUI,
+                                        this._worldsComps,
                                         { $type: 'p' },
                                         this._runWorldGUI
                                     ]
@@ -478,9 +478,15 @@ class WorldApp {
             let loadName = space + "/load/" + saveName;
             info = await _app.getAllStateWorldsInfoForUser(user.user, space, loadName) //await _app.getStateInfo(user, space, saveName);
         }
-        worldCardGUI._worldInfo = info;
-        worldCardGUI.$update();
-        document.querySelector("#aboutWorld").$update();
+        // worldCardGUI._worldInfo = info;
+        // worldCardGUI.$update();
+       
+        worldCardGUI._refresh(info);
+        worldCardGUI._updateComps();
+        document.querySelector("#aboutWorld")._refresh(worldCardGUI);
+        //document.querySelector("#aboutWorld")._refreshWorldComps(info);
+
+        
 
 
         if (!saveName) {
@@ -488,7 +494,7 @@ class WorldApp {
             //let worldStates = this.createWorldStatesGUI();
             let worldStates = document.querySelector("#worldStatesGUI");
             worldStates._states = statesData;
-            worldStates.$update();
+            worldStates._updateComps();
             worldStatesComp.$components.push(worldStates);
         }
 
@@ -551,38 +557,9 @@ class WorldApp {
 
         }
 
-
-
-
-
-
     }
 
 
-    initWorldGUI() {
-
-        //  _LCSDB.on('auth',
-        //     function (ack) {
-        //         if(ack.pub)
-        //             document.querySelector('#worldActionsGUI')._refresh();
-
-        //     });
-
-        let self = this;
-
-       _app.helpers.getUserPub(this.userAlias).then(res=>{
-            self.makeGUI(res)
-       })
-
-    //  _LCSDB.get('users').get(this.userAlias).get('pub').once(function (res) {
-
-    //         self.makeGUI(res)
-
-    //     });
-
-
-
-    }
 
 }
 

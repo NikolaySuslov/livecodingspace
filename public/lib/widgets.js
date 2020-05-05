@@ -26,6 +26,25 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             }
         }
 
+        get break(){
+            return {
+                $type: "br"
+            }
+        }
+
+        get space() {
+           return {
+                $type: "span",
+                $text: " "
+            }
+        }
+
+        get p(){
+            return {
+                $type: "p"
+            }
+        }
+
             inputTextFieldOutlined(obj){
                 function initFunc() {
                     new mdc.textField.MDCTextField.attachTo(this);

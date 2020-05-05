@@ -8,7 +8,7 @@ Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/li
 import page from '/lib/page.mjs';
 //import { Lang } from '/lib/polyglot/language.js';
 //import { IndexApp } from '/web/index-app.js';
-import { Query } from '/lib/utils/query.js';
+//import { Query } from '/lib/utils/query.js';
 import { log } from '/lib/utils/log.js';
 import { Helpers } from '/helpers.js';
 import { WorldApp } from '/web/world-app.js';
@@ -28,7 +28,7 @@ class App {
     // window._LangManager = new Lang;
     window._noty = new Noty;
     this.helpers = new Helpers;
-    window._q = this.q = Query;
+    //window._q = this.q = Query;
     this.log = log;
 
     this.luminary = new Luminary;
@@ -500,12 +500,15 @@ class App {
 
     if (!_app.indexApp) {
       _app.indexApp = new IndexApp;
-      _app.indexApp.initHTML();
-      _app.indexApp.initApp();
+      //_app.indexApp.initHTML()
+      //_app.indexApp.initApp();
     }
 
     let worldApp = new WorldApp(userAlias, worldName, saveName);
-    worldApp.initWorldGUI();
+    
+       _app.helpers.getUserPub(userAlias).then(res=>{
+          worldApp.makeGUI(res)
+       })
 
   }
 
@@ -677,7 +680,7 @@ class App {
     _LCSDB.on('auth',
       async function (ack) {
         if (ack.sea.pub) {
-          document.querySelector("#profile")._refresh("User: " + _LCSDB.user().is.alias); //+' pub: ' + this.db.user().is.pub;
+          document.querySelector("#profile")._refresh("User alias: " + _LCSDB.user().is.alias); //+' pub: ' + this.db.user().is.pub;
           //document.querySelector("#profile").$update();
         }
       })
@@ -927,32 +930,58 @@ class App {
         if(_LCSDB.user().is){
 
           this.$components = [
+
             {
-              $type: "h3",
-              class: "mdc-typography--headline3",
-              $text: this._status //"Profile for: " + this.db.user().is.alias
-            },
-            _app.widgets.divider,
-            {
-              $type: "h4",
-              class: "mdc-typography--headline4",
-              $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
-            },
-            dragDropWorldsArea,
-            {
-              $type: "p"
-            },
-            loadEmpty,
-            {
-              $type: "h4",
-              class: "mdc-typography--headline4",
-              $text: 'Load proxy files:' //"Profile for: " + this.db.user().is.alias
-            },
-            dragDropProxyArea,
-            {
-              $type: "p"
-            },
-            loadDefaultsProxy
+              $type: "div",
+              class: "mdc-layout-grid",
+              $components: [
+                  {
+                      $type: "div",
+                      class: "mdc-layout-grid__inner",
+                      $components: [
+                          {
+                              $type: "div",
+                              class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                              $components: [
+                                {
+                                  $type: "h4",
+                                  class: "mdc-typography--headline4",
+                                  $text: this._status //"Profile for: " + this.db.user().is.alias
+                                }
+                              ]
+                          },
+                          {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                              {
+                                $type: "h3",
+                                class: "mdc-typography",
+                                $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
+                              },
+                              dragDropWorldsArea, _app.widgets.emptyDiv, loadEmpty
+                            ]
+                        },
+                        {
+                          $type: "div",
+                          class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                          $components: [
+                            {
+                              $type: "h3",
+                              class: "mdc-typography",
+                              $text: 'Load proxy files:' //"Profile for: " + this.db.user().is.alias
+                            },
+                            dragDropProxyArea,
+                            _app.widgets.emptyDiv,
+                            loadDefaultsProxy
+                          ]
+                      }
+                      ]
+                  }
+              ]
+
+          }
+
           ]
         } else {
           this.$components = [
@@ -1195,8 +1224,8 @@ class App {
 
     if (!_app.indexApp) {
       _app.indexApp = new IndexApp;
-      _app.indexApp.initHTML();
-      _app.indexApp.initApp();
+      //_app.indexApp.initHTML();
+      //_app.indexApp.initApp();
     }
 
     if (type == 'protos') {
@@ -1208,27 +1237,56 @@ class App {
 
   }
 
-  async HandleIndex() {
+  async generateFrontPage() {
+
+    let infoEl = document.createElement("div");
+    infoEl.setAttribute("id", "indexPage");
+
+    let lang = _LangManager.locale;
+
+    let infoElHTML = await _app.helpers.getHtmlText('/web/locale/' + lang + '/index.html');
+    infoEl.innerHTML = infoElHTML;
+    document.body.appendChild(infoEl);
+
+    document.querySelector('#ruLang').addEventListener('click', function (e) {
+        _LangManager.locale = 'ru';
+        window.location.reload(true);
+    });
+
+    document.querySelector('#enLang').addEventListener('click', function (e) {
+        _LangManager.locale = 'en';
+        window.location.reload(true);
+    });
+
+}
+
+  HandleIndex() {
 
     console.log("INDEX");
 
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
+   (new Promise(res => res(_app.generateFrontPage()))).then(res=>{
+
+
     if (!_app.indexApp) {
-      _app.indexApp = new IndexApp;
-      await _app.indexApp.generateFrontPage();
-      _app.indexApp.initHTML();
+      _app.indexApp = new IndexApp('index');
     }
 
-    _app.indexApp.initApp();
+  
+    //_app.indexApp.initApp();
 
 
-    _q(_LCSDB).get('~@app').data().then(res => {
-      if (res) {
-        _app.indexApp.initWorldsProtosListForUser('app');
-      }
-    })
+    // _q(_LCSDB).get('~@app').data().then(res => {
+    //   if (res) {
+    //     _app.indexApp.initWorldsProtosListForUser('app');
+    //   }
+    // })
+
+   })
+
+    
 
     // _LCSDB.get('~@app').once(res=>{
     //   if (res){
