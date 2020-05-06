@@ -539,7 +539,7 @@ class WorldApp {
             document.querySelector("#aboutWorld")._runWorldGUI = runWorldGUI;
             //document.querySelector("#aboutWorld")._refresh(worldCardGUI);
             }
-
+        }
 
         if (!saveName) {
             let statesData = await _app.getAllStateWorldsInfoForUser(user.user, space) //await _app.getSaveStates(user, space);
@@ -548,9 +548,6 @@ class WorldApp {
             worldStates._states = statesData;
             worldStates._updateComps();
             worldStatesComp.$components.push(worldStates);
-        }
- 
-
         }
 
     }

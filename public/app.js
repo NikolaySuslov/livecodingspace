@@ -2354,7 +2354,7 @@ class App {
 
     //let hasDocs = await (new Promise(res => db.get('documents').not(res(false)))).then(res=>{return res});
     
-    let list = await (new Promise(res => db.get('documents').load(res, { wait: 300 })))
+    let list = await (new Promise(res => db.get('documents').once(res))) //load(res, { wait: 300 }
       .then(r => {
         if (!worldName) {
           return Promise.all(Object.keys(r).map(k => db.get('documents').get(k).then(res => { return [k, res] })))
@@ -2475,7 +2475,7 @@ class App {
         db = _LCSDB.user();
     }
 
-    let list = await (new Promise(res => db.get('worlds').load(res, { wait: 300 })))
+    let list = await (new Promise(res => db.get('worlds').once(res))) //load(res, {wait:300})
       .then(r => {
 
         if (!worldName) {
