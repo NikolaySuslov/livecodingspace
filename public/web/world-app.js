@@ -486,20 +486,6 @@ class WorldApp {
         document.querySelector("#aboutWorld")._refresh(worldCardGUI);
         //document.querySelector("#aboutWorld")._refreshWorldComps(info);
 
-        
-
-
-        if (!saveName) {
-            let statesData = await _app.getAllStateWorldsInfoForUser(user.user, space) //await _app.getSaveStates(user, space);
-            //let worldStates = this.createWorldStatesGUI();
-            let worldStates = document.querySelector("#worldStatesGUI");
-            worldStates._states = statesData;
-            worldStates._updateComps();
-            worldStatesComp.$components.push(worldStates);
-        }
-
-
-       
         let settings = worldCardGUI._worldInfo.settings;
         if (settings) {
             if (settings.ar) {
@@ -551,9 +537,19 @@ class WorldApp {
                 }
 
             document.querySelector("#aboutWorld")._runWorldGUI = runWorldGUI;
+            //document.querySelector("#aboutWorld")._refresh(worldCardGUI);
             }
 
-            
+
+        if (!saveName) {
+            let statesData = await _app.getAllStateWorldsInfoForUser(user.user, space) //await _app.getSaveStates(user, space);
+            //let worldStates = this.createWorldStatesGUI();
+            let worldStates = document.querySelector("#worldStatesGUI");
+            worldStates._states = statesData;
+            worldStates._updateComps();
+            worldStatesComp.$components.push(worldStates);
+        }
+ 
 
         }
 

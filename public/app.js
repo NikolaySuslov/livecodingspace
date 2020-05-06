@@ -1505,8 +1505,8 @@ class App {
       '/vwf/model/aframe/addon/BVHLoader.js',
       '/vwf/model/aframe/addon/TransformControls.js',
       '/vwf/model/aframe/addon/THREE.MeshLine.js',
-      '/vwf/model/aframe/addon/aframe-components.js',
-      '/vwf/view/arjs/aframe-ar.js'
+      '/vwf/model/aframe/addon/aframe-components.js'
+      //'/vwf/view/arjs/aframe-ar.js' //load in aframe-ar-driver
     ], {
       async: false,
       returnPromise: true
@@ -2352,7 +2352,8 @@ class App {
         db = _LCSDB.user();
     }
 
-
+    //let hasDocs = await (new Promise(res => db.get('documents').not(res(false)))).then(res=>{return res});
+    
     let list = await (new Promise(res => db.get('documents').load(res, { wait: 300 })))
       .then(r => {
         if (!worldName) {
@@ -2426,13 +2427,16 @@ class App {
               appInfo = worldDesc[root][langID]
             }
 
+            let settings = worldDesc[root]['settings'];
+
             doc = {
               'worldName': el.world + '/load/' + saveName,
               'created': res.created ? res.created : res.modified,
               'modified': res.modified,
               'type': 'saveState',
               'userAlias': userAlias,
-              'info': appInfo
+              'info': appInfo,
+              'settings': settings
             }
           }
         }
@@ -2524,6 +2528,8 @@ class App {
               appInfo = worldDesc[root][langID]
             }
 
+            let settings = worldDesc[root]['settings'];
+
             doc = {
               'worldName': index,
               'created': res.created ? res.created : res.modified,
@@ -2531,7 +2537,8 @@ class App {
               'proxy': proxy,
               'type': 'proto',
               'userAlias': userAlias,
-              'info': appInfo
+              'info': appInfo,
+              'settings': settings
             }
           }
         }
