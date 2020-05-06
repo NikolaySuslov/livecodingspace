@@ -6,12 +6,12 @@ Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/li
 */
 // VWF & OSC driver
 
-define(["module", "vwf/view", "vwf/view/arjs/signals/signals", "vwf/view/arjs/aframe-ar"], function(module, view, signals, arjs) {
+define(["module", "vwf/view", "vwf/view/arjs/aframe-ar"], function(module, view, arjs) {
 
 	return view.load(module, {
 
 		initialize: function() {
-			window.signals = signals;
+			//window.signals = signals;
 			self = this;
 			this.viewDriver = vwf.views["vwf/view/aframe"];
  
