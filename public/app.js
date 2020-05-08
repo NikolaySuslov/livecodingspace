@@ -348,7 +348,9 @@ class App {
               'owner': userPub,
               'featured': true,
               'published': true,
-              'proxy': userPub
+              'proxy': userPub,
+              'created': created,
+              'modified': created
             }
           }
 
@@ -748,7 +750,9 @@ class App {
                         'owner': userPub,
                         'featured': true,
                         'published': true,
-                        'proxy': userPub
+                        'proxy': userPub,
+                        'created': created,
+                        'modified': created
                       }
                     
           
@@ -1050,7 +1054,7 @@ class App {
             _LCSDB.user().get(worldType).get(worldName).get(file).load(worldFile => {
 
               if (worldFile) {
-                var source = worldFile.file;
+                var source = worldFile;
                 if (type == 'state') {
 
                   if (!file.includes('_info_vwf_json')) {
@@ -1229,7 +1233,7 @@ class App {
     }
 
     if (type == 'protos') {
-      _app.indexApp.initWorldsProtosListForUserNew(user)//.getWorldsProtosListForUser(user); 
+      _app.indexApp.allWorldsProtosForUser(user)//.getWorldsProtosListForUser(user); 
     } else if (type == 'states') {
      // _app.indexApp.initWorldsStatesListForUser(user);
       //await _app.indexApp.getWorldsFromUserDB(user);
@@ -1796,47 +1800,25 @@ class App {
     let created = new Date().valueOf();
     
 
-    let worldObj = {
-      'owner': newOwner,
-      'parent': userName + '/' + worldName,
-      'featured': true,
-      'published': true,
-      'created': created
-    };
+    // let worldObj = {
+    //   'owner': newOwner,
+    //   'parent': userName + '/' + worldName,
+    //   'featured': true,
+    //   'published': true,
+    //   'created': created
+    // };
 
     // let fileNamesAll = 
     await _LCSDB.user(userPub).get('worlds').get(worldName).load(all => {
 
-     
+      let worldObj = Object.assign({}, all);
 
-      let worldFileNames = Object.keys(all).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'proxy') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
-
-      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
-
-      for (var doc in worldFileNames) {
-
-        let fn = worldFileNames[doc];
-        let res = all[fn]; //(await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
-        let fileData = (typeof res == 'object') ? JSON.stringify(res) : res;
-
-    
-        // let data = {
-        //   'file': fileData, //JSON.stringify(res.file),
-        //   'modified': created
-        // }
-        // //worldObj[fn] = data;
-
-        // myWorld.get([fn]).put({
-        //   'file': fileData, 
-        //   'modified': created
-        // })
-
-        myWorld.put({[fn]: fileData})
-        
-      }
-
-
-
+      worldObj.owner = newOwner;
+      worldObj.parent = userName + '/' + worldName;
+      worldObj.featured = true
+      worldObj.published =true
+      worldObj.created = created
+      
       if(!all.proxy){
         worldObj.proxy = userPub;
       } else {
@@ -1853,6 +1835,7 @@ class App {
 
       //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
       //let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
+      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
       myWorld.put(worldObj, function (res) {
         if (stateFileName) {
           self.saveStateAsFile(stateFileName)
