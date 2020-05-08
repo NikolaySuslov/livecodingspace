@@ -279,13 +279,13 @@ class App {
 
           let created = new Date().valueOf();
 
-          let obj = {
-            //'owner': userPub,
-            'file': responseText,
-            'modified': created,
-            'created': created
-          }
-          proxyObj[entryName] = obj;
+          // let obj = {
+          //   //'owner': userPub,
+          //   'file': responseText,
+          //   'modified': created,
+          //   'created': created
+          // }
+          proxyObj[entryName] = responseText;
         }
       }
     }
@@ -335,12 +335,12 @@ class App {
           //let modified = new Date().valueOf();
           let created = new Date().valueOf();
 
-          let obj = {
-            'file': worldSource,
-            'modified': created,
-            'created': created
+          // let obj = {
+          //   'file': worldSource,
+          //   'modified': created,
+          //   'created': created
 
-          }
+          // }
 
           if (!worldsObj[worldName]) {
             worldsObj[worldName] = {
@@ -353,7 +353,7 @@ class App {
           }
 
           let entry = entryName.replace(worldName + '/', "");
-          worldsObj[worldName][entry] = obj;
+          worldsObj[worldName][entry] = worldSource
 
         }
       }
@@ -449,12 +449,12 @@ class App {
     Object.keys(emptyWorld).forEach(el => {
       //let modified = new Date().valueOf();
       let created = new Date().valueOf();
-      let obj = {
-        'file': emptyWorld[el],
-        'modified': created,
-        'created': created
-      }
-      worldsObj['empty'][el] = obj;
+      // let obj = {
+      //   'file': emptyWorld[el],
+      //   'modified': created,
+      //   'created': created
+      // }
+      worldsObj['empty'][el] = emptyWorld[el];
     })
 
     console.log(worldsObj);
@@ -736,12 +736,12 @@ class App {
                     //let modified = new Date().valueOf();
                     let created = new Date().valueOf();
           
-                    let obj = {
-                      'file': fileSource,
-                      'modified': created,
-                      'created': created
+                    // let obj = {
+                    //   'file': fileSource,
+                    //   'modified': created,
+                    //   'created': created
           
-                    }
+                    // }
 
                       world[worldName] = {
                         'parent': '-',
@@ -753,7 +753,7 @@ class App {
                     
           
                     let entry = entryName.replace(worldName + '/', "");
-                    world[worldName][entry] = obj;
+                    world[worldName][entry] = fileSource;
                     console.log(world);
 
                     worlds.put(world);
@@ -812,7 +812,7 @@ class App {
           onDrop: function (files, pos, fileList, directories) {
             console.log('onDrop: ' + files.length + ' files at ' + pos.x + ', ' + pos.y);
             //let worldsObj = {};
-            let proxy = _LCSDB.user().get('proxy');
+            let proxy = _LCSDB.user().get('proxy').put({id:'proxy'});
 
             files.forEach(function (file) {
 
@@ -839,13 +839,13 @@ class App {
           
                   let created = new Date().valueOf();
             
-                      let obj = {
-                        'owner': userPub,
-                        'file': fileSource,
-                        'modified': created,
-                        'created': created
-                      }
-                    proxyObj[entryName] = obj;
+                      // let obj = {
+                      //   'owner': userPub,
+                      //   'file': fileSource,
+                      //   'modified': created,
+                      //   'created': created
+                      // }
+                    proxyObj[entryName] = fileSource;
                     console.log(proxyObj);
                     proxy.put(proxyObj);
 
@@ -1084,7 +1084,7 @@ class App {
                       console.log("save new info");
                       let editor = document.querySelector("#aceEditor").env.editor;
                       let newInfo = editor.getValue();
-                      _LCSDB.user().get(worldType).get(worldName).get(file).get('file').put(newInfo, function (res) {
+                      _LCSDB.user().get(worldType).get(worldName).get(file).put(newInfo, function (res) {
                         if (res) {
 
                           let noty = new Noty({
@@ -1096,8 +1096,8 @@ class App {
                           });
                           noty.show();
 
-                          let modified = new Date().valueOf();
-                          _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
+                          // let modified = new Date().valueOf();
+                          // _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
                         }
                       })
                     }
@@ -1141,8 +1141,8 @@ class App {
                               });
                               noty.show();
 
-                              let modified = new Date().valueOf();
-                              _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
+                              // let modified = new Date().valueOf();
+                              // _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
                             }
                           })
                         }
@@ -1229,9 +1229,9 @@ class App {
     }
 
     if (type == 'protos') {
-      _app.indexApp.initWorldsProtosListForUser(user)//.getWorldsProtosListForUser(user); 
+      _app.indexApp.initWorldsProtosListForUserNew(user)//.getWorldsProtosListForUser(user); 
     } else if (type == 'states') {
-      _app.indexApp.initWorldsStatesListForUser(user);
+     // _app.indexApp.initWorldsStatesListForUser(user);
       //await _app.indexApp.getWorldsFromUserDB(user);
     }
 
@@ -1456,11 +1456,11 @@ class App {
     }).then(pr => {
 
       let cpath = pr.public_path;
-      return new Promise(res => _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').get(cpath.slice(1)).load(res, { wait: 400 }))
+      return new Promise(res => _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').get(cpath.slice(1)).load(res)) //, { wait: 400 }
 
     }).then(val => {
 
-      let res = val['index_vwf_config_yaml'].file;
+      let res = val['index_vwf_config_yaml'];
       var conf = "";
 
       if (res) {
@@ -1732,23 +1732,23 @@ class App {
   async getProtoWorldFiles(userPub, worldName, date) {
 
     let fileNamesAll = (await _LCSDB.user(userPub).get('worlds').get(worldName).promOnce()).data;
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
+    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html') && (el !== 'proxy'));
 
     let worldObj = {};
     for (var doc in worldFileNames) {
       let fn = worldFileNames[doc];
       let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
-      var data = {
-        'file': res.file,
-        'modified': res.modified,
-        'created': res.created
-      }
-      if (!date) {
-        data = {
-          'file': res.file
-        }
-      }
-      worldObj[fn] = data;
+      // var data = {
+      //   'file': res.file,
+      //   'modified': res.modified,
+      //   'created': res.created
+      // }
+      // if (!date) {
+      //   data = {
+      //     'file': res.file
+      //   }
+      // }
+      worldObj[fn] = res;
     }
     console.log(worldObj);
     return worldObj
@@ -1793,32 +1793,49 @@ class App {
     //let modified = new Date().valueOf();
     console.log('clone: ' + worldName + 'to: ' + worldID);
 
-
     let created = new Date().valueOf();
+    
 
     let worldObj = {
       'owner': newOwner,
       'parent': userName + '/' + worldName,
       'featured': true,
-      'published': true
+      'published': true,
+      'created': created
     };
 
     // let fileNamesAll = 
     await _LCSDB.user(userPub).get('worlds').get(worldName).load(all => {
 
+     
+
       let worldFileNames = Object.keys(all).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'proxy') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html'));
+
+      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
 
       for (var doc in worldFileNames) {
 
         let fn = worldFileNames[doc];
         let res = all[fn]; //(await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
-        let fileData = (typeof res.file == 'object') ? JSON.stringify(res.file) : res.file;
-        let data = {
-          'file': fileData, //JSON.stringify(res.file),
-          'modified': created
-        }
-        worldObj[fn] = data;
+        let fileData = (typeof res == 'object') ? JSON.stringify(res) : res;
+
+    
+        // let data = {
+        //   'file': fileData, //JSON.stringify(res.file),
+        //   'modified': created
+        // }
+        // //worldObj[fn] = data;
+
+        // myWorld.get([fn]).put({
+        //   'file': fileData, 
+        //   'modified': created
+        // })
+
+        myWorld.put({[fn]: fileData})
+        
       }
+
+
 
       if(!all.proxy){
         worldObj.proxy = userPub;
@@ -1835,7 +1852,7 @@ class App {
       // }
 
       //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
-      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({});
+      //let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
       myWorld.put(worldObj, function (res) {
         if (stateFileName) {
           self.saveStateAsFile(stateFileName)
@@ -2009,7 +2026,7 @@ class App {
     });
 
     // let docInfo  =  await _LCSDB.user().get('worlds').get(root).get('info_json').get('file').then();
-    _LCSDB.user().get('worlds').get(root).get('info_json').get('file').once(function (file) {
+    _LCSDB.user().get('worlds').get(root).get('info_json').once(function (file) {
 
       if (file) {
 
@@ -2044,43 +2061,43 @@ class App {
     });
 
 
-    // Save Config Information
-    var config = { "info": {}, "model": {}, "view": {} };
+    // // Save Config Information
+    // var config = { "info": {}, "model": {}, "view": {} };
 
-    // Save browser title
-    config["info"]["title"] = document.title//$('title').html();
+    // // Save browser title
+    // config["info"]["title"] = document.title//$('title').html();
 
-    // Save model drivers
-    Object.keys(vwf_view.kernel.kernel.models).forEach(function (modelDriver) {
-      if (modelDriver.indexOf('vwf/model/') != -1) config["model"][modelDriver] = "";
-    });
+    // // Save model drivers
+    // Object.keys(vwf_view.kernel.kernel.models).forEach(function (modelDriver) {
+    //   if (modelDriver.indexOf('vwf/model/') != -1) config["model"][modelDriver] = "";
+    // });
 
-    // If neither glge or threejs model drivers are defined, specify nodriver
-    if (config["model"]["vwf/model/glge"] === undefined && config["model"]["vwf/model/threejs"] === undefined) config["model"]["nodriver"] = "";
+    // // If neither glge or threejs model drivers are defined, specify nodriver
+    // if (config["model"]["vwf/model/glge"] === undefined && config["model"]["vwf/model/threejs"] === undefined) config["model"]["nodriver"] = "";
 
-    // Save view drivers and associated parameters, if any
-    Object.keys(vwf_view.kernel.kernel.views).forEach(function (viewDriver) {
-      if (viewDriver.indexOf('vwf/view/') != -1) {
-        if (vwf_view.kernel.kernel.views[viewDriver].parameters) {
-          config["view"][viewDriver] = vwf_view.kernel.kernel.views[viewDriver].parameters;
-        }
-        else config["view"][viewDriver] = "";
-      }
-    });
+    // // Save view drivers and associated parameters, if any
+    // Object.keys(vwf_view.kernel.kernel.views).forEach(function (viewDriver) {
+    //   if (viewDriver.indexOf('vwf/view/') != -1) {
+    //     if (vwf_view.kernel.kernel.views[viewDriver].parameters) {
+    //       config["view"][viewDriver] = vwf_view.kernel.kernel.views[viewDriver].parameters;
+    //     }
+    //     else config["view"][viewDriver] = "";
+    //   }
+    // });
 
-    //var jsonConfig = $.encoder.encodeForURL(JSON.stringify(config));
-    var jsonConfig = JSON.stringify(config);
+    // //var jsonConfig = $.encoder.encodeForURL(JSON.stringify(config));
+    // var jsonConfig = JSON.stringify(config);
 
 
 
-    let configStateForStore = {
-      "root": root,
-      "filename": filename,
-      "inst": inst,
-      "timestamp": timestamp,
-      "extension": "config.vwf.json",
-      "jsonState": jsonConfig
-    };
+    // let configStateForStore = {
+    //   "root": root,
+    //   "filename": filename,
+    //   "inst": inst,
+    //   "timestamp": timestamp,
+    //   "extension": "config.vwf.json",
+    //   "jsonState": jsonConfig
+    // };
 
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
@@ -2407,15 +2424,15 @@ class App {
 
         if (res && res !== 'null') {
 
-          if (res.file && res.file !== 'null') {
+          //if (res.file && res.file !== 'null') {
 
             let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
 
             var worldDesc = {};
-            if (typeof (res.file) == 'object') {
-              worldDesc = res.file
+            if (typeof (res) == 'object') {
+              worldDesc = res
             } else {
-              worldDesc = JSON.parse(res.file)
+              worldDesc = JSON.parse(res)
             }
 
 
@@ -2438,7 +2455,7 @@ class App {
               'info': appInfo,
               'settings': settings
             }
-          }
+          //}
         }
 
         if (Object.keys(doc).length !== 0) {
@@ -2509,15 +2526,15 @@ class App {
 
         if (res && res !== 'null') {
 
-          if (res.file && res.file !== 'null') {
+          //if (res.file && res.file !== 'null') {
 
             //let worldDesc = JSON.parse(res.file);
 
             var worldDesc = {};
-            if (typeof (res.file) == 'object') {
-              worldDesc = res.file
+            if (typeof (res) == 'object') {
+              worldDesc = res
             } else {
-              worldDesc = JSON.parse(res.file)
+              worldDesc = JSON.parse(res)
             }
 
             let root = Object.keys(worldDesc)[0];
@@ -2540,7 +2557,7 @@ class App {
               'info': appInfo,
               'settings': settings
             }
-          }
+          //}
         }
 
         if (Object.keys(doc).length !== 0)

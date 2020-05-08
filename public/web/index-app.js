@@ -92,7 +92,7 @@ class IndexApp {
         entry.setAttribute("id", 'app');
         document.body.appendChild(entry);
 
-        let divs = ['appGUI', 'userLobby', 'main', 'worldsGUI'];
+        let divs = ['appGUI', 'userLobby', 'main', 'worldsGUI', 'lab'];
         divs.forEach(el => {
             let appEl = document.createElement("div");
             appEl.setAttribute("id", el);
@@ -134,6 +134,8 @@ class IndexApp {
             $update: function () {
             }
         });
+
+       
 
     }
 
@@ -276,9 +278,140 @@ class IndexApp {
 
         if(this.entry == 'index'){
             //change for LiveCoding.space to 'app'
-            this.initWorldsProtosListForUser(alias);
+           this.initWorldsProtosListForUserNew(alias);
         }
+
+       
+
+
         
+    }
+
+    async initWorldsProtosListForUserNew (userAlias) {
+
+       let userPub = await _app.helpers.getUserPub(userAlias);
+       let db = _LCSDB.user(userPub);
+
+        document.querySelector("#lab").$cell({
+            id: "lab",
+            $cell: true,
+            $type: "div",
+            _createCard: function(data){
+
+                let card = {
+                    $type: "div",
+                    id: '#'+ data,
+                    _worldName: "",
+                    _worldInfo: "info",
+                    $init: function(){
+                        this._worldName = data;
+
+                        // _LCSDB.user().get('worlds')
+                        // .map((el,k)=>k === this._worldName? el : undefined) 
+                        // .get('info_json').once(
+                        //     res=>{
+                        //         console.log("New World: ", res);
+                        //         if(!res.file){
+                        //             _LCSDB.get(res['_']['#']).once(res=>{
+                        //                 console.log("New World force get: ", res);
+                        //             })
+                        //         }
+                        //     }
+                        // )
+
+
+                        db.get('worlds').get(this._worldName).once((res)=>{
+                            console.log(res);
+                            this._worldInfo = res['info_json'];
+                        })
+                    
+
+                  
+                        //     .map()
+                        // .on((res,k,n)=>{
+                        //     if(k == 'info_json'){
+                        //         console.log(res);
+                        //         this._worldInfo = res;
+                        //         //this.$update();
+                        //     }
+                        // })
+                    },
+                    $update: function(){
+                        
+                        this.$components = [
+                            {
+                                $type: "div",
+                                $text: this._worldName
+                            },
+                            {
+                                $type: "div",
+                                $text: this._worldInfo
+                            }
+                        ]
+                    }
+
+                }
+                return card
+            },
+            _comps: [],
+            $init: function () {
+                console.log('init lab...');
+
+                db.get('worlds')
+                .map()
+                .on((res,k)=>{
+                    console.log('From world: ', k);
+                    //let doc = document.querySelector('#'+ k);
+                   let doc = this._comps.filter(el=> el.id == '#'+ k)[0];
+
+                    if(!doc) {
+                        doc = this._createCard(k);
+                        this._comps.push(doc);
+                    } 
+
+                    // _LCSDB.get(res['info_json']).once((res)=>{
+                    //     console.log(res);
+                    //     doc._worldInfo = res.file
+                    // })
+                    //this._refresh();
+
+                })
+                // .map((k,r,n)=>{
+                //     if(r == 'info_json')
+                //         {
+                //         //console.log(r);
+                //         return k
+                //     }
+                // })
+                // .once((res,k,n)=>{
+                //     console.log(res);
+                //     if(doc)
+                //         doc._worldInfo = res.file
+                // })
+                // .map((k,r,n)=>{
+                //     if(r == 'file')
+                //         {
+                //         //console.log(r);
+                //         return k
+                //         }
+                //     })
+                //     .on((res,k,n)=>{
+                //         console.log('From info ', res);
+                //     })
+
+                // .map()
+                // .on((res,k)=>{
+                //     console.log(res);
+                // })
+            },
+            $update: function () {
+                //do update;
+                console.log('update me');
+                this.$components = this._comps;
+            }
+        });
+
+
     }
 
     initUser() {

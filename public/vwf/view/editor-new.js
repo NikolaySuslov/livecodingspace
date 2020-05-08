@@ -3183,7 +3183,7 @@ define([
                     let worldName = self.helpers.getRoot(true).root;//url.split('/')[0];
                     let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-                    userDB.get('worlds').get(worldName).get(fileName).get('file').once(res => {
+                    userDB.get('worlds').get(worldName).get(fileName).once(res => {
 
                         this._importScript(res);
                     })

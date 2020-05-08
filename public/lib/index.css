@@ -434,12 +434,12 @@ text-shadow: 0px 0px 0 rgba(0, 0, 0, 0.3);
 
   position: absolute;
   border: 0;
-  right: 40px;
-  bottom: 20px;
+  right: 0px;
+  bottom: 70px;
   cursor: pointer;
   min-width: 50px;
   min-height: 30px;
-  padding-right: 5%;
+  padding-right: 2%;
   padding-top: 4%;
   position: absolute;
   transition: background-color .05s ease;
