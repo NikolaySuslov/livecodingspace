@@ -1735,27 +1735,32 @@ class App {
 
   async getProtoWorldFiles(userPub, worldName, date) {
 
-    let fileNamesAll = (await _LCSDB.user(userPub).get('worlds').get(worldName).promOnce()).data;
-    let worldFileNames = Object.keys(fileNamesAll).filter(el => (el !== '_') && (el !== 'owner') && (el !== 'parent') && (el !== 'featured') && (el !== 'published') && (el !== 'info_json') && (el !== '_config_yaml') && (el !== '_yaml') && (el !== '_html') && (el !== 'proxy'));
+     return (new Promise(res=>_LCSDB.user(userPub).get('worlds').get(worldName).once(res))).then(res=>{
+      let worldFiles = Object.entries(res).filter(el => (el[0].includes('_json')) || (el[0].includes('_yaml')) || (el[0].includes('_html')) || (el[0].includes('_js')))
+      .filter(el => (el[0] !== 'info_json'));
 
-    let worldObj = {};
-    for (var doc in worldFileNames) {
-      let fn = worldFileNames[doc];
-      let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
-      // var data = {
-      //   'file': res.file,
-      //   'modified': res.modified,
-      //   'created': res.created
-      // }
-      // if (!date) {
-      //   data = {
-      //     'file': res.file
-      //   }
-      // }
-      worldObj[fn] = res;
-    }
-    console.log(worldObj);
-    return worldObj
+
+      console.log(worldFiles);
+      return worldFiles
+    });
+   
+    //let worldObj = {};
+    // for (var doc in worldFileNames) {
+    //   let fn = worldFileNames[doc];
+    //   let res = (await _LCSDB.user(userPub).get('worlds').get(worldName).get(fn).promOnce()).data;
+    //   // var data = {
+    //   //   'file': res.file,
+    //   //   'modified': res.modified,
+    //   //   'created': res.created
+    //   // }
+    //   // if (!date) {
+    //   //   data = {
+    //   //     'file': res.file
+    //   //   }
+    //   // }
+    //   worldObj[fn] = res;
+    // }
+
   }
 
   async cloneWorldPrototype(worldName, userName, newWorldName, stateFileName) {
@@ -1789,7 +1794,7 @@ class App {
       }
     }
 
-    var worldID = window._app.helpers.GenerateInstanceID().toString();
+    let worldID = window._app.helpers.GenerateInstanceID().toString();
     if (newWorldName) {
       worldID = newWorldName
     }
@@ -1970,6 +1975,9 @@ class App {
     }
 
     //var documents = this.db.user().get('documents');
+    _LCSDB.user().get('documents').not(res=>{
+    _LCSDB.user().get('documents').put({id:'documents'})
+  })
 
     var saveRevision = new Date().valueOf();
 
@@ -1993,7 +2001,7 @@ class App {
     //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
     // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    let myNewWorldState = _LCSDB.user().get('documents').get(root).get(docName).put({});
+    let myNewWorldState = _LCSDB.user().get('documents').get(root).get(docName).put({'id': docName});
     //_LCSDB.user().get('documents').get(root).get(docName).put(stateWithRev, function(res) {
     myNewWorldState.put(stateWithRev, function (res) {
       if (res) {
@@ -2013,32 +2021,34 @@ class App {
 
       if (file) {
 
-        let modified = saveRevision;
-        let newOwner = _LCSDB.user().is.pub;
-        let userName = _LCSDB.user().is.alias;
+        // let modified = saveRevision;
+        // let newOwner = _LCSDB.user().is.pub;
+        // let userName = _LCSDB.user().is.alias;
 
         let fileData = (typeof file == 'object') ? JSON.stringify(file) : file;
 
-        let obj = {
-          'parent': userName + '/' + root,
-          'owner': newOwner,
-          'file': fileData, //file, //JSON.stringify(file),
-          //'modified': modified,
-          'created': modified
+        // let obj = {
+        //   'parent': userName + '/' + root,
+        //   'owner': newOwner,
+        //   'file': fileData, //file, //JSON.stringify(file),
+        //   //'modified': modified,
+        //   'created': modified
 
-        }
+        // }
 
         let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).get('file').not(function (res) {
-          _LCSDB.user().get('documents').get(root).get(docInfoName).put(obj);
-        });
+        _LCSDB.user().get('documents').get(root).get(docInfoName).put(fileData);
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').not(function (res) {
-          _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').put(modified);
-        });
+        // _LCSDB.user().get('documents').get(root).get(docInfoName).get('file').not(function (res) {
+        //   _LCSDB.user().get('documents').get(root).get(docInfoName).put(obj);
+        // });
 
-        _LCSDB.user().get('documents').get(root).get(docInfoName).get('modified').put(modified);
+        // _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').not(function (res) {
+        //   _LCSDB.user().get('documents').get(root).get(docInfoName).get('created').put(modified);
+        // });
+
+        // _LCSDB.user().get('documents').get(root).get(docInfoName).get('modified').put(modified);
 
       }
     });

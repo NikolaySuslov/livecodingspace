@@ -20,7 +20,7 @@ class IndexApp {
         }
 
         this.initHTML();
-        this.initUser();
+        
 
     }
 
@@ -129,7 +129,8 @@ class IndexApp {
             $init: function () {
                 //this._status = "Welcome!"
                 //this._status = 'Welcome!';
-                //userEl.style.backgroundColor = '#e6e6e6';   
+                //userEl.style.backgroundColor = '#e6e6e6';  
+                self.initUser(); 
                 this._refresh(); //$update();
             },
             $update: function () {},
@@ -238,7 +239,62 @@ class IndexApp {
 
         worlds = {
             $type: 'div',
-            $text:  'Couls not find user with name: ' + userAlias,
+            $text:  'Could not find user with name: ' + userAlias,
+            class: "mdc-typography--headline4"
+        }
+    }
+
+        let components = [
+            {
+                $type: "div",
+                class: "mdc-layout-grid",
+                $components: [
+                    {
+                        $type: "div",
+                        class: "mdc-layout-grid__inner",
+                        $components: [
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [
+                                    {
+                                        $type: "h1",
+                                        class: "mdc-typography--headline4",
+                                        $text: 'Worlds for user: ' + userAlias
+                                    }
+                                ]
+                            },
+                            {
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [worlds]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        doc._refresh(components);
+   
+    }
+
+    async allWorldsStatesForUser(userAlias) {
+
+        let userPub = await _app.helpers.getUserPub(userAlias);
+        //let db = _LCSDB.user(userPub);
+
+        let doc = document.querySelector("#worldsGUI");
+
+        var worlds = {};
+
+        if(userPub) {
+        worlds = this.createWorldsGUI(userAlias, userPub, 'allStates') 
+        } else {
+
+        worlds = {
+            $type: 'div',
+            $text:  'Could not find user with name: ' + userAlias,
             class: "mdc-typography--headline4"
         }
     }
@@ -279,55 +335,7 @@ class IndexApp {
     }
 
 
-    async initWorldsProtosListForUser(userAlias) {
-        let doc = document.querySelector("#worldsGUI");
-        //doc.$components = [];
-        let allInfo = await _app.getAllProtoWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
 
-        let worlds = this.createWorldsGUI(userAlias);
-        worlds._refresh(allInfo);
-
-        let components = [
-            {
-                $type: "div",
-                class: "mdc-layout-grid",
-                $components: [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "h1",
-                                        class: "mdc-typography--headline4",
-                                        $text: 'Worlds for user: ' + userAlias
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [worlds]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
-
-
-        doc._refresh(components);
-
-        //initiate update world cards
-        doc._wcards = worlds;
-        doc._wcards.$update();
-
-        //console.log(allInfo);
-
-    }
 
     async initWorldsStatesListForUser(userAlias) {
 
@@ -428,132 +436,7 @@ class IndexApp {
         
     }
 
-    async initWorldsProtosListForUserNew (userAlias) {
 
-       let userPub = await _app.helpers.getUserPub(userAlias);
-       let db = _LCSDB.user(userPub);
-
-        document.querySelector("#lab").$cell({
-            id: "lab",
-            $cell: true,
-            $type: "div",
-            _createCard: function(data){
-
-                let card = {
-                    $type: "div",
-                    id: '#'+ data,
-                    _worldName: "",
-                    _worldInfo: "info",
-                    $init: function(){
-                        this._worldName = data;
-
-                        // _LCSDB.user().get('worlds')
-                        // .map((el,k)=>k === this._worldName? el : undefined) 
-                        // .get('info_json').once(
-                        //     res=>{
-                        //         console.log("New World: ", res);
-                        //         if(!res.file){
-                        //             _LCSDB.get(res['_']['#']).once(res=>{
-                        //                 console.log("New World force get: ", res);
-                        //             })
-                        //         }
-                        //     }
-                        // )
-
-
-                        db.get('worlds').get(this._worldName).once((res)=>{
-                            console.log(res);
-                            this._worldInfo = res['info_json'];
-                        })
-                    
-
-                  
-                        //     .map()
-                        // .on((res,k,n)=>{
-                        //     if(k == 'info_json'){
-                        //         console.log(res);
-                        //         this._worldInfo = res;
-                        //         //this.$update();
-                        //     }
-                        // })
-                    },
-                    $update: function(){
-                        
-                        this.$components = [
-                            {
-                                $type: "div",
-                                $text: this._worldName
-                            },
-                            {
-                                $type: "div",
-                                $text: this._worldInfo
-                            }
-                        ]
-                    }
-
-                }
-                return card
-            },
-            _comps: [],
-            $init: function () {
-                console.log('init lab...');
-
-                db.get('worlds')
-                .map()
-                .on((res,k)=>{
-                    console.log('From world: ', k);
-                    //let doc = document.querySelector('#'+ k);
-                   let doc = this._comps.filter(el=> el.id == '#'+ k)[0];
-
-                    if(!doc) {
-                        doc = this._createCard(k);
-                        this._comps.push(doc);
-                    } 
-
-                    // _LCSDB.get(res['info_json']).once((res)=>{
-                    //     console.log(res);
-                    //     doc._worldInfo = res.file
-                    // })
-                    //this._refresh();
-
-                })
-                // .map((k,r,n)=>{
-                //     if(r == 'info_json')
-                //         {
-                //         //console.log(r);
-                //         return k
-                //     }
-                // })
-                // .once((res,k,n)=>{
-                //     console.log(res);
-                //     if(doc)
-                //         doc._worldInfo = res.file
-                // })
-                // .map((k,r,n)=>{
-                //     if(r == 'file')
-                //         {
-                //         //console.log(r);
-                //         return k
-                //         }
-                //     })
-                //     .on((res,k,n)=>{
-                //         console.log('From info ', res);
-                //     })
-
-                // .map()
-                // .on((res,k)=>{
-                //     console.log(res);
-                // })
-            },
-            $update: function () {
-                //do update;
-                console.log('update me');
-                this.$components = this._comps;
-            }
-        });
-
-
-    }
 
     initUser() {
         let self = this;
