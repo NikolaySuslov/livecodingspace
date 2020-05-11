@@ -227,8 +227,6 @@ class IndexApp {
         let userPub = await _app.helpers.getUserPub(userAlias);
         //let db = _LCSDB.user(userPub);
 
-      
-
         let doc = document.querySelector("#worldsGUI");
 
         var worlds = {};

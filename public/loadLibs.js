@@ -12,7 +12,8 @@ loadjs([
     '/lib/ace/ace.js',
     '/lib/yamljs/dist/yaml.js',
     '/lib/wt/drag-drop.js',
-    '/lib/wt/buffer5.6.0.min.js'
+    '/lib/wt/buffer5.6.0.min.js',
+    '/lib/hashids/hashids.min.js'
 ],'forall', {
     async: false
 });

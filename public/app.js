@@ -30,6 +30,7 @@ class App {
     this.helpers = new Helpers;
     //window._q = this.q = Query;
     this.log = log;
+    this.hashids = new Hashids.default();
 
     //new Promise(res=> {this.clearLocalStorage(); return res()}).then(res=>{
 
@@ -1267,10 +1268,7 @@ class App {
 
   }
 
-  async generateFrontPage() {
-
-    let infoEl = document.createElement("div");
-    infoEl.setAttribute("id", "indexPage");
+  async generateFrontPage(infoEl) {
 
     let lang = _LangManager.locale;
 
@@ -1294,10 +1292,13 @@ class App {
 
     console.log("INDEX");
 
+    let infoEl = document.createElement("div");
+    infoEl.setAttribute("id", "indexPage");
+
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-   (new Promise(res => res(_app.generateFrontPage()))).then(res=>{
+   (new Promise(res => res(_app.generateFrontPage(infoEl)))).then(res=>{
 
 
     if (!_app.indexApp) {
