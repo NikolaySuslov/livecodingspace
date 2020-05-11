@@ -234,7 +234,7 @@ class IndexApp {
         var worlds = {};
 
         if(userPub) {
-        worlds = this.createWorldsGUI(userAlias, userPub) 
+        worlds = this.createWorldsGUI('proto', userAlias, userPub) 
         } else {
 
         worlds = {
@@ -289,7 +289,7 @@ class IndexApp {
         var worlds = {};
 
         if(userPub) {
-        worlds = this.createWorldsGUI(userAlias, userPub, 'allStates') 
+        worlds = this.createWorldsGUI('state', userAlias, userPub, 'allStates') 
         } else {
 
         worlds = {
@@ -299,36 +299,36 @@ class IndexApp {
         }
     }
 
-        let components = [
-            {
-                $type: "div",
-                class: "mdc-layout-grid",
-                $components: [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "h1",
-                                        class: "mdc-typography--headline4",
-                                        $text: 'Worlds for user: ' + userAlias
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [worlds]
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
+    let components = [
+        {
+            $type: "div",
+            class: "mdc-layout-grid",
+            $components: [
+                {
+                    $type: "div",
+                    class: "mdc-layout-grid__inner",
+                    $components: [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [
+                                {
+                                    $type: "h1",
+                                    class: "mdc-typography--headline4",
+                                    $text: 'States for ' + userAlias
+                                }
+                            ]
+                        },
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            $components: [].concat(worlds)
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 
         doc._refresh(components);
    
@@ -337,54 +337,6 @@ class IndexApp {
 
 
 
-    async initWorldsStatesListForUser(userAlias) {
-
-        let doc = document.querySelector("#worldsGUI");
-        //doc.$components = [];
-        let allInfo = await _app.getAllStateWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
-
-        let worlds = this.createWorldsGUI(userAlias, 'allStates');
-        worlds._refresh(allInfo);
-        let components = [
-            {
-                $type: "div",
-                class: "mdc-layout-grid",
-                $components: [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "h1",
-                                        class: "mdc-typography--headline4",
-                                        $text: 'States for ' + userAlias
-                                    }
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [].concat(worlds)
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-
-        doc._refresh(components);
-
-        //initiate update world cards
-        doc._wcards = worlds;
-        doc._wcards.$update();
-
-        //console.log(allInfo);
-
-    }
 
     authGUI(){
 
@@ -949,7 +901,7 @@ class IndexApp {
 
     }
 
-    createWorldCard(userAlias, userPub, worldName, id, type, cb) {
+    createWorldCard(worldType, userAlias, userPub, worldName, id, type, cb) {
         let self = this;
 
         let db = _LCSDB.user(userPub);
@@ -1090,36 +1042,72 @@ class IndexApp {
                 this._worldName = worldName;
 
                     if(type == 'min') {
-                        db.get('worlds').get(this._worldName).path('info_json').on((res)=>{
-                            console.log(res);
+                        if(worldType == 'proto') {
 
-                           let worldDesc = JSON.parse(res);
-                        
-                           let root = Object.keys(worldDesc)[0];
-                           var appInfo = worldDesc[root]['en'];
-               
-                           let langID = localStorage.getItem('krestianstvo_locale');
-                           if (langID) {
-                             appInfo = worldDesc[root][langID]
-                           }
+                            db.get('worlds').get(this._worldName).path('info_json').on((res)=>{
+                                console.log(res);
+    
+                               let worldDesc = JSON.parse(res);
+                            
+                               let root = Object.keys(worldDesc)[0];
+                               var appInfo = worldDesc[root]['en'];
+                   
+                               let langID = localStorage.getItem('krestianstvo_locale');
+                               if (langID) {
+                                 appInfo = worldDesc[root][langID]
+                               }
+    
+                               let doc = {
+                                  'worldName': this._worldName,
+                                  'created': undefined,
+                                  'modified': undefined,
+                                  'type': 'proto',
+                                  'userAlias': userAlias,
+                                  'info': appInfo
+                                }
+                                this._refresh(doc);
+       
+                                //callback
+                                if(cb)
+                                   cb(doc);
+                            })
+                        } else if (worldType == 'state'){
+                            let pathName = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_info_vwf_json';
+                            db.get('documents').get(this._worldName.protoName).path(pathName).on((res)=>{
+                                console.log(res);
+    
+                               let worldDesc = JSON.parse(res);
+                            
+                               let root = Object.keys(worldDesc)[0];
+                               var appInfo = worldDesc[root]['en'];
+                   
+                               let langID = localStorage.getItem('krestianstvo_locale');
+                               if (langID) {
+                                 appInfo = worldDesc[root][langID]
+                               }
+    
+                               let doc = {
+                                  'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                  'created': undefined,
+                                  'modified': undefined,
+                                  'type': 'saveState',
+                                  'userAlias': userAlias,
+                                  'info': appInfo
+                                }
+                                this._refresh(doc);
+       
+                                //callback
+                                if(cb)
+                                   cb(doc);
+                            })
 
-                           let doc = {
-                              'worldName': this._worldName,
-                              'created': undefined,
-                              'modified': undefined,
-                              'type': 'proto',
-                              'userAlias': userAlias,
-                              'info': appInfo
-                            }
-                            this._refresh(doc);
-   
-                            //callback
-                            if(cb)
-                               cb(doc);
-                        })
+                        }
+                     
 
 
                     } else if (type == 'full'){
+
+                if(worldType == 'proto') {
                      db.get('worlds').get(this._worldName).on((res)=>{
                          console.log(res);
 
@@ -1153,6 +1141,76 @@ class IndexApp {
                          if(cb)
                             cb(doc);
                      })
+
+                    } else if (worldType == 'state') {
+
+                        let pathNameInfo = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_info_vwf_json';
+                 
+
+                        db.get('documents').get(this._worldName.protoName).path(pathNameInfo).on((res)=>{
+                            console.log(res);
+                           let worldDesc = JSON.parse(res);
+                        
+                           let root = Object.keys(worldDesc)[0];
+                           var appInfo = worldDesc[root]['en'];
+               
+                           let langID = localStorage.getItem('krestianstvo_locale');
+                           if (langID) {
+                             appInfo = worldDesc[root][langID]
+                           }
+
+                           let settings = worldDesc[root]['settings'];
+
+                           let doc = {
+                              'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                              'created': undefined,
+                              'modified': undefined,
+                              'type': 'saveState',
+                              'userAlias': userAlias,
+                              'info': appInfo,
+                              'settings': settings
+                            }
+                            this._refresh(doc);
+   
+                            //callback
+                            if(cb)
+                               cb(doc);
+                        })
+
+                        // let pathNameState = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_vwf_json';
+                        // db.get('documents').get(this._worldName.protoName).path(pathNameState).on((res)=>{
+                        //     console.log(res);
+                        // //    let worldDesc = JSON.parse(res);
+                        
+                        // //    let root = Object.keys(worldDesc)[0];
+                        // //    var appInfo = worldDesc[root]['en'];
+               
+                        // //    let langID = localStorage.getItem('krestianstvo_locale');
+                        // //    if (langID) {
+                        // //      appInfo = worldDesc[root][langID]
+                        // //    }
+
+                        //    let settings = worldDesc[root]['settings'];
+
+                        //    let doc = {
+                        //       'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                        //       'created': res.created,
+                        //       'modified': res.modified,
+                        //       'type': 'saveState',
+                        //       'userAlias': userAlias,
+                        //       'info': appInfo,
+                        //       'settings': settings
+                        //     }
+                        //     this._refresh(doc);
+   
+                        //     //callback
+                        //     if(cb)
+                        //        cb(doc);
+                        // })
+
+
+                    }
+
 
                     }
             },
@@ -1212,8 +1270,33 @@ class IndexApp {
                 });
 
 
+                let protoID = {}
+
                 if (desc.type == 'saveState') {
                     cardInfo.title = desc.worldName.split('/')[2];
+
+                    let protoIDComp = {
+
+                     $type: 'div',
+                     $components: [
+
+                    {
+                        $type: "span",
+                        class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                        $text: 'proto: '
+                    },
+                    {
+                        $type: "input",
+                        type: "text",
+                        disabled: "",
+                        style: "font-size:18px",
+                        value: desc.worldName.split('/')[0]
+                    }
+                ]
+            }
+
+                Object.assign(protoID, protoIDComp)
+                    
                 }
 
                 if (desc.type == 'proto') {
@@ -1294,6 +1377,10 @@ class IndexApp {
                                 {
                                     $type: "p",
                                 },
+                                protoID,
+                                {
+                                    $type: "p",
+                                },
                                 {
                                     $type: "span",
                                     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
@@ -1334,7 +1421,7 @@ class IndexApp {
 
     }
 
-    createWorldsGUI(userAlias, userPub, worldName) {
+    createWorldsGUI(worldType, userAlias, userPub, worldName) {
 
         let self = this;
 
@@ -1349,33 +1436,75 @@ class IndexApp {
             $type: "div",
             $components: [],
             _cards: [],
-            _states: {},
-            _refresh: function (data) {
-                this._states = data
-            },
-            $init: async function () {
+            // _states: {},
+            // _refresh: function (data) {
+            //     this._states = data;
+            // },
+            $init: function () {
 
                 console.log('init lab...');
+                if(worldType == 'proto'){
+                    db.get('worlds')
+                    .map()
+                    .on((res,k)=>{
+                        console.log('From world: ', k);
+                        //let doc = document.querySelector('#'+ k);
+                       let cardID = userAlias + '_' + k;
+                       let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ cardID)[0];
+       
+                        if(!doc) {
+                            doc = this._makeWorldCard(k, cardID);
+                            this._cards.push(doc);
+                        } 
+       
+                    })
+                } else if(worldType == 'state') {
+                //get states
+                    console.log('get states');
+                db.get('documents')
+                    .map()
+                    .on((res,k)=>{
+                        if( k !== 'id'){
+                            console.log('From world: ', k);
 
-                db.get('worlds')
-                .map()
-                .on((res,k)=>{
-                    console.log('From world: ', k);
-                    //let doc = document.querySelector('#'+ k);
-                   let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ userAlias + '_' + k)[0];
-   
-                    if(!doc) {
-                        doc = this._makeWorldCard(k);
-                        this._cards.push(doc);
-                    } 
-   
-                })
+                            let worldStatesInfo = Object.entries(res).filter(el=>el[0].includes('_info_vwf_json'));
+                            worldStatesInfo.map(el=>{
+                               
+                                let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+                                let cardID = userAlias + '_' + saveName + '_' + k;
+                                console.log(cardID, ' - ', el);
+
+                                let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ cardID)[0];
+       
+                                if(!doc) {
+                                    doc = this._makeWorldCard({protoName: k, stateName: saveName}, cardID);
+                                    this._cards.push(doc);
+                                } 
+
+                            })
+                            //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
+
+                        }
+                       
+                        //let doc = document.querySelector('#'+ k);
+                    //    let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ userAlias + '_' + k)[0];
+       
+                    //     if(!doc) {
+                    //         doc = this._makeWorldCard(k);
+                    //         this._cards.push(doc);
+                    //     } 
+       
+                    })
+
+
+                }
+             
 
                 //this._refresh();
             },
-            _makeWorldCard: function (worldName) {
-                let cardID = userAlias + '_' + worldName//data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
-                let card = self.createWorldCard(userAlias, userPub, worldName, cardID, 'min');
+            _makeWorldCard: function (worldID, cardID) {
+                //let cardID = userAlias + '_' + worldID//data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
+                let card = self.createWorldCard(worldType, userAlias, userPub, worldID, cardID, 'min');
                 //card._refresh(data[1]);
                 //card._worldInfo = data[1];
                 //card._updateComps();

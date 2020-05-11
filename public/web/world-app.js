@@ -106,7 +106,11 @@ class WorldApp {
        
 
         let cardID = user.user + '_' + space + '_' + (saveName ? saveName : "");
-        let worldCardGUI = _app.indexApp.createWorldCard(this.userAlias, userPub, space, cardID, "full", setWorldParameters); //createWorldCard(userAlias, userPub, worldName, id, type)
+        let cardWorldType = saveName ? 'state' : 'proto';
+
+        let worldNameInfo = saveName ? {protoName: space, stateName: saveName} : space
+
+        let worldCardGUI = _app.indexApp.createWorldCard(cardWorldType, this.userAlias, userPub, worldNameInfo, cardID, "full", setWorldParameters); //createWorldCard(userAlias, userPub, worldName, id, type)
         let worldStatesGUI = [];
 
         //var runWorldGUI = {};
@@ -563,6 +567,11 @@ class WorldApp {
     //     //     ]
     //     // }
     // })
+
+    if (!saveName) {
+       // _app.indexApp.allWorldsStatesForUser(user.user, space)
+
+    }
 
         // if (!saveName) {
         //     let statesData = await _app.getAllStateWorldsInfoForUser(user.user, space) //await _app.getSaveStates(user, space);
