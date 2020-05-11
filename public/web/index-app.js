@@ -20,7 +20,7 @@ class IndexApp {
         }
 
         this.initHTML();
-        
+
 
     }
 
@@ -277,17 +277,22 @@ class IndexApp {
    
     }
 
-    async allWorldsStatesForUser(userAlias) {
+    async allWorldsStatesForUser(userAlias, worldName, elID) {
 
         let userPub = await _app.helpers.getUserPub(userAlias);
         //let db = _LCSDB.user(userPub);
 
-        let doc = document.querySelector("#worldsGUI");
+        let doc = elID ? document.querySelector("#" + elID): document.querySelector("#worldsGUI");
 
         var worlds = {};
 
         if(userPub) {
-        worlds = this.createWorldsGUI('state', userAlias, userPub, 'allStates') 
+            if(!worldName){
+                worlds = this.createWorldsGUI('state', userAlias, userPub) 
+            } else {
+                worlds = this.createWorldsGUI('state', userAlias, userPub, worldName) 
+            }
+        
         } else {
 
         worlds = {
@@ -1425,8 +1430,16 @@ class IndexApp {
 
         let db = _LCSDB.user(userPub);
 
+       var headerText = 'Worlds';
+
+        if(worldType == 'state' && !worldName){
+            headerText = 'All World States for ' + userAlias;
+        } else {
+            headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
+        }
+
         let id = worldName ? worldName + '_' + userAlias : "allWorlds_" + userAlias
-        let headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
+        //let headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
 
         let worldCards = {
             $cell: true,
@@ -1458,6 +1471,8 @@ class IndexApp {
                     })
                 } else if(worldType == 'state') {
                 //get states
+
+                if(!worldName) {
                     console.log('get states');
                 db.get('documents')
                     .map()
@@ -1494,6 +1509,46 @@ class IndexApp {
        
                     })
 
+                } else {
+
+                    console.log('get states for ' + worldName);
+                    db.get('documents')
+                        .map((res, k) => {if (k == worldName) return res})
+                        .on((res,k)=>{
+                            if( k !== 'id'){
+                                console.log('From world: ', k);
+    
+                                let worldStatesInfo = Object.entries(res).filter(el=>el[0].includes('_info_vwf_json'));
+                                worldStatesInfo.map(el=>{
+                                   
+                                    let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+                                    let cardID = userAlias + '_' + saveName + '_' + k;
+                                    console.log(cardID, ' - ', el);
+    
+                                    let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ cardID)[0];
+           
+                                    if(!doc) {
+                                        doc = this._makeWorldCard({protoName: k, stateName: saveName}, cardID);
+                                        this._cards.push(doc);
+                                    } 
+    
+                                })
+                                //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
+    
+                            }
+                           
+                            //let doc = document.querySelector('#'+ k);
+                        //    let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ userAlias + '_' + k)[0];
+           
+                        //     if(!doc) {
+                        //         doc = this._makeWorldCard(k);
+                        //         this._cards.push(doc);
+                        //     } 
+           
+                        })
+
+
+                }
 
                 }
              

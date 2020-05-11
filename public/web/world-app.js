@@ -26,6 +26,29 @@ class WorldApp {
         el2.setAttribute("id", "worldStates");
         document.body.appendChild(el2);
 
+        document.querySelector("#worldStates").$cell({
+            id: "worldStates",
+            $cell: true,
+            $type: "div",
+            _comps: [],
+            _wcards: {},
+            $components: [],
+            _refresh: function (comps) {
+                //do update;
+                //this._userAlias = user;
+                this._comps = comps;
+                this.$components = this._comps;
+            },
+            $init: function () {
+                console.log('init comp...');
+            },
+
+            $update: function () {
+                //do update;
+                console.log('update me');
+            }
+        });
+
     }
 
 
@@ -528,6 +551,7 @@ class WorldApp {
         }
         })
 
+        document.querySelector("#aboutWorld")._refresh(worldCardGUI);
        
 
 
@@ -547,7 +571,7 @@ class WorldApp {
        
         //worldCardGUI._refresh(info);
         //worldCardGUI._updateComps();
-        document.querySelector("#aboutWorld")._refresh(worldCardGUI);
+        
         //document.querySelector("#aboutWorld")._refreshWorldComps(info);
 
       
@@ -569,8 +593,7 @@ class WorldApp {
     // })
 
     if (!saveName) {
-       // _app.indexApp.allWorldsStatesForUser(user.user, space)
-
+        _app.indexApp.allWorldsStatesForUser(user.user, space, 'worldStates')
     }
 
         // if (!saveName) {

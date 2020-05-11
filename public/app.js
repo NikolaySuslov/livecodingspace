@@ -40,8 +40,9 @@ class App {
     this.reflectorClient = new ReflectorClient;
     this.config = {};
 
-    this.initDB();
-    this.initUser();
+    this.initDB()
+    new Promise(res=> {this.initUser(); res});
+    
 
     import('/lib/polyglot/language.js').then(res => {
       window._LangManager = new res.default;
@@ -207,7 +208,14 @@ class App {
   }
 
   initUser() {
-    _LCSDB.user().recall({ sessionStorage: 1 });
+
+    function recall() {
+      _LCSDB.user().recall({ sessionStorage: 1 })
+    }
+
+    setTimeout(
+      recall, 1000)
+
   }
 
 
@@ -1268,7 +1276,10 @@ class App {
 
   }
 
-  async generateFrontPage(infoEl) {
+  async generateFrontPage() {
+
+    let infoEl = document.createElement("div");
+    infoEl.setAttribute("id", "indexPage");
 
     let lang = _LangManager.locale;
 
@@ -1292,13 +1303,10 @@ class App {
 
     console.log("INDEX");
 
-    let infoEl = document.createElement("div");
-    infoEl.setAttribute("id", "indexPage");
-
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
-   (new Promise(res => res(_app.generateFrontPage(infoEl)))).then(res=>{
+   (new Promise(res => res(_app.generateFrontPage()))).then(res=>{
 
 
     if (!_app.indexApp) {
