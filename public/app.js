@@ -1287,15 +1287,15 @@ class App {
     infoEl.innerHTML = infoElHTML;
     document.body.appendChild(infoEl);
 
-    document.querySelector('#ruLang').addEventListener('click', function (e) {
-        _LangManager.locale = 'ru';
-        window.location.reload(true);
-    });
+    // document.querySelector('#ruLang').addEventListener('click', function (e) {
+    //     _LangManager.locale = 'ru';
+    //     window.location.reload(true);
+    // });
 
-    document.querySelector('#enLang').addEventListener('click', function (e) {
-        _LangManager.locale = 'en';
-        window.location.reload(true);
-    });
+    // document.querySelector('#enLang').addEventListener('click', function (e) {
+    //     _LangManager.locale = 'en';
+    //     window.location.reload(true);
+    // });
 
 }
 

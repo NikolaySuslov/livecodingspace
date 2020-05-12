@@ -18,13 +18,14 @@ class WorldApp {
         //this.worlds = {};
         this.language = _LangManager.language;
 
+        let rootDoc = document.querySelector('#app');
         let el = document.createElement("div");
         el.setAttribute("id", "aboutWorld");
-        document.body.appendChild(el);
+        rootDoc.appendChild(el);
 
         let el2 = document.createElement("div");
         el2.setAttribute("id", "worldStates");
-        document.body.appendChild(el2);
+        rootDoc.appendChild(el2);
 
         document.querySelector("#worldStates").$cell({
             id: "worldStates",

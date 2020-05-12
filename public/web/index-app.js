@@ -83,12 +83,17 @@ class IndexApp {
         document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
 
 
-        if(this.entry !== 'index'){
+        //if(this.entry !== 'index'){
             import('/web/header.js').then(res => {
-                let headerGUI = new res.Header();
-                headerGUI.init();
+                let gui = new res.Header();
+                gui.init();
               })
-        }
+       // }
+
+       import('/web/footer.js').then(res => {
+        let gui = new res.Footer();
+        gui.init();
+      })
 
 
 
@@ -222,7 +227,7 @@ class IndexApp {
                 this.$components = this._comps.concat([userGUI,  self.getLoginGUI(), _app.widgets.divider, self.getLookWorlds()]);
             },
             $init: function () {
-                this._comps = self.initUserGUI()
+                //this._comps = self.initUserGUI()
                 this._refresh();
             },
             $update: function () {
@@ -533,7 +538,7 @@ class IndexApp {
                         class: "mdc-typography--headline4",
                         $text: "Looking for Worlds made by other Users!"
                     }
-                ].concat(guiForAll, _app.widgets.p, _app.widgets.divider)
+                ].concat(guiForAll, _app.widgets.p)
             }
         }
         return lookWorlds
@@ -699,148 +704,7 @@ class IndexApp {
     }
 
 
-    initUserGUI() {
-        let self = this;
 
-        let lookWorlds = 
-        {
-            $type: "div",
-            id: "lookWorlds",
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _status: '',
-            $init: function () {
-                this._status = "init";
-            },
-            $update: function () {
-
-                //change for LiveCoding.space site 'app'
-                let defaultName = '';
-
-                let guiForAll = [
-                    {
-                        $type: "div",
-                        style: "margin-top: 20px;",
-                        _userName: null,
-                        _userNameField: null,
-                        $components:
-                            [
-
-                                _app.widgets.inputTextFieldOutlined({
-                                    "id": 'worldsUserName',
-                                    "label": 'Enter user name',
-                                    "value": defaultName,
-                                    "type": "text",
-                                    "init": function () {
-                                        this._userNameField = new mdc.textField.MDCTextField(this);
-                                    }
-                                }),
-                                _app.widgets.p,
-                                // {
-                                //     $type: "a",
-                                //     class: "mdc-button mdc-button--raised mdc-card__action actionButton",
-                                //     $text: 'World Protos', //self.language.t('set proxy'),//"clone",
-                                //     onclick: function (e) {
-                                //         //console.log('clone');
-                                //         let searchName = this._userNameField.value;
-                                //         self.initWorldsProtosListForUser(searchName);
-                                //     }
-                                // },
-                                // {
-                                //     $type: "a",
-                                //     class: "mdc-button mdc-button--raised mdc-card__action actionButton",
-                                //     $text: 'World States', //self.language.t('set proxy'),//"clone",
-                                //     onclick: function (e) {
-                                //         //console.log('clone');
-                                //         let searchName = this._userNameField.value;
-                                //         self.initWorldsStatesListForUser(searchName);
-                                //     }
-                                // }
-                    _app.widgets.buttonRaised(
-                        {
-                            "label": 'World Protos',
-                            "onclick": function (e) {
-                                e.preventDefault();
-                                //page("/app/worlds/protos")
-                                let searchName = this._userNameField.value;
-                                if(searchName !== "")
-                                    window.location.pathname = "/"+searchName+"/worlds/protos"
-                                //_app.indexApp.getAppDetailsFromDefaultDB('protos');
-
-                            }
-                        }), 
-                        _app.widgets.space,
-                    _app.widgets.buttonRaised(
-                        {
-                            "label": 'World States',
-                            "onclick": function (e) {
-                                e.preventDefault();
-                                //page("/app/worlds/states")
-                                let searchName = this._userNameField.value;
-                                if(searchName !== "")
-                                    window.location.pathname = "/"+searchName+"/worlds/states"
-                                //_app.indexApp.getAppDetailsFromDefaultDB('states');
-
-                            }
-                        })
-                               
-                            ]
-                    },
-                    // window._app.widgets.buttonStroked(
-                    //     {
-                    //         "label": 'Default World Protos',
-                    //         "onclick": function (e) {
-                    //             e.preventDefault();
-                    //             //page("/app/worlds/protos")
-                    //             window.location.pathname = "/app/worlds/protos"
-                    //             //_app.indexApp.getAppDetailsFromDefaultDB('protos');
-
-                    //         }
-                    //     }),
-                    // window._app.widgets.buttonStroked(
-                    //     {
-                    //         "label": 'Default World States',
-                    //         "onclick": function (e) {
-                    //             e.preventDefault();
-                    //             //page("/app/worlds/states")
-                    //             window.location.pathname = "/app/worlds/states"
-                    //             //_app.indexApp.getAppDetailsFromDefaultDB('states');
-
-                    //         }
-                    //     })
-                ];
-
-                this.$components = [
-                    {
-                        $type: "h1",
-                        class: "mdc-typography--headline4",
-                        $text: "Looking for Worlds made by other Users!"
-                    }
-                ].concat(guiForAll, _app.widgets.p, _app.widgets.divider)
-            }
-        }
-
-        let connectionSettings = {
-        id: 'connectionSettings',
-        $type: 'div',
-        class: "mdc-layout-grid mdc-layout-grid--align-left",
-        $components: [ 
-        _app.widgets.emptyDiv,
-        window._app.widgets.buttonRaised(
-            {
-                "label": 'Connection settings',
-                "onclick": function (e) {
-                    e.preventDefault();
-                    window.location.pathname = '/settings';
-                }
-            }), _app.widgets.emptyDiv
-        ]
-    }
-
-
-
-        return [connectionSettings, _app.widgets.divider]
-
-    }
 
     refresh() {
         // socket.emit('getWebAppUpdate', "");
