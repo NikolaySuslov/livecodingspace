@@ -792,6 +792,59 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
               }
 
 
+              let luminaryFeature = {
+                $type: 'div',
+                _luminarySwitch: null,
+                $components: [
+                    {
+                        $type: "p",
+                        class: "mdc-typography--headline4",
+                        $text: "Use Krestianstvo Luminary (experimental)"
+                    },
+                    {
+                        $type: 'p'
+                    },
+                    _app.widgets.switch({
+                        'id': 'forceLuminary',
+                        'init': function () {
+                            this._switch = new mdc.switchControl.MDCSwitch(this);
+                            let config = localStorage.getItem('lcs_config');
+                            this._switch.checked = JSON.parse(config).luminary;
+    
+                            // this._replaceSwitch = this._switch;
+    
+                        },
+                        'onchange': function (e) {
+    
+                            if (this._switch) {
+                                let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                                if (chkAttr) {
+                                    let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                    config.luminary = true;
+                                    localStorage.setItem('lcs_config', JSON.stringify(config));
+                                    window.location.reload(true);
+                                    //this._switch.checked = false;
+                                } else {
+                                    let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                    config.luminary = false;
+                                    localStorage.setItem('lcs_config', JSON.stringify(config));
+                                    window.location.reload(true);
+                                }
+                            }
+                        }
+                    }
+                    ),
+                    {
+                        $type: 'label',
+                        for: 'input-forceLuminary',
+                        $text: 'Off / On'
+                    },
+                    _app.widgets.p
+    
+                ]
+            }
+    
+
             let reflectorGUI =
             {
                 $type: "div",
@@ -905,17 +958,31 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [webrtcConnection ]
                                    },
+                                   { 
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [_app.widgets.divider]
+                                   },
+                                  
+                                // {
+                                //     $type: "div",
+                                //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                //     $components: [
+                                //     {
+                                //         $type: "h4",
+                                //         class: "mdc-typography--headline4",
+                                //         $text: "Krestianstvo Luminary settings (experimental)"
+                                //     }
+                                // ]
+                                // },
                                 {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                     $components: [
-                                    {
-                                        $type: "h4",
-                                        class: "mdc-typography--headline4",
-                                        $text: "Krestianstvo Luminary settings (experimental)"
-                                    }
+                                        luminaryFeature
                                 ]
                                 },
+                               
                                 {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",

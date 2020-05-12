@@ -4,7 +4,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 */
 
 //import page from '/lib/page.mjs';
-import { Header } from '/web/header.js';
+//import { Header } from '/web/header.js';
 
 
 class IndexApp {
@@ -12,6 +12,7 @@ class IndexApp {
         console.log("index app constructor");
 
         this.entry = entry;
+
         this.worlds = {};
         this.instances = {};
 
@@ -81,8 +82,15 @@ class IndexApp {
         //first init from _app
         document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
 
-        let headerGUI = new Header();
-        headerGUI.init();
+
+        if(this.entry !== 'index'){
+            import('/web/header.js').then(res => {
+                let headerGUI = new res.Header();
+                headerGUI.init();
+              })
+        }
+
+
 
         //add HTML
         let entry = document.createElement("div");
@@ -828,61 +836,9 @@ class IndexApp {
         ]
     }
 
-        let luminaryFeature = {
-            $cell: true,
-            $type: 'div',
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _luminarySwitch: null,
-            $components: [
-                {
-                    $type: "p",
-                    class: "mdc-typography--headline5",
-                    $text: "Use Krestianstvo Luminary (experimental)"
-                },
-                {
-                    $type: 'p'
-                },
-                _app.widgets.switch({
-                    'id': 'forceLuminary',
-                    'init': function () {
-                        this._switch = new mdc.switchControl.MDCSwitch(this);
-                        let config = localStorage.getItem('lcs_config');
-                        this._switch.checked = JSON.parse(config).luminary;
-
-                        // this._replaceSwitch = this._switch;
-
-                    },
-                    'onchange': function (e) {
-
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminary = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                window.location.reload(true);
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminary = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                window.location.reload(true);
-                            }
-                        }
-                    }
-                }
-                ),
-                {
-                    $type: 'label',
-                    for: 'input-forceLuminary',
-                    $text: 'Off / On'
-                }
-
-            ]
-        }
 
 
-        return [luminaryFeature, connectionSettings, _app.widgets.divider]
+        return [connectionSettings, _app.widgets.divider]
 
     }
 

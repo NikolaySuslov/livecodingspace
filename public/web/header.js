@@ -14,19 +14,20 @@ class Header {
 
     init(){
 
-
+        let rootDoc = document.querySelector('#app');
         let el = document.createElement("div");
         el.setAttribute("id", "header");
-        document.body.appendChild(el);
+        rootDoc.prepend(el);
 
         let headerGUI = {
-            
+                $cell: true,
                 $type: "a",
                 class: "mdc-button mdc-button--compact mdc-card__action",
-                $text: "Back",
+                $text: "Home",
                 //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                 onclick: function (e) {
-                    window.history.back();
+                    window.location.pathname = '/'
+                    //window.history.back();
                 }
             
         }
@@ -37,7 +38,7 @@ class Header {
             $cell: true,
             $type: "div",
             $components: [
-                //headerGUI
+                headerGUI
             ]
         })
 
