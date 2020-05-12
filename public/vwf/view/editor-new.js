@@ -1095,11 +1095,18 @@ define([
 
                         )
 
-                        let saveGUI = document.querySelector('#saveGUI');
-                        saveGUI.$components = userGUI.concat(saveGUI.$components);
+                        // let saveGUI = document.querySelector('#saveGUI');
+                        // saveGUI.$components = userGUI.concat(saveGUI.$components);
                         //document.querySelector('#fileName').value = 'world' + _app.helpers.randId();
 
+                    } else {
+                        userGUI.push(
+                            self.widgets.getLoginGUI()
+                        );
                     }
+                    
+                    let saveGUI = document.querySelector('#saveGUI');
+                    saveGUI.$components = userGUI.concat(saveGUI.$components);
                 },
                 $update: function () {
                 },

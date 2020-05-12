@@ -193,6 +193,7 @@ class App {
     let config = localStorage.getItem('lcs_config');
     let langConfig = localStorage.getItem('krestianstvo_locale');
     let manualConfig = localStorage.getItem('lcs_app_manual_settings');
+    let lcsappConfig = localStorage.getItem('lcs_app');
 
     localStorage.clear();
 
@@ -205,17 +206,24 @@ class App {
     if (manualConfig)
       localStorage.setItem('lcs_app_manual_settings', manualConfig);
 
+    if (lcsappConfig)
+      localStorage.setItem('lcs_app', lcsappConfig);
+
   }
 
   initUser() {
 
     function recall() {
-      _LCSDB.user().recall({ sessionStorage: 1 })
+      _LCSDB.user().recall({ sessionStorage: 1 }, res=>{
+        console.log('User is: ', _LCSDB.user().is);
+        if(_LCSDB.user().is)
+          _app.helpers.checkUserCollision();
+
+      });
     }
 
     setTimeout(
       recall, 1000)
-
   }
 
 
@@ -565,6 +573,7 @@ class App {
 
         if (_LCSDB.user().is) {
 
+
           let adminComponents = [];
 
           document.querySelector("#admin").$cell({
@@ -713,10 +722,28 @@ class App {
     window._app.hideProgressBar();
     window._app.hideUIControl();
 
+    import('/web/header.js').then(res => {
+      let gui = new res.Header();
+      gui.init();
+    })
+
     _LCSDB.on('auth',
       async function (ack) {
         if (ack.sea.pub) {
-          document.querySelector("#profile")._refresh("User alias: " + _LCSDB.user().is.alias); //+' pub: ' + this.db.user().is.pub;
+
+          _app.helpers.checkUserCollision();
+
+          let alias = _LCSDB.user().is.alias;
+          let pub = _LCSDB.user().is.pub;
+          document.querySelector("#profile")._refresh(
+            {
+              user: {
+                alias: alias,
+                pub: pub
+              }
+            }
+            
+            ); //+' pub: ' + this.db.user().is.pub;
           //document.querySelector("#profile").$update();
         }
       })
@@ -956,12 +983,12 @@ class App {
     let userProfile = {
       $type: 'div',
       id: "profile",
-      _status: "",
-      _refresh: function(status){
-        this._status = status;
+      _user: {},
+      _refresh: function(data){
+        this._user = data.user;
       },
       $init: function () {
-        this._status = "user is not signed in..."
+        this._user = {alias: "", pub:""}
       },
       $update: function () {
 
@@ -982,10 +1009,15 @@ class App {
                               class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                               $components: [
                                 {
-                                  $type: "h4",
-                                  class: "mdc-typography--headline4",
-                                  $text: this._status //"Profile for: " + this.db.user().is.alias
-                                }
+                                  $type: "h5",
+                                  class: "mdc-typography--headline4 unselectable",
+                                  $text:  "User alias: " + this._user.alias //"Profile for: " + this.db.user().is.alias
+                                },
+                                {
+                                  $type: "h5",
+                                  class: "mdc-typography--headline5 unselectable",
+                                  $text: "User public key: " + this._user.pub//"Profile for: " + this.db.user().is.alias
+                                },
                               ]
                           },
                           {
@@ -997,7 +1029,12 @@ class App {
                                 class: "mdc-typography",
                                 $text: 'Load my world\'s protos:' //"Profile for: " + this.db.user().is.alias
                               },
-                              dragDropWorldsArea, _app.widgets.emptyDiv, loadEmpty
+                              dragDropWorldsArea, _app.widgets.emptyDiv, 
+                              {
+                                $text: 'or'
+                              },
+                              _app.widgets.p,
+                              loadEmpty
                             ]
                         },
                         {
@@ -1011,6 +1048,10 @@ class App {
                             },
                             dragDropProxyArea,
                             _app.widgets.emptyDiv,
+                            {
+                              $text: 'or'
+                            },
+                            _app.widgets.p,
                             loadDefaultsProxy
                           ]
                       }
@@ -1026,7 +1067,7 @@ class App {
             {
               $type: "h3",
               class: "mdc-typography--headline3",
-              $text: this._status //"Profile for: " + this.db.user().is.alias
+              $text: "user is not signed in..." //"Profile for: " + this.db.user().is.alias
             },
             _app.widgets.divider
           ]
@@ -1075,6 +1116,8 @@ class App {
       async function (ack) {
 
         if (_LCSDB.user().is) {
+
+          _app.helpers.checkUserCollision();
 
           if (_LCSDB.user().is.alias == user) {
 
@@ -1651,7 +1694,8 @@ class App {
 
     if (revs) {
       for (const res of Object.values(revs)) {
-        result.push(parseInt(res.revision));
+        if(res)
+          result.push(parseInt(res.revision));
       }
       return result
 
@@ -2224,38 +2268,65 @@ class App {
 
   // SUPPORT of DELETE USER WORLDS & SAVE STATES (experimental)
   // TODO: manual garbage collection
+  async deleteWorldState(worldName, stateName) {
 
-  async deleteWorldState(worldName, indexState) {
+    //let pathName = 'savestate_/' + worldName+ '/' + this._worldName.stateName + '_info_vwf_json';
+  let db = _LCSDB.user();
 
-    let revs = (await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').promOnce()).data;
-    if (revs) {
-      for (const el of Object.keys(revs)) {
-        if (el !== '_') {
-          let doc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).promOnce()).data;
-          for (const rev of Object.keys(doc)) {
-            if (rev !== '_') {
-              await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).promOnce();
-            }
-          }
-          await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).promOnce();
-        }
-      }
-    }
+  let stateEntryInfo = 'savestate_/' + worldName + '/' + stateName + '_info_vwf_json';
+  let stateEntry = 'savestate_/' + worldName + '/' + stateName + '_vwf_json';
 
-    // clear all state params
-    let stateDoc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).promOnce()).data;
-    for (const state of Object.keys(stateDoc)) {
-      if (state !== '_' && state !== 'revs') {
-        await _LCSDB.user().get('documents').get(worldName).get(indexState).get(state).put(null).promOnce();
-      }
-    }
+  db.get('documents').get(worldName).get(stateEntry).get('revs').once().map().once((res,k)=>{
+    db.get('documents').get(worldName).get(stateEntry).get('revs').get(k).put(null);
+    //console.log(k, ' - ', res);
+  });
 
-    await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').put(null).promOnce();
-    await _LCSDB.user().get('documents').get(worldName).get(indexState).put(null).promOnce();
+  db.get('documents').get(worldName).get(stateEntryInfo).put(null, res=>{
+    let id = 'worldCard_' + _LCSDB.user().is.alias + '_' + worldName + '_' + stateName;
+    let doc = document.querySelector('#' + id);
+    if(doc)
+      doc._refresh({})
 
-  }
+  });
+  db.get('documents').get(worldName).get(stateEntry).get('revs').put(null,res=>{
+    db.get('documents').get(worldName).get(stateEntry).put(null);
+  });
+
+}
+
+  // async deleteWorldState_old(worldName, indexState) {
+
+  //   let revs = await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').once().then();
+  //   if (revs) {
+  //     for (const el of Object.keys(revs)) {
+  //       if (el !== '_') {
+  //         let doc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).promOnce()).data;
+  //         for (const rev of Object.keys(doc)) {
+  //           if (rev !== '_') {
+  //             await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).get(rev).put(null).promOnce();
+  //           }
+  //         }
+  //         await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').get(el).put(null).promOnce();
+  //       }
+  //     }
+  //   }
+
+  //   // clear all state params
+  //   let stateDoc = (await _LCSDB.user().get('documents').get(worldName).get(indexState).promOnce()).data;
+  //   for (const state of Object.keys(stateDoc)) {
+  //     if (state !== '_' && state !== 'revs') {
+  //       await _LCSDB.user().get('documents').get(worldName).get(indexState).get(state).put(null).promOnce();
+  //     }
+  //   }
+
+  //   await _LCSDB.user().get('documents').get(worldName).get(indexState).get('revs').put(null).promOnce();
+  //   await _LCSDB.user().get('documents').get(worldName).get(indexState).put(null).promOnce();
+
+  // }
 
   async deleteWorld(name, type) {
+
+    let self = this;
 
     if (type == 'proto') {
 
@@ -2263,41 +2334,68 @@ class App {
       //TODO check for states (ask for deleting all states first...)
       //delete states
 
-      let documents = (await _LCSDB.user().get('documents').promOnce()).data;
-      if (documents) {
-        let states = (await _LCSDB.user().get('documents').get(worldName).promOnce()).data;
-        if (states) {
-          for (const st of Object.keys(states)) {
-            if (st !== '_') {
-              if (states[st]) {
-                await this.deleteWorldState(worldName, st);
-              }
+      let db = _LCSDB.user();
 
-            }
-          }
-        }
+      db.get('documents').once().map((res,k)=> {if(k == worldName) return res}).once((res,k)=>{
+
+        
+        if(res){
+          let worldStatesInfo = Object.entries(res).filter(el=>el[0].includes('_info_vwf_json'));
+          worldStatesInfo.map(el=>{
+             
+              let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+              console.log(saveName);
+              self.deleteWorldState(worldName, saveName)
+              //let stateEntry = 'savestate_/' + k + '/' + saveName + '_vwf_json';
+        })
       }
 
-      let worldFiles = (await _LCSDB.user().get('worlds').get(worldName).promOnce()).data;
-      if (worldFiles) {
-        for (const el of Object.keys(worldFiles)) {
-          if (el !== '_') {
-            let doc = (await _LCSDB.user().get('worlds').get(worldName).get(el).promOnce()).data;
-            if (doc) {
-              if (doc.file) {
-                for (const fEl of Object.keys(doc)) {
-                  if (fEl !== '_') {
-                    await _LCSDB.user().get('worlds').get(worldName).get(el).get(fEl).put(null).promOnce();
-                  }
-                }
-                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce();
-              } else {
-                await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce()
-              }
-            }
-          }
-        }
-      }
+
+      })
+
+      db.get('worlds').get(worldName).put(null,res=>{
+        let id = 'worldCard_' + _LCSDB.user().is.alias + '_' + worldName + '_';
+        let doc = document.querySelector('#' + id);
+        if(doc)
+          doc._refresh({})
+      })
+
+
+      // let documents = (await _LCSDB.user().get('documents').promOnce()).data;
+      // if (documents) {
+      //   let states = (await _LCSDB.user().get('documents').get(worldName).promOnce()).data;
+      //   if (states) {
+      //     for (const st of Object.keys(states)) {
+      //       if (st !== '_') {
+      //         if (states[st]) {
+      //           await this.deleteWorldState(worldName, st);
+      //         }
+
+      //       }
+      //     }
+      //   }
+      // }
+
+      // let worldFiles = (await _LCSDB.user().get('worlds').get(worldName).promOnce()).data;
+      // if (worldFiles) {
+      //   for (const el of Object.keys(worldFiles)) {
+      //     if (el !== '_') {
+      //       let doc = (await _LCSDB.user().get('worlds').get(worldName).get(el).promOnce()).data;
+      //       if (doc) {
+      //         if (doc.file) {
+      //           for (const fEl of Object.keys(doc)) {
+      //             if (fEl !== '_') {
+      //               await _LCSDB.user().get('worlds').get(worldName).get(el).get(fEl).put(null).promOnce();
+      //             }
+      //           }
+      //           await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce();
+      //         } else {
+      //           await _LCSDB.user().get('worlds').get(worldName).get(el).put(null).promOnce()
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
       //  this.db.user().get('worlds').get(worldName).map((res, index) => {
 
@@ -2314,7 +2412,7 @@ class App {
       //       }
       //  })
 
-      await _LCSDB.user().get('worlds').get(worldName).put(null).promOnce();
+      //await _LCSDB.user().get('worlds').get(worldName).put(null).promOnce();
 
     } else if (type == 'state') {
 
@@ -2323,8 +2421,10 @@ class App {
 
       let stateEntryInfo = 'savestate_/' + worldName + '/' + stateName + '_info_vwf_json';
       let stateEntry = 'savestate_/' + worldName + '/' + stateName + '_vwf_json';
-      await this.deleteWorldState(worldName, stateEntryInfo);
-      await this.deleteWorldState(worldName, stateEntry);
+
+      await this.deleteWorldState(worldName, stateName);
+      // await this.deleteWorldState(worldName, stateEntryInfo);
+      // await this.deleteWorldState(worldName, stateEntry);
     }
 
     let noty = new Noty({

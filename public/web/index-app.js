@@ -102,7 +102,7 @@ class IndexApp {
         entry.setAttribute("id", 'app');
         document.body.appendChild(entry);
 
-        let divs = ['appGUI', 'userLobby', 'main', 'worldsGUI', 'lab'];
+        let divs = ['appGUI', 'userLobby', 'worldsGUI'];
         divs.forEach(el => {
             let appEl = document.createElement("div");
             appEl.setAttribute("id", el);
@@ -224,7 +224,7 @@ class IndexApp {
             $components: [],
             _comps: [],
             _refresh: function(){
-                this.$components = this._comps.concat([userGUI,  self.getLoginGUI(), _app.widgets.divider, self.getLookWorlds()]);
+                this.$components = this._comps.concat([userGUI,  _app.widgets.getLoginGUI(), _app.widgets.divider, self.getLookWorlds()]);
             },
             $init: function () {
                 //this._comps = self.initUserGUI()
@@ -414,6 +414,7 @@ class IndexApp {
         } else {
             _LCSDB.on('auth', function (ack) {
                 if (ack.sea.pub) {
+                    _app.helpers.checkUserCollision();
                     self.authGUI();
                 }
                 console.log(_LCSDB.user().is);
@@ -543,166 +544,6 @@ class IndexApp {
         }
         return lookWorlds
     }
-
-    getLoginGUI(){
-
-        let self = this;
-
-        let loginGUI =
-        {
-            $type: "div",
-            id: "loginGUI",
-            //style:"background-color: #efefef",
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _alias: null,
-            _pass: null,
-            _passField: null,
-            _aliasField: null,
-            _initData: function () {
-                this._alias = '';
-                this._pass = '';
-                // if (window.sessionStorage.getItem('alias')) {
-                //     this._alias = window.sessionStorage.getItem('alias')
-                // }
-                // if (window.sessionStorage.getItem('tmp')) {
-                //     this._pass = window.sessionStorage.getItem('tmp')
-                // }
-            },
-            $init: function () {
-                this._initData();
-            },
-            $update: function () {
-
-                this.$components = [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "span",
-                                        class: "mdc-typography--headline5",
-                                        $text: "Login: "
-                                    },
-                                    window._app.widgets.inputTextFieldOutlined({
-                                        "id": 'aliasInput',
-                                        "label": "Login",
-                                        "value": this._alias,
-                                        "type": "text",
-                                        "init": function () {
-                                            this._aliasField = new mdc.textField.MDCTextField(this);
-                                        }
-                                    }),
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "span",
-                                        class: "mdc-typography--headline5",
-                                        $text: "Password: "
-                                    },
-                                    window._app.widgets.inputTextFieldOutlined({
-                                        "id": 'passwordInput',
-                                        "label": "Password",
-                                        "value": this._pass,
-                                        "type": "password",
-                                        "init": function () {
-                                            this._passField = new mdc.textField.MDCTextField(this);
-                                        }
-                                    }),
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    window._app.widgets.buttonRaised(
-                                        {
-                                            "label": 'Sign UP',
-                                            "onclick": function (e) {
-                                                e.preventDefault();
-
-                                                let alias = this._aliasField.value;
-                                                let pass = this._passField.value
-
-                                                if (pass.length < 7) {
-                                                    new Noty({
-                                                        text: "Your passphrase needs to be longer than 7 letters",
-                                                        timeout: 2000,
-                                                        theme: 'mint',
-                                                        layout: 'bottomRight',
-                                                        type: 'error'
-                                                    }).show();
-                                                } else {
-                                                    //
-                                                    _LCSDB.user().create(alias, pass,
-                                                        function (ack) {
-                                                            if (!ack.wait) { }
-                                                            if (ack.err) {
-                                                                console.log(ack.err)
-                                                                return ack.err
-                                                            };
-                                                            if (ack.pub) {
-                                                                let userObj = {
-                                                                    'alias': alias,
-                                                                    'pub': ack.pub
-                                                                };
-                                                                _LCSDB.get('users').get(alias).put(userObj);
-
-                                                            }
-                                                            _LCSDB.user().auth(alias, pass);
-                                                        });
-
-                                                }
-                                            }
-                                        }),
-                                    _app.widgets.space,
-                                    window._app.widgets.buttonRaised(
-                                        {
-                                            "label": 'Sign IN',
-                                            "onclick": function (e) {
-                                                e.preventDefault();
-                                                let alias = this._aliasField.value;
-                                                let pass = this._passField.value
-                                                _app.helpers.authUser(alias, pass);
-                                                // _LCSDB.user().auth.call(_LCSDB, alias, pass
-                                                // //     , function(ack) {
-
-                                                // //     if (ack.err) {
-                                                // //         new Noty({
-                                                // //             text: ack.err,
-                                                // //             timeout: 2000,
-                                                // //             theme: 'mint',
-                                                // //             layout: 'bottomRight',
-                                                // //             type: 'error'
-                                                // //         }).show();
-
-                                                // //     }
-                                                //  //}
-                                                //  );
-                                            }
-                                        })
-
-
-
-                                ]
-                            }
-
-                        ]
-                    }
-                ]
-            }
-
-        }
-        return loginGUI
-    }
-
 
 
 
@@ -868,6 +709,8 @@ class IndexApp {
                         if(worldType == 'proto') {
 
                             db.get('worlds').get(this._worldName).path('info_json').on((res)=>{
+                                if(res){
+
                                 console.log(res);
     
                                let worldDesc = JSON.parse(res);
@@ -893,10 +736,15 @@ class IndexApp {
                                 //callback
                                 if(cb)
                                    cb(doc);
+                            }
                             })
                         } else if (worldType == 'state'){
                             let pathName = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_info_vwf_json';
                             db.get('documents').get(this._worldName.protoName).path(pathName).on((res)=>{
+
+                                if(res){
+
+                                
                                 console.log(res);
     
                                let worldDesc = JSON.parse(res);
@@ -922,6 +770,7 @@ class IndexApp {
                                 //callback
                                 if(cb)
                                    cb(doc);
+                            }
                             })
 
                         }
@@ -932,6 +781,7 @@ class IndexApp {
 
                 if(worldType == 'proto') {
                      db.get('worlds').get(this._worldName).on((res)=>{
+                         if(res){
                          console.log(res);
 
                         let worldDesc = JSON.parse(res['info_json']);
@@ -963,6 +813,10 @@ class IndexApp {
                          //callback
                          if(cb)
                             cb(doc);
+                        } else {
+                            //no world
+                            this._refresh({})
+                        }
                      })
 
                     } else if (worldType == 'state') {
@@ -971,6 +825,9 @@ class IndexApp {
                  
 
                         db.get('documents').get(this._worldName.protoName).path(pathNameInfo).on((res)=>{
+                            if(res){
+
+                            
                             console.log(res);
                            let worldDesc = JSON.parse(res);
                         
@@ -998,6 +855,10 @@ class IndexApp {
                             //callback
                             if(cb)
                                cb(doc);
+                        } else {
+                            //no world
+                            this._refresh({})
+                        }
                         })
 
                         // let pathNameState = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_vwf_json';
@@ -1280,6 +1141,8 @@ class IndexApp {
                     .on((res,k)=>{
                         console.log('From world: ', k);
                         //let doc = document.querySelector('#'+ k);
+                        if(res){
+
                        let cardID = userAlias + '_' + k;
                        let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ cardID)[0];
        
@@ -1287,7 +1150,9 @@ class IndexApp {
                             doc = this._makeWorldCard(k, cardID);
                             this._cards.push(doc);
                         } 
+                    }
        
+
                     })
                 } else if(worldType == 'state') {
                 //get states
@@ -1304,6 +1169,10 @@ class IndexApp {
                             worldStatesInfo.map(el=>{
                                
                                 let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+
+                                let stateEntry = 'savestate_/' + k + '/' + saveName + '_vwf_json';
+                                    if (res[stateEntry]) {
+
                                 let cardID = userAlias + '_' + saveName + '_' + k;
                                 console.log(cardID, ' - ', el);
 
@@ -1313,6 +1182,7 @@ class IndexApp {
                                     doc = this._makeWorldCard({protoName: k, stateName: saveName}, cardID);
                                     this._cards.push(doc);
                                 } 
+                            }
 
                             })
                             //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
@@ -1336,12 +1206,19 @@ class IndexApp {
                         .map((res, k) => {if (k == worldName) return res})
                         .on((res,k)=>{
                             if( k !== 'id'){
+                              
                                 console.log('From world: ', k);
     
                                 let worldStatesInfo = Object.entries(res).filter(el=>el[0].includes('_info_vwf_json'));
                                 worldStatesInfo.map(el=>{
                                    
+                                  
+
                                     let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+
+                                    let stateEntry = 'savestate_/' + k + '/' + saveName + '_vwf_json';
+                                    if (res[stateEntry]) {
+
                                     let cardID = userAlias + '_' + saveName + '_' + k;
                                     console.log(cardID, ' - ', el);
     
@@ -1351,11 +1228,15 @@ class IndexApp {
                                         doc = this._makeWorldCard({protoName: k, stateName: saveName}, cardID);
                                         this._cards.push(doc);
                                     } 
+
+                                }
+
     
                                 })
                                 //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
     
                             }
+                            
                            
                             //let doc = document.querySelector('#'+ k);
                         //    let doc = this._cards.filter(el=> el.$components[0].id == 'worldCard_'+ userAlias + '_' + k)[0];

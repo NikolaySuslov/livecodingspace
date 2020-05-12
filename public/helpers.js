@@ -430,6 +430,21 @@ class Helpers {
 
     }
 
+   checkUserCollision(){
+
+     //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
+
+        _app.helpers.getUserPub(_LCSDB.user().is.alias).then(res=>{
+            if(_LCSDB.user().is.pub !== res){
+              if(window.confirm("ERROR: User name collision. Try to delete user collision?")) {
+                _LCSDB.user().delete();
+                window.reload();
+            }
+            }
+          })
+
+    }
+
     async getUserAlias(userPub) {
 
         let user = await (new Promise(res=>_LCSDB.user(userPub).get('alias').once(res)));

@@ -1106,6 +1106,164 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         }
 
 
+        getLoginGUI(){
+
+            let loginGUI =
+            {
+                $type: "div",
+                id: "loginGUI",
+                //style:"background-color: #efefef",
+                class: "mdc-layout-grid mdc-layout-grid--align-left",
+                _alias: null,
+                _pass: null,
+                _passField: null,
+                _aliasField: null,
+                _initData: function () {
+                    this._alias = '';
+                    this._pass = '';
+                    // if (window.sessionStorage.getItem('alias')) {
+                    //     this._alias = window.sessionStorage.getItem('alias')
+                    // }
+                    // if (window.sessionStorage.getItem('tmp')) {
+                    //     this._pass = window.sessionStorage.getItem('tmp')
+                    // }
+                },
+                $init: function () {
+                    this._initData();
+                },
+                $update: function () {
+    
+                    this.$components = [
+                        {
+                            $type: "div",
+                            class: "mdc-layout-grid__inner",
+                            $components: [
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "Login: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'aliasInput',
+                                            "label": "Login",
+                                            "value": this._alias,
+                                            "type": "text",
+                                            "init": function () {
+                                                this._aliasField = new mdc.textField.MDCTextField(this);
+                                            }
+                                        }),
+                                    ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "span",
+                                            class: "mdc-typography--headline5",
+                                            $text: "Password: "
+                                        },
+                                        window._app.widgets.inputTextFieldOutlined({
+                                            "id": 'passwordInput',
+                                            "label": "Password",
+                                            "value": this._pass,
+                                            "type": "password",
+                                            "init": function () {
+                                                this._passField = new mdc.textField.MDCTextField(this);
+                                            }
+                                        }),
+                                    ]
+                                },
+                                {
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        window._app.widgets.buttonRaised(
+                                            {
+                                                "label": 'Sign UP',
+                                                "onclick": function (e) {
+                                                    e.preventDefault();
+    
+                                                    let alias = this._aliasField.value;
+                                                    let pass = this._passField.value
+    
+                                                    if (pass.length < 7) {
+                                                        new Noty({
+                                                            text: "Your passphrase needs to be longer than 7 letters",
+                                                            timeout: 2000,
+                                                            theme: 'mint',
+                                                            layout: 'bottomRight',
+                                                            type: 'error'
+                                                        }).show();
+                                                    } else {
+                                                        //
+                                                        _LCSDB.user().create(alias, pass,
+                                                            function (ack) {
+                                                                if (!ack.wait) { }
+                                                                if (ack.err) {
+                                                                    console.log(ack.err)
+                                                                    return ack.err
+                                                                };
+                                                                if (ack.pub) {
+                                                                    let userObj = {
+                                                                        'alias': alias,
+                                                                        'pub': ack.pub
+                                                                    };
+                                                                    _LCSDB.get('users').get(alias).put(userObj);
+    
+                                                                }
+                                                                _LCSDB.user().auth(alias, pass);
+                                                            });
+    
+                                                    }
+                                                }
+                                            }),
+                                        _app.widgets.space,
+                                        window._app.widgets.buttonRaised(
+                                            {
+                                                "label": 'Sign IN',
+                                                "onclick": function (e) {
+                                                    e.preventDefault();
+                                                    let alias = this._aliasField.value;
+                                                    let pass = this._passField.value
+                                                    _app.helpers.authUser(alias, pass);
+                                                    // _LCSDB.user().auth.call(_LCSDB, alias, pass
+                                                    // //     , function(ack) {
+    
+                                                    // //     if (ack.err) {
+                                                    // //         new Noty({
+                                                    // //             text: ack.err,
+                                                    // //             timeout: 2000,
+                                                    // //             theme: 'mint',
+                                                    // //             layout: 'bottomRight',
+                                                    // //             type: 'error'
+                                                    // //         }).show();
+    
+                                                    // //     }
+                                                    //  //}
+                                                    //  );
+                                                }
+                                            })
+    
+    
+    
+                                    ]
+                                }
+    
+                            ]
+                        }
+                    ]
+                }
+    
+            }
+            return loginGUI
+        }
+
+
       }
 
    export { Widgets }

@@ -14,8 +14,11 @@ class Header {
 
     init() {
 
-        let rootDoc = _app.indexApp.entry == 'index' ? document.querySelector('#indexPage') : document.querySelector('#app');
+        var rootDoc = document.body
+        if(_app.indexApp){
+            rootDoc = _app.indexApp.entry == 'index' ? document.querySelector('#indexPage') : document.querySelector('#app');
         //let rootDoc = document.querySelector('#app');
+        } 
 
         let el = document.createElement("div");
         el.setAttribute("id", "header");
