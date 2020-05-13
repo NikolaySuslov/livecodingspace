@@ -743,7 +743,7 @@ class IndexApp {
                             db.get('documents').get(this._worldName.protoName).path(pathName).on((res)=>{
 
                                 if(res){
-
+                                
                                 
                                 console.log(res);
     
@@ -822,8 +822,6 @@ class IndexApp {
                     } else if (worldType == 'state') {
 
                         let pathNameInfo = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_info_vwf_json';
-                 
-
                         db.get('documents').get(this._worldName.protoName).path(pathNameInfo).on((res)=>{
                             if(res){
 

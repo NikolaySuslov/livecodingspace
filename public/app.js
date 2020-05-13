@@ -1542,33 +1542,46 @@ class App {
 
     }).then(val => {
 
-      let res = val['index_vwf_config_yaml'];
-      var conf = "";
+      let fileConf = val['index_vwf_config_yaml'];
+      vwf.conf = {};
 
-      if (res) {
-        let config = YAML.parse(res);
-        conf = config
+      if (fileConf) {
+        let config = YAML.parse(fileConf);
+        vwf.conf = config
       }
 
       let manualSettings = localStorage.getItem('lcs_app_manual_settings');
       if (manualSettings) {
         let manualConf = JSON.parse(manualSettings);
-        conf.model = manualConf.model;
-        conf.view = manualConf.view;
+        wf.conf.model = manualConf.model;
+        wf.conf.view = manualConf.view;
       }
 
       //check & set default proxy for world
-      if(val.proxy){
-        vwf.proxy = val.proxy;
+      vwf.proxy = val.proxy ? val.proxy: _LCS_WORLD_USER.pub
+
+      // Try to load all required docs from Gun DB...
+      let promises = []
+
+      let worldPromise = new Promise (res => _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').get(space).load(res));
+      promises.push(worldPromise);
+
+      if(savename){  
+        let entryPath = 'savestate_/' + space+ '/' + savename + '_vwf_json';
+        let savePromise = new Promise (res => _LCSDB.user(_LCS_WORLD_USER.pub).get('documents').get(space).path(entryPath).load(res,{wait:400}));
+        promises.push(savePromise);
       }
 
-
-      return conf
+      let proxyPromise = new Promise(res => _LCSDB.user(vwf.proxy).get('proxy').load(res, {wait:400}));
+      promises.push(proxyPromise);
+      
+      return Promise.all(promises)
+     
 
     }).then(res => {
       var userLibraries = { model: {}, view: {} };
       var application;
-      vwf.loadConfiguration(application, userLibraries, res, compatibilityCheck);
+      vwf.loadConfiguration(application, userLibraries, vwf.conf, compatibilityCheck);
 
     })
 
