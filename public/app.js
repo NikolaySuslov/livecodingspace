@@ -1553,8 +1553,8 @@ class App {
       let manualSettings = localStorage.getItem('lcs_app_manual_settings');
       if (manualSettings) {
         let manualConf = JSON.parse(manualSettings);
-        wf.conf.model = manualConf.model;
-        wf.conf.view = manualConf.view;
+        vwf.conf.model = manualConf.model;
+        vwf.conf.view = manualConf.view;
       }
 
       //check & set default proxy for world
