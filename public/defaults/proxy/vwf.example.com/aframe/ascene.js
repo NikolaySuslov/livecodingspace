@@ -184,7 +184,7 @@ this.textProto = function () {
             "value": "Text",
             "side": "double",
             "class": "clickable",
-            "font": "/vwf/model/aframe/fonts/custom-msdf.json",
+            //"font": "/vwf/model/aframe/fonts/custom-msdf.json",
             "negate": false
         },
         children: {
@@ -614,6 +614,10 @@ this.createPrimitive = function (type, params, name, node, avatar) {
         }
         this.children.create(nodeName, newNode, function( child ) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            
+            if (type == "text"){
+                child.properties.font = "/vwf/model/aframe/fonts/custom-msdf.json"
+            }
           });
     }
 
