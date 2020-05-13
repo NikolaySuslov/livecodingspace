@@ -711,6 +711,19 @@ class IndexApp {
                             db.get('worlds').get(this._worldName).path('info_json').on((res)=>{
                                 if(res){
 
+                            if(res.file){
+                                let doc = {
+                                    'worldName': this._worldName,
+                                    'created': undefined,
+                                    'modified': undefined,
+                                    'type': 'proto',
+                                    'userAlias': userAlias,
+                                    'info': {title:'Need to repair!'}
+                                  }
+                                  this._refresh(doc);
+                                  return
+                            }        
+
                                 console.log(res);
     
                                let worldDesc = JSON.parse(res);
@@ -744,7 +757,20 @@ class IndexApp {
 
                                 if(res){
                                 
-                                
+                                    if(res.file){
+                                        let doc = {
+                                            'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                            'created': undefined,
+                                            'modified': undefined,
+                                            'type': 'state',
+                                            'userAlias': userAlias,
+                                            'info': {title:'Need to repair!'}
+                                          }
+                                          this._refresh(doc);
+                                          return
+                                    }        
+
+
                                 console.log(res);
     
                                let worldDesc = JSON.parse(res);
@@ -782,6 +808,25 @@ class IndexApp {
                 if(worldType == 'proto') {
                      db.get('worlds').get(this._worldName).on((res)=>{
                          if(res){
+
+                            if(res["info_json"]['#']){
+                                let doc = {
+                                    'worldName': this._worldName,
+                                    'created': undefined,
+                                    'modified': undefined,
+                                    'type': 'proto',
+                                    'userAlias': userAlias,
+                                    'info': {title:'Need to repair!'}
+                                  }
+                                  this._refresh(doc);
+                                //   if(cb)
+                                //     cb(doc);
+
+                                  return
+                            }        
+
+
+
                          console.log(res);
 
                         let worldDesc = JSON.parse(res['info_json']);
@@ -824,6 +869,19 @@ class IndexApp {
                         let pathNameInfo = 'savestate_/' + this._worldName.protoName+ '/' + this._worldName.stateName + '_info_vwf_json';
                         db.get('documents').get(this._worldName.protoName).path(pathNameInfo).on((res)=>{
                             if(res){
+
+                                if(res.file){
+                                    let doc = {
+                                        'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                        'created': undefined,
+                                        'modified': undefined,
+                                        'type': 'state',
+                                        'userAlias': userAlias,
+                                        'info': {title:'Need to repair!'}
+                                      }
+                                      this._refresh(doc);
+                                      return
+                                }        
 
                             
                             console.log(res);
@@ -937,20 +995,23 @@ class IndexApp {
                     });
                 }
 
-                userGUI.push({
-                    $type: "a",
-                    class: "mdc-button mdc-button--raised mdc-card__action ",
-                    $text: _LangManager.language.t('start'),//"Start new",
-                    //target: "_blank",
-                    //href: "/" + desc.userAlias + '/' + desc.worldName,
-                    onclick: function (e) {
-                        self.checkForManualSettings();
-                        window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
-
-                        //self.refresh();
-                    }
-                });
-
+                if(desc.info.title !== 'Need to repair!'){
+                    userGUI.push({
+                        $type: "a",
+                        class: "mdc-button mdc-button--raised mdc-card__action ",
+                        $text: _LangManager.language.t('start'),//"Start new",
+                        //target: "_blank",
+                        //href: "/" + desc.userAlias + '/' + desc.worldName,
+                        onclick: function (e) {
+                            self.checkForManualSettings();
+                            window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
+    
+                            //self.refresh();
+                        }
+                    });
+                } 
+                    
+                
 
                 let protoID = {}
 
