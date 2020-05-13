@@ -60,6 +60,20 @@ define([
             }
             );
 
+            _LCSDB.on('auth', function (ack) {
+                if (ack.sea.pub) {
+                    _app.helpers.checkUserCollision();
+
+                    console.log(_LCSDB.user().is);
+                    let loadSave = document.querySelector('#loadSaveSettings');
+                    if(loadSave){
+                       
+                    }
+                    //self.authGUI();
+                }
+                
+            });
+
             this.avatarCardDef = function (src, desc, onclickfunc) {
 
                 return {
