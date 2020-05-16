@@ -126,7 +126,7 @@ class App {
 
     let webrtcConnection = this.config.webrtc;
 
-    const opt = { peers: this.dbHost, localStorage: true, RTCPeerConnection: webrtcConnection, axe: false } //localStorage: false,
+    const opt = { peers: this.dbHost, localStorage: false, RTCPeerConnection: webrtcConnection, axe: false } //localStorage: false,
     //const opt = { peers: this.dbHost, localStorage: false, until: 1000, chunk: 5, axe: false} //until: 5000, chunk: 5
     //opt.store = RindexedDB(opt);
     this.db = Gun(opt);
@@ -190,6 +190,7 @@ class App {
   }
 
   clearLocalStorage() {
+    
     let config = localStorage.getItem('lcs_config');
     let langConfig = localStorage.getItem('krestianstvo_locale');
     let manualConfig = localStorage.getItem('lcs_app_manual_settings');
