@@ -17,7 +17,13 @@ AFRAME.registerComponent('scene-utils', {
 
             //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
             let avatarEl = document.querySelector('#avatarControlParent');
+            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
             if (AFRAME.utils.device.isMobileVR()) {
+
+                 vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+                //avatarEl.setAttribute('position', '0 1.6 0');
+                // if (AFRAME.utils.device.isGearVR()){  
+                // }
 
             } else if (AFRAME.utils.device.isMobile()) {
                 avatarEl.setAttribute('position', '0 0 0')
@@ -35,9 +41,13 @@ AFRAME.registerComponent('scene-utils', {
 
             //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
             let avatarEl = document.querySelector('#avatarControlParent');
-
+            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
+            
             if (AFRAME.utils.device.isMobileVR()) {
                 //avatarEl.setAttribute('position', '0 0 0');
+
+                vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
+
             } else if (AFRAME.utils.device.isMobile()) {
                 avatarEl.setAttribute('position', '0 1.6 0');
             } else {

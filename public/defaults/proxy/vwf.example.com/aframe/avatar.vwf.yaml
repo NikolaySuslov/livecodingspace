@@ -27,6 +27,9 @@ methods:
         parameters:
             - nodeDef
             - modelSrc
+    updateYPositionForXR:
+        parameters:
+            - height    
     followAvatarControl:
         parameters:
             - position

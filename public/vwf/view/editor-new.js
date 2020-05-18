@@ -621,6 +621,7 @@ define([
                                             "label": "Reset Avatar",
                                             "onclick": function (e) {
                                                 let avatarID = 'avatar-' + self.kernel.moniker();
+                                                //TODO: add XR check
                                                 vwf_view.kernel.callMethod(avatarID, "resetAvatar", []);
                                             }
                                         }

@@ -61,13 +61,19 @@ this.findWorldAvatarCostume = function () {
     return null
 } 
 
+this.updateYPositionForXR = function(height){
+
+    if(this.avatarNode) {
+            let position = goog.vec.Vec3.clone(this.avatarNode.position);
+            this.avatarNode.position = [position[0], height, position[2]]
+    }
+
+}
+
 this.createAvatarBody = function (nodeDef, modelSrc) {
 
     var userHeight = -1.6;
 
-    // if (AFRAME.utils.device.isGearVR()) {
-    //     userHeight = 0
-    // }
 
     let myColor = "white"; //this.getRandomColor();
     let myBodyDef = this.simpleBodyDef;
@@ -388,6 +394,8 @@ this.changeCostume = function(val, restore){
 }
 
 this.resetAvatar = function(){
+
+    //TODO: add XR check
 
     if (this.avatarNode) {
         //myNameValue = this.avatarNode.children.myName.properties.value;

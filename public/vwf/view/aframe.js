@@ -53,6 +53,8 @@ define(["module", "vwf/view"], function (module, view) {
             this.gearvr = options.gearvr !== undefined ? options.gearvr : false;
             this.wmrright = options.wmrright !== undefined ? options.wmrright : false;
             this.wmrleft = options.wmrleft !== undefined ? options.wmrleft : false;
+
+            this.xrType = undefined;
         },
 
         createdNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
@@ -80,13 +82,11 @@ define(["module", "vwf/view"], function (module, view) {
 
 
                 prepairAvatar.then(res => {
-                    // console.log(res);
-                    createAvatar.call(self, childID);                  
-                    postLoadAction.call(self, childID);
 
                     if (this.gearvr == true) {
                         console.log("CREATE GEARVR HERE!!");
                         if (AFRAME.utils.device.isMobileVR()) {
+                            this.xrType = 'mobileVR';
                             let nodeName = 'gearvr-' + self.kernel.moniker();
                             createGearVRControls();
                             createGearVRController.call(self, childID, nodeName);
@@ -115,6 +115,10 @@ define(["module", "vwf/view"], function (module, view) {
                             }
                         }
                     }
+
+                     // console.log(res);
+                     createAvatar.call(self, childID);                  
+                     postLoadAction.call(self, childID);
 
                 })
                 // this.state.appInitialized  = true;
