@@ -42,7 +42,7 @@ AFRAME.registerComponent('scene-utils', {
             //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
             let avatarEl = document.querySelector('#avatarControlParent');
             let avatarID = 'avatar-' + vwf_view.kernel.moniker();
-            
+
             if (AFRAME.utils.device.isMobileVR()) {
                 //avatarEl.setAttribute('position', '0 0 0');
 

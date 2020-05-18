@@ -785,7 +785,9 @@ define(["module", "vwf/view"], function (module, view) {
 
 
         if (AFRAME.utils.device.isMobileVR()) {
+            //avatarEl.setAttribute('gearvr-controls', {}); 
             avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
+           // avatarEl.setAttribute("gamepad-controls", {});
             //avatarEl.setAttribute('position', '0 0 0');
         }
 
@@ -820,8 +822,6 @@ define(["module", "vwf/view"], function (module, view) {
         cursorEl.setAttribute('raycaster', {});
         cursorEl.setAttribute('raycaster', 'objects', '.clickable');
         cursorEl.setAttribute('raycaster', 'showLine', false);
-
-        if (AFRAME.utils.device.isMobileVR()) { }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
         // cursorEl.setAttribute('raycaster', 'showLine', true);
