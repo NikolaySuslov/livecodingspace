@@ -936,9 +936,9 @@ define(["module", "vwf/view"], function (module, view) {
            if (!self.state.nodes[avatarName]) {
               
 
-               if (_LCSUSER.is) {
+               if (_LCSDB.user().is) {
 
-                   _LCSUSER.get('profile').get('alias').once(alias => {
+                _LCSDB.user().get('profile').get('alias').once(alias => {
                            if (alias){
 
                                newNode.properties.displayName = alias;
@@ -947,11 +947,11 @@ define(["module", "vwf/view"], function (module, view) {
                            vwf_view.kernel.createChild(nodeID, avatarName, newNode);
                            });
 
-                           _LCSUSER.get('profile').get('avatarNode').not(res=>{
+                           _LCSDB.user().get('profile').get('avatarNode').not(res=>{
                                //vwf_view.kernel.callMethod(avatarName, "createAvatarBody", []);
                            })
 
-                               _LCSUSER.get('profile').get('avatarNode').once(res => {
+                           _LCSDB.user().get('profile').get('avatarNode').once(res => {
                                    var myNode = null;
                                    if (res) {
                                        //myNode = JSON.parse(res.avatarNode);
