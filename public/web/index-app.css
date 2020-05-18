@@ -31,39 +31,6 @@ background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(
 }
 
 
-a.link-in-text {
-  outline: none;
-  text-decoration: none;
-  color: inherit;
-  border-bottom: 1px solid;
-}
-
-
-a.link-in-text:link {
-  border-bottom: 1px solid;
-}
-
-
-
-a.link-in-text:visited {
-  border-bottom: 1px solid;
-}
-
-
-a.link-in-text:focus {
-  border-bottom: 2px solid; 
-  
-}
-
-a.link-in-text:hover {   
-  border-bottom: 2px solid; 
-}
-
-a.link-in-text:active {
-  
-  border-bottom: 1px solid; 
-}
-
 /* 
 border-bottom: 1px solid; 
 background: rgb(237, 237, 237);
@@ -82,10 +49,4 @@ background: rgb(217, 217, 217);
   margin: 3px
 }
 
-.unselectable {
-  -moz-user-select: text;
-  -khtml-user-select: text;
-  -webkit-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
- }
+

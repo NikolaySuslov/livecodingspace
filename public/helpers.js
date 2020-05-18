@@ -372,19 +372,19 @@ class Helpers {
     authUser(alias, pass){
 
         _LCSDB.user().auth(alias, pass
-            //     , function(ack) {
+                , function(ack) {
     
-            //     if (ack.err) {
-            //         new Noty({
-            //             text: ack.err,
-            //             timeout: 2000,
-            //             theme: 'mint',
-            //             layout: 'bottomRight',
-            //             type: 'error'
-            //         }).show();
+                if (ack.err) {
+                    new Noty({
+                        text: ack.err,
+                        timeout: 2000,
+                        theme: 'mint',
+                        layout: 'bottomRight',
+                        type: 'error'
+                    }).show();
     
-            //     }
-             //}
+                }
+             }
              );
 
     }
@@ -404,11 +404,44 @@ class Helpers {
 
     async getUserPub(userName) {
 
+        //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
         let alias = '~@' + userName;
         let user = await (new Promise(res=>_LCSDB.get(alias).once(res)));
        
-        if(user)
+        if(user) {
+
+        if(Object.keys(user).length > 1){
+            let pubs = await Promise.all(Object.keys(user).filter(el=>el !== '_').map(el => _LCSDB.user(el.slice(1)).then(res=>{
+                let ts = Gun.state.is(res, 'pub')
+                return {pub: res.pub, time: ts}
+            })))
+            //console.log(pubs);
+            pubs.sort(function(a,b){
+                return new Date(b.time) - new Date(a.time);
+              });
+            
+            return pubs[0].pub
+
+        } else {
             return Object.keys(user)[1].slice(1)
+        }
+
+    }
+
+    }
+
+   checkUserCollision(){
+
+     //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
+
+        _app.helpers.getUserPub(_LCSDB.user().is.alias).then(res=>{
+            if(_LCSDB.user().is.pub !== res){
+              if(window.confirm("ERROR: User name collision. Try to delete user collision?")) {
+                _LCSDB.user().delete();
+                window.reload();
+            }
+            }
+          })
 
     }
 

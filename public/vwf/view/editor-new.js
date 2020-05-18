@@ -60,6 +60,20 @@ define([
             }
             );
 
+            _LCSDB.on('auth', function (ack) {
+                if (ack.sea.pub) {
+                    _app.helpers.checkUserCollision();
+
+                    console.log(_LCSDB.user().is);
+                    let loadSave = document.querySelector('#loadSaveSettings');
+                    if(loadSave){
+                       
+                    }
+                    //self.authGUI();
+                }
+                
+            });
+
             this.avatarCardDef = function (src, desc, onclickfunc) {
 
                 return {
@@ -459,7 +473,7 @@ define([
 
             var saveAvatar = {};
             var loadAvatar = {};
-            if (_LCSUSER.is) {
+            if (_LCSDB.user().is) {
                 saveAvatar = self.widgets.floatActionButton({
                     label: "save",
                     styleClass: "mdc-fab--mini",
@@ -470,7 +484,7 @@ define([
                         let nodeDef = self.helpers.getNodeDef(nodeID).children.avatarNode;
                         console.log(nodeDef);
 
-                        _LCSUSER.get('profile').get('avatarNode').put(JSON.stringify(nodeDef), acc => {
+                        _LCSDB.user().get('profile').get('avatarNode').put(JSON.stringify(nodeDef), acc => {
                             console.log("saved: " + acc)
                         });
 
@@ -484,7 +498,7 @@ define([
                     styleClass: "mdc-fab--mini",
                     onclickfunc: function () {
                         let nodeID = 'avatar-' + self.kernel.moniker();
-                        _LCSUSER.get('profile').get('avatarNode').once(res => {
+                        _LCSDB.user().get('profile').get('avatarNode').once(res => {
                             if (res) {
                                 var myNode = res;
 
@@ -993,8 +1007,8 @@ define([
 
                     let worldOwner = self.helpers.getRoot(false).root.split('/')[0];
 
-                    if (_LCSUSER.is) {
-                        if (worldOwner == _LCSUSER.is.alias) {
+                    if (_LCSDB.user().is) {
+                        if (worldOwner == _LCSDB.user().is.alias) {
 
                             userGUI.push(
                                 {
@@ -1072,8 +1086,8 @@ define([
 
                                                 let worldOwner = self.helpers.getRoot(false).root.split('/')[0];
 
-                                                if (_LCSUSER.is) {
-                                                    if (worldOwner == _LCSUSER.is.alias) {
+                                                if (_LCSDB.user().is) {
+                                                    if (worldOwner == _LCSDB.user().is.alias) {
                                                         _app.saveStateAsFile(fileName.value);
                                                     } else {
                                                         console.log('clone world with prototype to: ' + fileName);
@@ -1095,11 +1109,18 @@ define([
 
                         )
 
-                        let saveGUI = document.querySelector('#saveGUI');
-                        saveGUI.$components = userGUI.concat(saveGUI.$components);
+                        // let saveGUI = document.querySelector('#saveGUI');
+                        // saveGUI.$components = userGUI.concat(saveGUI.$components);
                         //document.querySelector('#fileName').value = 'world' + _app.helpers.randId();
 
+                    } else {
+                        userGUI.push(
+                            self.widgets.getLoginGUI()
+                        );
                     }
+                    
+                    let saveGUI = document.querySelector('#saveGUI');
+                    saveGUI.$components = userGUI.concat(saveGUI.$components);
                 },
                 $update: function () {
                 },
@@ -1802,7 +1823,7 @@ define([
 
             var saveGUI = {};
 
-            if (_LCSUSER.is) {
+            if (_LCSDB.user().is) {
                 saveGUI = self.widgets.floatActionButton({
                     label: "save",
                     styleClass: "mdc-fab--mini",
@@ -3183,7 +3204,7 @@ define([
                     let worldName = self.helpers.getRoot(true).root;//url.split('/')[0];
                     let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
-                    userDB.get('worlds').get(worldName).get(fileName).get('file').once(res => {
+                    userDB.get('worlds').get(worldName).get(fileName).once(res => {
 
                         this._importScript(res);
                     })

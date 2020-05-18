@@ -625,7 +625,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                                 let dbPath = propertyValue.split(".").join("_");
 
                                 let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-                                userDB.get('worlds').get(worldName).get(dbPath).get('file').once(function(response) {
+                                userDB.get('worlds').get(worldName).get(dbPath).once(function(response) {
                                     if (response) {
 
                                         if (Object.keys(response).length > 0) {

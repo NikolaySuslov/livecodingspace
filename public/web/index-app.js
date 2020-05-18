@@ -4,7 +4,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 */
 
 //import page from '/lib/page.mjs';
-import { Header } from '/web/header.js';
+//import { Header } from '/web/header.js';
 
 
 class IndexApp {
@@ -12,17 +12,15 @@ class IndexApp {
         console.log("index app constructor");
 
         this.entry = entry;
+
         this.worlds = {};
         this.instances = {};
-        //this.language = _LangManager.language;
 
         if (!_app.isLuminary) {
             this.initReflectorConnection();
         }
 
         this.initHTML();
-        this.initUser();
-        document.querySelector("#userLobby")._refresh();
 
 
     }
@@ -84,15 +82,27 @@ class IndexApp {
         //first init from _app
         document.querySelector('head').innerHTML += '<link rel="stylesheet" href="/web/index-app.css">';
 
-        let headerGUI = new Header();
-        headerGUI.init();
+
+        //if(this.entry !== 'index'){
+        import('/web/header.js').then(res => {
+            let gui = new res.Header();
+            gui.init();
+        })
+        // }
+
+        import('/web/footer.js').then(res => {
+            let gui = new res.Footer();
+            gui.init();
+        })
+
+
 
         //add HTML
         let entry = document.createElement("div");
         entry.setAttribute("id", 'app');
         document.body.appendChild(entry);
 
-        let divs = ['appGUI', 'userLobby', 'main', 'worldsGUI'];
+        let divs = ['appGUI', 'userLobby', 'worldsGUI'];
         divs.forEach(el => {
             let appEl = document.createElement("div");
             appEl.setAttribute("id", el);
@@ -110,6 +120,7 @@ class IndexApp {
                 //do update;
                 //this._userAlias = user;
                 this._comps = comps;
+                this.$components = this._comps;
             },
             $init: function () {
                 console.log('init comp...');
@@ -118,32 +129,128 @@ class IndexApp {
             $update: function () {
                 //do update;
                 console.log('update me');
-                this.$components = this._comps;
             }
         });
 
         //init CELL
+        let userGUI = {
+            $type: "div",
+            id: "userGUI",
+            // style:"background-color: #ffeb3b",
+            class: "mdc-layout-grid mdc-layout-grid--align-left",
+            _status: "Welcome!",
+            $init: function () {
+                //this._status = "Welcome!"
+                //this._status = 'Welcome!';
+                self.initUser();
+                this._refresh(); //$update();
+            },
+            $update: function () { },
+            _refresh: function () {
+
+                var gui = {};
+
+                if (_LCSDB.user().is) {
+                    gui = [
+                        window._app.widgets.buttonRaised(
+                            {
+                                "label": 'Sign OUT',
+                                "onclick": function (e) {
+                                    _LCSDB.user().leave();
+                                    setTimeout(() => {
+                                        window.location.reload(true);
+                                    }, 1);
+
+                                }
+                            }),
+                        {
+                            $type: "p"
+                        },
+                        window._app.widgets.buttonStroked(
+                            {
+                                "label": 'PROFILE',
+                                "onclick": function (e) {
+                                    e.preventDefault();
+                                    //page("/profile")
+                                    window.location.pathname = "/profile"
+                                }
+                            }),
+                        {
+                            $type: "p"
+                        },
+                        window._app.widgets.buttonStroked(
+                            {
+                                "label": 'My World protos',
+                                "onclick": function (e) {
+                                    e.preventDefault();
+                                    let alias = _LCSDB.user().is.alias;
+                                    window.location.pathname = '/' + alias + '/worlds/protos'
+                                    //page('/' + alias + '/worlds/protos');
+                                    //_app.indexApp.getWorldsProtosFromUserDB(alias);
+                                }
+                            }),
+                        window._app.widgets.buttonStroked(
+                            {
+                                "label": 'My World states',
+                                "onclick": function (e) {
+                                    e.preventDefault();
+                                    let alias = _LCSDB.user().is.alias;
+                                    window.location.pathname = '/' + alias + '/worlds/states'
+                                    //page('/' + alias + '/worlds/states');
+                                    // page.redirect('/' + alias + '/worlds/states');
+                                    //_app.indexApp.getWorldsFromUserDB(alias);       
+                                }
+                            })
+                    ]
+                }
+
+                this.$components = [
+                    {
+                        $type: "h1",
+                        class: "mdc-typography--headline3",
+                        $text: this._status
+                    }
+                ].concat(gui)
+            }
+        }
+
         document.querySelector("#userLobby").$cell({
             id: "userLobby",
             $cell: true,
             $type: "div",
             $components: [],
-            _refresh: function (){
-                this.$components = self.initUserGUI()
+            _comps: [],
+            _refresh: function () {
+                this.$components = this._comps.concat([userGUI, _app.widgets.getLoginGUI(), _app.widgets.divider, self.getLookWorlds()]);
+            },
+            $init: function () {
+                //this._comps = self.initUserGUI()
+                this._refresh();
             },
             $update: function () {
             }
         });
-
     }
 
-    async initWorldsProtosListForUser(userAlias) {
-        let doc = document.querySelector("#worldsGUI");
-        //doc.$components = [];
-        let allInfo = await _app.getAllProtoWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
+    async allWorldsProtosForUser(userAlias) {
 
-        let worlds = this.createWorldsGUI(userAlias);
-        worlds._refresh(allInfo);
+        let userPub = await _app.helpers.getUserPub(userAlias);
+        //let db = _LCSDB.user(userPub);
+
+        let doc = document.querySelector("#worldsGUI");
+
+        var worlds = {};
+
+        if (userPub) {
+            worlds = this.createWorldsGUI('proto', userAlias, userPub)
+        } else {
+
+            worlds = {
+                $type: 'div',
+                $text: 'Could not find user with name: ' + userAlias,
+                class: "mdc-typography--headline4"
+            }
+        }
 
         let components = [
             {
@@ -176,25 +283,35 @@ class IndexApp {
             }
         ];
 
-
         doc._refresh(components);
-
-        //initiate update world cards
-        doc._wcards = worlds;
-        doc._wcards.$update();
-
-        //console.log(allInfo);
 
     }
 
-    async initWorldsStatesListForUser(userAlias) {
+    async allWorldsStatesForUser(userAlias, worldName, elID) {
 
-        let doc = document.querySelector("#worldsGUI");
-        //doc.$components = [];
-        let allInfo = await _app.getAllStateWorldsInfoForUser(userAlias);//await this.getWorldsProtosListForUser(userAlias);
+        let userPub = await _app.helpers.getUserPub(userAlias);
+        //let db = _LCSDB.user(userPub);
 
-        let worlds = this.createWorldsGUI(userAlias, 'allStates');
-        worlds._refresh(allInfo);
+        let doc = elID ? document.querySelector("#" + elID) : document.querySelector("#worldsGUI");
+
+        var worlds = {};
+
+        if (userPub) {
+            if (!worldName) {
+                worlds = this.createWorldsGUI('state', userAlias, userPub)
+            } else {
+                worlds = this.createWorldsGUI('state', userAlias, userPub, worldName)
+            }
+
+        } else {
+
+            worlds = {
+                $type: 'div',
+                $text: 'Could not find user with name: ' + userAlias,
+                class: "mdc-typography--headline4"
+            }
+        }
+
         let components = [
             {
                 $type: "div",
@@ -228,15 +345,10 @@ class IndexApp {
 
         doc._refresh(components);
 
-        //initiate update world cards
-        doc._wcards = worlds;
-        doc._wcards.$update();
-
-        //console.log(allInfo);
-
     }
 
-    authGUI(){
+
+    authGUI() {
 
         let alias = _LCSDB.user().is.alias;
         let userEl = document.querySelector('#userGUI');
@@ -274,34 +386,41 @@ class IndexApp {
             type: 'success'
         }).show();
 
-        if(this.entry == 'index'){
+        if (this.entry == 'index') {
             //change for LiveCoding.space to 'app'
-            this.initWorldsProtosListForUser(alias);
+            //this.initWorldsProtosListForUserNew(alias);
+            this.allWorldsProtosForUser(alias)
         }
-        
+
+
+
+
+
     }
+
+
 
     initUser() {
         let self = this;
 
-        if(_LCSDB.user().is) {
+        if (_LCSDB.user().is) {
             self.authGUI()
         } else {
             _LCSDB.on('auth', function (ack) {
                 if (ack.sea.pub) {
+                    _app.helpers.checkUserCollision();
                     self.authGUI();
                 }
                 console.log(_LCSDB.user().is);
             });
         }
 
-       
+
     }
 
-    initUserGUI() {
+    getLookWorlds() {
         let self = this;
-
-        let lookWorlds = 
+        let lookWorlds =
         {
             $type: "div",
             id: "lookWorlds",
@@ -354,34 +473,34 @@ class IndexApp {
                                 //         self.initWorldsStatesListForUser(searchName);
                                 //     }
                                 // }
-                    _app.widgets.buttonRaised(
-                        {
-                            "label": 'World Protos',
-                            "onclick": function (e) {
-                                e.preventDefault();
-                                //page("/app/worlds/protos")
-                                let searchName = this._userNameField.value;
-                                if(searchName !== "")
-                                    window.location.pathname = "/"+searchName+"/worlds/protos"
-                                //_app.indexApp.getAppDetailsFromDefaultDB('protos');
+                                _app.widgets.buttonRaised(
+                                    {
+                                        "label": 'World Protos',
+                                        "onclick": function (e) {
+                                            e.preventDefault();
+                                            //page("/app/worlds/protos")
+                                            let searchName = this._userNameField.value;
+                                            if (searchName !== "")
+                                                window.location.pathname = "/" + searchName + "/worlds/protos"
+                                            //_app.indexApp.getAppDetailsFromDefaultDB('protos');
 
-                            }
-                        }), 
-                        _app.widgets.space,
-                    _app.widgets.buttonRaised(
-                        {
-                            "label": 'World States',
-                            "onclick": function (e) {
-                                e.preventDefault();
-                                //page("/app/worlds/states")
-                                let searchName = this._userNameField.value;
-                                if(searchName !== "")
-                                    window.location.pathname = "/"+searchName+"/worlds/states"
-                                //_app.indexApp.getAppDetailsFromDefaultDB('states');
+                                        }
+                                    }),
+                                _app.widgets.space,
+                                _app.widgets.buttonRaised(
+                                    {
+                                        "label": 'World States',
+                                        "onclick": function (e) {
+                                            e.preventDefault();
+                                            //page("/app/worlds/states")
+                                            let searchName = this._userNameField.value;
+                                            if (searchName !== "")
+                                                window.location.pathname = "/" + searchName + "/worlds/states"
+                                            //_app.indexApp.getAppDetailsFromDefaultDB('states');
 
-                            }
-                        })
-                               
+                                        }
+                                    })
+
                             ]
                     },
                     // window._app.widgets.buttonStroked(
@@ -414,314 +533,13 @@ class IndexApp {
                         class: "mdc-typography--headline4",
                         $text: "Looking for Worlds made by other Users!"
                     }
-                ].concat(guiForAll, _app.widgets.p, _app.widgets.divider)
+                ].concat(guiForAll, _app.widgets.p)
             }
         }
-
-
-        let luminaryFeature = {
-            $cell: true,
-            $type: 'div',
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _luminarySwitch: null,
-            $components: [
-                {
-                    $type: "p",
-                    class: "mdc-typography--headline5",
-                    $text: "Use Krestianstvo Luminary (experimental)"
-                },
-                {
-                    $type: 'p'
-                },
-                _app.widgets.switch({
-                    'id': 'forceLuminary',
-                    'init': function () {
-                        this._switch = new mdc.switchControl.MDCSwitch(this);
-                        let config = localStorage.getItem('lcs_config');
-                        this._switch.checked = JSON.parse(config).luminary;
-
-                        // this._replaceSwitch = this._switch;
-
-                    },
-                    'onchange': function (e) {
-
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminary = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                window.location.reload(true);
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminary = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                window.location.reload(true);
-                            }
-                        }
-                    }
-                }
-                ),
-                {
-                    $type: 'label',
-                    for: 'input-forceLuminary',
-                    $text: 'Off / On'
-                }
-
-            ]
-        }
-
-
-
-        let userGUI =
-        {
-            $type: "div",
-            id: "userGUI",
-            // style:"background-color: #ffeb3b",
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _status: "Welcome!",
-            $init: function () {
-                //this._status = "Welcome!"
-                this._status = 'Welcome !';
-                //userEl.style.backgroundColor = '#e6e6e6';   
-                this._refresh(); //$update();
-            },
-            $update: function () {},
-            _refresh: function () {
-
-                var gui = {};
-                if (_LCSDB.user().is) {
-                    gui = [
-                        window._app.widgets.buttonRaised(
-                            {
-                                "label": 'Sign OUT',
-                                "onclick": function (e) {
-                                    _LCSDB.user().leave();
-                                    setTimeout(() => {
-                                        //window.sessionStorage.removeItem('alias');
-                                        //window.sessionStorage.removeItem('tmp');
-                                        window.location.reload(true);
-                                    }, 1);
-
-                                }
-                            }),
-                        {
-                            $type: "p"
-                        },
-                        window._app.widgets.buttonStroked(
-                            {
-                                "label": 'PROFILE',
-                                "onclick": function (e) {
-                                    e.preventDefault();
-                                    //page("/profile")
-                                    window.location.pathname = "/profile"
-                                }
-                            }),
-                        {
-                            $type: "p"
-                        },
-                        window._app.widgets.buttonStroked(
-                            {
-                                "label": 'My World protos',
-                                "onclick": function (e) {
-                                    e.preventDefault();
-                                    let alias = _LCSDB.user().is.alias;
-                                    window.location.pathname = '/' + alias + '/worlds/protos'
-                                    //page('/' + alias + '/worlds/protos');
-                                    //_app.indexApp.getWorldsProtosFromUserDB(alias);
-                                }
-                            }),
-                        window._app.widgets.buttonStroked(
-                            {
-                                "label": 'My World states',
-                                "onclick": function (e) {
-                                    e.preventDefault();
-                                    let alias = _LCSDB.user().is.alias;
-                                    window.location.pathname = '/' + alias + '/worlds/states'
-                                    //page('/' + alias + '/worlds/states');
-                                    // page.redirect('/' + alias + '/worlds/states');
-                                    //_app.indexApp.getWorldsFromUserDB(alias);       
-                                }
-                            })
-                    ]
-                }
-                this.$components = [
-                    _app.widgets.emptyDiv,
-                    window._app.widgets.buttonRaised(
-                        {
-                            "label": 'Connection settings',
-                            "onclick": function (e) {
-                                e.preventDefault();
-                                window.location.pathname = '/settings';
-                            }
-                        }), _app.widgets.emptyDiv,
-                    _app.widgets.divider,
-                    {
-                        $type: "h1",
-                        class: "mdc-typography--headline3",
-                        $text: this._status
-                    }
-                ].concat(gui)
-            }
-        }
-
-        let loginGUI =
-        {
-            $type: "div",
-            id: "loginGUI",
-            //style:"background-color: #efefef",
-            class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _alias: null,
-            _pass: null,
-            _passField: null,
-            _aliasField: null,
-            _initData: function () {
-                this._alias = '';
-                this._pass = '';
-                // if (window.sessionStorage.getItem('alias')) {
-                //     this._alias = window.sessionStorage.getItem('alias')
-                // }
-                // if (window.sessionStorage.getItem('tmp')) {
-                //     this._pass = window.sessionStorage.getItem('tmp')
-                // }
-            },
-            $init: function () {
-                this._initData();
-            },
-            $update: function () {
-
-                this.$components = [
-                    {
-                        $type: "div",
-                        class: "mdc-layout-grid__inner",
-                        $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "span",
-                                        class: "mdc-typography--headline5",
-                                        $text: "Login: "
-                                    },
-                                    window._app.widgets.inputTextFieldOutlined({
-                                        "id": 'aliasInput',
-                                        "label": "Login",
-                                        "value": this._alias,
-                                        "type": "text",
-                                        "init": function () {
-                                            this._aliasField = new mdc.textField.MDCTextField(this);
-                                        }
-                                    }),
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    {
-                                        $type: "span",
-                                        class: "mdc-typography--headline5",
-                                        $text: "Password: "
-                                    },
-                                    window._app.widgets.inputTextFieldOutlined({
-                                        "id": 'passwordInput',
-                                        "label": "Password",
-                                        "value": this._pass,
-                                        "type": "password",
-                                        "init": function () {
-                                            this._passField = new mdc.textField.MDCTextField(this);
-                                        }
-                                    }),
-                                ]
-                            },
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [
-                                    window._app.widgets.buttonRaised(
-                                        {
-                                            "label": 'Sign UP',
-                                            "onclick": function (e) {
-                                                e.preventDefault();
-
-                                                let alias = this._aliasField.value;
-                                                let pass = this._passField.value
-
-                                                if (pass.length < 7) {
-                                                    new Noty({
-                                                        text: "Your passphrase needs to be longer than 7 letters",
-                                                        timeout: 2000,
-                                                        theme: 'mint',
-                                                        layout: 'bottomRight',
-                                                        type: 'error'
-                                                    }).show();
-                                                } else {
-                                                    //
-                                                    _LCSDB.user().create(alias, pass,
-                                                        function (ack) {
-                                                            if (!ack.wait) { }
-                                                            if (ack.err) {
-                                                                console.log(ack.err)
-                                                                return ack.err
-                                                            };
-                                                            if (ack.pub) {
-                                                                let userObj = {
-                                                                    'alias': alias,
-                                                                    'pub': ack.pub
-                                                                };
-                                                                _LCSDB.get('users').get(alias).put(userObj);
-
-                                                            }
-                                                            _LCSDB.user().auth(alias, pass);
-                                                        });
-
-                                                }
-                                            }
-                                        }),
-                                    _app.widgets.space,
-                                    window._app.widgets.buttonRaised(
-                                        {
-                                            "label": 'Sign IN',
-                                            "onclick": function (e) {
-                                                e.preventDefault();
-                                                let alias = this._aliasField.value;
-                                                let pass = this._passField.value
-                                                _app.helpers.authUser(alias, pass);
-                                                // _LCSDB.user().auth.call(_LCSDB, alias, pass
-                                                // //     , function(ack) {
-
-                                                // //     if (ack.err) {
-                                                // //         new Noty({
-                                                // //             text: ack.err,
-                                                // //             timeout: 2000,
-                                                // //             theme: 'mint',
-                                                // //             layout: 'bottomRight',
-                                                // //             type: 'error'
-                                                // //         }).show();
-
-                                                // //     }
-                                                //  //}
-                                                //  );
-                                            }
-                                        })
-
-
-
-                                ]
-                            }
-
-                        ]
-                    }
-                ]
-            }
-
-        }
-
-        return [luminaryFeature, userGUI, loginGUI, _app.widgets.divider, lookWorlds]
-
+        return lookWorlds
     }
+
+
 
     refresh() {
         // socket.emit('getWebAppUpdate', "");
@@ -741,8 +559,10 @@ class IndexApp {
 
     }
 
-    createWorldCard(id, type) {
+    createWorldCard(worldType, userAlias, userPub, worldName, id, type, cb) {
         let self = this;
+
+        let db = _LCSDB.user(userPub);
 
         let onlineGUI = {
             $cell: true,
@@ -870,25 +690,238 @@ class IndexApp {
             $cell: true,
             id: 'worldCard_' + id,
             $type: "div",
+            _worldName: "",
             _worldInfo: {},
             _refresh: function (data) {
-                this._worldInfo = data
+                this._worldInfo = data;
+                this.$components = [this._updateCard()]
             },
             $init: function () {
-                //get space for user
-                // if (!saveName) {
-                //     this._getWorldInfo();
-                // } else {
-                //     this._getStateInfo();
-                // }
+                this._worldName = worldName;
+
+                if (type == 'min') {
+                    if (worldType == 'proto') {
+
+                        db.get('worlds').get(this._worldName).path('info_json').on((res) => {
+                            if (res) {
+
+                                if (res.file) {
+                                    let doc = {
+                                        'worldName': this._worldName,
+                                        'created': undefined,
+                                        'modified': undefined,
+                                        'type': 'proto',
+                                        'userAlias': userAlias,
+                                        'info': { title: 'Need to repair!' }
+                                    }
+                                    this._refresh(doc);
+                                    return
+                                }
+
+                                console.log(res);
+
+                                let worldDesc = JSON.parse(res);
+
+                                let root = Object.keys(worldDesc)[0];
+                                var appInfo = worldDesc[root]['en'];
+
+                                let langID = localStorage.getItem('krestianstvo_locale');
+                                if (langID) {
+                                    appInfo = worldDesc[root][langID]
+                                }
+
+                                let doc = {
+                                    'worldName': this._worldName,
+                                    'created': undefined,
+                                    'modified': undefined,
+                                    'type': 'proto',
+                                    'userAlias': userAlias,
+                                    'info': appInfo
+                                }
+                                this._refresh(doc);
+
+                                //callback
+                                if (cb)
+                                    cb(doc);
+                            }
+                        })
+                    } else if (worldType == 'state') {
+                        let pathName = 'savestate_/' + this._worldName.protoName + '/' + this._worldName.stateName + '_info_vwf_json';
+                        db.get('documents').get(this._worldName.protoName).path(pathName).on((res) => {
+
+                            if (res) {
+
+                                if (res.file) {
+                                    let doc = {
+                                        'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                        'created': undefined,
+                                        'modified': undefined,
+                                        'type': 'state',
+                                        'userAlias': userAlias,
+                                        'info': { title: 'Need to repair!' }
+                                    }
+                                    this._refresh(doc);
+                                    return
+                                }
+
+
+                                console.log(res);
+
+                                let worldDesc = JSON.parse(res);
+
+                                let root = Object.keys(worldDesc)[0];
+                                var appInfo = worldDesc[root]['en'];
+
+                                let langID = localStorage.getItem('krestianstvo_locale');
+                                if (langID) {
+                                    appInfo = worldDesc[root][langID]
+                                }
+
+                                let doc = {
+                                    'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                    'created': undefined,
+                                    'modified': undefined,
+                                    'type': 'saveState',
+                                    'userAlias': userAlias,
+                                    'info': appInfo
+                                }
+                                this._refresh(doc);
+
+                                //callback
+                                if (cb)
+                                    cb(doc);
+                            }
+                        })
+
+                    }
+
+
+
+                } else if (type == 'full') {
+
+                    if (worldType == 'proto') {
+                        db.get('worlds').get(this._worldName).on((res) => {
+                            if (res) {
+
+                                if (res["info_json"]['#']) {
+                                    let doc = {
+                                        'worldName': this._worldName,
+                                        'created': undefined,
+                                        'modified': undefined,
+                                        'type': 'proto',
+                                        'userAlias': userAlias,
+                                        'info': { title: 'Need to repair!' }
+                                    }
+                                    this._refresh(doc);
+                                    //   if(cb)
+                                    //     cb(doc);
+
+                                    return
+                                }
+
+
+
+                                console.log(res);
+
+                                let worldDesc = JSON.parse(res['info_json']);
+
+
+                                let root = Object.keys(worldDesc)[0];
+                                var appInfo = worldDesc[root]['en'];
+
+                                let langID = localStorage.getItem('krestianstvo_locale');
+                                if (langID) {
+                                    appInfo = worldDesc[root][langID]
+                                }
+
+                                let settings = worldDesc[root]['settings'];
+
+
+                                let doc = {
+                                    'worldName': this._worldName,
+                                    'created': res.created ? res.created : "",
+                                    'modified': res.modified ? res.modified : "",
+                                    'proxy': res.proxy,
+                                    'type': 'proto',
+                                    'userAlias': userAlias,
+                                    'info': appInfo,
+                                    'settings': settings
+                                }
+                                this._refresh(doc);
+
+                                //callback
+                                if (cb)
+                                    cb(doc);
+                            } else {
+                                //no world
+                                this._refresh({})
+                            }
+                        })
+
+                    } else if (worldType == 'state') {
+
+                        let pathNameInfo = 'savestate_/' + this._worldName.protoName + '/' + this._worldName.stateName + '_info_vwf_json';
+                        db.get('documents').get(this._worldName.protoName).path(pathNameInfo).on((res) => {
+                            if (res) {
+
+                                if (res.file) {
+                                    let doc = {
+                                        'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                        'created': undefined,
+                                        'modified': undefined,
+                                        'type': 'state',
+                                        'userAlias': userAlias,
+                                        'info': { title: 'Need to repair!' }
+                                    }
+                                    this._refresh(doc);
+                                    return
+                                }
+
+
+                                console.log(res);
+                                let worldDesc = JSON.parse(res);
+
+                                let root = Object.keys(worldDesc)[0];
+                                var appInfo = worldDesc[root]['en'];
+
+                                let langID = localStorage.getItem('krestianstvo_locale');
+                                if (langID) {
+                                    appInfo = worldDesc[root][langID]
+                                }
+
+                                let settings = worldDesc[root]['settings'];
+
+                                let doc = {
+                                    'worldName': this._worldName.protoName + '/load/' + this._worldName.stateName,
+                                    'created': undefined,
+                                    'modified': undefined,
+                                    'type': 'saveState',
+                                    'userAlias': userAlias,
+                                    'info': appInfo,
+                                    'settings': settings
+                                }
+                                this._refresh(doc);
+
+                                //callback
+                                if (cb)
+                                    cb(doc);
+                            } else {
+                                //no world
+                                this._refresh({})
+                            }
+                        })
+
+                    }
+
+
+                }
             },
             $update: function () {
-                //console.log(this._worldInfo);
                 //this.$components = [this._updateCard()]
             },
             _updateComps: function () {
                 //console.log(this._worldInfo);
-                this.$components = [this._updateCard()]
+
             },
             _updateCard: function () {
                 let desc = this._worldInfo;
@@ -924,23 +957,51 @@ class IndexApp {
                     });
                 }
 
-                userGUI.push({
-                    $type: "a",
-                    class: "mdc-button mdc-button--raised mdc-card__action ",
-                    $text: _LangManager.language.t('start'),//"Start new",
-                    //target: "_blank",
-                    //href: "/" + desc.userAlias + '/' + desc.worldName,
-                    onclick: function (e) {
-                        self.checkForManualSettings();
-                        window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
+                if (desc.info.title !== 'Need to repair!') {
+                    userGUI.push({
+                        $type: "a",
+                        class: "mdc-button mdc-button--raised mdc-card__action ",
+                        $text: _LangManager.language.t('start'),//"Start new",
+                        //target: "_blank",
+                        //href: "/" + desc.userAlias + '/' + desc.worldName,
+                        onclick: function (e) {
+                            self.checkForManualSettings();
+                            window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName
 
-                        //self.refresh();
-                    }
-                });
+                            //self.refresh();
+                        }
+                    });
+                }
 
+
+
+                let protoID = {}
 
                 if (desc.type == 'saveState') {
                     cardInfo.title = desc.worldName.split('/')[2];
+
+                    let protoIDComp = {
+
+                        $type: 'div',
+                        $components: [
+
+                            {
+                                $type: "span",
+                                class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
+                                $text: 'proto: '
+                            },
+                            {
+                                $type: "input",
+                                type: "text",
+                                disabled: "",
+                                style: "font-size:18px",
+                                value: desc.worldName.split('/')[0]
+                            }
+                        ]
+                    }
+
+                    Object.assign(protoID, protoIDComp)
+
                 }
 
                 if (desc.type == 'proto') {
@@ -970,7 +1031,8 @@ class IndexApp {
 
 
                 online.push(onlineGUI);
-                if(!desc.info){
+
+                if (!desc.info) {
                     desc.info = {
                         imgUrl: "/defaults/worlds/webrtc/webimg.jpg",
                         text: "..no text",
@@ -1020,10 +1082,14 @@ class IndexApp {
                                 {
                                     $type: "p",
                                 },
+                                protoID,
+                                {
+                                    $type: "p",
+                                },
                                 {
                                     $type: "span",
                                     class: "mdc-card__subtitle mdc-theme--text-secondary-on-background",
-                                    $text: 'created: ' + (new Date(desc.created)).toUTCString()
+                                    $text: desc.created ? 'created: ' + (new Date(desc.created)).toUTCString() : ""
                                 },
                                 {
                                     $type: "p",
@@ -1060,50 +1126,156 @@ class IndexApp {
 
     }
 
-    createWorldsGUI(userAlias, worldName) {
+    createWorldsGUI(worldType, userAlias, userPub, worldName) {
+
         let self = this;
+
+        let db = _LCSDB.user(userPub);
+
+        var headerText = 'Worlds';
+
+        if (worldType == 'state' && !worldName) {
+            headerText = 'All World States for ' + userAlias;
+        } else {
+            headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
+        }
+
         let id = worldName ? worldName + '_' + userAlias : "allWorlds_" + userAlias
-        let headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
+        //let headerText = worldName ? 'States for ' + worldName : 'All Worlds Protos'
 
         let worldCards = {
             $cell: true,
             id: id,
             $type: "div",
             $components: [],
-            _states: {},
-            _refresh: function (data) {
-                this._states = data
-            },
-            $init: async function () {
+            _cards: [],
+            // _states: {},
+            // _refresh: function (data) {
+            //     this._states = data;
+            // },
+            $init: function () {
+
+                console.log('init lab...');
+                if (worldType == 'proto') {
+                    db.get('worlds')
+                        .map()
+                        .on((res, k) => {
+                            console.log('From world: ', k);
+                            //let doc = document.querySelector('#'+ k);
+                            if (res) {
+
+                                let cardID = userAlias + '_' + k;
+                                let doc = this._cards.filter(el => el.$components[0].id == 'worldCard_' + cardID)[0];
+
+                                if (!doc) {
+                                    doc = this._makeWorldCard(k, cardID);
+                                    this._cards.push(doc);
+                                }
+                            }
+
+
+                        })
+                } else if (worldType == 'state') {
+                    //get states
+
+                    if (!worldName) {
+                        console.log('get states');
+                        db.get('documents')
+                            .map()
+                            .on((res, k) => {
+                                if (k !== 'id') {
+                                    console.log('From world: ', k);
+
+                                    let worldStatesInfo = Object.entries(res).filter(el => el[0].includes('_info_vwf_json'));
+                                    worldStatesInfo.map(el => {
+
+                                        let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+
+                                        let stateEntry = 'savestate_/' + k + '/' + saveName + '_vwf_json';
+                                        if (res[stateEntry]) {
+
+                                            let cardID = userAlias + '_' + saveName + '_' + k;
+                                            console.log(cardID, ' - ', el);
+
+                                            let doc = this._cards.filter(el => el.$components[0].id == 'worldCard_' + cardID)[0];
+
+                                            if (!doc) {
+                                                doc = this._makeWorldCard({ protoName: k, stateName: saveName }, cardID);
+                                                this._cards.push(doc);
+                                            }
+                                        }
+
+                                    })
+                                    //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
+
+                                }
+
+                            })
+
+                    } else {
+
+                        console.log('get states for ' + worldName);
+                        db.get('documents')
+                            .map((res, k) => { if (k == worldName) return res })
+                            .on((res, k) => {
+                                if (k !== 'id') {
+
+                                    console.log('From world: ', k);
+
+                                    let worldStatesInfo = Object.entries(res).filter(el => el[0].includes('_info_vwf_json'));
+                                    worldStatesInfo.map(el => {
+
+
+
+                                        let saveName = el[0].split('/')[2].replace('_info_vwf_json', "");
+
+                                        let stateEntry = 'savestate_/' + k + '/' + saveName + '_vwf_json';
+                                        if (res[stateEntry]) {
+
+                                            let cardID = userAlias + '_' + saveName + '_' + k;
+                                            console.log(cardID, ' - ', el);
+
+                                            let doc = this._cards.filter(el => el.$components[0].id == 'worldCard_' + cardID)[0];
+
+                                            if (!doc) {
+                                                doc = this._makeWorldCard({ protoName: k, stateName: saveName }, cardID);
+                                                this._cards.push(doc);
+                                            }
+
+                                        }
+
+
+                                    })
+                                    //let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
+
+                                }
+                            })
+
+
+                    }
+
+                }
+
+
                 //this._refresh();
             },
-            _makeWorldCard: function (data) {
-                let cardID = data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
-                let card = self.createWorldCard(cardID, 'min');
-                card._refresh(data[1]);
-                //card._worldInfo = data[1];
-                card._updateComps();
+            _makeWorldCard: function (worldID, cardID) {
+                //let cardID = userAlias + '_' + worldID//data[1].userAlias + '_' + data[1].worldName + '_' + data[0];
+                let card = self.createWorldCard(worldType, userAlias, userPub, worldID, cardID, 'min');
                 return {
                     $cell: true,
                     $type: "div",
                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                    $components: [
-
-                        card
-
-                        //self.createWorldCard(data[1].userAlias, data[1].worldName, data[0])
-                        //this._worldCardDef(appInfo)
-                    ]
+                    $components: [card]
                 }
-                //console.log(data);
             },
             $update: function () {
-                let cards = Object.entries(this._states)
-                    .filter(el => Object.keys(el[1]).length !== 0)
-                    .sort(function (el1, el2) {
-                        return parseInt(el2[1].created) - parseInt(el1[1].created)
-                    })
-                    .map(this._makeWorldCard);
+                // let cards = Object.entries(this._states)
+                //     .filter(el => Object.keys(el[1]).length !== 0)
+                //     .sort(function (el1, el2) {
+                //         return parseInt(el2[1].created) - parseInt(el1[1].created)
+                //     })
+                //     .map(this._makeWorldCard);
 
                 this.$components = [
                     {
@@ -1129,7 +1301,7 @@ class IndexApp {
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",
-                                $components: cards
+                                $components: this._cards
                             }
                         ]
 

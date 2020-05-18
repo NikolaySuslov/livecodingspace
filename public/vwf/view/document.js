@@ -85,11 +85,11 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                 if(all){
                     if(Object.keys(all).includes(dbPath)){
 
-                        userDB.get('worlds').get(worldName).get(dbPath).get('file').load(function(res) { 
+                        userDB.get('worlds').get(worldName).get(dbPath).load(function(res) { 
                         //let res = all[dbPath].file;
                         loadDoc(res);
                         callback( true );
-                       },{wait:300})
+                       }) //,{wait:300}
                     } else {
                         //NEED TO FIXED!!! Error: Callback was already called.
                         // userDB.get('worlds').get('empty').get(dbPath).get('file').once(function(res) { 
@@ -106,7 +106,7 @@ define( [ "module", "vwf/view", "vwf/utility"], function( module, view, utility)
                     }
                 }
                 
-              },{wait:300})
+              }) //,{wait:300}
 
 
               
