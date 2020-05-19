@@ -38,8 +38,10 @@ class App {
 
     import('/lib/polyglot/language.js').then(res => {
       window._LangManager = new res.default;
-      _LangManager.setLanguage();
-    }).then(res => {
+      return new Promise(r=>r(_LangManager.setLanguage())) }).then(res=>{
+        window._l = _LangManager.language;
+      })
+    .then(res => {
       return import('/web/index-app.js');
     }).then(res => {
       window.IndexApp = res.default;

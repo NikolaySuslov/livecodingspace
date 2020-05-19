@@ -1145,11 +1145,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                         {
                                             $type: "span",
                                             class: "mdc-typography--headline5",
-                                            $text: "Login: "
+                                            $text: _l.t("login") + ": "
                                         },
                                         window._app.widgets.inputTextFieldOutlined({
                                             "id": 'aliasInput',
-                                            "label": "Login",
+                                            "label": _l.t("login"),
                                             "value": this._alias,
                                             "type": "text",
                                             "init": function () {
@@ -1165,11 +1165,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                         {
                                             $type: "span",
                                             class: "mdc-typography--headline5",
-                                            $text: "Password: "
+                                            $text: _l.t("password") + ": "
                                         },
                                         window._app.widgets.inputTextFieldOutlined({
                                             "id": 'passwordInput',
-                                            "label": "Password",
+                                            "label": _l.t("password"),
                                             "value": this._pass,
                                             "type": "password",
                                             "init": function () {
@@ -1184,7 +1184,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                     $components: [
                                         window._app.widgets.buttonRaised(
                                             {
-                                                "label": 'Sign UP',
+                                                "label": _l.t("sign up"),
                                                 "onclick": function (e) {
                                                     e.preventDefault();
     
@@ -1225,7 +1225,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                         _app.widgets.space,
                                         window._app.widgets.buttonRaised(
                                             {
-                                                "label": 'Sign IN',
+                                                "label": _l.t("sign in"),
                                                 "onclick": function (e) {
                                                     e.preventDefault();
                                                     let alias = this._aliasField.value;

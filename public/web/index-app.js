@@ -138,7 +138,7 @@ class IndexApp {
             id: "userGUI",
             // style:"background-color: #ffeb3b",
             class: "mdc-layout-grid mdc-layout-grid--align-left",
-            _status: "Welcome!",
+            _status: _l.t("welcome") + '!',//"Welcome!",
             $init: function () {
                 //this._status = "Welcome!"
                 //this._status = 'Welcome!';
@@ -154,7 +154,7 @@ class IndexApp {
                     gui = [
                         window._app.widgets.buttonRaised(
                             {
-                                "label": 'Sign OUT',
+                                "label": _l.t("sign out"), //'Sign OUT',
                                 "onclick": function (e) {
                                     _LCSDB.user().leave();
                                     setTimeout(() => {
@@ -168,7 +168,7 @@ class IndexApp {
                         },
                         window._app.widgets.buttonStroked(
                             {
-                                "label": 'PROFILE',
+                                "label": _l.t("profile"),//'PROFILE',
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     //page("/profile")
@@ -180,7 +180,7 @@ class IndexApp {
                         },
                         window._app.widgets.buttonStroked(
                             {
-                                "label": 'My World protos',
+                                "label": _l.t("my world protos"),
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSDB.user().is.alias;
@@ -191,7 +191,7 @@ class IndexApp {
                             }),
                         window._app.widgets.buttonStroked(
                             {
-                                "label": 'My World states',
+                                "label": _l.t("my world states"),
                                 "onclick": function (e) {
                                     e.preventDefault();
                                     let alias = _LCSDB.user().is.alias;
@@ -268,7 +268,7 @@ class IndexApp {
                                     {
                                         $type: "h1",
                                         class: "mdc-typography--headline4",
-                                        $text: 'Worlds for user: ' + userAlias
+                                        $text: _l.t("protos for") + userAlias
                                     }
                                 ]
                             },
@@ -328,7 +328,7 @@ class IndexApp {
                                     {
                                         $type: "h1",
                                         class: "mdc-typography--headline4",
-                                        $text: 'States for ' + userAlias
+                                        $text: _l.t("states for") + userAlias
                                     }
                                 ]
                             },
@@ -352,7 +352,7 @@ class IndexApp {
 
         let alias = _LCSDB.user().is.alias;
         let userEl = document.querySelector('#userGUI');
-        userEl._status = 'Welcome ' + alias + '!';
+        userEl._status = _l.t("welcome") +', ' + alias + '!';
         //userEl.style.backgroundColor = '#e6e6e6';   
         userEl._refresh(); //$update();
 
@@ -445,7 +445,7 @@ class IndexApp {
 
                                 _app.widgets.inputTextFieldOutlined({
                                     "id": 'worldsUserName',
-                                    "label": 'Enter user name',
+                                    "label": _l.t("enter user name"),
                                     "value": defaultName,
                                     "type": "text",
                                     "init": function () {
@@ -475,7 +475,7 @@ class IndexApp {
                                 // }
                                 _app.widgets.buttonRaised(
                                     {
-                                        "label": 'World Protos',
+                                        "label":  _l.t("world protos"),
                                         "onclick": function (e) {
                                             e.preventDefault();
                                             //page("/app/worlds/protos")
@@ -489,7 +489,7 @@ class IndexApp {
                                 _app.widgets.space,
                                 _app.widgets.buttonRaised(
                                     {
-                                        "label": 'World States',
+                                        "label": _l.t("world states"),
                                         "onclick": function (e) {
                                             e.preventDefault();
                                             //page("/app/worlds/states")
@@ -531,7 +531,7 @@ class IndexApp {
                     {
                         $type: "h1",
                         class: "mdc-typography--headline4",
-                        $text: "Looking for Worlds made by other Users!"
+                        $text: _l.t("show worlds")//"Looking for Worlds made by other Users!"
                     }
                 ].concat(guiForAll, _app.widgets.p)
             }
@@ -949,7 +949,7 @@ class IndexApp {
                     userGUI.push({
                         $type: "a",
                         class: "mdc-button mdc-button--compact mdc-card__action mdc-button--outlined",
-                        $text: "Details",
+                        $text: _l.t("details"),
                         onclick: function (e) {
                             e.preventDefault();
                             window.location.pathname = "/" + desc.userAlias + '/' + desc.worldName + '/about'
@@ -1115,7 +1115,7 @@ class IndexApp {
                             $components: [
                                 {
                                     $type: 'div',
-                                    $text: 'online now: '
+                                    $text: _l.t("online now") + ': '
                                 }
                             ].concat(online)
                         }
@@ -1282,22 +1282,22 @@ class IndexApp {
                         $type: "div",
                         class: "mdc-layout-grid",
                         $components: [
-                            {
-                                $type: "div",
-                                class: "mdc-layout-grid__inner",
-                                $components: [
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                        $components: [
-                                            {
-                                                $type: "H3",
-                                                $text: headerText
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
+                            // {
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__inner",
+                            //     $components: [
+                            //         {
+                            //             $type: "div",
+                            //             class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            //             $components: [
+                            //                 {
+                            //                     $type: "H3",
+                            //                     $text: headerText
+                            //                 }
+                            //             ]
+                            //         }
+                            //     ]
+                            // },
                             {
                                 $type: "div",
                                 class: "mdc-layout-grid__inner",

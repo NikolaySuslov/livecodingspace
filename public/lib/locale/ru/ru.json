@@ -1,19 +1,31 @@
 {
+    "header_home": "Домой",
+    "conn_settings":"Свойства подключения",
+    "help":"Помощь",
+    "en":"English",
+    "ru":"Русский",
     "home": "Дом",
     "App": "Программа",
     "clone proto": "Клонировать",
     "start": "Запустить",
     "users": "Пользователи",
-    "welcome": "Добро пожаловать!",
+    "welcome": "Добро пожаловать",
     "login": "Имя",
     "password": "Пароль",
-    "sign up": "подписаться",
-    "sign in": "войти в систему",
-    "looking for worlds made by other users": "Смотреть Миры, созданные другими пользователями!",
-    "world protos": "прототипы мира",
-    "world states": "состояния мира",
-    "details": "детали",
-    "online now": "сейчас в сети",
+    "sign up": "Зарегистрироваться",
+    "sign in": "Войти",
+    "sign out": "Выйти",
+    "profile": "Мой профиль",
+    "show worlds": "Найти Миры, созданные другими пользователями!",
+    "my world protos": "Мои прототипы",
+    "my world states": "Мои миры",
+    "world protos": "Прототипы",
+    "world states": "Миры",
+    "protos for": "Прототипы миров пользователя: ",
+    "states for": "Миры пользователя: ",
+    "enter user name": "Введите имя пользователя",
+    "details": "Подробнее",
+    "online now": "онлайн",
     "scene": "Сцена",
     "create": "Создать",
     "code editor": "Редактор кода",
@@ -53,9 +65,4 @@
      "node methods": "методы узла",
      "proto methods": "методы прототипа",
      "methods name": "имя метода"
-
-     
-
-
-
 }
