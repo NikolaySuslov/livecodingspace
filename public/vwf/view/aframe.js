@@ -73,13 +73,9 @@ define(["module", "vwf/view"], function (module, view) {
 
 
                 let prepairAvatar = new Promise((resolve, reject) => {
-
-                    function cb() {
-                        resolve("ok");
-                    }
-                    createAvatarControl(scene, cb);
+                    let createAvatarPromise = new Promise(r=> r(createAvatarControl(scene)));
+                    return resolve(createAvatarPromise) 
                 });
-
 
                 prepairAvatar.then(res => {
 
@@ -776,7 +772,7 @@ define(["module", "vwf/view"], function (module, view) {
         //el.object3D.rotation.set(val+rotation.x, rotation.y, rotation.z)
     }
 
-    function createAvatarControl(aScene, cb) {
+    async function createAvatarControl(aScene) {
 
         let avatarName = 'avatar-' + self.kernel.moniker();
 
@@ -844,8 +840,8 @@ define(["module", "vwf/view"], function (module, view) {
         // aScene.appendChild(arControl);
 
 
-
-        cb();
+        return "OK!"
+       // cb();
 
         // let gearVRControlsEl = document.createElement('a-entity');
         // gearVRControlsEl.setAttribute('id', 'gearvr-'+avatarName);

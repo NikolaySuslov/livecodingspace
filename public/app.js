@@ -38,7 +38,8 @@ class App {
 
     import('/lib/polyglot/language.js').then(res => {
       window._LangManager = new res.default;
-      return new Promise(r=>r(_LangManager.setLanguage())) }).then(res=>{
+      return new Promise(r=>r(_LangManager.setLanguage()))})
+      .then(res=>{
         window._l = _LangManager.language;
       })
     .then(res => {
