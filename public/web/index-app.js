@@ -210,6 +210,12 @@ class IndexApp {
                         class: "mdc-typography--headline3",
                         $text: this._status
                     }
+                    // ,{
+                    //     $type: "div",
+                    //     class: "mdc-typography--headline4",
+                    //     $text: navigator.userAgent
+                    // }
+                    
                 ].concat(gui)
             }
         }

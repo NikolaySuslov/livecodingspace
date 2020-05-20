@@ -55,6 +55,7 @@ class App {
     //client routes
     page('/', this.HandleIndex);
     page('/setup', this.HandleSetupIndex);
+    page('/debug', this.HandleDebugIndex);
     page('/settings', this.HandleSettingsIndex);
     page('/profile', this.HandleUserIndex);
     page('/worlds', this.HandleIndex);
@@ -89,7 +90,9 @@ class App {
         'dbhost': window.location.origin + '/gun', // 'https://' + window.location.hostname + ':8080/gun', //'http://localhost:8080/gun',
         'reflector': 'https://' + window.location.hostname + ':3002',
         'webrtc': false,
-        'language': 'en'
+        'language': 'en',
+        'd3DoF': false,
+        'd6DoF': false
       }
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
@@ -111,6 +114,16 @@ class App {
 
     if (!config.webrtc) {
       config.webrtc = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    if (!config.d3DoF) {
+      config.d3DoF = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    if (!config.d6DoF) {
+      config.d6DoF = false;
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
@@ -447,6 +460,18 @@ class App {
 
   }
 
+  HandleDebugIndex() {
+
+    window._app.hideProgressBar();
+    window._app.hideUIControl();
+
+    let el = document.createElement("div");
+    el.setAttribute("id", "appGUI");
+    document.body.appendChild(el);
+
+    _cellWidgets.debugGUI();
+
+  }
 
   HandleSettingsIndex() {
 

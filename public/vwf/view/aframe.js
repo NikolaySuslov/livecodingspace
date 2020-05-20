@@ -50,11 +50,23 @@ define(["module", "vwf/view"], function (module, view) {
                 this.rootSelector = options;
             }
 
-            this.gearvr = options.gearvr !== undefined ? options.gearvr : false;
-            this.wmrright = options.wmrright !== undefined ? options.wmrright : false;
-            this.wmrleft = options.wmrleft !== undefined ? options.wmrleft : false;
+            // this.gearvr = options.gearvr !== undefined ? options.gearvr : false;
+            // this.wmrright = options.wmrright !== undefined ? options.wmrright : false;
+            // this.wmrleft = options.wmrleft !== undefined ? options.wmrleft : false;
 
             this.xrType = undefined;
+
+            //TODO: FIX detection in better way! (now works for Oculus Browser only)
+
+            this.hmd = false; 
+            this.threeDoF = false;
+            this.sixDoF = false;
+
+            this.threeDoFMobile = AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected() && !navigator.userAgent.includes('Quest');
+            this.sixDoFMobile = AFRAME.utils.device.checkHeadsetConnected() && navigator.userAgent.includes('Quest');
+            this.sixDoFDesktop = !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
+
+
         },
 
         createdNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
@@ -79,38 +91,31 @@ define(["module", "vwf/view"], function (module, view) {
 
                 prepairAvatar.then(res => {
 
-                    if (this.gearvr == true) {
                         console.log("CREATE GEARVR HERE!!");
-                        if (AFRAME.utils.device.isMobileVR()) {
+                        if (self.threeDoFMobile || _app.config.d3DoF ) {
                             this.xrType = 'mobileVR';
                             let nodeName = 'gearvr-' + self.kernel.moniker();
                             createGearVRControls();
                             createGearVRController.call(self, childID, nodeName);
                         }
-                    }
-
-
-                    if (this.wmrright == true) {
+                    
                         console.log("CREATE WMR RIGHT HERE!!");
-                        if (!AFRAME.utils.device.isMobileVR()) {
-                            if (AFRAME.utils.device.checkHeadsetConnected()) {
-                                let nodeName = 'wmrvr-right-' + self.kernel.moniker();
-                                createWMRVRControls('right');
-                                createWMRVR.call(this, childID, nodeName);
-                            }
-                        }
-                    }
+                       // if (!AFRAME.utils.device.isMobileVR()) {
+                            if (self.sixDoFMobile || self.sixDoFDesktop || _app.config.d6DoF  ) {
 
-                    if (this.wmrleft == true) {
-                        console.log("CREATE WMR LEFT HERE!!");
-                        if (!AFRAME.utils.device.isMobileVR()) {
-                            if (AFRAME.utils.device.checkHeadsetConnected()) {
-                                let nodeName = 'wmrvr-left-' + self.kernel.moniker();
+                                let nodeRight = 'wmrvr-right-' + self.kernel.moniker();
+                                createWMRVRControls('right');
+                                createWMRVR.call(this, childID, nodeRight);
+
+                                console.log("CREATE WMR LEFT HERE!!");
+                       // if (!AFRAME.utils.device.isMobileVR()) {
+  
+                                let nodeLeft = 'wmrvr-left-' + self.kernel.moniker();
                                 createWMRVRControls('left');
-                                createWMRVR.call(this, childID, nodeName);
+                                createWMRVR.call(this, childID, nodeLeft);
                             }
-                        }
-                    }
+                       // }
+                    
 
                      // console.log(res);
                      createAvatar.call(self, childID);                  
@@ -475,15 +480,21 @@ define(["module", "vwf/view"], function (module, view) {
             updateAvatarPosition();
 
             //update vr controllers
-            if (this.gearvr == true) {
-                updateHandControllerVR('gearvr-', '#gearvrcontrol');
+
+            if(self.hmd){
+                if(self.threeDoF )
+                    updateHandControllerVR('gearvr-', '#gearvrcontrol');
+
+                if(this.sixDoF ) {
+                        updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
+                        updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
+                }
             }
-            if (this.wmrright == true) {
-                updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
-            }
-            if (this.wmrleft == true) {
-                updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
-            }
+
+            
+    
+                
+            
 
             //lerpTick ();
         },
@@ -654,9 +665,15 @@ define(["module", "vwf/view"], function (module, view) {
         if (el) {
             //let position = el.object3D.getWorldPosition(); //el.getAttribute('position');
 
-            let position = new THREE.Vector3();
-            el.object3D.getWorldPosition(position);
+            var position;
 
+            if((self.hmd && self.sixDoF) || _app.config.d6DoF){
+                position = el.getAttribute('position');
+            } else {
+                position = new THREE.Vector3();
+                el.object3D.getWorldPosition(position);
+            }
+            //let position = el.getAttribute('position');
             let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -780,7 +797,7 @@ define(["module", "vwf/view"], function (module, view) {
         avatarEl.setAttribute('id', 'avatarControlParent');
 
 
-        if (AFRAME.utils.device.isMobileVR()) {
+        if (self.d3DoF || _app.config.d3DoF) {
             //avatarEl.setAttribute('gearvr-controls', {}); 
             avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
            // avatarEl.setAttribute("gamepad-controls", {});
@@ -1031,10 +1048,12 @@ define(["module", "vwf/view"], function (module, view) {
 
         let gearvr = document.createElement('a-entity');
         gearvr.setAttribute('id', 'gearvrcontrol');
+
         gearvr.setAttribute('gearvr-controls', {
             'hand': 'right',
             'model': true
         });
+    
         // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
 
         gearvr.setAttribute('gearvrcontrol', {});
@@ -1050,8 +1069,17 @@ define(["module", "vwf/view"], function (module, view) {
 
         let wmrvr = document.createElement('a-entity');
         wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
-        wmrvr.setAttribute('windows-motion-controls', '');
-        wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
+
+        wmrvr.setAttribute('hand-controls', {
+            'hand': hand,
+            'handModelStyle': 'lowPoly',
+            'color': '#ffcccc'
+        });
+
+        // wmrvr.setAttribute('windows-motion-controls', '');
+        // wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
+
+
         wmrvr.setAttribute('wmrvrcontrol', { 'hand': hand });
         avatarControl.appendChild(wmrvr);
     }

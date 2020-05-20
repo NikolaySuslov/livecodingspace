@@ -714,7 +714,223 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             
         }
 
+        debugGUI() {
+
+            let self = this;
+
+            let debug6DoF = {
+                $cell: true,
+                $components: [
+                  {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Debug 6DoF mode (for using with WebXR emulator)"
+                  },
+                  {
+                    $type: 'p'
+                  },
+                  _app.widgets.switch({
+                    'id': 'forceDebug6DoF',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      let config = localStorage.getItem('lcs_config');
+                      this._switch.checked = JSON.parse(config).d6DoF;
+                      
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': function (e) {
+    
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.d6DoF = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.d6DoF = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                            }
+                        }
+                    }
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-forceDebug6DoF',
+                    $text: 'On / Off'
+                  }
+    
+                ]
+              }
+
+              let debug3DoF = {
+                $cell: true,
+                $components: [
+                  {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Debug 3DoF mode (for using with WebXR emulator)"
+                  },
+                  {
+                    $type: 'p'
+                  },
+                  _app.widgets.switch({
+                    'id': 'forceDebug3DoF',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      let config = localStorage.getItem('lcs_config');
+                      this._switch.checked = JSON.parse(config).d3DoF;
+                      
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': function (e) {
+    
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.d3DoF = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.d3DoF = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                            }
+                        }
+                    }
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-forceDebug3DoF',
+                    $text: 'On / Off'
+                  }
+    
+                ]
+              }
+
+
+              let allGUI =
+              {
+                  $type: "div",
+                  id: "allGUI",
+                  //style:"background-color: #efefef",
+                  class: "mdc-layout-grid mdc-layout-grid--align-left",
+                  _d3DoF: null,
+                  _d6DoF: null,
+                  _initData: function () {
+          
+                      let config = JSON.parse(localStorage.getItem('lcs_config'));
+          
+                      if (config.d3DoF) {
+                          this._d3DoF = config.d3DoF
+                      }
+                      if (config.d6DoF) {
+                          this._d6DoF =config.d6DoF
+                      }
+                    
+                      this._refresh();
+                 },
+                  $init: function () {
+                      this._initData();
+                  },
+                  _refresh: function () {
+          
+                      this.$components = [
+                          {
+                              $type: "div",
+                              class: "mdc-layout-grid__inner",
+                              $components: [
+                                  {
+                                      $type: "div",
+                                      class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                      $components: [
+                                      {
+                                          $type: "h4",
+                                          class: "mdc-typography--headline4",
+                                          $text: "Debug settings"
+                                      }
+                                  ]
+                                  },
+                                 { 
+                                  $type: "div",
+                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                  $components: [debug6DoF ]
+                                 },
+                                 { 
+                                  $type: "div",
+                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                  $components: [_app.widgets.divider]
+                                 },
+                                 { 
+                                  $type: "div",
+                                  class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                  $components: [debug3DoF]
+                                 },
+                                  {
+                                      $type: "div",
+                                      class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                      $components: [
+                                        //   window._app.widgets.buttonRaised(
+                                        //       {
+                                        //           "label": 'Update',
+                                        //           "onclick": function (e) {
+                                        //               e.preventDefault();
+          
+                                        //               let config = JSON.parse(localStorage.getItem('lcs_config'));
+          
+                                        //               config.reflector = this._refHostField.value;
+                                        //               config.dbhost = this._dbHostField.value;
+                                        //               config.luminaryPath = this._lpathField.value;
+                                        //               config.luminaryGlobalHBPath = this._hbpathField.value;
+          
+                                        //               localStorage.setItem('lcs_config', JSON.stringify(config));
+                                        //               window.location.reload(true);
+                                        //           }
+                                        //       }),
+                                              {
+                                                $type: 'span',
+                                                $text: " "
+                                              },
+                                              {
+                                                $type: "button",
+                                                class: "mdc-button mdc-button--raised",
+                                                $text: "Close",
+                                                onclick: function (e) {
+                                                      window.history.back();
+                                                    //window.location.pathname = '/'
+                                                }
+                                              }
+                                      ]
+                                  }
+          
+                              ]
+                          }
+                      ]
+                  }
+          
+              }
+          
+              document.querySelector("#appGUI").$cell({
+                  id: "appGUI",
+                  $cell: true,
+                  $type: "div",
+                  $components: [allGUI]
+              }
+              );
+
+
+
+            }
+
         reflectorGUI() {
+
+            let self = this;
 
             let webrtcConnection = {
                 $cell: true,
@@ -881,6 +1097,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 _lpathField: null,
                 _hbpath: null,
                 _hbpathField: null,
+                //_debug: null,
                 _initData: function () {
                     this._reflectorHost = '';
                     this._dbHost = '';
@@ -899,6 +1116,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     if (config.luminaryGlobalHBPath) {
                         this._hbpath = config.luminaryGlobalHBPath
                     }
+                    // if (config.debug) {
+                    //     this._debug = config.debug
+                    // }
 
                 },
                 $init: function () {
@@ -1052,6 +1272,16 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
                                 $components: [luminaryGlobalHB ]
                                },
+                               { 
+                                $type: "div",
+                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                $components: [_app.widgets.divider]
+                               },
+                            //    { 
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            //     $components: [debugGUI]
+                            //    },
                                 {
                                     $type: "div",
                                     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
@@ -1082,7 +1312,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                               class: "mdc-button mdc-button--raised",
                                               $text: "Close",
                                               onclick: function (e) {
-                                                  window.location.pathname = '/'
+                                                    window.history.back();
+                                                  //window.location.pathname = '/'
                                               }
                                             }
                                     ]
