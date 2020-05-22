@@ -26,7 +26,7 @@ AFRAME.registerComponent('scene-utils', {
 
             driver.hmd = true;
 
-            if (driver.threeDoFMobile|| _app.config.d3DoF ) {
+            if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = true;
 
                  vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
@@ -58,7 +58,7 @@ AFRAME.registerComponent('scene-utils', {
 
             driver.hmd = false;
 
-            if (driver.threeDoFMobile|| _app.config.d3DoF ) {
+            if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = false;
                 //avatarEl.setAttribute('position', '0 0 0');
 
