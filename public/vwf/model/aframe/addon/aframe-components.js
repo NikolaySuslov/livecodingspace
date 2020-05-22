@@ -13,6 +13,8 @@ AFRAME.registerComponent('scene-utils', {
     init: function () {
         this.mirrors = {};
 
+        //this.setCameraControl();
+
         const sceneEnterVR = (e) => {
 
             let driver = vwf.views["vwf/view/aframe"];
@@ -75,6 +77,35 @@ AFRAME.registerComponent('scene-utils', {
 
         this.el.sceneEl.addEventListener('enter-vr', sceneEnterVR);
         this.el.sceneEl.addEventListener('exit-vr', sceneExitVR);
+
+    },
+
+    setCameraControl(){
+
+        let avatarEl = document.querySelector('#avatarControl');
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+          
+            if (keyName === 'Alt') {
+              // do not alert when only Control key is pressed.
+              console.log(keyName, ' pressed');
+              avatarEl.setAttribute('look-controls', 'enabled', true)
+              return;
+            }
+        })
+        
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+          
+            if (keyName === 'Alt') {
+              // do not alert when only Control key is pressed.
+              console.log(keyName, ' released');
+              avatarEl.setAttribute('look-controls', 'enabled', false)
+              return;
+            }
+        })
+
 
     },
 

@@ -817,11 +817,15 @@ define(["module", "vwf/view"], function (module, view) {
 
         controlEl.setAttribute('id', 'avatarControl');
         controlEl.setAttribute('wasd-controls', {acceleration:20});
-        controlEl.setAttribute('look-controls', { pointerLockEnabled: false });
+        controlEl.setAttribute('look-controls', { pointerLockEnabled: false});
+        controlEl.setAttribute('look-controls', 'enabled', true );
+
         //controlEl.setAttribute('gamepad-controls', {'controller': 0});
 
         if (AFRAME.utils.device.isMobile()) {
             //self.state.showMobileJoystick()
+
+            controlEl.setAttribute('look-controls', 'enabled', true );
             controlEl.setAttribute("virtual-gamepad-controls", {});
             controlEl.addEventListener("move", setJoystickMoveInput);
         }
