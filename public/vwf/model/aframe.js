@@ -310,6 +310,12 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 }
 
+                if(methodName == 'setFont') {
+
+                    node.aframeObj.setAttribute('font', methodParameters[0]);
+
+                }
+
             }
 
 
@@ -589,8 +595,15 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     value = propertyValue;
 
                     self.aframeDef['A-TEXT'].forEach(element => {
-                        element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
+
+                        if(propertyName == 'font'){
+                            console.log('Loading font...', element);
+                        } else {
+                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
                             value = undefined;
+                        }
+
+                        
                     })
 
                 }

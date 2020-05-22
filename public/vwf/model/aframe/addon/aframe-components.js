@@ -527,13 +527,13 @@ AFRAME.registerComponent('wmrvrcontrol', {
     init: function () {
         var self = this;
         this.hand = this.data.hand;
-        var controllerID = 'wmrvr-' + this.hand + '-' + vwf_view.kernel.moniker();
+        this.controllerID = 'wmrvr-' + this.hand + '-' + vwf_view.kernel.moniker();
         //this.gearel = document.querySelector('#gearvrcontrol');
-        this.el.addEventListener('pointdown', function (event) { //pointdown 'triggerdown'
-            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+        this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
         });
-        this.el.addEventListener('pointup', function (event) { //pointup 'triggerup'
-            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+        this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
         });
     },
 

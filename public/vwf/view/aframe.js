@@ -284,6 +284,13 @@ define(["module", "vwf/view"], function (module, view) {
             //     receiveModelTransformChanges( nodeId, propertyValue );
             // }
 
+            if (node.aframeObj.nodeName == "A-TEXT" && propertyName == 'font') {
+
+                //TODO: Temporary fix for font resource loading error
+                console.log('Set font from view');
+                self.kernel.callMethod(nodeId, "setFont", [propertyValue])
+
+            }
 
             if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
 
