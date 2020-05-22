@@ -490,7 +490,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             if(self.hmd){
                 if(self.threeDoF )
-                    updateHandControllerVR('gearvr-', '#gearvrcontrol');
+                        updateHandControllerVR('gearvr-', '#gearvrcontrol');
 
                 if(this.sixDoF ) {
                         updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');

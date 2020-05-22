@@ -29,7 +29,8 @@ AFRAME.registerComponent('scene-utils', {
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = true;
 
-                 vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+                 //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+
                 //avatarEl.setAttribute('position', '0 1.6 0');
                 // if (AFRAME.utils.device.isGearVR()){  
                 // }
@@ -62,7 +63,7 @@ AFRAME.registerComponent('scene-utils', {
                 driver.threeDoF = false;
                 //avatarEl.setAttribute('position', '0 0 0');
 
-                vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
+                //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
 
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = false;
