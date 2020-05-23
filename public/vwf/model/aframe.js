@@ -312,8 +312,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 if(methodName == 'setFont') {
 
-                    node.aframeObj.setAttribute('font', methodParameters[0]);
-
+                        node.aframeObj.setAttribute('font', methodParameters[0]);
+                    
                 }
 
             }
@@ -594,17 +594,17 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 if (value === undefined && aframeObject.nodeName == "A-TEXT") {
                     value = propertyValue;
 
-                    self.aframeDef['A-TEXT'].forEach(element => {
+                    self.aframeDef['A-TEXT'].filter(el=>el !== 'font').forEach(element => {
 
-                        if(propertyName == 'font'){
-                            console.log('Loading font...', element);
-                        } else {
+                       
                             element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
                             value = undefined;
-                        }
-
                         
                     })
+
+                    // if(propertyName == 'font'){
+                    //     console.log('Loading font...', element);
+                    // }
 
                 }
 
@@ -1387,6 +1387,9 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             //aframeObj.setAttribute('embedded', {});
             //aframeObj.setAttribute('loading-screen', "backgroundColor: black");
             self.state.scenes[node.ID] = aframeObj;
+            //TODO: move from veiw here
+            document.body.appendChild(aframeObj);
+
         } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
 
             let assets = document.querySelector('a-assets');

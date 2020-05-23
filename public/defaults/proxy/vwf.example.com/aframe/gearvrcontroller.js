@@ -19,7 +19,7 @@ this.simpleDef = {
         "pointer": {
             "extends": "http://vwf.example.com/aframe/abox.vwf",
             "properties": {
-                "position": "0 0 -0.8",
+                "position": "0 0 -0.7",
                 "height": 0.1,
                 "width": 0.1,
                 "depth": 0.1
@@ -96,7 +96,7 @@ this.createController = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            "position": [0, 0, 0]
+            "position": [0, 0, -0.4]
         },
         children: {
             "controller": controllerDef

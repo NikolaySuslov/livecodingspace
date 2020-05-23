@@ -64,7 +64,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             this.threeDoFMobile = AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected() && !navigator.userAgent.includes('Quest');
             this.sixDoFMobile = AFRAME.utils.device.checkHeadsetConnected() && navigator.userAgent.includes('Quest');
-            this.sixDoFDesktop = !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
+            this.sixDoFDesktop = !AFRAME.utils.device.isMobile && !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
 
 
         },
@@ -82,7 +82,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
-
+                //document.body.appendChild(scene);
 
                 let prepairAvatar = new Promise((resolve, reject) => {
                     let createAvatarPromise = new Promise(r=> r(createAvatarControl(scene)));
@@ -121,10 +121,12 @@ define(["module", "vwf/view"], function (module, view) {
                      createAvatar.call(self, childID);                  
                      postLoadAction.call(self, childID);
 
+                }).then(res=>{
+                    //document.body.appendChild(scene);
                 })
                 // this.state.appInitialized  = true;
 
-                document.body.appendChild(scene); //append is not working in Edge browser
+                //document.body.appendChild(scene); //append is not working in Edge browser
 
             }
 
@@ -288,7 +290,11 @@ define(["module", "vwf/view"], function (module, view) {
 
                 //TODO: Temporary fix for font resource loading error
                 console.log('Set font from view');
-                self.kernel.callMethod(nodeId, "setFont", [propertyValue])
+
+                setTimeout(function(){
+                    self.kernel.callMethod(nodeId, "setFont", [propertyValue])
+                }, 100);
+                
 
             }
 
@@ -661,7 +667,7 @@ define(["module", "vwf/view"], function (module, view) {
 
     function updateAvatarPosition() {
 
-        let delta = 0.0001;
+        let delta = 0.001;
 
         let avatarName = 'avatar-' + self.kernel.moniker();
         var node = self.state.nodes[avatarName];
@@ -681,23 +687,39 @@ define(["module", "vwf/view"], function (module, view) {
             // }
             //let position = el.getAttribute('position');
 
-            let position = el.getAttribute('position');
+            //let position = el.getAttribute('position');
+            let position = el.object3D.position;
             let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
-            let lastPosition = self.nodes[avatarName].selfTickPosition;
+            let lastPosition = self.nodes[avatarName].selfTickPosition ? self.nodes[avatarName].selfTickPosition: new THREE.Vector3(0, 0, 0);
 
             // let currentPosition = node.aframeObj.getAttribute('position');
             // let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && lastPosition && lastRotation) {
-                if (compareCoordinates(position, lastPosition, delta) || Math.abs(rotation.y - lastRotation.y) > delta) {
-                    console.log("not equal!!")
-                    self.kernel.callMethod(avatarName, "followAvatarControl", [position, rotation]);
+            
+            // compareCoordinates(position, lastPosition, delta) 
+
+            if(position && lastPosition ) {
+                let distance = lastPosition.distanceTo(position);
+
+                if (distance > delta)
+                {
+                    console.log("position not equal");
+                    self.kernel.setProperty(avatarName, "position", position);
+                }
+            }
+
+            if (rotation && lastRotation) {
+                let distance = Math.abs(rotation.y - lastRotation.y);
+                if ( distance > delta) {
+                    console.log("rotation not equal")
+                    self.kernel.callMethod(avatarName, "updateAvatarRotation", [rotation]);
                 }
             }
             self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
-            self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
+            //self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
+            self.nodes[avatarName].selfTickPosition = position.clone();
         }
 
     }
@@ -706,7 +728,7 @@ define(["module", "vwf/view"], function (module, view) {
     function updateHandControllerVR(aName, aSelector) {
         //let avatarName = 'avatar-' + self.kernel.moniker();
 
-        let delta = 0.0001
+        let delta = 0.001
 
         let avatarName = aName + self.kernel.moniker();
         var node = self.state.nodes[avatarName];
@@ -721,29 +743,49 @@ define(["module", "vwf/view"], function (module, view) {
             // el.object3D.getWorldPosition(position);
             // let rotation = getWorldRotation(el, 'XYZ');
 
-            let position = el.getAttribute('position');
-            let rotation = el.getAttribute('rotation');
-           
+            // let position = el.getAttribute('position');
+            // let rotation = el.getAttribute('rotation');
 
-            //let rotation = el.getAttribute('rotation');
+            let position = el.object3D.position;
+            let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
-            let lastPosition = self.nodes[avatarName].selfTickPosition;
+            let lastPosition = self.nodes[avatarName].selfTickPosition ? self.nodes[avatarName].selfTickPosition: new THREE.Vector3(0, 0, 0);
 
             // let currentPosition = node.aframeObj.getAttribute('position');
             //let currentRotation = node.aframeObj.getAttribute('rotation');
 
-            if (position && rotation && lastRotation && lastPosition) {
-                if (compareCoordinates(position, lastPosition, delta) || compareCoordinates(rotation, lastRotation, delta)) {
-                    console.log("not equal!!");
-                    vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
+            if (position && lastPosition) {
+                let distance = lastPosition.distanceTo(position);
+
+                if (distance > delta)
+                {
+                    console.log("position not equal");
+                    self.kernel.setProperty(avatarName, "position", position);
                 }
             }
+
+            if (rotation && lastRotation) {
+                let distance = compareCoordinates(rotation, lastRotation, delta)
+
+                if (distance)
+                {
+                    console.log("rotation not equal");
+                    self.kernel.setProperty(avatarName, "rotation", rotation);
+                }
+            }
+
+            // if (position && rotation && lastRotation && lastPosition) {
+            //     if (compareCoordinates(position, lastPosition, delta) || compareCoordinates(rotation, lastRotation, delta)) {
+            //         console.log("not equal!!");
+            //         vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
+            //     }
+            // }
 
 
             //vwf_view.kernel.callMethod(avatarName, "updateVRControl", [position, rotation]);
 
-            self.nodes[avatarName].selfTickPosition = Object.assign({}, position);
+            self.nodes[avatarName].selfTickPosition = position.clone();
             self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
 
         }
