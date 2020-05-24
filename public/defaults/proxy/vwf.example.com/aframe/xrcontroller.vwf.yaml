@@ -1,4 +1,4 @@
-# wmrvr controller
+# xrcontroller controller
 # Copyright 2017 Krestianstvo.org project
 ---
 extends: http://vwf.example.com/aframe/aentity.vwf

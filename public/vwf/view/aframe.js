@@ -100,20 +100,20 @@ define(["module", "vwf/view"], function (module, view) {
                             createGearVRController.call(self, childID, nodeName);
                         }
                     
-                        console.log("CREATE WMR RIGHT HERE!!");
+                        console.log("CREATE XRController RIGHT HERE!!");
                        // if (!AFRAME.utils.device.isMobileVR()) {
                             if (self.sixDoFMobile || self.sixDoFDesktop || _app.config.d6DoF  ) {
 
-                                let nodeRight = 'wmrvr-right-' + self.kernel.moniker();
-                                createWMRVRControls('right');
-                                createWMRVR.call(this, childID, nodeRight);
+                                let nodeRight = 'xrcontroller-right-' + self.kernel.moniker();
+                                createXRControls('right');
+                                createXR.call(this, childID, nodeRight);
 
-                                console.log("CREATE WMR LEFT HERE!!");
+                                console.log("CREATE XRController LEFT HERE!!");
                        // if (!AFRAME.utils.device.isMobileVR()) {
   
-                                let nodeLeft = 'wmrvr-left-' + self.kernel.moniker();
-                                createWMRVRControls('left');
-                                createWMRVR.call(this, childID, nodeLeft);
+                                let nodeLeft = 'xrcontroller-left-' + self.kernel.moniker();
+                                createXRControls('left');
+                                createXR.call(this, childID, nodeLeft);
                             }
                        // }
                     
@@ -475,8 +475,8 @@ define(["module", "vwf/view"], function (module, view) {
                         updateHandControllerVR('gearvr-', '#gearvrcontrol');
 
                 if(this.sixDoF ) {
-                        updateHandControllerVR('wmrvr-right-', '#wmrvrcontrolright');
-                        updateHandControllerVR('wmrvr-left-', '#wmrvrcontrolleft');
+                        updateHandControllerVR('xrcontroller-right-', '#xrcontrollerright');
+                        updateHandControllerVR('xrcontroller-left-', '#xrcontrollerleft');
                 }
             }
 
@@ -915,12 +915,12 @@ define(["module", "vwf/view"], function (module, view) {
 
     }
 
-    function createWMRVR(nodeID, nodeName) {
+    function createXR(nodeID, nodeName) {
 
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/wmrvrcontroller.vwf",
+            "extends": "http://vwf.example.com/aframe/xrcontroller.vwf",
             "properties": {
             }
         }
@@ -1075,35 +1075,31 @@ define(["module", "vwf/view"], function (module, view) {
 
     function createGearVRControls() {
 
-        let sceneEl = document.querySelector('a-scene');
-
         let avatarControl = document.querySelector('#avatarControlParent');
 
-        let gearvr = document.createElement('a-entity');
-        gearvr.setAttribute('id', 'gearvrcontrol');
+        let el = document.createElement('a-entity');
+        el.setAttribute('id', 'gearvrcontrol');
 
-        gearvr.setAttribute('gearvr-controls', {
+        el.setAttribute('gearvr-controls', {
             'hand': 'right',
             'model': true
         });
     
         // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
 
-        gearvr.setAttribute('gearvrcontrol', {});
-        avatarControl.appendChild(gearvr);
+        el.setAttribute('gearvrcontrol', {});
+        avatarControl.appendChild(el);
 
     }
 
-    function createWMRVRControls(hand) {
-
-        let sceneEl = document.querySelector('a-scene');
+    function createXRControls(hand) {
 
         let avatarControl = document.querySelector('#avatarControlParent');
 
-        let wmrvr = document.createElement('a-entity');
-        wmrvr.setAttribute('id', 'wmrvrcontrol' + hand);
+        let el = document.createElement('a-entity');
+        el.setAttribute('id', 'xrcontroller' + hand);
 
-        wmrvr.setAttribute('hand-controls', {
+        el.setAttribute('hand-controls', {
             'hand': hand,
             'handModelStyle': 'lowPoly',
             'color': '#ffcccc'
@@ -1112,9 +1108,8 @@ define(["module", "vwf/view"], function (module, view) {
         // wmrvr.setAttribute('windows-motion-controls', '');
         // wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
 
-
-        wmrvr.setAttribute('wmrvrcontrol', { 'hand': hand });
-        avatarControl.appendChild(wmrvr);
+        el.setAttribute('xrcontroller', { 'hand': hand });
+        avatarControl.appendChild(el);
     }
 
 
