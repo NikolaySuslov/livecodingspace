@@ -82,15 +82,16 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (this.state.scenes[childID]) {
                 let scene = this.state.scenes[childID];
-                //document.body.appendChild(scene);
+                //TODO: FIX
+                
 
                 let prepairAvatar = new Promise((resolve, reject) => {
+                    document.body.appendChild(scene);
                     let createAvatarPromise = new Promise(r=> r(createAvatarControl(scene)));
                     return resolve(createAvatarPromise) 
                 });
 
                 prepairAvatar.then(res => {
-
                         console.log("CREATE GEARVR HERE!!");
                         if (self.threeDoFMobile || _app.config.d3DoF ) {
                             this.xrType = 'mobileVR';
@@ -185,6 +186,12 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
+            // if (node.extendsID == "http://vwf.example.com/aframe/atext.vwf") {
+            //     console.log("Text component initialized");
+            //     node.aframeObj.play();
+
+            // }
+
             // if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
 
             //     var clientThatSatProperty = self.kernel.client();
@@ -265,37 +272,6 @@ define(["module", "vwf/view"], function (module, view) {
 
             if (propertyName == 'scale') {
                 receiveModelTransformChanges(nodeId, 'scale', propertyValue);
-            }
-
-            // if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {
-
-            //     //console.log("sat new item");
-            //     let elID = '#' + node.aframeObj.getAttribute('id');
-            //     Object.entries(this.state.nodes).forEach(el => {
-            //         let src = el[1].aframeObj.getAttribute('src');
-            //         if (src){
-            //            // console.log("my: " + src);
-            //             if (src == elID)
-            //             self.kernel.callMethod(el[0], "updateSrc", [elID])
-            //         }
-            //     })
-
-            // }
-
-            // if ( propertyName == "position" ) {
-            //     receiveModelTransformChanges( nodeId, propertyValue );
-            // }
-
-            if (node.aframeObj.nodeName == "A-TEXT" && propertyName == 'font') {
-
-                //TODO: Temporary fix for font resource loading error
-                console.log('Set font from view');
-
-                setTimeout(function(){
-                    self.kernel.callMethod(nodeId, "setFont", [propertyValue])
-                }, 100);
-                
-
             }
 
             if (node.aframeObj.nodeName == "AUDIO" && propertyName == 'itemSrc') {

@@ -1431,7 +1431,7 @@ class App {
   async loadAppLibs() {
 
     await loadjs([
-      '/vwf/model/aframe/aframe-master.min.js',
+      '/vwf/model/aframe/aframe-master.js',
       '/vwf/model/aframe/addon/SkyShader.js',
       '/vwf/model/aframe/addon/BVHLoader.js',
       '/vwf/model/aframe/addon/TransformControls.js',

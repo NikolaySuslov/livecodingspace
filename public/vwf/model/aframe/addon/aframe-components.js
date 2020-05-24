@@ -14,65 +14,37 @@ AFRAME.registerComponent('scene-utils', {
         this.mirrors = {};
 
         //this.setCameraControl();
-
         const sceneEnterVR = (e) => {
 
             let driver = vwf.views["vwf/view/aframe"];
-            //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
-            let avatarEl = document.querySelector('#avatarControlParent');
-            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
-            //if(AFRAME.utils.device.checkHeadsetConnected())
+            // let avatarEl = document.querySelector('#avatarControlParent');
+            // let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
             driver.hmd = true;
 
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = true;
-
                  //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
-
-                //avatarEl.setAttribute('position', '0 1.6 0');
-                // if (AFRAME.utils.device.isGearVR()){  
-                // }
-
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = true;
             }
-            // else if (AFRAME.utils.device.isMobile()) {
-            //     avatarEl.setAttribute('position', '0 0 0')
-            // } else {
-            //     avatarEl.setAttribute('position', '0 0 0'); //'0 1.6 0'
-            // }
-
-            // if (!AFRAME.utils.device.isGearVR() && !AFRAME.utils.device.isMobile()) {
-            //     avatarEl.setAttribute('position', '0 1.6 0');
-            // }
 
         }
 
         const sceneExitVR = (e) => {
 
             let driver = vwf.views["vwf/view/aframe"];
-            //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
-            let avatarEl = document.querySelector('#avatarControlParent');
-            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
             driver.hmd = false;
 
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = false;
-                //avatarEl.setAttribute('position', '0 0 0');
-
                 //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
 
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = false;
             }
-            // else if (AFRAME.utils.device.isMobile()) {
-            //     avatarEl.setAttribute('position', '0 1.6 0');
-            // } else {
-            //     avatarEl.setAttribute('position', '0 0 0');
-            // }
 
         }
 

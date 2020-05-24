@@ -63503,10 +63503,10 @@ TextGeometry.prototype.computeBoundingSphere = function () {
   if (this.boundingSphere === null) {
     this.boundingSphere = new THREE.Sphere()
   }
-
-  var positions = this.attributes.position.array
-  var itemSize = this.attributes.position.itemSize
-  if (!positions || !itemSize || positions.length < 2) {
+  //LIVECODING.SPACE changes!!! FIX - move to LCS codebase  
+  var positions = this.attributes.position?.array
+  var itemSize = this.attributes.position?.itemSize
+  if (!positions || !itemSize || positions?.length < 2) {
     this.boundingSphere.radius = 0
     this.boundingSphere.center.set(0, 0, 0)
     return
