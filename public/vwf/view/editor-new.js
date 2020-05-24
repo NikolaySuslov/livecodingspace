@@ -2102,6 +2102,15 @@ define([
                                         }
                                     }))
                                 }
+                        } else if(node.name.includes('xrcontroller')){
+                            actionsGUI.push(self.widgets.buttonStroked(
+                                {
+                                    "label": "Set as World default XR controller",
+                                    "onclick": function (e) {
+                                         vwf_view.kernel.callMethod(node.ID, "saveToScene", []);
+                                        
+                                    }
+                                }))
                         }
                        
 
