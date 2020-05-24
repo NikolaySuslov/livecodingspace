@@ -1,5 +1,6 @@
 this.initialize = function () {
     this.future(3).clientWatch();
+    //this.createDefaultXRCostume();
 };
 
 this.clientWatch = function () {
@@ -1147,4 +1148,68 @@ this.enterVR = function(){
 
 this.exitVR = function(){
     console.log("EXIT VR");
+}
+
+this.getChildByName = function (name) {
+    let nodes = this.children.filter(el => el.displayName == name);
+    return nodes[0]
+}
+
+this.getAllChildsByName = function (name) {
+    let nodes = this.children.filter(el => el.displayName == name);
+    return nodes
+}
+
+this.getDefaultXRCostume = function(){
+    
+    let defaultXRCostume = {
+        "extends": "http://vwf.example.com/aframe/abox.vwf",
+        "properties": {
+            displayName: "defaultXRCostume",
+            "position": "0 0 0",
+            "height": 0.01,
+            "width": 0.01,
+            "depth": 1
+        },
+        "methods":{
+            triggerdown:{
+                body:'\/\/do on trigger down \n this.pointer.material.color = "red"',
+                type: "application/javascript"
+            },
+            triggerup:{
+                body:'\/\/do on trigger up \n this.pointer.material.color = "green"',
+                type: "application/javascript"
+            }
+        },
+        children: {
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                "type": "component",
+                "properties":{
+                    "color": "white"
+                }
+            },
+            "pointer": {
+                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                "properties": {
+                    "position": "0 0 -0.7",
+                    "height": 0.1,
+                    "width": 0.1,
+                    "depth": 0.1
+                },
+                children: {
+                    "material": {
+                        "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                        "type": "component",
+                        "properties":{
+                            "color": "green"
+                        }
+                    }
+                }
+            }
+        }
+    
+    }
+
+    return defaultXRCostume
 }

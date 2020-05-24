@@ -86,6 +86,13 @@ methods:
   deleteNode:
     parameters:
       - nodeName
+  getChildByName:
+    parameters:
+      - name
+  getAllChildsByName:
+    parameters:
+      - name
+  getDefaultXRCostume:
   enterVR:
   exitVR:
 scripts:

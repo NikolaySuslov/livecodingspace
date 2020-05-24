@@ -3,6 +3,16 @@ this.getChildByName = function (name) {
     return nodes[0]
 }
 
+this.nodeDef = function () {
+    let def = _app.helpers.getNodeDef(this.id);
+    return def
+ }
+
+this.clone = function () {
+   let nodeDef = _app.helpers.getNodeDef(this.id);
+   return nodeDef
+}
+
 this.getScene =  function () {
     let scene = this.find("/")[0];
     return scene

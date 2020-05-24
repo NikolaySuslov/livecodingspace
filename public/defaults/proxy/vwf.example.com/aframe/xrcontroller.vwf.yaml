@@ -20,5 +20,10 @@ methods:
             - rotation
     triggerdown:
     triggerup:
+    checkDefaultXRCostume:
+    setControllerNode:
+        parameters:
+            - modelSrc
+    saveToScene:
 scripts:
 - source: "http://vwf.example.com/aframe/xrcontroller.js"

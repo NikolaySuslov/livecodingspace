@@ -1,50 +1,3 @@
-this.simpleDef = {
-    "extends": "http://vwf.example.com/aframe/abox.vwf",
-    children: {
-        "material": {
-            "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
-            "type": "component",
-            "properties":{
-                "color": "white"
-            }
-        }
-    },
-    "properties": {
-        "position": "0 0 0",
-        "height": 0.01,
-        "width": 0.01,
-        "depth": 1
-    },
-    children: {
-        "pointer": {
-            "extends": "http://vwf.example.com/aframe/abox.vwf",
-            "properties": {
-                "position": "0 0 -0.7",
-                "height": 0.1,
-                "width": 0.1,
-                "depth": 0.1
-            },
-            children: {
-                "material": {
-                    "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
-                    "type": "component",
-                    "properties":{
-                        "color": "green"
-                    }
-                }
-            }
-        }
-        // "interpolation":
-        //     {
-        //         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
-        //         "type": "component",
-        //         "properties": {
-        //             "enabled": true
-        //         }
-        //     }
-    }
-}
-
 this.modelDef = {
     "extends": "http://vwf.example.com/aframe/agltfmodel.vwf",
     "properties": {
@@ -66,25 +19,15 @@ this.modelDef = {
 
 this.createController = function (modelSrc) {
 
-    let controllerDef = this.simpleDef;
+    let self = this;
 
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
             "position": [0, 0, -0.4]
         },
-        children: {
-            "controller": controllerDef
-        }
+        children: {}
     }
-
-    if (modelSrc) {
-
-        let controllerDef = this.modelDef;
-        controllerDef.properties.src = modelSrc;
-        newNode.children.controller = controllerDef;
-    }
-
 
     let interpolation =  {
         "extends": "http://vwf.example.com/aframe/interpolation-component.vwf",
@@ -96,7 +39,13 @@ this.createController = function (modelSrc) {
 
 
     this.children.create( "interpolation", interpolation );
-    this.children.create("handVRNode", newNode);
+    this.children.create("xrnode", newNode, function(child){
+        if(child) {
+            //find default costume
+            self.setControllerNode(modelSrc);
+        }
+
+    });
 
 }
 
@@ -109,16 +58,16 @@ this.updateVRControl = function(position, rotation){
 }
 
 
-this.createSimpleController = function(){
-       if (this.handVRNode.controller) {
-        this.handVRNode.children.delete(this.handVRNode.controller);
+// this.createSimpleController = function(){
+//        if (this.handVRNode.controller) {
+//         this.handVRNode.children.delete(this.handVRNode.controller);
 
-        let controllerDef = this.simpleDef;
+//         let controllerDef = this.simpleDef;
 
-        this.handVRNode.children.create("controller", controllerDef);
+//         this.handVRNode.children.create("controller", controllerDef);
 
-       }
-}
+//        }
+// }
 
 this.createAvatarFromGLTF = function(modelSrc){
 
@@ -138,9 +87,82 @@ this.initialize = function() {
 }
 
 this.triggerdown = function() {
-    this.handVRNode.controller.pointer.material.color = 'red'
+    let controller = this.xrnode.controller;
+    if(controller){
+        controller.triggerdown();
+    }
+    //this.xrnode.controller.pointer.material.color = 'red'
  }
 
  this.triggerup = function() {
-    this.handVRNode.controller.pointer.material.color = 'green'
+    let controller = this.xrnode.controller;
+    if(controller){
+        controller.triggerup();
+    }
+    //this.xrnode.controller.pointer.material.color = 'green'
  }
+
+this.saveToScene = function(){
+
+    let scene = this.getScene();
+    let controller = this.xrnode.controller;
+    if(controller){
+        let defNode = this.checkDefaultXRCostume();
+
+        if(defNode){
+            scene.children.delete(defNode);
+        } 
+
+       let node = controller.nodeDef(); 
+       node.properties.visible = false;
+       node.properties.displayName = 'defaultXRCostume';
+        scene.children.create('defaultXRCostume', node, function( child ) {
+            console.log('Save default controller costume to scene: ', child);
+           });
+
+    }
+
+}
+
+ this.checkDefaultXRCostume = function(){
+    let scene = this.getScene();
+    let defaultNode = scene.getChildByName('defaultXRCostume');
+    return defaultNode ? defaultNode : undefined
+ }
+
+
+this.setControllerNode = function(modelSrc){
+
+    let scene = this.getScene();
+    let defaultNode = this.checkDefaultXRCostume();
+    let oldCostume = this.xrnode.controller;
+    if(oldCostume){
+        this.xrnode.children.delete(oldCostume);
+    }
+
+    if(defaultNode) {
+        let def = _app.helpers.getNodeDef(defaultNode.id);
+        def.properties.position = '0 0 0';
+        def.properties.rotation = '0 0 0';
+        def.properties.visible = true;
+        def.properties.displayName = 'controller';
+        this.xrnode.children.create('controller', def, function( child ) {
+            console.log('Restore controller costume: ', child)
+           });
+    } else {
+
+        let controllerDef = scene.getDefaultXRCostume();
+        controllerDef.properties.displayName = 'controller';
+
+        if (modelSrc) {
+            let controllerDef = this.modelDef;
+            controllerDef.properties.src = modelSrc;
+        }
+
+        this.xrnode.children.create('controller', controllerDef, function( child ) {
+            console.log('New controller costume: ', child)
+           });
+    
+    }
+
+}
