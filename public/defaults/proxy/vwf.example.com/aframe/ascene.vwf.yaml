@@ -95,5 +95,12 @@ methods:
   getDefaultXRCostume:
   enterVR:
   exitVR:
+  createDrawNode:
+    parameters:
+      - node
+      - name
+      - color
+      - width
+      - pos
 scripts:
 - source: "http://vwf.example.com/aframe/ascene.js"

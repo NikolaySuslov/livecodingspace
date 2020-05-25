@@ -556,6 +556,26 @@ this.createAssetResource = function(resType, resSrc){
 
 }
 
+this.createDrawNode = function(node, name, color, width, pos) {
+    let newNode = {
+        extends: "http://vwf.example.com/aframe/aentity.vwf",
+        properties: {
+            position: pos
+        },
+        children: {
+            linepath: {
+                extends: "http://vwf.example.com/aframe/linepath.vwf",
+                properties: {
+                    color: color,
+                    path: [],
+                    width: width
+                }
+            }
+        }
+    }
+
+    node.children.create(name, newNode);
+} 
 
 this.createPrimitive = function (type, params, name, node, avatar) {
 

@@ -24,7 +24,7 @@ this.createController = function (modelSrc) {
     var newNode = {
         "extends": "http://vwf.example.com/aframe/aentity.vwf",
         "properties": {
-            "position": [0, 0, -0.4]
+            "position": [0, 0, -0.1]
         },
         children: {}
     }

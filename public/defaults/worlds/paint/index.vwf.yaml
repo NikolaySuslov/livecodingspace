@@ -63,17 +63,10 @@ children:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
         properties:
           color: "#3c7249"
-  drawNode:
+  drawBox:
     extends: http://vwf.example.com/aframe/aentity.vwf
     properties:
       position: "0 0 0"
-    children:
-      linepath:
-        extends: http://vwf.example.com/aframe/linepath.vwf
-        properties:
-          color: "#14f7b2"
-          path: []
-          width: 0.007
   defaultXRCostume:
     extends: http://vwf.example.com/aframe/abox.vwf
     properties:
@@ -81,8 +74,9 @@ children:
       position: "0 0 0"
       height: 0.01
       width: 0.01
-      depth: 1
+      depth: 0.3
       penDown: false
+      penName: "drawNode"
     children:
       material:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
@@ -92,10 +86,10 @@ children:
       pointer:
         extends: http://vwf.example.com/aframe/abox.vwf
         properties:
-          position: "0 0 -0.7"
-          height: 0.1
-          width: 0.1
-          depth: 0.1
+          position: "0 0 -0.25"
+          height: 0.05
+          width: 0.05
+          depth: 0.05
         children:
           material:
             extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
