@@ -25,5 +25,6 @@ methods:
         parameters:
             - modelSrc
     saveToScene:
+    moveVRController:
 scripts:
 - source: "http://vwf.example.com/aframe/xrcontroller.js"

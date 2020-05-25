@@ -738,6 +738,7 @@ define(["module", "vwf/view"], function (module, view) {
                 {
                     console.log("position not equal");
                     self.kernel.setProperty(avatarName, "position", position);
+                    self.kernel.callMethod(avatarName, "moveVRController",[]);
                 }
             }
 
@@ -748,6 +749,7 @@ define(["module", "vwf/view"], function (module, view) {
                 {
                     console.log("rotation not equal");
                     self.kernel.setProperty(avatarName, "rotation", rotation);
+                    self.kernel.callMethod(avatarName, "moveVRController",[]);
                 }
             }
 

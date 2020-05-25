@@ -49,6 +49,13 @@ this.createController = function (modelSrc) {
 
 }
 
+this.moveVRController = function(){
+
+    let controller = this.xrnode.controller;
+    if(controller){
+        controller.onMove();
+    }
+}
 
 this.updateVRControl = function(position, rotation){
 

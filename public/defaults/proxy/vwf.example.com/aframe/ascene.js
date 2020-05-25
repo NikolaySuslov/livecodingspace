@@ -1179,6 +1179,10 @@ this.getDefaultXRCostume = function(){
             triggerup:{
                 body:'\/\/do on trigger up \n this.pointer.material.color = "green"',
                 type: "application/javascript"
+            },
+            onMove:{
+                body:'\/\/do on move',
+                type: "application/javascript"
             }
         },
         children: {

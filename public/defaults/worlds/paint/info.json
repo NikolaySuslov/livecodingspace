@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Paint app in XR",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Audio and video streaming for Avatars"
+        },
+        "ru": {
+            "title": "Paint app in XR",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Пример приложения с использованием WebRTC потокового аудио и видео"
+        }
+    }
+}

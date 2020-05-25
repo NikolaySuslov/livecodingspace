@@ -1,0 +1,110 @@
+# A-Frame & VWF simple scene
+# Copyright 2017 Krestianstvo.org project
+---
+extends: http://vwf.example.com/aframe/ascene.vwf
+properties:
+  assets: "assets.json"
+children:
+  fog:
+    extends: http://vwf.example.com/aframe/aSceneFogComponent.vwf
+    type: "component"
+    properties:
+      fogType: "linear"
+      fogColor: "#ECECEC"
+      far: 20
+      near: 0
+  groundPlane:
+    extends: http://vwf.example.com/aframe/aplane.vwf
+    properties:
+      height: 50
+      width: 50
+      rotation: "-90 0 0"
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          wireframe: false
+          src: "#bg2"
+          repeat: "10 10"
+  myLight:
+    extends: http://vwf.example.com/aframe/alight.vwf
+    properties:
+      type: "point"
+      color: "white"
+      position: "0 3 0"
+      rotation: "0 0 0"
+  sky:
+    extends: http://vwf.example.com/aframe/asky.vwf
+    properties:
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#ECECEC"
+          src: "#sky"
+          fog: false
+          side: "back"
+  spaceText:
+    extends: http://vwf.example.com/aframe/atext.vwf
+    properties:
+      value: "Paint App"
+      color: "white"
+      position: "-2 2.5 -2"
+  box:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      position: "0 0 -3"
+      rotation: "0 0 0"
+      depth: 3
+      height: 0.2
+      width: 3
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        properties:
+          color: "#3c7249"
+  drawNode:
+    extends: http://vwf.example.com/aframe/aentity.vwf
+    properties:
+      position: "0 0 0"
+    children:
+      linepath:
+        extends: http://vwf.example.com/aframe/linepath.vwf
+        properties:
+          color: "#14f7b2"
+          path: []
+          width: 0.007
+  defaultXRCostume:
+    extends: http://vwf.example.com/aframe/abox.vwf
+    properties:
+      displayName: "defaultXRCostume"
+      position: "0 0 0"
+      height: 0.01
+      width: 0.01
+      depth: 1
+      penDown: false
+    children:
+      material:
+        extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+        type: "component"
+        properties:
+          color: "#3c7249"
+      pointer:
+        extends: http://vwf.example.com/aframe/abox.vwf
+        properties:
+          position: "0 0 -0.7"
+          height: 0.1
+          width: 0.1
+          depth: 0.1
+        children:
+          material:
+            extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
+            type: "component"
+            properties:
+              color: "green"
+    methods:
+      triggerdown:
+      triggerup:
+      onMove:
+    scripts:
+      - source: "controller.js"
