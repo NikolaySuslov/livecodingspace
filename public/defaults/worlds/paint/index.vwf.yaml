@@ -82,7 +82,7 @@ children:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf
         type: "component"
         properties:
-          color: "#3c7249"
+          color: "#6aa171"
       pointer:
         extends: http://vwf.example.com/aframe/abox.vwf
         properties:
