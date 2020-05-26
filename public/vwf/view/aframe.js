@@ -802,7 +802,7 @@ define(["module", "vwf/view"], function (module, view) {
         //console.log(axes);
         let el = document.querySelector('#avatarControl');
         let position = new THREE.Vector3();
-        el.object3D.getWorldPosition(position);
+        el.object3D.localToWorld(position);//getWorldPosition(position);
         let vel = new THREE.Vector3(axes[0], 0, -axes[1]);
         el.object3D.position.add(getMovementVector(el,vel));
     }
@@ -1096,6 +1096,13 @@ define(["module", "vwf/view"], function (module, view) {
         });
     
         // gearvr.setAttribute('gearvr-controls', 'hand', 'right');
+
+        el.setAttribute('teleport-controls', { 
+            cameraRig: '#avatarControlParent',
+            teleportOrigin: '#avatarControl',
+            startEvents: 'teleportstart',
+            endEvents: 'teleportend'
+        });
 
         el.setAttribute('gearvrcontrol', {});
         avatarControl.appendChild(el);

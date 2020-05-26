@@ -63504,13 +63504,15 @@ TextGeometry.prototype.computeBoundingSphere = function () {
     this.boundingSphere = new THREE.Sphere()
   }
   //LIVECODING.SPACE changes!!! FIX - move to LCS codebase  
-  var positions = this.attributes.position?.array
-  var itemSize = this.attributes.position?.itemSize
-  if (!positions || !itemSize || positions?.length < 2) {
+  if(this.attributes.position) {
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
     this.boundingSphere.radius = 0
     this.boundingSphere.center.set(0, 0, 0)
     return
   }
+}
   utils.computeSphere(positions, this.boundingSphere)
   if (isNaN(this.boundingSphere.radius)) {
     console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
