@@ -1201,7 +1201,7 @@ this.getDefaultXRCostume = function(){
                 type: "application/javascript"
             },
             onMove:{
-                body:'\/\/do on move',
+                body:'\/\/do on move \n ',
                 type: "application/javascript"
             }
         },

@@ -664,7 +664,10 @@ define(["module", "vwf/view"], function (module, view) {
             //let position = el.getAttribute('position');
 
             //let position = el.getAttribute('position');
-            let position = el.object3D.position;
+            //let position = el.object3D.position.clone();
+            let position = new THREE.Vector3();
+            el.object3D.localToWorld(position);
+
             let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -722,7 +725,9 @@ define(["module", "vwf/view"], function (module, view) {
             // let position = el.getAttribute('position');
             // let rotation = el.getAttribute('rotation');
 
-            let position = el.object3D.position;
+           // let position = el.object3D.position;
+           let position = new THREE.Vector3();
+           el.object3D.localToWorld(position);
             let rotation = el.getAttribute('rotation'); //getWorldRotation(el, 'YXZ');
 
             let lastRotation = self.nodes[avatarName].selfTickRotation;
@@ -876,6 +881,9 @@ define(["module", "vwf/view"], function (module, view) {
         controlEl.appendChild(cursorEl);
 
         avatarEl.appendChild(controlEl);
+
+        //avatarEl.setAttribute('avatar', {});
+
         aScene.appendChild(avatarEl);
 
         controlEl.setAttribute('camera', 'active', true);
@@ -1111,6 +1119,15 @@ define(["module", "vwf/view"], function (module, view) {
         // wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
 
         el.setAttribute('xrcontroller', { 'hand': hand });
+
+        //add teleport controls
+        el.setAttribute('teleport-controls', { 
+            cameraRig: '#avatarControlParent',
+            teleportOrigin: '#avatarControl',
+            startEvents: 'teleportstart',
+            endEvents: 'teleportend'
+        });
+
         avatarControl.appendChild(el);
     }
 

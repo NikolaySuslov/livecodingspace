@@ -1436,9 +1436,11 @@ class App {
       '/vwf/model/aframe/addon/BVHLoader.js',
       '/vwf/model/aframe/addon/TransformControls.js',
       '/vwf/model/aframe/addon/THREE.MeshLine.js',
+      '/vwf/model/aframe/addon/three/BufferGeometryUtils.js',
       '/vwf/model/aframe/addon/aframe-sun-sky.min.js',
       '/vwf/model/aframe/extras/aframe-extras.loaders.min.js',
       '/vwf/model/aframe/extras/aframe-extras.controls.min.js',
+      '/vwf/model/aframe/addon/aframe-teleport-controls.js',
       '/vwf/model/aframe/kframe/aframe-aabb-collider-component.min.js',
       '/vwf/model/aframe/addon/aframe-interpolation.js',
       '/vwf/model/aframe/addon/aframe-components.js'

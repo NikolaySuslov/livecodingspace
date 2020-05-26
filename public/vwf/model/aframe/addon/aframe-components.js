@@ -7,6 +7,17 @@ if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+AFRAME.registerComponent('avatar', {
+
+
+    init: function () {
+    },
+    tick: function () {  
+    }
+})
+       
+
+
 AFRAME.registerComponent('scene-utils', {
 
 
@@ -508,6 +519,18 @@ AFRAME.registerComponent('gearvrcontrol', {
             vwf_view.kernel.callMethod(controllerID, "triggerup", []);
         });
 
+         //X-buttorn Pressed 
+         this.el.addEventListener('trackpaddown', function (e) { //xbuttondown
+            //Start pointing position to teleport  
+            this.emit('teleportstart');
+        });
+
+        //X-buttorn Released 
+        this.el.addEventListener('trackpadup', function (e) { //xbuttonup
+            //Jump to pointed position
+            this.emit('teleportend');
+        });
+
     },
 
     update: function () {
@@ -531,12 +554,30 @@ AFRAME.registerComponent('xrcontroller', {
         var self = this;
         this.hand = this.data.hand;
         this.controllerID = 'xrcontroller-' + this.hand + '-' + vwf_view.kernel.moniker();
-        //this.gearel = document.querySelector('#gearvrcontrol');
+
         this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
             vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
         });
         this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
             vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
+        });
+
+         //X-buttorn Pressed 
+         this.el.addEventListener('xbuttondown', function (e) { //xbuttondown
+            //Start pointing position to teleport  
+            this.emit('teleportstart');
+        });
+
+        //X-buttorn Released 
+        this.el.addEventListener('xbuttonup', function (e) { //xbuttonup
+            //Jump to pointed position
+            this.emit('teleportend');
+        });
+
+        this.el.addEventListener('teleported', function (e) { //xbuttonup
+            //Teleported
+            console.log('TELEPORTED: ', e);
+
         });
     },
 
