@@ -1,14 +1,14 @@
 {
     "info": {
         "en": {
-            "title": "Paint app in XR",
+            "title": "Paint app in Web XR",
             "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
-            "text": "Audio and video streaming for Avatars"
+            "text": "Painting app using Web XR controllers"
         },
         "ru": {
-            "title": "Paint app in XR",
+            "title": "Рисование в Web XR",
             "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
-            "text": "Пример приложения с использованием WebRTC потокового аудио и видео"
+            "text": "Пример приложения для рисования с помощью контроллеров Web XR"
         }
     }
 }
