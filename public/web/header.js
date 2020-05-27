@@ -8,8 +8,6 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 class Header {
     constructor() {
         console.log("header constructor");
-        this.language = _LangManager.language;
-
     }
 
     init() {
@@ -49,7 +47,7 @@ class Header {
                                             $type: "a",
                                             style: "cursor:pointer; margin-right: 10px",
                                             class: "mdc-typography link-in-text mdc-theme--text-hint-on-background",
-                                            $text: "Home",
+                                            $text: _l.t("header_home"),//"Home",
                                             //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                             onclick: function (e) {
                                                 window.location.pathname = '/'
@@ -61,7 +59,7 @@ class Header {
                                             $type: "a",
                                             style: "cursor:pointer; margin-right: 10px",
                                             class: "mdc-typography link-in-text mdc-theme--text-hint-on-background",
-                                            $text: "Connection settings",
+                                            $text: _l.t("conn_settings"),
                                             //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                             onclick: function (e) {
                                                 window.location.pathname = '/settings'
@@ -74,7 +72,7 @@ class Header {
                                             $type: "a",
                                             style: "cursor:pointer; margin-right: 40px",
                                             class: "mdc-typography link-in-text mdc-theme--text-hint-on-background",
-                                            $text: "Help",
+                                            $text: _l.t("help"),
                                             //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                             href: 'https://www.krestianstvo.org/docs/sdk3'
 
@@ -84,7 +82,7 @@ class Header {
                                             id: 'ruLang',
                                             style: "cursor:pointer; margin-right: 10px",
                                             class: "mdc-typography link-in-text mdc-theme--text-hint-on-background",
-                                            $text: "RU",
+                                            $text: _l.t("ru"),
                                             //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                             onclick: function (e) {
                                                 _LangManager.locale = 'ru';
@@ -97,7 +95,7 @@ class Header {
                                             id: 'enLang',
                                             style: "cursor:pointer; margin-right: 10px",
                                             class: "mdc-typography link-in-text mdc-theme--text-hint-on-background",
-                                            $text: "EN",
+                                            $text: _l.t("en"),
                                             //href: "/" + desc[2] + '/worlds/' + desc[0] + '/edit', ///:user/worlds/:name/edit
                                             onclick: function (e) {
                                                 _LangManager.locale = 'en';

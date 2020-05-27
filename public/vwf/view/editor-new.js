@@ -621,6 +621,7 @@ define([
                                             "label": "Reset Avatar",
                                             "onclick": function (e) {
                                                 let avatarID = 'avatar-' + self.kernel.moniker();
+                                                //TODO: add XR check
                                                 vwf_view.kernel.callMethod(avatarID, "resetAvatar", []);
                                             }
                                         }
@@ -2101,6 +2102,15 @@ define([
                                         }
                                     }))
                                 }
+                        } else if(node.name.includes('xrcontroller')){
+                            actionsGUI.push(self.widgets.buttonStroked(
+                                {
+                                    "label": "Set as World default XR controller",
+                                    "onclick": function (e) {
+                                         vwf_view.kernel.callMethod(node.ID, "saveToScene", []);
+                                        
+                                    }
+                                }))
                         }
                        
 

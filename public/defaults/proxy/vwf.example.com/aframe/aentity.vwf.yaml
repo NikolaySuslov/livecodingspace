@@ -105,5 +105,6 @@ methods:
   step:
   do:
   randomize:
+  nodeDef:
 scripts:
   - source: "http://vwf.example.com/aframe/aentity.js"

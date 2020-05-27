@@ -38,8 +38,11 @@ class App {
 
     import('/lib/polyglot/language.js').then(res => {
       window._LangManager = new res.default;
-      _LangManager.setLanguage();
-    }).then(res => {
+      return new Promise(r=>r(_LangManager.setLanguage()))})
+      .then(res=>{
+        window._l = _LangManager.language;
+      })
+    .then(res => {
       return import('/web/index-app.js');
     }).then(res => {
       window.IndexApp = res.default;
@@ -52,6 +55,7 @@ class App {
     //client routes
     page('/', this.HandleIndex);
     page('/setup', this.HandleSetupIndex);
+    page('/debug', this.HandleDebugIndex);
     page('/settings', this.HandleSettingsIndex);
     page('/profile', this.HandleUserIndex);
     page('/worlds', this.HandleIndex);
@@ -86,7 +90,9 @@ class App {
         'dbhost': window.location.origin + '/gun', // 'https://' + window.location.hostname + ':8080/gun', //'http://localhost:8080/gun',
         'reflector': 'https://' + window.location.hostname + ':3002',
         'webrtc': false,
-        'language': 'en'
+        'language': 'en',
+        'd3DoF': false,
+        'd6DoF': false
       }
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
@@ -108,6 +114,16 @@ class App {
 
     if (!config.webrtc) {
       config.webrtc = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    if (!config.d3DoF) {
+      config.d3DoF = false;
+      localStorage.setItem('lcs_config', JSON.stringify(config));
+    }
+
+    if (!config.d6DoF) {
+      config.d6DoF = false;
       localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
@@ -444,6 +460,18 @@ class App {
 
   }
 
+  HandleDebugIndex() {
+
+    window._app.hideProgressBar();
+    window._app.hideUIControl();
+
+    let el = document.createElement("div");
+    el.setAttribute("id", "appGUI");
+    document.body.appendChild(el);
+
+    _cellWidgets.debugGUI();
+
+  }
 
   HandleSettingsIndex() {
 
@@ -1403,16 +1431,18 @@ class App {
   async loadAppLibs() {
 
     await loadjs([
-      '/vwf/model/aframe/aframe-master.min.js',
-      '/vwf/model/aframe/extras/aframe-extras.loaders.js',
-      '/vwf/model/aframe/extras/aframe-extras.controls.min.js',
-      '/vwf/model/aframe/kframe/aframe-aabb-collider-component.min.js',
-      '/vwf/model/aframe/addon/aframe-interpolation.js',
-      '/vwf/model/aframe/addon/aframe-sun-sky.js',
+      '/vwf/model/aframe/aframe-master.js',
       '/vwf/model/aframe/addon/SkyShader.js',
       '/vwf/model/aframe/addon/BVHLoader.js',
       '/vwf/model/aframe/addon/TransformControls.js',
       '/vwf/model/aframe/addon/THREE.MeshLine.js',
+      '/vwf/model/aframe/addon/three/BufferGeometryUtils.js',
+      '/vwf/model/aframe/addon/aframe-sun-sky.min.js',
+      '/vwf/model/aframe/extras/aframe-extras.loaders.min.js',
+      '/vwf/model/aframe/extras/aframe-extras.controls.min.js',
+      '/vwf/model/aframe/addon/aframe-teleport-controls.js',
+      '/vwf/model/aframe/kframe/aframe-aabb-collider-component.min.js',
+      '/vwf/model/aframe/addon/aframe-interpolation.js',
       '/vwf/model/aframe/addon/aframe-components.js'
       //'/vwf/view/arjs/aframe-ar.js' //load in aframe-ar-driver
     ], {

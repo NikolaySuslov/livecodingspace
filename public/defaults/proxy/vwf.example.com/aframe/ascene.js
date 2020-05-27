@@ -1,5 +1,6 @@
 this.initialize = function () {
     this.future(3).clientWatch();
+    //this.createDefaultXRCostume();
 };
 
 this.clientWatch = function () {
@@ -26,22 +27,33 @@ this.clientWatch = function () {
                         //console.log(node.id + 'is here!');
                     } else {
                         //console.log(node.id + " needed to delete!");
-                        self.children.delete(self.children[node.id]);
-                        //'gearvr-'
-                        let controllerVR = self.children['gearvr-' + node.id.slice(7)];
-                        if (controllerVR) {
-                            self.children.delete(controllerVR);
-                        }
+                        let idToDelete = node.id.slice(7);
+                        let nodes = self.children.filter(el=>
+                            (el.id.includes(idToDelete) && 
+                            (   el.id.includes('avatar') ||
+                                el.id.includes('xrcontroller') ||
+                                el.id.includes('gearvr')))
+                            );
 
-                        let wmrvR = self.children['wmrvr-right-' + node.id.slice(7)];
-                        if (wmrvR) {
-                            self.children.delete(wmrvR);
-                        }
+                        nodes.forEach(el => {
+                            self.children.delete(self.children[el.id])
+                        })
+                        // self.children.delete(self.children[node.id]);
+                        // //'gearvr-'
+                        // let controllerVR = self.children['gearvr-' + node.id.slice(7)];
+                        // if (controllerVR) {
+                        //     self.children.delete(controllerVR);
+                        // }
 
-                        let wmrvL = self.children['wmrvr-left-' + node.id.slice(7)];
-                        if (wmrvL) {
-                            self.children.delete(wmrvL);
-                        }
+                        // let wmrvR = self.children['wmrvr-right-' + node.id.slice(7)];
+                        // if (wmrvR) {
+                        //     self.children.delete(wmrvR);
+                        // }
+
+                        // let wmrvL = self.children['wmrvr-left-' + node.id.slice(7)];
+                        // if (wmrvL) {
+                        //     self.children.delete(wmrvL);
+                        // }
 
                     }
                 }
@@ -174,14 +186,16 @@ this.coneProto = function () {
     return node
 }
 
-this.textProto = function () {
+this.textProto = function (textValue) {
+
+    let value = textValue ? textValue: "Text";
 
     let node = {
         "extends": "http://vwf.example.com/aframe/atext.vwf",
         "properties": {
             "displayName": "text",
             "color": "white",
-            "value": "Text",
+            "value": value,
             "side": "double",
             "class": "clickable",
             //"font": "/vwf/model/aframe/fonts/custom-msdf.json",
@@ -544,6 +558,26 @@ this.createAssetResource = function(resType, resSrc){
 
 }
 
+this.createDrawNode = function(node, name, color, width, pos) {
+    let newNode = {
+        extends: "http://vwf.example.com/aframe/aentity.vwf",
+        properties: {
+            position: pos
+        },
+        children: {
+            linepath: {
+                extends: "http://vwf.example.com/aframe/linepath.vwf",
+                properties: {
+                    color: color,
+                    path: [],
+                    width: width
+                }
+            }
+        }
+    }
+
+    node.children.create(name, newNode);
+} 
 
 this.createPrimitive = function (type, params, name, node, avatar) {
 
@@ -1136,4 +1170,72 @@ this.enterVR = function(){
 
 this.exitVR = function(){
     console.log("EXIT VR");
+}
+
+this.getChildByName = function (name) {
+    let nodes = this.children.filter(el => el.displayName == name);
+    return nodes[0]
+}
+
+this.getAllChildsByName = function (name) {
+    let nodes = this.children.filter(el => el.displayName == name);
+    return nodes
+}
+
+this.getDefaultXRCostume = function(){
+    
+    let defaultXRCostume = {
+        "extends": "http://vwf.example.com/aframe/abox.vwf",
+        "properties": {
+            displayName: "defaultXRCostume",
+            "position": "0 0 0",
+            "height": 0.01,
+            "width": 0.01,
+            "depth": 1
+        },
+        "methods":{
+            triggerdown:{
+                body:'\/\/do on trigger down \n this.pointer.material.color = "red"',
+                type: "application/javascript"
+            },
+            triggerup:{
+                body:'\/\/do on trigger up \n this.pointer.material.color = "green"',
+                type: "application/javascript"
+            },
+            onMove:{
+                body:'\/\/do on move \n ',
+                type: "application/javascript"
+            }
+        },
+        children: {
+            "material": {
+                "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                "type": "component",
+                "properties":{
+                    "color": "white"
+                }
+            },
+            "pointer": {
+                "extends": "http://vwf.example.com/aframe/abox.vwf",
+                "properties": {
+                    "position": "0 0 -0.7",
+                    "height": 0.1,
+                    "width": 0.1,
+                    "depth": 0.1
+                },
+                children: {
+                    "material": {
+                        "extends": "http://vwf.example.com/aframe/aMaterialComponent.vwf",
+                        "type": "component",
+                        "properties":{
+                            "color": "green"
+                        }
+                    }
+                }
+            }
+        }
+    
+    }
+
+    return defaultXRCostume
 }

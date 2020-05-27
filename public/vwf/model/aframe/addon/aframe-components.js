@@ -7,47 +7,90 @@ if (typeof AFRAME === 'undefined') {
     throw new Error('Component attempted to register before AFRAME was available.');
 }
 
+AFRAME.registerComponent('avatar', {
+
+
+    init: function () {
+    },
+    tick: function () {  
+    }
+})
+       
+
+
 AFRAME.registerComponent('scene-utils', {
 
 
     init: function () {
         this.mirrors = {};
 
+        //this.setCameraControl();
         const sceneEnterVR = (e) => {
 
-            //vwf_view.kernel.callMethod(vwf.application(), "enterVR");
-            let avatarEl = document.querySelector('#avatarControlParent');
-            if (AFRAME.utils.device.isMobileVR()) {
+            let driver = vwf.views["vwf/view/aframe"];
 
-            } else if (AFRAME.utils.device.isMobile()) {
-                avatarEl.setAttribute('position', '0 0 0')
-            } else {
-                avatarEl.setAttribute('position', '0 0 0'); //'0 1.6 0'
+            // let avatarEl = document.querySelector('#avatarControlParent');
+             let avatarID = 'avatar-' + vwf_view.kernel.moniker();
+
+            driver.hmd = true;
+
+            if (driver.threeDoFMobile || _app.config.d3DoF ) {
+                driver.threeDoF = true;
+                 vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+            } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
+                driver.sixDoF = true;
             }
-
-            // if (!AFRAME.utils.device.isGearVR() && !AFRAME.utils.device.isMobile()) {
-            //     avatarEl.setAttribute('position', '0 1.6 0');
-            // }
 
         }
 
         const sceneExitVR = (e) => {
 
-            //vwf_view.kernel.callMethod(vwf.application(), "exitVR");
-            let avatarEl = document.querySelector('#avatarControlParent');
+            let driver = vwf.views["vwf/view/aframe"];
+            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
-            if (AFRAME.utils.device.isMobileVR()) {
-                //avatarEl.setAttribute('position', '0 0 0');
-            } else if (AFRAME.utils.device.isMobile()) {
-                avatarEl.setAttribute('position', '0 1.6 0');
-            } else {
-                avatarEl.setAttribute('position', '0 0 0');
+            driver.hmd = false;
+            
+            if (driver.threeDoFMobile || _app.config.d3DoF ) {
+                driver.threeDoF = false;
+                vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
+
+            } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
+                driver.sixDoF = false;
             }
 
         }
 
         this.el.sceneEl.addEventListener('enter-vr', sceneEnterVR);
         this.el.sceneEl.addEventListener('exit-vr', sceneExitVR);
+
+    },
+
+    setCameraControl(){
+
+        let avatarEl = document.querySelector('#avatarControl');
+
+        document.addEventListener('keydown', (event) => {
+            const keyName = event.key;
+          
+            if (keyName === 'Alt') {
+              // do not alert when only Control key is pressed.
+              console.log(keyName, ' pressed');
+              avatarEl.setAttribute('look-controls', 'enabled', true)
+              return;
+            }
+        })
+        
+        document.addEventListener('keyup', (event) => {
+            const keyName = event.key;
+          
+            if (keyName === 'Alt') {
+              // do not alert when only Control key is pressed.
+              console.log(keyName, ' released');
+              avatarEl.setAttribute('look-controls', 'enabled', false)
+              return;
+            }
+        })
+
 
     },
 
@@ -477,6 +520,27 @@ AFRAME.registerComponent('gearvrcontrol', {
             vwf_view.kernel.callMethod(controllerID, "triggerup", []);
         });
 
+         //X-buttorn Pressed 
+         this.el.addEventListener('buttondown', function (e) { //xbuttondown
+            //Start pointing position to teleport  
+           //let buttonID = e.detail.id;
+           //let avatarID = 'avatar-' + vwf_view.kernel.moniker();
+           //vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ['text', buttonID, 'debug', null, avatarID]);
+           if(e.detail.id == 2){
+            this.emit('teleportstart');
+           }
+            
+        });
+
+        //X-buttorn Released 
+        this.el.addEventListener('buttonup', function (e) { //xbuttonup
+            //Jump to pointed position
+            if(e.detail.id == 2){
+                this.emit('teleportend');
+               }
+            
+        });
+
     },
 
     update: function () {
@@ -486,6 +550,50 @@ AFRAME.registerComponent('gearvrcontrol', {
     // }
 })
 
+AFRAME.registerComponent('xrcontroller', {
+
+    schema: {
+        hand: { default: 'right' }
+    },
+
+    update: function (old) {
+        this.hand = this.data.hand;
+    },
+
+    init: function () {
+        var self = this;
+        this.hand = this.data.hand;
+        this.controllerID = 'xrcontroller-' + this.hand + '-' + vwf_view.kernel.moniker();
+
+        this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
+        });
+        this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
+        });
+
+         //X-buttorn Pressed 
+         this.el.addEventListener('xbuttondown', function (e) { //xbuttondown
+            //Start pointing position to teleport  
+            this.emit('teleportstart');
+        });
+
+        //X-buttorn Released 
+        this.el.addEventListener('xbuttonup', function (e) { //xbuttonup
+            //Jump to pointed position
+            this.emit('teleportend');
+        });
+
+        this.el.addEventListener('teleported', function (e) { //xbuttonup
+            //Teleported
+            console.log('TELEPORTED: ', e);
+
+        });
+    },
+
+    // tick: function (t) {
+    // }
+})
 
 AFRAME.registerComponent('wmrvrcontrol', {
 
@@ -500,13 +608,13 @@ AFRAME.registerComponent('wmrvrcontrol', {
     init: function () {
         var self = this;
         this.hand = this.data.hand;
-        var controllerID = 'wrmr-' + this.hand + '-' + vwf_view.kernel.moniker();
+        this.controllerID = 'wmrvr-' + this.hand + '-' + vwf_view.kernel.moniker();
         //this.gearel = document.querySelector('#gearvrcontrol');
-        this.el.addEventListener('triggerdown', function (event) {
-            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+        this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
         });
-        this.el.addEventListener('triggerup', function (event) {
-            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+        this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
+            vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
         });
     },
 

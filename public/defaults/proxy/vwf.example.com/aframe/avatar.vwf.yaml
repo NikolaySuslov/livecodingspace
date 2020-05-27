@@ -27,9 +27,15 @@ methods:
         parameters:
             - nodeDef
             - modelSrc
+    updateYPositionForXR:
+        parameters:
+            - height    
     followAvatarControl:
         parameters:
             - position
+            - rotation
+    updateAvatarRotation:
+        parameters:
             - rotation
     setSmallVideoHead:
     setBigVideoHead:
