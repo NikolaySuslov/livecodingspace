@@ -25,6 +25,8 @@ methods:
   cylinderProto:
   coneProto:
   textProto:
+    parameters:
+      - textValue
   mirrorProto:
   lightProto:
     parameters:

@@ -63512,13 +63512,15 @@ TextGeometry.prototype.computeBoundingSphere = function () {
     this.boundingSphere.center.set(0, 0, 0)
     return
   }
-}
+
   utils.computeSphere(positions, this.boundingSphere)
   if (isNaN(this.boundingSphere.radius)) {
     console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
       'Computed radius is NaN. The ' +
       '"position" attribute is likely to have NaN values.')
   }
+}
+
 }
 
 TextGeometry.prototype.computeBoundingBox = function () {

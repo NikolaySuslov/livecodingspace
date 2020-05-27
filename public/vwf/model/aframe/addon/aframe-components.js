@@ -30,13 +30,13 @@ AFRAME.registerComponent('scene-utils', {
             let driver = vwf.views["vwf/view/aframe"];
 
             // let avatarEl = document.querySelector('#avatarControlParent');
-            // let avatarID = 'avatar-' + vwf_view.kernel.moniker();
+             let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
             driver.hmd = true;
 
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = true;
-                 //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+                 vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = true;
             }
@@ -46,12 +46,13 @@ AFRAME.registerComponent('scene-utils', {
         const sceneExitVR = (e) => {
 
             let driver = vwf.views["vwf/view/aframe"];
+            let avatarID = 'avatar-' + vwf_view.kernel.moniker();
 
             driver.hmd = false;
-
+            
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = false;
-                //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
+                vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
 
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = false;
@@ -520,15 +521,24 @@ AFRAME.registerComponent('gearvrcontrol', {
         });
 
          //X-buttorn Pressed 
-         this.el.addEventListener('trackpaddown', function (e) { //xbuttondown
+         this.el.addEventListener('buttondown', function (e) { //xbuttondown
             //Start pointing position to teleport  
+           //let buttonID = e.detail.id;
+           //let avatarID = 'avatar-' + vwf_view.kernel.moniker();
+           //vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ['text', buttonID, 'debug', null, avatarID]);
+           if(e.detail.id == 2){
             this.emit('teleportstart');
+           }
+            
         });
 
         //X-buttorn Released 
-        this.el.addEventListener('trackpadup', function (e) { //xbuttonup
+        this.el.addEventListener('buttonup', function (e) { //xbuttonup
             //Jump to pointed position
-            this.emit('teleportend');
+            if(e.detail.id == 2){
+                this.emit('teleportend');
+               }
+            
         });
 
     },

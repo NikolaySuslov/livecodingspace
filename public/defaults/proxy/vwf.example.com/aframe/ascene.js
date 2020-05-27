@@ -186,14 +186,16 @@ this.coneProto = function () {
     return node
 }
 
-this.textProto = function () {
+this.textProto = function (textValue) {
+
+    let value = textValue ? textValue: "Text";
 
     let node = {
         "extends": "http://vwf.example.com/aframe/atext.vwf",
         "properties": {
             "displayName": "text",
             "color": "white",
-            "value": "Text",
+            "value": value,
             "side": "double",
             "class": "clickable",
             //"font": "/vwf/model/aframe/fonts/custom-msdf.json",
