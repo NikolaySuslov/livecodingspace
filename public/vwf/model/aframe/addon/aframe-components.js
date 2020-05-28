@@ -23,6 +23,7 @@ AFRAME.registerComponent('scene-utils', {
 
     init: function () {
         this.mirrors = {};
+        this.interpolationComponents = {};
 
         //this.setCameraControl();
         const sceneEnterVR = (e) => {
@@ -98,11 +99,23 @@ AFRAME.registerComponent('scene-utils', {
 
     },
 
-     tick: function (t) {
+     tick: function (t, dt) {
 
             Object.values(this.mirrors).forEach(el => {
                 el.mirrorTick.call(el)
-            })
+            });
+            
+            // Object.values(this.interpolationComponents).forEach(el => {
+            //     el.interpolationTick.call(el, t, dt)
+            // });
+
+     },
+
+     tock: function (t, dt) {
+
+        // Object.values(this.interpolationComponents).forEach(el => {
+        //     el.interpolationTock.call(el, t, dt)
+        // });
 
      }
 })
