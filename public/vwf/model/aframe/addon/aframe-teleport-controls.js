@@ -548,7 +548,7 @@
 	  this.uvs = new Float32Array(numPoints * 2 * 2);
 	  this.width = width;
 
-	  this.geometry.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3).setUsage(true));
+	  this.geometry.setAttribute('position', new THREE.BufferAttribute(this.vertices, 3).setUsage(THREE.DynamicDrawUsage));
 
 	  this.material = new THREE.MeshBasicMaterial({
 	    side: THREE.DoubleSide,

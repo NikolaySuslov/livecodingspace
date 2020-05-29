@@ -1111,14 +1111,14 @@ define(["module", "vwf/view"], function (module, view) {
         let el = document.createElement('a-entity');
         el.setAttribute('id', 'xrcontroller' + hand);
 
-        // el.setAttribute('hand-controls', {
-        //     'hand': hand,
-        //     'handModelStyle': 'lowPoly',
-        //     'color': '#ffcccc'
-        // });
+        el.setAttribute('hand-controls', {
+            'hand': hand,
+            'handModelStyle': 'lowPoly',
+            'color': '#ffcccc'
+        });
 
-        el.setAttribute('laser-controls', {hand: hand});
-        //el.setAttribute('raycaster', {objects: ".laserTarget", far: 5});
+        el.setAttribute('laser-controls', {hand: hand, model:false});
+        //el.setAttribute('raycaster', {objects: ".collidable", far: 5, showLine: false});
 
         // wmrvr.setAttribute('windows-motion-controls', '');
         // wmrvr.setAttribute('windows-motion-controls', 'hand', hand);
