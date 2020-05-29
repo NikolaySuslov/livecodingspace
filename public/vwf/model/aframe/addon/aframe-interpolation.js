@@ -19,6 +19,7 @@ AFRAME.registerComponent('interpolation', {
   init: function () {
 
     this.driver = vwf.views["vwf/view/aframeComponent"];
+    //this.el.sceneEl.components['scene-utils'].interpolationComponents[this.el.id] = this;
 
   },
 
@@ -39,11 +40,16 @@ AFRAME.registerComponent('interpolation', {
    * Called when a component is removed (e.g., via removeAttribute).
    * Generally undoes all modifications to the entity.
    */
-  remove: function () { },
+  remove: function () { 
+
+    //delete this.el.sceneEl.components['scene-utils'].interpolationComponents[this.el.id]
+
+  },
 
   /**
    * Called on each scene tick.
    */
+  // interpolationTick
   tick: function (t, dt) {
 
 
@@ -72,6 +78,7 @@ AFRAME.registerComponent('interpolation', {
 
   },
 
+  //interpolationTock
   tock: function (t, dt) {
     if (this.node) {
       if (this.enabled && this.node.interpolate && this.driver.interpolateView) {

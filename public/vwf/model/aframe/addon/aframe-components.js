@@ -8,8 +8,6 @@ if (typeof AFRAME === 'undefined') {
 }
 
 AFRAME.registerComponent('avatar', {
-
-
     init: function () {
     },
     tick: function () {  
@@ -23,6 +21,7 @@ AFRAME.registerComponent('scene-utils', {
 
     init: function () {
         this.mirrors = {};
+        this.interpolationComponents = {};
 
         //this.setCameraControl();
         const sceneEnterVR = (e) => {
@@ -36,7 +35,7 @@ AFRAME.registerComponent('scene-utils', {
 
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = true;
-                 vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
+                 //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [0.0]);
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = true;
             }
@@ -52,7 +51,7 @@ AFRAME.registerComponent('scene-utils', {
             
             if (driver.threeDoFMobile || _app.config.d3DoF ) {
                 driver.threeDoF = false;
-                vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
+                //vwf_view.kernel.callMethod(avatarID, "updateYPositionForXR", [-1.6]);
 
             } else if (driver.sixDoFMobile || driver.sixDoFDesktop || _app.config.d6DoF ) {
                 driver.sixDoF = false;
@@ -98,11 +97,23 @@ AFRAME.registerComponent('scene-utils', {
 
     },
 
-     tick: function (t) {
+     tick: function (t, dt) {
 
             Object.values(this.mirrors).forEach(el => {
                 el.mirrorTick.call(el)
-            })
+            });
+            
+            // Object.values(this.interpolationComponents).forEach(el => {
+            //     el.interpolationTick.call(el, t, dt)
+            // });
+
+     },
+
+     tock: function (t, dt) {
+
+        // Object.values(this.interpolationComponents).forEach(el => {
+        //     el.interpolationTock.call(el, t, dt)
+        // });
 
      }
 })
@@ -567,20 +578,24 @@ AFRAME.registerComponent('xrcontroller', {
 
         this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
             vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
+            //this.emit('teleportstart');
         });
         this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
             vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
+            //this.emit('teleportend');
         });
 
          //X-buttorn Pressed 
          this.el.addEventListener('xbuttondown', function (e) { //xbuttondown
             //Start pointing position to teleport  
+            console.log('TELEPORT START: ', e);
             this.emit('teleportstart');
         });
 
         //X-buttorn Released 
         this.el.addEventListener('xbuttonup', function (e) { //xbuttonup
             //Jump to pointed position
+            console.log('TELEPORT END: ', e);
             this.emit('teleportend');
         });
 
