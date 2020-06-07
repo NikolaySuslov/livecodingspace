@@ -113,7 +113,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
 
              // debugger;
 
-            //if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
+            //if ( this.kernel.find( nodeID, "parent::element(*,'proxy/clients.vwf')" ).length > 0 ) {
                 //if ( this.kernel.find( nodeID ).length > 0 ) {
                     var moniker = nodeID.slice(-20);//this.kernel.name( nodeID );
                     var client = undefined;
@@ -237,7 +237,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
 
             // debugger;
 
-            //if ( this.kernel.find( nodeID, "parent::element(*,'http://vwf.example.com/clients.vwf')" ).length > 0 ) {
+            //if ( this.kernel.find( nodeID, "parent::element(*,'proxy/clients.vwf')" ).length > 0 ) {
                 //if ( this.kernel.find( nodeID ).length > 0 ) {
                 var moniker = nodeID.slice(-20);//this.kernel.name( nodeID );
                 var client = undefined;
@@ -759,7 +759,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
         if ( prototypes ) {
             var len = prototypes.length;
             for ( var i = 0; i < len && !foundClient; i++ ) {
-                foundClient = ( prototypes[i] == "http://vwf.example.com/aframe/avatar.vwf" );
+                foundClient = ( prototypes[i] == "proxy/aframe/avatar.vwf" );
             }
         }
 
@@ -767,7 +767,7 @@ define( [ "module", "vwf/view", "vwf/utility", "vwf/utility/color"], function( m
     }
 
     function isClientInstanceDef( nodeID ) {
-        return ( nodeID == "http://vwf.example.com/clients.vwf" );
+        return ( nodeID == "proxy/clients.vwf" );
     }
 
     function mediaConnection( view, peerNode ) {

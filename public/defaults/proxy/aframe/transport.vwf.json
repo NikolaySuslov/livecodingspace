@@ -1,0 +1,31 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "transport",
+    "properties": {
+        "beat": null,
+        "playing": null
+    },
+    "methods": {
+        "init": {},
+        "simpleVis": {},
+        "animationUpdate": {
+            "parameters": [
+                "time",
+                "duration"
+            ]
+        },
+        "play": {},
+        "stop": {},
+        "setupTransport": {},
+        "doGlobalBeat": {
+            "parameters": [
+                "time",
+                "duration",
+                "beat"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "transport.js"
+    }
+}

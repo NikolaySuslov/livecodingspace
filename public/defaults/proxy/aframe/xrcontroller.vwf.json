@@ -1,0 +1,40 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "xrcontroller",
+    "properties": {},
+    "methods": {
+        "initialize": {},
+        "updateController": {},
+        "createSimpleController": {},
+        "createControllerFromGLTF": {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "createController": {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "updateVRControl": {
+            "parameters": [
+                "position",
+                "rotation"
+            ]
+        },
+        "triggerdown": {},
+        "triggerup": {},
+        "checkDefaultXRCostume":{},
+        "setControllerNode":
+        {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "saveToScene":{},
+        "moveVRController":{}
+    },
+    "scripts": {
+        "source": "xrcontroller.js"
+    }
+}

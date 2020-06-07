@@ -1,0 +1,35 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "autoplay": null,
+    "distanceModel": null,
+    "loop": null,
+    "maxDistance": null,
+    "on": null,
+    "poolSize": null,
+    "refDistance": null,
+    "rolloffFactor": null,
+    "src": null,
+    "volume": null,
+    "isPlaying": null
+  },
+  "methods": {
+    "stopSound": {},
+    "playSound": {},
+    "pauseSound": {},
+    "refreshSrc": {
+      "parameters": [
+        "srcID"
+      ]
+    },
+    "updateSrc": {
+      "parameters": [
+        "srcID"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "a-sound-component.js"
+  }
+}

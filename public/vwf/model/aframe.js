@@ -59,7 +59,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     var found = false;
                     if (prototypes) {
                         for (var i = 0; i < prototypes.length && !found; i++) {
-                            found = (prototypes[i] === "http://vwf.example.com/aframe/node.vwf");
+                            found = (prototypes[i] === "proxy/aframe/node.vwf");
                         }
                     }
                     return found;
@@ -620,55 +620,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         //     aframeObject.setAttribute('fog', propertyValue);
                         //     break;
                         case "assets":
-                            let assetsEl = document.querySelector('a-assets');
-                            if (!assetsEl) {
-                                let newAssetsEl = document.createElement('a-assets');
-                                aframeObject.appendChild(newAssetsEl);
-                            }
-                            var assetsElement = document.querySelector('a-assets');
-                            if (propertyValue) {
-
-                                let path = JSON.parse(localStorage.getItem('lcs_app')).path.public_path;
-                                let worldName = path.slice(1);
-                                let dbPath = propertyValue.split(".").join("_");
-
-                                let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-                                userDB.get('worlds').get(worldName).get(dbPath).once(function(response) {
-                                    if (response) {
-
-                                        if (Object.keys(response).length > 0) {
-                                        //console.log(JSON.parse(response));
-
-                                        let assets = (typeof(response) == 'object') ? response: JSON.parse(response);
-                                        for (var prop in assets) {
-                                            var elm = document.createElement(assets[prop].tag);
-                                            elm.setAttribute('id', prop);
-                                            elm.setAttribute('src', assets[prop].src);
-                                            assetsElement.appendChild(elm);
-
-                                        }
-                                    }
-
-                                    }
-                                });
-
-
-                                // httpGetJson(propertyValue).then(function (response) {
-                                //     console.log(JSON.parse(response));
-                                //     let assets = JSON.parse(response);
-                                //     for (var prop in assets) {
-                                //         var elm = document.createElement(assets[prop].tag);
-                                //         elm.setAttribute('id', prop);
-                                //         elm.setAttribute('src', assets[prop].src);
-                                //         assetsElement.appendChild(elm);
-
-                                //     }
-
-                                // }).catch(function (error) {
-                                //     console.log(error);
-                                // });
-
-                            }
+                                initAssets(propertyValue)
                             break;
 
 
@@ -1117,6 +1069,8 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                         //     value = aframeObject.getAttribute('fog');
                         //     break;
 
+                        case "assets":
+                            break;
                         case "color":
                             if (aframeObject.getAttribute('background')) {
                                 value = aframeObject.getAttribute('background').color;
@@ -1373,7 +1327,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var protos = node.prototypes;
         var aframeObj = undefined;
 
-        if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/ascene.vwf")) {
+        if (self.state.isAFrameClass(protos, "proxy/aframe/ascene.vwf")) {
             aframeObj = document.createElement('a-scene');
             let assetsElement = document.createElement('a-assets');
             aframeObj.appendChild(assetsElement);
@@ -1385,7 +1339,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             //TODO: move from veiw here
             //document.body.appendChild(aframeObj);
 
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-item.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-asset-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
             if (assets) {
@@ -1397,7 +1351,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 assets.appendChild(aframeObj);
             }
 
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-image-item.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-asset-image-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
             if (assets) {
@@ -1409,7 +1363,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 assets.appendChild(aframeObj);
             }
 
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-audio-item.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-asset-audio-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
             if (assets) {
@@ -1422,7 +1376,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
             }
 
 
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-asset-video-item.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-asset-video-item.vwf")) {
 
             let assets = document.querySelector('a-assets');
             if (assets) {
@@ -1437,41 +1391,41 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                 assets.appendChild(aframeObj);
             }
 
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asky.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/asky.vwf")) {
             aframeObj = document.createElement('a-sky');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-arjs-anchor.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-arjs-anchor.vwf")) {
             aframeObj = document.createElement('a-anchor');
         
-        }  else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/alight.vwf")) {
+        }  else if (self.state.isAFrameClass(protos, "proxy/aframe/alight.vwf")) {
             aframeObj = document.createElement('a-light');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acursor.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/acursor.vwf")) {
             aframeObj = document.createElement('a-cursor');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/a-sun-sky.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/a-sun-sky.vwf")) {
             aframeObj = document.createElement('a-sun-sky');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/abox.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/abox.vwf")) {
             aframeObj = document.createElement('a-box');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aplane.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/aplane.vwf")) {
             aframeObj = document.createElement('a-plane');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acylinder.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/acylinder.vwf")) {
             aframeObj = document.createElement('a-cylinder');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acone.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/acone.vwf")) {
             aframeObj = document.createElement('a-cone');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/atext.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/atext.vwf")) {
             aframeObj = document.createElement('a-text');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acolladamodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/acolladamodel.vwf")) {
             aframeObj = document.createElement('a-collada-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aobjmodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/aobjmodel.vwf")) {
             aframeObj = document.createElement('a-obj-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/agltfmodel.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/agltfmodel.vwf")) {
             aframeObj = document.createElement('a-gltf-model');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/asphere.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/asphere.vwf")) {
             aframeObj = document.createElement('a-sphere');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aanimation.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/aanimation.vwf")) {
             aframeObj = document.createElement('a-animation');
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/acamera.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/acamera.vwf")) {
             aframeObj = document.createElement('a-camera');
             aframeObj.setAttribute('camera', 'active', false);
-        } else if (self.state.isAFrameClass(protos, "http://vwf.example.com/aframe/aentity.vwf")) {
+        } else if (self.state.isAFrameClass(protos, "proxy/aframe/aentity.vwf")) {
             aframeObj = document.createElement('a-entity');
         }
 
@@ -1536,6 +1490,60 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
     }
 
+    async function initAssets(propertyValue){
+
+        let assetsEl = document.querySelector('a-assets');
+                            if (!assetsEl) {
+                                let newAssetsEl = document.createElement('a-assets');
+                                aframeObject.appendChild(newAssetsEl);
+                            }
+                            var assetsElement = document.querySelector('a-assets');
+                            if (propertyValue) {
+
+                                let path = JSON.parse(localStorage.getItem('lcs_app')).path.public_path;
+                                let worldName = path.slice(1);
+                                let dbPath = propertyValue.split(".").join("_");
+
+                                let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
+                                userDB.get('worlds').get(worldName).get(dbPath).load(function(response) {
+                                    if (response) {
+
+                                        if (Object.keys(response).length > 0) {
+                                        //console.log(JSON.parse(response));
+
+                                        let assets = (typeof(response) == 'object') ? response: JSON.parse(response);
+                                        for (var prop in assets) {
+                                            var elm = document.createElement(assets[prop].tag);
+                                            elm.setAttribute('id', prop);
+                                            elm.setAttribute('src', assets[prop].src);
+                                            assetsElement.appendChild(elm);
+
+                                        }
+                                    }
+
+                                    }
+                                });
+
+
+                                // httpGetJson(propertyValue).then(function (response) {
+                                //     console.log(JSON.parse(response));
+                                //     let assets = JSON.parse(response);
+                                //     for (var prop in assets) {
+                                //         var elm = document.createElement(assets[prop].tag);
+                                //         elm.setAttribute('id', prop);
+                                //         elm.setAttribute('src', assets[prop].src);
+                                //         assetsElement.appendChild(elm);
+
+                                //     }
+
+                                // }).catch(function (error) {
+                                //     console.log(error);
+                                // });
+
+                            }
+
+
+    } 
 
     function updateStoredTransformFor(node, propertyName) {
 
@@ -1590,7 +1598,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/node.vwf");
+                found = (prototypes[i] == "proxy/aframe/node.vwf");
             }
         }
         return found;
@@ -1600,7 +1608,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/aentity.vwf");
+                found = (prototypes[i] == "proxy/aframe/aentity.vwf");
             }
         }
         return found;

@@ -1,0 +1,8 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "cast": null,
+    "receive": null
+  }
+}

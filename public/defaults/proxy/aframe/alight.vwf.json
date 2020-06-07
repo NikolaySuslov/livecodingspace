@@ -1,0 +1,17 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-light",
+  "properties": {
+    "angle": null,
+    "color": null,
+    "decay": null,
+    "distance": null,
+    "ground-color": null,
+    "intensity": null,
+    "penumbra": null,
+    "type": null,
+    "target": null,
+    "castShadow": null,
+    "shadowCameraVisible": null
+  }
+}

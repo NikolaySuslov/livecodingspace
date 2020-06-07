@@ -1,0 +1,112 @@
+{
+  "extends": "proxy/aframe/node.vwf",
+  "type": "a-entity",
+  "implements": [
+    "proxy/animation/animation.vwf",
+    "proxy/animation/animationNode.vwf"
+  ],
+  "properties": {
+    "position": {
+      "set": "this.position_set(value)",
+      "get": "return this.position_get()"
+    },
+    "rotation": {
+      "set": "this.rotation_set(value)",
+      "get": "return this.rotation_get()"
+    },
+    "scale": {
+      "set": "this.scale_set(value)",
+      "get": "return this.scale_get()"
+    },
+    "clickable": null,
+    "displayName": null,
+    "visible": null,
+    "edit": null,
+    "osc": null,
+    "ownedBy": null,
+    "class": null,
+    "stepping": null,
+    "stepTime": null,
+    "globalBeat": null,
+    "meta": null
+  },
+  "events": {
+    "positionChanged": {},
+    "rotationChanged": {},
+    "scaleChanged": {},
+    "sendOSC": {},
+    "intersectEvent": {},
+    "clearIntersectEvent": {},
+    "hitstartEvent": {},
+    "hitendEvent": {},
+    "clickEvent": {}
+  },
+  "methods": {
+    "getRandomColor": {},
+    "intersectEventMethod": {},
+    "clearIntersectEventMethod": {},
+    "hitstartEventMethod": {},
+    "hitendEventMethod": {},
+    "clickEventMethod": {},
+    "sendOSC": {
+      "parameters": [
+        "msg"
+      ]
+    },
+    "setGizmoMode": {
+      "parameters": [
+        "mode"
+      ]
+    },
+    "showCloseGizmo": {},
+    "lookAt": {
+      "parameters": [
+        "nodeID"
+      ]
+    },
+    "worldRotation": {},
+    "worldPosition": {},
+    "translationFromValue": {
+      "parameters": [
+        "propertyValue"
+      ]
+    },
+    "getChildByName": {
+      "parameters": [
+        "name"
+      ]
+    },
+    "setOwner": {
+      "parameters": [
+        "propertyValue"
+      ]
+    },
+    "updateMethod": {
+      "parameters": [
+        "methodName",
+        "methodBody",
+        "params"
+      ]
+    },
+    "callMethod": {
+      "parameters": [
+        "methodName",
+        "params"
+      ]
+    },
+    "onGlobalBeat": {
+      "parameters": [
+        "obj"
+      ]
+    },
+    "changeVisual": {},
+    "resetVisual": {},
+    "step": {},
+    "do": {},
+    "randomize": {},
+    "nodeDef": {}
+  },
+  "scripts": {
+    "source": "aentity.js"
+  }
+}

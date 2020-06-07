@@ -1,0 +1,22 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-camera",
+  "properties": {
+    "user-height": null,
+    "far": null,
+    "fov": null,
+    "look-controls-enabled": null,
+    "near": null,
+    "wasd-controls-enabled": null
+  },
+  "methods": {
+    "setCameraToActive": {
+      "parameters": [
+        "moniker"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "acamera.js"
+  }
+}

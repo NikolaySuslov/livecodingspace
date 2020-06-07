@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-anchor",
+  "properties": {
+    "hit-testing-enabled": null,
+    "changeMatrixMode": null,
+    "preset": null,
+    "markerType": null,
+    "markerValue": null
+  }
+}

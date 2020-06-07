@@ -1,0 +1,12 @@
+{
+  "extends": "proxy/aframe/node.vwf",
+  "type": "a-animation",
+  "properties": {
+    "attribute": null,
+    "dur": null,
+    "from": null,
+    "to": null,
+    "repeat": null,
+    "begin": null
+  }
+}

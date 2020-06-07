@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "fogType": null,
+    "fogColor": null,
+    "density": null,
+    "near": null,
+    "far": null
+  }
+}

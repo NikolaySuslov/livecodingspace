@@ -58,6 +58,16 @@ children:
       depth: 3
       height: 0.2
       width: 3
+      myProperty:
+        set: |
+          if ( value == "fancy" ) {
+            this.myProperty = value + " coding!";
+          } else {
+            this.myProperty = value;
+          }
+        get: |
+          return this.myProperty;
+        value: "fancy"
     children:
       material:
         extends: http://vwf.example.com/aframe/aMaterialComponent.vwf

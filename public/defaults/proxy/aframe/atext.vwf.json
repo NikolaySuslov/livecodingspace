@@ -1,0 +1,28 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-text",
+  "properties": {
+    "align": null,
+    "alpha-test": null,
+    "anchor": null,
+    "baseline": null,
+    "color": null,
+    "font": null,
+    "font-image": null,
+    "height": null,
+    "letter-spacing": null,
+    "line-height": null,
+    "opacity": null,
+    "shader": null,
+    "side": null,
+    "tab-size": null,
+    "transparent": null,
+    "value": null,
+    "white-space": null,
+    "width": null,
+    "wrap-count": null,
+    "wrap-pixels": null,
+    "z-offset": null,
+    "negate": null
+  }
+}

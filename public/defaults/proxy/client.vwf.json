@@ -1,0 +1,18 @@
+{
+  "properties": {
+    "localUrl": null,
+    "remoteUrl": null,
+    "displayName": null,
+    "sharing": {
+      "audio": true,
+      "video": true
+    },
+    "color": "rgb(0,0,0)"
+  },
+  "methods": {
+    "initialize": {}
+  },
+  "scripts": {
+    "source": "client.js"
+  }
+}

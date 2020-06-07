@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "clip": null,
+    "duration": null,
+    "crossFadeDuration": null,
+    "loop": null,
+    "repetitions": null
+  }
+}

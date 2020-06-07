@@ -46,7 +46,7 @@ define(["module", "vwf/view", "vwf/view/arjs/aframe-ar"], function(module, view,
 				scene.setAttribute('arjs', {trackingMethod: "best", sourceType: "webcam", debugUIEnabled: "false"});
 			}
 
-			if (self.viewDriver.state.nodes[childID].extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
+			if (self.viewDriver.state.nodes[childID].extendsID == "proxy/aframe/acamera.vwf") {
 				//if(!childID.includes('avatar')){
 				if(node.type == 'ar'){
 					console.log(childID);

@@ -1,0 +1,138 @@
+{
+  "properties": {
+    "animationTime": {
+      "set": "this.animationTime_set(value)",
+      "get": "return this.animationTime_get()"
+    },
+    "animationDuration": {
+      "set": "this.animationDuration_set(value)",
+      "value": 1
+    },
+    "animationRate": {
+      "set": "this.animationRate_set(value)",
+      "value": 1
+    },
+    "animationLoop": false,
+    "animationPlaying": {
+      "set": "this.animationPlaying_set(value)",
+      "get": "return this.animationPlaying_get()"
+    },
+    "animationTimeUpdated": null,
+    "animationStartSIM": null,
+    "animationPauseSIM": null,
+    "animationStopSIM": null,
+    "animationDurationSIM": null,
+    "animationStartTime": {
+      "set": "this.animationStartTime_set(value)",
+      "value": null
+    },
+    "animationStopTime": {
+      "set": "this.animationStopTime_set(value)",
+      "value": null
+    },
+    "animationStartFrame": {
+      "set": "this.animationStartFrame_set(value)",
+      "get": "return this.animationStartFrame_get()"
+    },
+    "animationStopFrame": {
+      "set": "this.animationStopFrame_set(value)",
+      "get": "return this.animationStopFrame_get()"
+    },
+    "animationFPS": 30,
+    "animationFrames": {
+      "set": "this.animationFrames_set(value)",
+      "get": "return this.animationFrames_get()"
+    },
+    "animationFrame": {
+      "set": "this.animationFrame_set(value)",
+      "get": "return this.animationFrame_get()"
+    },
+    "animationTPS": 60
+  },
+  "methods": {
+    "animationPlay": {
+      "parameters": [
+        "startTime",
+        "stopTime"
+      ]
+    },
+    "animationPause": {},
+    "animationResume": {},
+    "animationStop": {},
+    "animationTick": {
+      "parameters": [
+        "time",
+        "duration"
+      ]
+    },
+    "animationTime_get":{},
+    "animationTime_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationDuration_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationRate_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationPlaying_get":{},
+    "animationPlaying_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationStartTime_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationStopTime_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationStartFrame_get":{},
+    "animationStartFrame_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationStopFrame_get":{},
+    "animationStopFrame_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationFrames_get":{},
+    "animationFrames_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "animationFrame_get":{},
+    "animationFrame_set": {
+      "parameters": [
+        "value"
+      ]
+    }
+  },
+  "events": {
+    "animationStarted": {},
+    "animationStopped": {},
+    "animationLooped": {},
+    "animationTimeChanged": {
+      "parameters": [
+        "time"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "animation.js"
+  }
+}

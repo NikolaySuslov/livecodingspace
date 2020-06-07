@@ -1,9 +1,0 @@
-# Interpolation
----
-extends: http://vwf.example.com/aframe/aentityComponent.vwf
-type: "component"
-properties:
-  enabled:
-  deltaPos:
-  deltaRot:
-  deltaScale:

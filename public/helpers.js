@@ -138,6 +138,13 @@ class Helpers {
         return undefined;
     }
 
+    getInstanceID(obj) {
+
+        // "/world/index.vwf/CcI3c1MnTsblg3H7"
+        return  obj.split('/')[3]
+
+    }
+
     get appPath() {
         return JSON.parse(localStorage.getItem('lcs_app')).path.public_path.slice(1)
     }
@@ -158,7 +165,18 @@ class Helpers {
 
     }
 
-    getRoot(noUser) {
+    getRoot(){
+
+        let data = JSON.parse(localStorage.getItem('lcs_app'));
+
+        return {
+            "root": data.path.public_path.slice(1),
+            "inst": data.path.instance,
+            "user": data.user
+        }
+    }
+
+    getRootOld(noUser) {
         var app = window.location.pathname;
         var pathSplit = app.split('/');
         if (pathSplit[0] == "") {
@@ -267,14 +285,82 @@ class Helpers {
         return text
     }
 
-
     removeProps(obj) {
-        Object.keys(obj).forEach(key =>
-            (key === 'id' || key === 'patches' || key === 'random' || key === 'sequence') && delete obj[key] ||
-            (obj[key] && typeof obj[key] === 'object') && this.removeProps(obj[key])
-        );
-        return obj;
+
+         let rm = L.lazy(rec => 
+            L.ifElse(R.is(String), 
+            L.when(x => x == 'id'
+            || x == 'patches' 
+            || x == 'random'
+            || x == 'sequence'), [L.keysEverywhere, rec], L.optional)
+          );
+
+          return L.remove(rm, obj)
+
+        // Object.keys(obj).forEach(key =>
+        //     (key === 'id' || key === 'patches' || key === 'random' || key === 'sequence') && delete obj[key] ||
+        //     (obj[key] && typeof obj[key] === 'object') && this.removeProps(obj[key])
+        // );
+        //return obj;
     };
+
+    removeGrammarObj(obj) {
+
+        let rm = L.lazy(rec => 
+            L.ifElse(R.is(String), 
+            L.when(x => x == 'grammar' 
+            || x == 'semantics'), [L.keysEverywhere, rec], L.optional)
+          );
+
+          return L.remove(rm, obj)
+
+        // Object.keys(obj).forEach(key =>
+        //     (key === 'grammar' || key === 'semantics') && delete obj[key] ||
+        //     (obj[key] && typeof obj[key] === 'object') && this.removeGrammarObj(obj[key])
+        // );
+        // return obj;
+    };
+
+
+    collectMethods(obj){
+
+        let files = {};
+
+        Object.keys(obj.children).forEach(childName =>{
+           
+        let child = obj.children[childName];
+        if (child.scritps && child.methods)
+            files[childName] = "";
+               let methods = child.methods;
+               Object.keys(methods).forEach(el=>{
+                   let method = methods[el];
+                    if(method.body){
+                        let params = method.parameters ? method.parameters.toString() : '';
+                        let funDef = "this." + el +' = function(' + params + ') { \n' + method.body + '\n' + '}';
+                        files[childName] = files[childName].concat('\n').concat(funDef);
+                    }
+                })
+    })
+    return files
+    }
+
+    getNodeJSProps(nodeID) {
+        let node = vwf.models.javascript.nodes[nodeID]
+        return node
+    }
+
+    getWorldProto() {
+        let worldID = vwf.application(); 
+        let nodeDef = this.getNodeDef(worldID);
+
+        const rm = L.lazy(rec =>
+            L.ifElse(R.is(String), L.when(x => x.includes('avatar-') || x.includes('xcontroller-') || x.includes('gearvr-')), [L.keys, rec], L.optional)
+          )
+        
+        let fixedDef = L.remove(['children', L.props(rm)], nodeDef)
+
+        return fixedDef
+    }
 
     getNodeDef(nodeID) {
         let node = vwf.getNode(nodeID, true);
@@ -325,15 +411,6 @@ class Helpers {
           return value
 
     }
-
-    removeGrammarObj(obj) {
-        Object.keys(obj).forEach(key =>
-            (key === 'grammar' || key === 'semantics') && delete obj[key] ||
-            (obj[key] && typeof obj[key] === 'object') && this.removeGrammarObj(obj[key])
-        );
-        return obj;
-    };
-
 
     httpGet(url) {
         return new Promise(function (resolve, reject) {
@@ -453,6 +530,18 @@ class Helpers {
             return user
 
     }
+
+    notyOK(msg){
+
+    let noty = new Noty({
+        text: msg,
+        timeout: 2000,
+        theme: 'mint',
+        layout: 'bottomRight',
+        type: 'success'
+    });
+    noty.show();
+}
 
 }
 

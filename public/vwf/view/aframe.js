@@ -181,18 +181,18 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            if (node.extendsID == "http://vwf.example.com/aframe/gearvrcontroller.vwf") {
+            if (node.extendsID == "proxy/aframe/gearvrcontroller.vwf") {
                 console.log("gearVR controller initialized")
             }
 
 
-            // if (node.extendsID == "http://vwf.example.com/aframe/atext.vwf") {
+            // if (node.extendsID == "proxy/aframe/atext.vwf") {
             //     console.log("Text component initialized");
             //     node.aframeObj.play();
 
             // }
 
-            // if (node.prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+            // if (node.prototypes.includes("proxy/aframe/aentity.vwf")) {
 
             //     var clientThatSatProperty = self.kernel.client();
             //     var me = self.kernel.moniker();
@@ -402,7 +402,7 @@ define(["module", "vwf/view"], function (module, view) {
             // if (eventName == "postLoadAction") {
 
             //     Object.entries(self.state.nodes).forEach(el => {
-            //         if (el[1].prototypes.includes("http://vwf.example.com/aframe/aentity.vwf")) {
+            //         if (el[1].prototypes.includes("proxy/aframe/aentity.vwf")) {
             //             vwf_view.kernel.callMethod(el[0], "setOwner", [self.kernel.moniker()]);
             //         }
 
@@ -516,7 +516,7 @@ define(["module", "vwf/view"], function (module, view) {
                     break;
             }
 
-            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/acamera.vwf") {
+            if (this.nodes[nodeID].extends == "proxy/aframe/acamera.vwf") {
                 if (methodName == "setCameraToActive") {
                     if (methodParameters[0] == vwf.moniker_) {
                         console.log("set active");
@@ -924,7 +924,7 @@ define(["module", "vwf/view"], function (module, view) {
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/xrcontroller.vwf",
+            "extends": "proxy/aframe/xrcontroller.vwf",
             "properties": {
             }
         }
@@ -943,7 +943,7 @@ define(["module", "vwf/view"], function (module, view) {
         var newNode = {
             "id": nodeName,
             "uri": nodeName,
-            "extends": "http://vwf.example.com/aframe/gearvrcontroller.vwf",
+            "extends": "proxy/aframe/gearvrcontroller.vwf",
             "properties": {
             }
         }
@@ -976,7 +976,7 @@ define(["module", "vwf/view"], function (module, view) {
            var newNode = {
                "id": avatarName,
                "uri": avatarName,
-               "extends": "http://vwf.example.com/aframe/avatar.vwf",
+               "extends": "proxy/aframe/avatar.vwf",
                "properties": {
                    "localUrl": '',
                    "remoteUrl": '',
@@ -1065,7 +1065,7 @@ define(["module", "vwf/view"], function (module, view) {
         // var newNode = {
         //     "id": nodeName,
         //     "uri": nodeName,
-        //     "extends": "http://vwf.example.com/aframe/avatar.vwf"
+        //     "extends": "proxy/aframe/avatar.vwf"
         // }
 
 

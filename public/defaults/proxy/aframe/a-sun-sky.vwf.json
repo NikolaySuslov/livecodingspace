@@ -1,0 +1,6 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "properties": {
+    "sunPosition": null
+  }
+}

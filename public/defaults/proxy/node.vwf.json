@@ -1,0 +1,12 @@
+{
+  "extends": "proxy/node.vwf",
+  "properties":{
+    "id": null,
+    "name": null,
+    "parent": null,
+    "children": null
+  },
+  "methods":{},
+  "events": {}
+}
+
