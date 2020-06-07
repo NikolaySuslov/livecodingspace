@@ -12,8 +12,6 @@ import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/widgets.js';
 import { ReflectorClient } from './reflector-client.js';
 import { Luminary } from '/luminary.js';
-// import * as L from '/lib/fun/partial.lenses.min.js';
-// import * as R from '/lib/fun/ramda.min.js';
 
 class App {
   constructor() {
@@ -63,19 +61,19 @@ class App {
     page('/profile', this.HandleUserIndex);
     page('/worlds', this.HandleIndex);
     page('/:user/worlds', this.HandleUserWorlds);
-    page('/:user/worlds/:type', this.HandleUserWorldsWithType);
     page('/:user/:type/:name/edit/:file', this.HandleFileEdit);
     page('/:user/:space', this.HandleParsableRequestGenID);
     page('/:user/:space/about', this.HandleWorldAbout);
     page('/:user/:space/:id', this.HandleParsableRequestWithID);
     page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
     page('/:user/:space/load/:savename', this.HandleParsableLoadRequest);
-    page('/:user/:space/load/:savename/about', this.HandleWorldAbout);
     page('/:user/:space/:id/load/:savename', this.HandleParsableRequestWithID);
     page('/:user/:space/index.vwf/:id/load/:savename', this.HandleParsableRequestWithID);
 
-    page('/:user/:space/load/:savename/:rev', this.HandleParsableLoadRequestWithRev);
-    page('/:user/:space/:id/load/:savename/:rev', this.HandleParsableRequestWithID);
+    // page('/:user/worlds/:type', this.HandleUserWorldsWithType);
+    // page('/:user/:space/load/:savename/about', this.HandleWorldAbout);
+    // page('/:user/:space/load/:savename/:rev', this.HandleParsableLoadRequestWithRev);
+    // page('/:user/:space/:id/load/:savename/:rev', this.HandleParsableRequestWithID);
 
     page('*', this.HandleNoPage);
 
@@ -98,39 +96,35 @@ class App {
         'd3DoF': false,
         'd6DoF': false
       }
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
+
+    //if old config on browser exists
 
     if (!config.luminaryPath) {
       config.luminaryPath = 'luminary';
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
     if (!config.luminaryGlobalHBPath) {
       config.luminaryGlobalHBPath = 'server/heartbeat';
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
     if (!config.luminaryGlobalHB) {
       config.luminaryGlobalHB = false;
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
     if (!config.webrtc) {
       config.webrtc = false;
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
     if (!config.d3DoF) {
       config.d3DoF = false;
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
     if (!config.d6DoF) {
       config.d6DoF = false;
-      localStorage.setItem('lcs_config', JSON.stringify(config));
     }
 
+    localStorage.setItem('lcs_config', JSON.stringify(config));
     this.config = config;
 
     let webrtcConnection = this.config.webrtc;
@@ -396,12 +390,12 @@ class App {
     let worldsObj = {};
     let emptyWorld = {
 
-      "index_vwf_yaml": YAML.stringify(
+      "index_vwf_json": JSON.stringify(
         {
-          "extends": "http://vwf.example.com/aframe/ascene.vwf"
-        }, 4),
+          "extends": "proxy/aframe/ascene.vwf"
+        }, null, 4),
 
-      "index_vwf_config_yaml": YAML.stringify(
+      "index_vwf_config_json": JSON.stringify(
         {
           "info": {
             "title": "Empty World"
@@ -413,7 +407,7 @@ class App {
             "vwf/view/aframe": null,
             "vwf/view/editor-new": null
           }
-        }, 4),
+        }, null, 4),
       "assets_json": JSON.stringify({}),
       "index_vwf_html": JSON.stringify("<!-- DEFAULT HTML -->"),
       "appui_js": JSON.stringify("//appui in JS"),
@@ -807,7 +801,7 @@ class App {
                     // do something with the buffer!
 
                     var entryName = file.fullPath.slice(1).split(".").join("_");
-                    if (entryName.slice(0,6) !== 'proxy/'){
+                    if (entryName.slice(0, 6) !== 'proxy/') {
                       entryName = 'proxy/' + entryName
                     }
                     // let userPub = _LCSDB.user().is.pub;
@@ -888,6 +882,41 @@ class App {
       ]
     }
 
+    let proxySource =
+    {
+      $type: "div",
+      id: "tree_proxy",
+      _tree: [],
+      _treeComp: {},
+      $init: function () {
+        let selfComp = this;
+        _LCSDB.user().get('proxy').load(res => {
+          // console.log(res);
+          if (res) {
+            selfComp._tree = [{
+              name: 'Proxy sources: ',
+              children: []
+            }];
+            Object.keys(res).filter(el => el.includes('_js') || el.includes('_json')).forEach(el => {
+              selfComp._tree[0].children.push({
+                name: el
+              })
+            })
+            selfComp._treeComp = new TreeView(selfComp._tree, 'tree_proxy');
+            selfComp._treeComp.on('select', function (evt) {
+              console.log(evt);
+              //window.location.pathname = "/" + desc.userAlias + '/proto/' + desc.worldName + '/edit/' + evt.data.name
+            });
+          }
+        })
+
+      },
+      $components: [
+
+      ]
+    }
+
+
     let userProfile = {
       $type: 'div',
       id: "profile",
@@ -960,7 +989,10 @@ class App {
                           $text: 'or'
                         },
                         _app.widgets.p,
-                        loadDefaultsProxy
+                        loadDefaultsProxy,
+                        _app.widgets.p,
+                        _app.widgets.divider,
+                        proxySource
                       ]
                     }
                   ]
@@ -993,14 +1025,20 @@ class App {
     })
   }
 
-
   HandleUserWorlds(ctx) {
 
     console.log("USER WORLDS INDEX");
     console.log(ctx.params);
     let user = ctx.params.user;
+    let type = ctx.params.type;
 
-    page.redirect('/' + user + '/worlds/protos');
+    window._app.hideProgressBar();
+    window._app.hideUIControl();
+
+    if (!_app.indexApp) {
+      _app.indexApp = new IndexApp;
+    }
+    _app.indexApp.allWorldsForUser(user)
 
   }
 
@@ -1045,15 +1083,7 @@ class App {
                   }
                 }
                 //console.log(source);
-
-                //var source = (typeof(sourceToEdit) =="object") ? JSON.stringify(sourceToEdit): sourceToEdit;
-                if (file.includes('_json') && (typeof source !== 'object')) {
-                  source = (typeof JSON.parse(source) == 'object') ? JSON.stringify(JSON.parse(source), null, '\t') : source
-                  //source = source;//JSON.stringify(source, null, '\t');
-                } else if (typeof source == 'object') {
-                  source = JSON.stringify(source, null, '\t')
-                }
-
+                source = _app.helpers.convertFileSource(file, source);
 
                 let el = document.createElement("div");
                 el.setAttribute("id", "worldFILE");
@@ -1073,68 +1103,13 @@ class App {
                       _LCSDB.user().get(worldType).get(worldName).get(file).put(newInfo, function (res) {
                         if (res) {
 
-                          let noty = new Noty({
-                            text: 'Saved!',
-                            timeout: 2000,
-                            theme: 'mint',
-                            layout: 'bottomRight',
-                            type: 'success'
-                          });
-                          noty.show();
+                          _app.helpers.notyOK('Saved!');
 
                           // let modified = new Date().valueOf();
                           // _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
                         }
                       })
                     }
-                  }
-
-                }
-                if (type == 'state' && !file.includes('_info_vwf_json')) {
-                  saveGUI =
-
-                  {
-                    $type: "div",
-                    class: "",
-                    $components: [
-                      {
-                        $type: "button",
-                        class: "mdc-button mdc-button--raised",
-                        $text: "Replace state",
-                        onclick: async function (e) {
-                          console.log("fix state");
-                          let editor = document.querySelector("#aceEditor").env.editor;
-                          let newInfo = editor.getValue();
-                          let fixedState = newInfo; //_app.fixSaveState(newInfo, worldName, oldProtoName);
-
-                          //let userPub = (await _LCSDB.get('users').get(user).get('pub').promOnce()).data;
-                          let userPub = await _app.helpers.getUserPub(user);
-                          let revs = await _app.lookupSaveRevisions(worldName, saveName, userPub);
-                          let lastRevision = revs.sort()[0];
-
-                          var newFile = file.replace('savestate_', 'savestate_' + lastRevision.toString());
-
-                          _LCSDB.user().get(worldType).get(worldName).get(file).get('revs').get(newFile).get('jsonState').put(fixedState);
-                          _LCSDB.user().get(worldType).get(worldName).get(file).get('jsonState').put(fixedState, function (res) {
-                            if (res) {
-
-                              let noty = new Noty({
-                                text: 'Repalced!',
-                                timeout: 2000,
-                                theme: 'mint',
-                                layout: 'bottomRight',
-                                type: 'success'
-                              });
-                              noty.show();
-
-                              // let modified = new Date().valueOf();
-                              // _LCSDB.user().get(worldType).get(worldName).get(file).get('modified').put(modified);
-                            }
-                          })
-                        }
-
-                      }
-                    ]
                   }
 
                 }
@@ -1198,27 +1173,6 @@ class App {
       })
   }
 
-  HandleUserWorldsWithType(ctx) {
-
-    console.log("USER WORLDS INDEX");
-    console.log(ctx.params);
-    let user = ctx.params.user;
-    let type = ctx.params.type;
-
-    window._app.hideProgressBar();
-    window._app.hideUIControl();
-
-    if (!_app.indexApp) {
-      _app.indexApp = new IndexApp;
-    }
-
-    if (type == 'protos') {
-      _app.indexApp.allWorldsProtosForUser(user)
-    } else if (type == 'states') {
-      _app.indexApp.allWorldsStatesForUser(user)
-    }
-
-  }
 
   async generateFrontPage() {
 
@@ -1245,26 +1199,13 @@ class App {
       if (!_app.indexApp) {
         _app.indexApp = new IndexApp('index');
       }
-
     })
 
-
-
-    // _LCSDB.get('~@app').once(res=>{
-    //   if (res){
-    //     _app.indexApp.initWorldsProtosListForUser('app');
-    //   }
-    // })
-
-    //await _app.indexApp.getAppDetailsFromDB();
-
   }
-
 
   HandleNoPage() {
 
     console.log("no such page")
-
   }
 
   //handle parcable requests
@@ -1355,6 +1296,7 @@ class App {
       pathname = pathname.slice(0, -1)
     }
 
+    let vwfApp = {}
     //await app.setUserPaths(user);
     _app.helpers.getUserPub(user).then(function (res) {
       if (res)
@@ -1362,10 +1304,6 @@ class App {
           alias: user,
           pub: res
         }
-    }).then(res => {
-
-      return app.loadAppLibs()
-
     }).then(res => {
 
       let pathToParse = '/' + space; //pathname.replace('/' + user, "");
@@ -1391,22 +1329,22 @@ class App {
     }).then(val => {
 
       let fileConf = val['index_vwf_config_json'];
-      vwf.conf = {};
+      vwfApp.conf = {};
 
       if (fileConf) {
         let config = JSON.parse(fileConf);
-        vwf.conf = config
+        vwfApp.conf = config
       }
 
       let manualSettings = localStorage.getItem('lcs_app_manual_settings');
       if (manualSettings) {
         let manualConf = JSON.parse(manualSettings);
-        vwf.conf.model = manualConf.model;
-        vwf.conf.view = manualConf.view;
+        vwfApp.conf.model = manualConf.model;
+        vwfApp.conf.view = manualConf.view;
       }
 
       //check & set default proxy for world
-      vwf.proxy = val.proxy ? val.proxy : _LCS_WORLD_USER.pub
+      vwfApp.proxy = val.proxy ? val.proxy : _LCS_WORLD_USER.pub
 
       // Try to load all required docs from Gun DB...
       let promises = []
@@ -1420,24 +1358,52 @@ class App {
         promises.push(savePromise);
       }
 
-      let proxyPromise = new Promise(res => _LCSDB.user(vwf.proxy).get('proxy').load(res, { wait: 400 }));
+      let proxyPromise = new Promise(res => _LCSDB.user(vwfApp.proxy).get('proxy').load(res, { wait: 400 }));
       promises.push(proxyPromise);
 
       return Promise.all(promises)
 
 
     }).then(res => {
+      //TODO: load libs for selected config drivers
+      return app.loadAppLibs()
+    }).then(res => {
+      return app.loadVWF()
+    }).then(res => {
       var userLibraries = { model: {}, view: {} };
       var application;
+
+      vwf.conf = vwfApp.conf;
+      vwf.proxy = vwfApp.proxy;
+
       vwf.loadConfiguration(application, userLibraries, vwf.conf, compatibilityCheck);
 
     })
 
   }
 
+  async loadVWF() {
+
+    return loadjs([
+      '/lib/compatibilitycheck.js',
+      '/lib/lively.vm_standalone.js',
+      '/lib/require.js',
+      '/lib/crypto.js',
+      '/lib/md5.js',
+      '/lib/alea.js',
+      '/lib/mash.js',
+      '/vwf.js'
+    ], {
+      async: false,
+      returnPromise: true
+    })
+
+
+  }
   async loadAppLibs() {
 
-    await loadjs([
+    //by default AFrame & WebRTC  driver libs loaded
+    return loadjs([
       '/vwf/model/aframe/aframe-master.js',
       '/vwf/model/aframe/addon/SkyShader.js',
       '/vwf/model/aframe/addon/BVHLoader.js',
@@ -1451,28 +1417,14 @@ class App {
       '/vwf/model/aframe/addon/aframe-teleport-controls.js',
       '/vwf/model/aframe/kframe/aframe-aabb-collider-component.min.js',
       '/vwf/model/aframe/addon/aframe-interpolation.js',
-      '/vwf/model/aframe/addon/aframe-components.js'
+      '/vwf/model/aframe/addon/aframe-components.js',
+      '/vwf/view/webrtc/adapter-latest.js',
+      '/lib/draggabilly/draggabilly.pkgd.js'
       //'/vwf/view/arjs/aframe-ar.js' //load in aframe-ar-driver
     ], {
       async: false,
       returnPromise: true
     });
-
-    return loadjs([
-      '/lib/compatibilitycheck.js',
-      '/vwf/view/webrtc/adapter-latest.js',
-      '/lib/draggabilly/draggabilly.pkgd.js',
-      '/lib/lively.vm_standalone.js',
-      '/lib/require.js',
-      '/lib/crypto.js',
-      '/lib/md5.js',
-      '/lib/alea.js',
-      '/lib/mash.js',
-      '/vwf.js'
-    ], {
-      async: false,
-      returnPromise: true
-    })
 
   }
 
@@ -1485,28 +1437,17 @@ class App {
       if (!dataJson.path['instance']) return undefined;
     }
 
-    //let userAlias = await _LCS_WORLD_USER.get('alias').once().then();
-    // let userPub = await _LCSDB.get('users').get(userAlias).get('pub').once().then();
-    //let userPub = _LCS_WORLD_USER.pub;
     let userAlias = _LCS_WORLD_USER.alias;
 
     let parsedRequest = dataJson.path;
     if (parsedRequest['private_path']) {
 
-      // var segments = this.helpers.GenerateSegments(parsedRequest['private_path']);
-      // if ((segments.length > 1) && (segments[0] == "load")) {
-      //   var potentialRevs = await this.lookupSaveRevisions((parsedRequest['public_path']).slice(1), segments[1]);
-      // }
-
       var loadInfo = {
         application_path: parsedRequest.public_path,
         save_name: parsedRequest.private_path.split('/')[1]
       }
-      //this.getLoadInformation(dataJson, potentialRevs);
       var saveInfo = await this.loadSaveObject(loadInfo);
-
     }
-
 
     let loadObj = {
       loadInfo: loadInfo ? loadInfo : {},
@@ -1515,7 +1456,6 @@ class App {
       user: userAlias
     }
 
-    //dataJson.app = loadObj;
     localStorage.setItem('lcs_app', JSON.stringify(loadObj));
 
     console.log(loadObj);
@@ -1523,72 +1463,6 @@ class App {
     return loadObj
   }
 
-  // LookupSaveRevisions takes the public path and the name of a save, and provides
-  // an array of all revisions for that save. (If the save does not exist, this will be
-  // an empty array).
-
-  async lookupSaveRevisions(public_path, save_name, userPub) {
-
-    var pub = "";
-
-    if (!_LCS_WORLD_USER) {
-      pub = userPub;
-    } else {
-      pub = _LCS_WORLD_USER.pub
-    }
-
-    //let userDB = _LCSDB.user(pub);
-
-    var result = [];
-    let docName = 'savestate_/' + public_path + '/' + save_name + '_vwf_json';
-
-    let node = _LCSDB.user(pub).get('documents').get(public_path).get(docName).get('revs');
-    let revs = await new Promise(res => node.load(res, { wait: 400 }));
-
-    if (revs) {
-      for (const res of Object.values(revs)) {
-        if (res)
-          result.push(parseInt(res.revision));
-      }
-      return result
-
-    }
-
-  }
-
-  // GetLoadInformation receives a parsed request {private_path, public_path, instance, application} and returns the
-  // details of the save that is designated by the initial request. The details are returned in an object
-  // composed of: save_name (name of the save) save_revision (revision of the save), explicit_revision (boolean, true if the request
-  // explicitly specified the revision, false if it did not), and application_path (the public_path of the application this is a save for).
-
-  getLoadInformation(response, potentialRevisions) {
-    let parsedRequest = response.path;
-    let segments = this.helpers.GenerateSegments(parsedRequest['private_path']);
-    let result = { 'save_name': undefined, 'save_revision': undefined, 'explicit_revision': undefined, 'application_path': undefined };
-
-    if (potentialRevisions.length > 0) {
-      result['save_name'] = segments[1];
-
-      if (segments.length > 2) {
-        var requestedRevision = parseInt(segments[2]);
-        if (requestedRevision) {
-          if (potentialRevisions.indexOf(requestedRevision) > -1) {
-            result['save_revision'] = requestedRevision;
-            result['explicit_revision'] = true;
-            result['application_path'] = parsedRequest['public_path'];
-          }
-        }
-      }
-      if (result['explicit_revision'] == undefined) {
-        result['explicit_revision'] = false;
-        potentialRevisions.sort();
-        result['save_revision'] = potentialRevisions.pop();
-        result['application_path'] = parsedRequest['public_path'];
-      }
-    }
-
-    return result;
-  }
 
   async loadSaveObject(loadInfo) {
 
@@ -1610,107 +1484,30 @@ class App {
     return undefined
   }
 
-  async loadSaveObject_Old(loadInfo) {
-
-    //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
-
-    //let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-
-    if (!loadInfo.save_name) {
-      return undefined
-    }
-
-    let objName = "savestate_" + loadInfo['application_path'] + '/' + loadInfo['save_name'] + '_vwf_json';
-    let objNameRev = "savestate_" + loadInfo['save_revision'] + loadInfo['application_path'] + '/' + loadInfo['save_name'] + '_vwf_json';
-
-    // if(loadInfo[ 'save_revision' ]){
-    // } 
-
-    let worldName = this.helpers.appPath //loadInfo[ 'application_path' ].slice(1);
-
-    let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('documents').get(worldName).get(objName).get('revs').get(objNameRev);
-
-    let saveObject = await new Promise(res => dbNode.load(res, { wait: 300 }));
-    //(await userDB.get('documents').get(worldName).get(objName).get('revs').get(objNameRev).promOnce()).data;
-
-    var saveInfo = null;
-    if (saveObject) {
-      saveInfo = (typeof (saveObject.jsonState) == 'object') ? saveObject.jsonState : JSON.parse(saveObject.jsonState);
-    }
-    //typeof(saveObject == 'object')
-
-
-    return saveInfo;
-
-  }
-
-  // GetSaveInformation is a helper function that takes the application_path (/path/to/application).
-  // It returns an array of all saves found for that
-  // application (including separate entries for individual revisions of saves ).
-  async getSaveInformation(application_path, userPUB) {
-    var result = [];
-    let user = _LCSDB.user(userPUB);
-
-    var docName = application_path.slice(1);
-    let potentialSaveNames = (await user.get('documents').get(docName).promOnce()).data;
-
-    if (potentialSaveNames) {
-
-      for (const res of Object.keys(potentialSaveNames)) {
-        if (res !== '_') {
-
-          let el = (await user.get('documents').path(docName).get(res).promOnce()).data;
-
-          let revisionList = await this.lookupSaveRevisions(application_path.slice(1), el.filename);
-          var latestsave = true;
-          revisionList.sort();
-          while (revisionList.length > 0) {
-            var newEntry = {};
-            newEntry['applicationpath'] = application_path;
-            newEntry['savename'] = el.filename;
-            newEntry['revision'] = revisionList.pop().toString();
-            newEntry['latestsave'] = latestsave;
-            if (latestsave) {
-              newEntry['url'] = this.helpers.JoinPath(window.location.origin, application_path, "load", el.filename + "/");
-            }
-            else {
-              newEntry['url'] = this.helpers.JoinPath(window.location.origin, application_path, "load", el.filename + "/", newEntry['revision'] + "/");
-            }
-            latestsave = false;
-            result.push(newEntry);
-          }
-        }
-      }
-    }
-    return result;
-  }
-
   async getProtoWorldFiles(userPub, worldName, date) {
 
     return (new Promise(res => _LCSDB.user(userPub).get('worlds').get(worldName).once(res))).then(res => {
       let worldFiles = Object.entries(res).filter(el => (el[0].includes('_json')) || (el[0].includes('_yaml')) || (el[0].includes('_html')) || (el[0].includes('_js')))
         .filter(el => (el[0] !== 'info_json'));
-
       console.log(worldFiles);
       return worldFiles
     });
   }
 
   get worldName() {
-
     return vwf.application().split('/')[1];
   }
 
-  async cloneWorld (worldName, userName, name, currentState) {
+  async cloneWorld(worldName, userName, name, currentState) {
 
     //if(worldName == name && userName == _LCSDB.user().is.alias
 
     var userPub = _LCSDB.user().is.pub;
 
-    if( userName !== _LCSDB.user().is.alias){
+    if (userName !== _LCSDB.user().is.alias) {
       userPub = await _app.helpers.getUserPub(userName);
     }
-    
+
     let newOwner = _LCSDB.user().is.pub;
 
     let db = _LCSDB.user();
@@ -1719,10 +1516,10 @@ class App {
 
     if (myWorlds) {
       let checkExist = Object.keys(myWorlds).filter(el => el == newWorldName);
-        if (checkExist.length > 0 && myWorlds[newWorldName]) {
-          _app.helpers.notyOK('World already exists!')
-          return
-        }
+      if (checkExist.length > 0 && myWorlds[newWorldName]) {
+        _app.helpers.notyOK('World already exists!')
+        return
+      }
     }
 
     let created = new Date().valueOf();
@@ -1747,186 +1544,33 @@ class App {
 
       let myWorld = _LCSDB.user().get('worlds').get(newWorldName).put({ id: newWorldName });
       myWorld.put(worldObj, function (res) {
-        if(currentState){
-            _app.saveWorld();
+        if (currentState) {
+          _app.saveWorld();
         }
         _app.helpers.notyOK('World cloned!')
-      }); 
+      });
     })
   }
 
   async saveWorld() {
 
-    // let userPub = _LCSDB.user().is.pub;
-    // let userName = _LCSDB.user().is.alias;
-    // let db = _LCSDB.user();
-  //   let newWorldName = this.worldName;
+    let name = this.worldName;
 
-  //   if(!name == newWorldName) {
-  //     this.cloneWorld(name);
-  // } else {
-      let name = this.worldName;
+    let proto = this.helpers.getWorldProto();
+    _LCSDB.user().get('worlds').get(name).get('index_vwf_json').put(JSON.stringify(proto), res => {
+      _app.helpers.notyOK('World current saved!')
+    });
 
-      let proto = this.helpers.getWorldProto();
-      _LCSDB.user().get('worlds').get(name).get('index_vwf_json').put(JSON.stringify(proto), res=>{
-        _app.helpers.notyOK('World current saved!')
-      });
-    
-  //}
-  }
-
-
-  async cloneWorldPrototype(worldName, userName, newWorldName, stateFileName) {
-
-    let self = this;
-
-    _app.showProgressBar();
-
-    let userPub = await _app.helpers.getUserPub(userName);
-    let newOwner = _LCSDB.user().is.pub;
-
-    let myWorlds = (await _LCSDB.user(newOwner).get('worlds').promOnce()).data;
-    //if (!myWorlds) _LCSDB.user(newOwner).get('worlds').put({});
-
-    _LCSDB.user(newOwner).get('worlds').not(res => {
-      _LCSDB.user(newOwner).get('worlds').put({});
-    })
-
-    if (myWorlds) {
-      let checkExist = Object.keys(myWorlds).filter(el => el == newWorldName);
-
-      if (newWorldName) {
-
-        if (checkExist.length > 0 && myWorlds[newWorldName]) {
-          console.log('already exist!');
-          return
-        }
-      }
-    }
-
-    let worldID = window._app.helpers.GenerateInstanceID().toString();
-    if (newWorldName) {
-      worldID = newWorldName
-    }
-
-    //let modified = new Date().valueOf();
-    console.log('clone: ' + worldName + 'to: ' + worldID);
-
-    let created = new Date().valueOf();
-
-    await _LCSDB.user(userPub).get('worlds').get(worldName).load(all => {
-
-      let worldObj = Object.assign({}, all);
-
-      worldObj.owner = newOwner;
-      worldObj.parent = userName + '/' + worldName;
-      worldObj.featured = true
-      worldObj.published = true
-      worldObj.created = created
-
-      if (!all.proxy) {
-        worldObj.proxy = userPub;
-      } else {
-        worldObj.proxy = all.proxy;
-      }
-
-      console.log(worldObj);
-
-      //let myWorlds = await _LCSDB.user(newOwner).get('worlds').once().then();
-      //let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({id:worldID});
-      let myWorld = _LCSDB.user(newOwner).get('worlds').get(worldID).put({ id: worldID });
-      myWorld.put(worldObj, function (res) {
-        if (stateFileName) {
-          self.saveStateAsFile(stateFileName)
-        }
-        console.log(res)
-      }); //.get(worldID) let myWorld =
-
-      _app.hideProgressBar();
-      console.log('CLONED!!!');
-
-      let appEl = document.createElement("div");
-      appEl.setAttribute("id", 'cloneLink');
-      let entry = document.querySelector('#worldActionsGUI');
-      if (entry) {
-        entry.appendChild(appEl);
-
-        document.querySelector("#cloneLink").$cell({
-          id: 'cloneLink',
-          $cell: true,
-          $type: "div",
-          $components: [
-            {
-              $type: "a",
-              class: "mdc-button mdc-button--raised mdc-card__action",
-              $text: "Go to new cloned World!",
-              onclick: function (e) {
-                let myName = _LCSDB.user().is.alias;
-                window.location.pathname = '/' + myName + '/' + worldID + '/about'
-              }
-            }
-          ]
-        })
-      }
-
-    }, { wait: 500 }).then();
-
-  }
-
-  async cloneWorldState(filename) {
-
-    let myWorldProtos = (await _LCSDB.user().get('worlds').promOnce()).data;
-    let userName = this.helpers.worldUser;
-
-    // let users = await _LCSDB.get('users').then();
-
-    // let userPub = (await _LCSDB.get('users').get(userName).get('pub').promOnce()).data;
-    let userPub = await _app.helpers.getUserPub(userName);
-    let protoUserRoot = this.helpers.getRoot().root;
-    //let myName = this.db.user().is.alias;
-
-    //let proto = Object.keys(myWorldProtos).filter(el => el == protoUserRoot);
-
-    var protosKeys = [];
-    if (myWorldProtos)
-      protosKeys = Object.keys(myWorldProtos);
-
-    if (protosKeys.includes(protoUserRoot) && myWorldProtos[protoUserRoot]) {
-
-      let userProtoFiles = await this.getProtoWorldFiles(userPub, protoUserRoot);
-      let myProtoFiles = await this.getProtoWorldFiles(_LCSDB.user().is.pub, protoUserRoot);
-
-      let hashUP = await this.helpers.sha256(JSON.stringify(userProtoFiles));
-      let hashMP = await this.helpers.sha256(JSON.stringify(myProtoFiles));
-
-      if (hashUP == hashMP) {
-        this.saveStateAsFile(filename);
-      } else {
-
-        let noty = new Noty({
-          text: 'world prototype is modified.. could not clone world state',
-          timeout: 2000,
-          theme: 'mint',
-          layout: 'bottomRight',
-          type: 'error'
-        });
-        noty.show();
-      }
-    } else {
-      await this.cloneWorldPrototype(protoUserRoot, userName, protoUserRoot, filename);
-      //this.saveStateAsFile(filename);
-
-    }
   }
 
   async saveState(filename) // invoke with the view as "this"
   {
-    
+
     //var clients = this.nodes["http://vwf.example.com/clients.vwf"];
 
     // Save State Information
     //let filename = self.helpers.appPath;
-    
+
     console.log("Saving: " + filename);
     var state = vwf.getState();
     state.nodes[0].children = {};
@@ -1943,8 +1587,6 @@ class App {
     let rootPath = this.helpers.getRoot();
 
     var inst = rootPath.inst;
-    //if (filename == '') filename = inst;
-    //if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
     var root = rootPath.root;
 
     var json = jsonState;
@@ -1969,13 +1611,6 @@ class App {
 
     let stateObj = Object.assign({}, stateForStore);
 
-    // let rev = JSON.stringify(saveRevision);
-    // var docNameRev = 'savestate_' + rev + '/' + root + '/' + filename + '_vwf_json';
-    
-    // stateWithRev.revs = { [docNameRev]: stateForStore };
-    // stateWithRev.revs[docNameRev].revision = saveRevision;
-
-
     var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
     let myNewWorldState = _LCSDB.user().get('documents').get(root).get(docName).put({ 'id': docName });
 
@@ -1985,197 +1620,6 @@ class App {
         _app.helpers.notyOK('Saved to ' + docName);
       }
     });
-
-    // // let docInfo  =  await _LCSDB.user().get('worlds').get(root).get('info_json').get('file').then();
-    // _LCSDB.user().get('worlds').get(root).get('info_json').once(function (file) {
-
-    //   if (file) {
-
-    //     let fileData = (typeof file == 'object') ? JSON.stringify(file) : file;
-    //     let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
-    //     _LCSDB.user().get('documents').get(root).get(docInfoName).put(fileData);
-
-    //   }
-    // });
-  }
-
-  //TODO: refactor and config save
-  async saveStateAsFile(filename, otherProto) // invoke with the view as "this"
-  {
-    console.log("Saving: " + filename);
-
-    //var clients = this.nodes["http://vwf.example.com/clients.vwf"];
-
-    // Save State Information
-    var state = vwf.getState();
-    state.nodes[0].children = {};
-
-    var timestamp = state["queue"].time;
-    timestamp = Math.round(timestamp * 1000);
-
-    let jsonValuePure = _app.helpers.replaceFloatArraysInNodeDef(state);
-    //remove all Ohm generated grammarsfrom state
-
-    let jsonValue = _app.helpers.removeGrammarObj(jsonValuePure);
-    var jsonState = JSON.stringify(jsonValue, null, '\t'); //JSON.stringify(jsonValue);
-
-    let rootPath = this.helpers.getRoot();
-
-    var inst = rootPath.inst;
-    if (filename == '') filename = inst;
-    //if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
-    var root = rootPath.root;
-
-    var json = jsonState;
-
-    if (otherProto) {
-
-      console.log('need to modify state...');
-      json = this.helpers.replaceSubStringALL(jsonState, '/' + root + '/', '/' + otherProto + '/');//jsonState.replace(('/' + root + '/'), ('/' + otherProto +'/') );
-      root = otherProto;
-      console.log(json);
-    }
-
-    //var documents = this.db.user().get('documents');
-    _LCSDB.user().get('documents').not(res => {
-      _LCSDB.user().get('documents').put({ id: 'documents' })
-    })
-
-    var saveRevision = new Date().valueOf();
-
-    var stateForStore = {
-      "root": root,
-      "filename": filename,
-      "inst": inst,
-      "timestamp": timestamp,
-      "extension": ".vwf.json",
-      "jsonState": json,
-      "publish": true
-    };
-
-    let rev = JSON.stringify(saveRevision);
-    var docNameRev = 'savestate_' + rev + '/' + root + '/' + filename + '_vwf_json';
-    let stateWithRev = Object.assign({}, stateForStore);
-    stateWithRev.revs = { [docNameRev]: stateForStore };
-    stateWithRev.revs[docNameRev].revision = saveRevision;
-
-
-    //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
-    // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
-    var docName = 'savestate_/' + root + '/' + filename + '_vwf_json';
-    let myNewWorldState = _LCSDB.user().get('documents').get(root).get(docName).put({ 'id': docName });
-    //_LCSDB.user().get('documents').get(root).get(docName).put(stateWithRev, function(res) {
-    myNewWorldState.put(stateWithRev, function (res) {
-      if (res) {
-        let noty = new Noty({
-          text: 'Saved to ' + docName,
-          timeout: 2000,
-          theme: 'mint',
-          layout: 'bottomRight',
-          type: 'success'
-        });
-        noty.show();
-      }
-    });
-
-    // let docInfo  =  await _LCSDB.user().get('worlds').get(root).get('info_json').get('file').then();
-    _LCSDB.user().get('worlds').get(root).get('info_json').once(function (file) {
-
-      if (file) {
-
-        let fileData = (typeof file == 'object') ? JSON.stringify(file) : file;
-        let docInfoName = 'savestate_/' + root + '/' + filename + '_info_vwf_json';
-        _LCSDB.user().get('documents').get(root).get(docInfoName).put(fileData);
-
-      }
-    });
-
-
-    // // Save Config Information
-    // var config = { "info": {}, "model": {}, "view": {} };
-
-    // // Save browser title
-    // config["info"]["title"] = document.title//$('title').html();
-
-    // // Save model drivers
-    // Object.keys(vwf_view.kernel.kernel.models).forEach(function (modelDriver) {
-    //   if (modelDriver.indexOf('vwf/model/') != -1) config["model"][modelDriver] = "";
-    // });
-
-    // // If neither glge or threejs model drivers are defined, specify nodriver
-    // if (config["model"]["vwf/model/glge"] === undefined && config["model"]["vwf/model/threejs"] === undefined) config["model"]["nodriver"] = "";
-
-    // // Save view drivers and associated parameters, if any
-    // Object.keys(vwf_view.kernel.kernel.views).forEach(function (viewDriver) {
-    //   if (viewDriver.indexOf('vwf/view/') != -1) {
-    //     if (vwf_view.kernel.kernel.views[viewDriver].parameters) {
-    //       config["view"][viewDriver] = vwf_view.kernel.kernel.views[viewDriver].parameters;
-    //     }
-    //     else config["view"][viewDriver] = "";
-    //   }
-    // });
-
-    // //var jsonConfig = $.encoder.encodeForURL(JSON.stringify(config));
-    // var jsonConfig = JSON.stringify(config);
-
-
-
-    // let configStateForStore = {
-    //   "root": root,
-    //   "filename": filename,
-    //   "inst": inst,
-    //   "timestamp": timestamp,
-    //   "extension": "config.vwf.json",
-    //   "jsonState": jsonConfig
-    // };
-
-    //let objName = loadInfo[ 'save_name' ] +'/'+ "savestate_" + loadInfo[ 'save_revision' ];
-    // "savestate_" + loadInfo[ 'save_revision' ] + '/' + loadInfo[ 'save_name' ] + '_vwf_json'
-
-    // let configName = 'savestate_/' + root + '/' + filename + '_config_vwf_json';
-    // let documentSaveConfigState = this.db.user().get(configName).put(configStateForStore);
-    // //documents.path(root).set(documentSaveConfigState);
-
-    // let configNameRev = 'savestate_' + saveRevision.toString() + '/' + root + '/' + filename + '_config_vwf_json';
-    // this.db.user().get(configNameRev).put(configStateForStore);
-    // this.db.user().get(configNameRev).path("revision").put(saveRevision);
-
-    //documentSaveConfigState.path('revs').set(documentSaveStateRevision);
-
-
-    // Save config file to server
-    // var xhrConfig = new XMLHttpRequest();
-    // xhrConfig.open("POST", "/" + root + "/save/" + filename, true);
-    // xhrConfig.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    // xhrConfig.send("root=" + root + "/" + filename + "&filename=saveState&inst=" + inst + "&timestamp=" + timestamp + "&extension=.vwf.config.json" + "&jsonState=" + jsonConfig);
-
-
-  }
-
-  fixSaveState(jsonState, otherProto, oldProtoName) {
-
-    console.log('fix proto in state...');
-    let json = this.helpers.replaceSubStringALL(jsonState, '/' + oldProtoName + '/', '/' + otherProto + '/');//jsonState.replace(('/' + root + '/'), ('/' + otherProto +'/') );
-    console.log(json);
-
-    return json
-  }
-
-  // LoadSavedState 
-
-  async loadSavedState(filename, applicationpath, revision) {
-    console.log("Loading: " + filename);
-
-    let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
-
-    let userName = (await userDB.get('alias').promOnce()).data;
-
-    if (revision) {
-      window.location.pathname = '/' + userName + applicationpath + '/load/' + filename + '/' + revision + '/';
-    }
-    else { // applicationpath + "/" + inst + '/load/' + filename + '/';
-      window.location.pathname = '/' + userName + applicationpath + '/load/' + filename + '/';
-    }
 
   }
 
@@ -2228,27 +1672,9 @@ class App {
   // TODO: manual garbage collection
   async deleteWorldState(worldName, stateName) {
 
-    //let pathName = 'savestate_/' + worldName+ '/' + this._worldName.stateName + '_info_vwf_json';
     let db = _LCSDB.user();
-
-    let stateEntryInfo = 'savestate_/' + worldName + '/' + stateName + '_info_vwf_json';
     let stateEntry = 'savestate_/' + worldName + '/' + stateName + '_vwf_json';
-
-    db.get('documents').get(worldName).get(stateEntry).get('revs').once().map().once((res, k) => {
-      db.get('documents').get(worldName).get(stateEntry).get('revs').get(k).put(null);
-      //console.log(k, ' - ', res);
-    });
-
-    db.get('documents').get(worldName).get(stateEntryInfo).put(null, res => {
-      let id = 'worldCard_' + _LCSDB.user().is.alias + '_' + worldName + '_' + stateName;
-      let doc = document.querySelector('#' + id);
-      if (doc)
-        doc._refresh({})
-
-    });
-    db.get('documents').get(worldName).get(stateEntry).get('revs').put(null, res => {
-      db.get('documents').get(worldName).get(stateEntry).put(null);
-    });
+    db.get('documents').get(worldName).get(stateEntry).put(null, res => { });
 
   }
 
@@ -2294,26 +1720,11 @@ class App {
       let worldName = name.split('/')[0];
       let stateName = name.split('/')[2];
 
-      // let stateEntryInfo = 'savestate_/' + worldName + '/' + stateName + '_info_vwf_json';
-      // let stateEntry = 'savestate_/' + worldName + '/' + stateName + '_vwf_json';
-      // await this.deleteWorldState(worldName, stateEntryInfo);
-      // await this.deleteWorldState(worldName, stateEntry);
-
       await this.deleteWorldState(worldName, stateName);
 
     }
-
-    let noty = new Noty({
-      text: "World Deleted!",
-      timeout: 2000,
-      theme: 'mint',
-      layout: 'bottomRight',
-      type: 'success'
-    });
-    noty.show();
-
+    app.helpers.notyOK("World Deleted!");
   }
-
 
   parseAppInstancesData(data) {
 
@@ -2337,16 +1748,9 @@ class App {
       let obj = Object.entries(parsed[prop]);
       var lists = {};
       obj.forEach(el => {
-        // if (el[1].loadInfo['save_name']) {
-        //   let saveName = prop + '/load/' + el[1].loadInfo.save_name;
-        //   if (!lists[saveName])
-        //     lists[saveName] = {};
-        //   lists[saveName][el[0]] = el[1]
-        // } else {
-          if (!lists[name])
-            lists[name] = {};
-          lists[name][el[0]] = el[1]
-        //}
+        if (!lists[name])
+          lists[name] = {};
+        lists[name][el[0]] = el[1]
       });
 
       // console.log(lists);
@@ -2359,128 +1763,6 @@ class App {
     return listData
     // console.log(data)
   }
-
-  async getAllStateWorldsInfoForUser(userAlias, worldName, saveName) {
-
-    //let userPub = await new Promise(res => _LCSDB.get('users').get(userAlias).get('pub').once(res));
-    let userPub = await _app.helpers.getUserPub(userAlias);
-
-    var db = _LCSDB.user(userPub);
-
-    if (_LCSDB.user().is) {
-      if (_LCSDB.user().is.alias == userAlias)
-        db = _LCSDB.user();
-    }
-
-    //let hasDocs = await (new Promise(res => db.get('documents').not(res(false)))).then(res=>{return res});
-
-    let list = await (new Promise(res => db.get('documents').load(res, { wait: 400 })))
-      .then(r => {
-        if (!worldName) {
-          return Promise.all(Object.keys(r).map(k => db.get('documents').get(k).then(res => { return [k, res] })))
-        } else {
-          return Promise.all([db.get('documents').get(worldName).then(res => { return [worldName, res] })])
-        }
-      }
-      )
-      .then(r => Promise.all(Object.keys(r).map(k => {
-        let objEl = r[k][1];
-        if (objEl) {
-          let obj = Object.entries(objEl).filter(el => el[0].includes('_info_vwf_json'));
-          if (obj) {
-            return { world: r[k][0], states: obj }
-          }
-        } else {
-          return { world: r[k][0], states: [] }
-        }
-
-      }
-
-      )
-
-      )).then(r =>
-        Promise.all(r.map(k =>
-          Promise.all((k.states).map(el => {
-            let obj = el[1];
-            if (obj) {
-              return _LCSDB.get(el[1]['#']).load().then(m => { return { world: k.world, stateName: el[0], stateInfo: m } })
-            }
-          }
-          ))
-        ))
-      )
-
-
-    //console.log('All states: ', list)
-
-
-    let docs = {};
-
-    list.map(el => {
-
-      el.map(el => {
-        if (el) {
-
-          let res = el.stateInfo;
-          let doc = {};
-
-          if (res && res !== 'null') {
-
-            //if (res.file && res.file !== 'null') {
-
-            let saveName = el.stateName.split('/')[2].replace('_info_vwf_json', "");
-
-            var worldDesc = {};
-            if (typeof (res) == 'object') {
-              worldDesc = res
-            } else {
-              worldDesc = JSON.parse(res)
-            }
-
-
-            let root = Object.keys(worldDesc)[0];
-            var appInfo = worldDesc[root]['en'];
-
-            let langID = localStorage.getItem('krestianstvo_locale');
-            if (langID) {
-              appInfo = worldDesc[root][langID]
-            }
-
-            let settings = worldDesc[root]['settings'];
-
-            doc = {
-              'worldName': el.world + '/load/' + saveName,
-              'created': res.created ? res.created : res.modified,
-              'modified': res.modified,
-              'type': 'saveState',
-              'userAlias': userAlias,
-              'info': appInfo,
-              'settings': settings
-            }
-            //}
-          }
-
-          if (Object.keys(doc).length !== 0) {
-            docs[doc.worldName] = doc;
-
-          }
-        }
-      })
-
-    })
-
-
-    console.log(docs);
-
-    if (saveName) {
-      return docs[saveName]
-    }
-
-    return docs
-
-  }
-
-
 
   async getAllProtoWorldsInfoForUser(userAlias, worldName) {
 
@@ -2584,9 +1866,7 @@ class App {
       if (newProxy)
         _LCSDB.user().get('worlds').get(worldName).put({ 'proxy': newProxy })
     }
-
   }
-
 
 }
 

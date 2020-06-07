@@ -42,6 +42,24 @@
     "clickEvent": {}
   },
   "methods": {
+    "position_get":{},
+    "position_set": {
+      "parameters": [
+        "value"
+      ]
+    },
+      "rotation_get":{},
+      "rotation_set": {
+        "parameters": [
+          "value"
+        ]
+      },
+      "scale_get":{},
+      "scale_set": {
+        "parameters": [
+          "value"
+        ]
+      },
     "getRandomColor": {},
     "intersectEventMethod": {},
     "clearIntersectEventMethod": {},
