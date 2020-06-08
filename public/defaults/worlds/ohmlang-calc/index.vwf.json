@@ -1,0 +1,140 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "methods": {
+    "initialize": {
+      "body": "    var calc = vwf_view.kernel.find(\"\", \"/calcText\")[0];\n    console.log(calc);\n    vwf_view.kernel.callMethod(calc, \"calcMe\");\n",
+      "type": "application/javascript"
+    }
+  },
+  "children": {
+    "assetBG2": {
+      "extends": "proxy/aframe/a-asset-image-item.vwf",
+      "properties": {
+        "itemID": "bg2",
+        "itemSrc": "/defaults/assets/checker.jpg"
+      }
+    },
+    "light1": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "ambient",
+        "color": "#BBB"
+      }
+    },
+    "light2": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "directional",
+        "color": "#FFF",
+        "intensity": "0.6",
+        "position": [
+          -0.5,
+          1,
+          1
+        ]
+      }
+    },
+    "groundPlane": {
+      "extends": "proxy/aframe/aplane.vwf",
+      "properties": {
+        "height": "50",
+        "width": "50",
+        "rotation": [
+          -90,
+          0,
+          0
+        ]
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "wireframe": false,
+            "src": "#bg2",
+            "repeat": "10 10"
+          }
+        }
+      }
+    },
+    "calcResult": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "",
+        "color": "#1d7027",
+        "position": [
+          1,
+          2.5,
+          -2
+        ],
+        "scale": [
+          3,
+          3,
+          3
+        ],
+        "side": "double"
+      }
+    },
+    "calcText": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": {
+          "set": "this.value = value; this.calcMe()",
+          "get": "return this.value",
+          "value": "1 * pi"
+        },
+        "color": "#b74217",
+        "position": [
+          -1,
+          2.5,
+          -2
+        ],
+        "scale": [
+          2,
+          2,
+          2
+        ],
+        "side": "double"
+      },
+      "methods": {
+        "calcMe": {
+          "body": "    let match = this.calcLang.grammar.match(this.value);\n    if (match.succeeded()){\n      if (typeof this.calcLang.semantics === 'function'){\n    let result = this.calcLang.semantics(match).interpret(); \n if (this.parent.calcResult && (typeof this.parent.calcResult.value == 'string')) {\n this.parent.calcResult.value = result \n} \n   }}\n    //this.future( 0.1 ).calcMe();\n",
+          "type": "application/javascript"
+        }
+      },
+      "children": {
+        "calcLang": {
+          "extends": "proxy/ohm/node.vwf",
+          "properties": {
+            "ohmLang": "Arithmetic {\n      Exp\n        = AddExp\n\n      AddExp\n        = AddExp \"+\" MulExp  -- plus\n        | AddExp \"-\" MulExp  -- minus\n        | MulExp\n\n      MulExp\n        = MulExp \"*\" ExpExp  -- times\n        | MulExp \"/\" ExpExp  -- divide\n        | ExpExp\n\n      ExpExp\n        = PriExp \"^\" ExpExp  -- power\n        | PriExp\n\n      PriExp\n        = \"(\" Exp \")\"  -- paren\n        | \"+\" PriExp   -- pos\n        | \"-\" PriExp   -- neg\n        | ident\n        | number\n      ident  (an identifier)\n        = letter alnum*\n\n      number  (a number)\n        = digit* \".\" digit+  -- fract\n        | digit+             -- whole\n    }\n"
+          },
+          "methods": {
+            "initLang": {
+              "body": "    console.log(\"add operations to semantics\")\n    this.addOperationLang();\n",
+              "type": "application/javascript"
+            },
+            "addOperationLang": {
+              "body": "    var constants = {pi: Math.PI, e: Math.E};\n    this.semantics.addOperation('interpret', {\n    Exp: function(e) {\n         return e.interpret();  \n      },\n    AddExp: function(e) {\n      return e.interpret();\n    },\n    AddExp_plus: function(x, _, y) {\n      return x.interpret() + y.interpret();\n    },\n    AddExp_minus: function(x, _, y) {\n      return x.interpret() - y.interpret();\n    },\n    MulExp:        function(e)         { return e.interpret(); },\n    MulExp_times:  function(x, _, y)   { return x.interpret() * y.interpret(); },\n    MulExp_divide: function(x, _, y)   { return x.interpret() / y.interpret(); },\n    ExpExp:        function(e)         { return e.interpret(); },\n    ExpExp_power:  function(x, _, y)   { return Math.pow(x.interpret(), y.interpret()); },\n    PriExp:        function(e)         { return e.interpret(); },\n    PriExp_paren:  function(_l, e, _r) { return e.interpret(); },\n    PriExp_pos:    function(_, e)      { return e.interpret(); },\n    PriExp_neg:    function(_, e)      { return -e.interpret(); },\n    ident: function(_l, _ns) {\n    // Look up the value of a named constant, e.g., 'pi'.\n    return constants[this.sourceString] || 0;\n    },\n      number: function(_) {\n        // Use `parseFloat` to convert (e.g.) the string '123' to the number 123.\n        return parseFloat(this.sourceString);\n      }\n        })\n",
+              "type": "application/javascript"
+            },
+            "testLang": {
+              "body": "    var match = this.grammar.match('2+2');\n    console.log(match);\n    var res = this.semantics(match).interpret();\n    console.log(res);\n",
+              "type": "application/javascript"
+            }
+          }
+        }
+      }
+    },
+    "sky": {
+      "extends": "proxy/aframe/asky.vwf",
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#ECECEC",
+            "side": "back"
+          }
+        }
+      }
+    }
+  }
+}

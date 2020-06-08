@@ -3300,6 +3300,16 @@ define([
                             }
 
                         },
+                        {
+                            $type: "button",
+                            class: "mdc-button mdc-button--compact",
+                            $text: " | ",
+                            onclick: function (e) {
+                                document.querySelector('#currentNode')._setNode(vwf.application())
+                            }
+                        },
+                        
+                       
                         this._sideBarComponent
                     ]
                 }

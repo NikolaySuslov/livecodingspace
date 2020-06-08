@@ -1,0 +1,216 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "properties": {
+    "transparent": true
+  },
+  "methods": {
+    "initialize": {
+      "body": "    var runModel = vwf_view.kernel.find(\"\", \"/aranchor/model\")[0];\n    vwf_view.kernel.callMethod(runModel, \"run\");\n",
+      "type": "application/javascript"
+    }
+  },
+  "children": {
+    "assetSky": {
+      "extends": "proxy/aframe/a-asset-image-item.vwf",
+      "properties": {
+        "itemID": "sky",
+        "itemSrc": "/defaults/assets/skyes/sky3.jpg"
+      }
+    },
+    "assetBG2": {
+      "extends": "proxy/aframe/a-asset-image-item.vwf",
+      "properties": {
+        "itemID": "bg2",
+        "itemSrc": "/defaults/assets/checker.jpg"
+      }
+    },
+    "assetNwreeObj": {
+      "extends": "proxy/aframe/a-asset-item.vwf",
+      "properties": {
+        "itemID": "nwtree-obj",
+        "itemSrc": "/defaults/assets/models/nwtree/model.obj"
+      }
+    },
+    "assetNwtreeMtl": {
+      "extends": "proxy/aframe/a-asset-item.vwf",
+      "properties": {
+        "itemID": "nwtree-mtl",
+        "itemSrc": "/defaults/assets/models/nwtree/materials.mtl"
+      }
+    },
+    "light1": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "ambient",
+        "color": "#BBB"
+      }
+    },
+    "light2": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "directional",
+        "color": "#FFF",
+        "intensity": "0.6",
+        "position": [
+          -0.5,
+          1,
+          1
+        ]
+      }
+    },
+    "arcamera": {
+      "extends": "proxy/aframe/abox.vwf",
+      "properties": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "opacity": 0.5,
+        "depth": "0.3",
+        "width": "0.3",
+        "height": "0.5"
+      },
+      "children": {
+        "camera": {
+          "extends": "proxy/aframe/acamera.vwf",
+          "type": "ar",
+          "properties": {
+            "look-controls-enabled": "false",
+            "wasd-controls-enabled": "false",
+            "user-height": "0"
+          }
+        }
+      }
+    },
+    "aranchor": {
+      "extends": "proxy/aframe/a-arjs-anchor.vwf",
+      "properties": {
+        "position": [
+          0,
+          0,
+          -5
+        ],
+        "hit-testing-enabled": "true",
+        "changeMatrixMode": "modelViewMatrix",
+        "preset": "hiro"
+      },
+      "children": {
+        "model": {
+          "extends": "proxy/aframe/aobjmodel.vwf",
+          "properties": {
+            "src": "#nwtree-obj",
+            "mtl": "#nwtree-mtl",
+            "position": [
+              0,
+              0.5,
+              0
+            ],
+            "rotation": [
+              0,
+              2811,
+              0
+            ],
+            "scale": [
+              2,
+              2,
+              2
+            ]
+          },
+          "methods": {
+            "run": {
+              "body": "    var time = vwf.now;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    this.rotation = [rot[0], rot[1]+2, rot[2]];\n    this.future( 0.05 ).run();\n",
+              "type": "application/javascript"
+            }
+          },
+          "children": {
+            "interpolation": {
+              "extends": "proxy/aframe/interpolation-component.vwf",
+              "properties": {
+                "enabled": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "aranchor2": {
+      "extends": "proxy/aframe/a-arjs-anchor.vwf",
+      "properties": {
+        "position": [
+          -5,
+          0,
+          -5
+        ],
+        "hit-testing-enabled": "true",
+        "changeMatrixMode": "modelViewMatrix",
+        "preset": "kanji"
+      },
+      "children": {
+        "alltext": {
+          "extends": "proxy/aframe/aentity.vwf",
+          "properties": {
+            "position": [
+              0,
+              -1,
+              0
+            ],
+            "rotation": [
+              -15,
+              0,
+              0
+            ]
+          },
+          "children": {
+            "spaceText": {
+              "extends": "proxy/aframe/atext.vwf",
+              "properties": {
+                "value": "Happy New Year 2019!",
+                "color": "#00ffa5",
+                "position": [
+                  -2,
+                  1,
+                  0
+                ],
+                "rotation": [
+                  0,
+                  0,
+                  15
+                ],
+                "scale": [
+                  4,
+                  4,
+                  4
+                ],
+                "side": "double"
+              }
+            },
+            "spaceText2": {
+              "extends": "proxy/aframe/atext.vwf",
+              "properties": {
+                "value": "Project by Krestianstvo.org",
+                "color": "#98b099",
+                "position": [
+                  0,
+                  0.5,
+                  0
+                ],
+                "scale": [
+                  2,
+                  2,
+                  2
+                ],
+                "side": "double"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,0 @@
----
-info:
-  title: "VWF & AFrame Example App - AR"
-model:
-  vwf/model/aframe:
-view:
-  vwf/view/aframe:
-  vwf/view/aframe-ar-driver:

@@ -336,11 +336,11 @@ class Luminary {
 
         let self = this;
 
-        let clientDescriptor = { extends: "http://vwf.example.com/client.vwf" };
+        let clientDescriptor = { extends: "proxy/client.vwf" };
         let clientNodeMessage =
         {
             action: "createChild",
-            parameters: ["http://vwf.example.com/clients.vwf", self.clientID, clientDescriptor],
+            parameters: ["proxy/clients.vwf", self.clientID, clientDescriptor],
             time: 'tick'
         }
 
@@ -356,7 +356,7 @@ class Luminary {
         let clientMsg =
             JSON.stringify({
                 action: "createNode",
-                parameters: ["http://vwf.example.com/clients.vwf"],
+                parameters: ["proxy/clients.vwf"],
                 time: 'tick',
                 explicit: self.clientID
             })
@@ -491,7 +491,7 @@ class Luminary {
                         let clientDeleteMessage =
                         {
                             action: "deleteChild",
-                            parameters: ["http://vwf.example.com/clients.vwf", el],
+                            parameters: ["proxy/clients.vwf", el],
                             time: 'tick'
                         };
 

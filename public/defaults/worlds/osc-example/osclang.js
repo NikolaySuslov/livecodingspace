@@ -1,34 +1,4 @@
-this.ohmLang_get = function () {
-    return this.ohmLang;
-}
 
-this.ohmLang_set = function (val) {
-    if (val == "grammar") {
-        this.ohmLang = this.ohmLang_grammar();
-    } else {
-        this.ohmLang = val;
-    }
-}
-
-this.ohmLang_grammar = function () {
-    return 'parseOSC { \n' +
-        'all = address ":" props \n' +
-        'address = ("/" addr)* \n' +
-        'addr = ~("/") propSingle \n' +
-        'props \n' +
-        '    = propSingle row  -- single \n' +
-        '    | "rgb" row       -- rgb \n' +
-        '    | propSingle number -- prop \n' +
-        'row = "[" col rep "]" \n' +
-        'rep = ("," col)* \n' +
-        'col = colChar* \n' +
-        'colChar = ~("[" | "," | "]") number \n' +
-        'propSingle = ~("rgb") letter* \n' +
-        'number  (a number) \n' +
-        '    = digit* "." digit+  -- fract \n' +
-        '    | digit+             -- whole \n' +
-        '}'
-}
 this.initLang = function () {
     console.log("add operations to semantics")
     this.addOperationLang();
