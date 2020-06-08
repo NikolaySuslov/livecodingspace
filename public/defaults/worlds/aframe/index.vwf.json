@@ -1,0 +1,196 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "properties": {
+    "transparent": true
+  },
+  "methods": {
+    "initialize": {
+      "body": "    var runBox = vwf.find(\"\", \"/sphere/box2\")[0];\n    console.log(runBox);\n    vwf.callMethod(runBox, \"run\");\n",
+      "type": "application/javascript"
+    }
+  },
+  "children": {
+    "fog": {
+      "extends": "proxy/aframe/aSceneFogComponent.vwf",
+      "type": "component",
+      "properties": {
+        "fogType": "linear",
+        "fogColor": "#ECECEC",
+        "far": 9,
+        "near": 0
+      }
+    },
+    "sky": {
+      "extends": "proxy/aframe/asky.vwf",
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#ECECEC",
+            "side": "back",
+            "fog": false
+          }
+        }
+      }
+    },
+    "light1": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "ambient",
+        "color": "#BBB"
+      }
+    },
+    "light2": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "directional",
+        "color": "#FFF",
+        "intensity": "0.6",
+        "position": [
+          -0.5,
+          1,
+          1
+        ]
+      }
+    },
+    "spaceText": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "Virtual World Framework & A-Frame",
+        "color": "#b74217",
+        "position": [
+          -2,
+          2.5,
+          -2
+        ]
+      }
+    },
+    "spaceText2": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "Project by Krestianstvo.org",
+        "color": "#305b32",
+        "position": [
+          1,
+          3,
+          -4
+        ]
+      }
+    },
+    "box": {
+      "extends": "proxy/aframe/abox.vwf",
+      "properties": {
+        "position": [
+          -1,
+          0.5,
+          -3
+        ],
+        "rotation": [
+          0,
+          -30,
+          0
+        ],
+        "depth": "2",
+        "height": "1",
+        "width": "1",
+        "class": "clickable intersectable"
+      },
+      "methods": {
+        "clickEventMethod": {
+          "body": "    let genColor = this.generateColor();\n    this.material.color = genColor\n",
+          "type": "application/javascript"
+        },
+        "intersectEventMethod": {
+          "body": "    this.material.opacity = 0.7\n",
+          "type": "application/javascript"
+        },
+        "clearIntersectEventMethod": {
+          "body": "    this.material.opacity = 1.0\n",
+          "type": "application/javascript"
+        },
+        "generateColor": {
+          "body": "    var letters = '0123456789ABCDEF';\n    var color = '#';\n    for (var i = 0; i < 6; i++) {\n    color += letters[Math.floor(this.random() * 16)];\n    } return color\n",
+          "type": "application/javascript"
+        }
+      },
+      "events": {
+        "clickEvent": {},
+        "intersectEvent": {},
+        "clearIntersectEvent": {}
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#3c7249",
+            "transparent": true
+          }
+        },
+        "raycaster-listener": {
+          "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+          "type": "component"
+        },
+        "cursor-listener": {
+          "extends": "proxy/aframe/app-cursor-listener-component.vwf",
+          "type": "component"
+        }
+      }
+    },
+    "sphere": {
+      "extends": "proxy/aframe/asphere.vwf",
+      "properties": {
+        "position": [
+          1,
+          1.25,
+          -4
+        ],
+        "radius": "1"
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#e0e014",
+            "wireframe": true
+          }
+        },
+        "box2": {
+          "extends": "proxy/aframe/abox.vwf",
+          "properties": {
+            "position": [
+              2,
+              -0.75,
+              -0.590282678604126
+            ],
+            "depth": "1",
+            "rotation": [
+              0,
+              0,
+              -59.02826690673828
+            ]
+          },
+          "methods": {
+            "run": {
+              "body": "    var time = vwf.now;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);\n    this.position = [pos[0], pos[1], Math.sin(time)];\n    this.rotation = [rot[0], rot[1], Math.sin(time)*100];\n    this.future( 0.01 ).run();\n",
+              "type": "application/javascript"
+            }
+          },
+          "children": {
+            "material": {
+              "extends": "proxy/aframe/aMaterialComponent.vwf",
+              "properties": {
+                "color": "#2167a5"
+              }
+            },
+            "interpolation": {
+              "extends": "proxy/aframe/interpolation-component.vwf",
+              "properties": {
+                "enabled": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
