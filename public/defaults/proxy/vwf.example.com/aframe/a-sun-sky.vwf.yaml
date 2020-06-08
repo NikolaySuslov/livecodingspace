@@ -1,5 +1,0 @@
-# a-sun-sky
---- 
-extends: http://vwf.example.com/aframe/aentity.vwf
-properties:
-  sunPosition:

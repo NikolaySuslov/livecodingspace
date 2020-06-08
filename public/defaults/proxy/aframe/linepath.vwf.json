@@ -1,0 +1,9 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "color": null,
+    "path": null,
+    "width": null
+  }
+}

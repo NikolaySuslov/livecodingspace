@@ -1,0 +1,10 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-plane",
+  "properties": {
+    "height": null,
+    "segments-height": null,
+    "segments-width": null,
+    "width": null
+  }
+}

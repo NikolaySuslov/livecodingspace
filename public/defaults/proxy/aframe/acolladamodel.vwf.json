@@ -1,0 +1,17 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-collada-model",
+  "properties": {
+    "src": null
+  },
+  "methods": {
+    "updateModel": {
+      "parameters": [
+        "obj"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "acolladamodel.js"
+  }
+}

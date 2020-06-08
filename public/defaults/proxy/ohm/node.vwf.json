@@ -1,0 +1,8 @@
+{
+  "extends": "proxy/node.vwf",
+  "properties": {
+    "ohmLang": null,
+    "grammar": null,
+    "semantics": null
+  }
+}

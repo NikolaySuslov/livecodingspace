@@ -279,28 +279,29 @@ define( [ "module",
 
             var doc = document;
 
-            if ( baseURI ) {
+            // if ( baseURI ) {
 
-                // Create a temporary document anchored at baseURI.
+            //     // Create a temporary document anchored at baseURI.
 
-                var doc = document.implementation.createHTMLDocument( "resolveURI" );
+            //     var doc = document.implementation.createHTMLDocument( "resolveURI" );
 
-                // Insert a <base/> with the reference URI: <head><base href=*baseURI*/></head>.
+            //     // Insert a <base/> with the reference URI: <head><base href=*baseURI*/></head>.
 
-                var base = doc.createElement( "base" );
-                base.href = this.resolveURI( baseURI ); // resolve wrt the document
+            //     var base = doc.createElement( "base" );
+            //     base.href = this.resolveURI( baseURI ); // resolve wrt the document
 
-                var head = doc.getElementsByTagName( "head" )[0];
-                head.appendChild( base );
+            //     var head = doc.getElementsByTagName( "head" )[0];
+            //     head.appendChild( base );
 
-            }
+            // }
 
             // Create an <a/> and resolve the URI.
 
-            var a = doc.createElement( "a" );
-            a.href = uri;
+            // var a = doc.createElement( "a" );
+            // a.href = uri;
 
-            return a.href;
+            // return a.href;
+            return uri
         },
 
         // -- merge --------------------------------------------------------------------------------

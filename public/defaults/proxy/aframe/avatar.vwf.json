@@ -1,0 +1,107 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "avatar",
+    "properties": {
+        "localUrl": null,
+        "remoteUrl": null,
+        "displayName": null,
+        "sharing": {
+            "audio": true,
+            "video": true
+        }
+    },
+    "methods": {
+        "initialize": {},
+        "selectMode": {},
+        "updateAvatar": {},
+        "showHideAvatar": {
+            "parameters": [
+                "bool"
+            ]
+        },
+        "showHideCursor": {
+            "parameters": [
+                "bool"
+            ]
+        },
+        "createSimpleAvatar": {},
+        "resetAvatar": {},
+        "createAvatarFromGLTF": {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "createAvatarBody": {
+            "parameters": [
+                "nodeDef",
+                "modelSrc"
+            ]
+        },
+        "updateYPositionForXR": {
+            "parameters": [
+                "height"
+            ]
+        },
+        "followAvatarControl": {
+            "parameters": [
+                "position",
+                "rotation"
+            ]
+        },
+        "updateAvatarRotation": {
+            "parameters": [
+                "rotation"
+            ]
+        },
+        "setSmallVideoHead": {},
+        "setBigVideoHead": {},
+        "setVideoTexture": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "webrtcTurnOnOff": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "webrtcMuteAudio": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "webrtcMuteVideo": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "setSoundWebRTC": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "removeSoundWebRTC": {},
+        "removeVideoTexture": {},
+        "setUserAvatar": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "findWorldAvatarCostume": {},
+        "setMyName": {
+            "parameters": [
+                "val"
+            ]
+        },
+        "randomizeAvatar": {},
+        "changeCostume": {
+            "parameters": [
+                "val",
+                "restore"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "avatar.js"
+    }
+}

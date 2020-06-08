@@ -1,0 +1,12 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-box",
+  "properties": {
+    "depth": null,
+    "height": null,
+    "segments-depth": null,
+    "segments-height": null,
+    "segments-width": null,
+    "width": null
+  }
+}

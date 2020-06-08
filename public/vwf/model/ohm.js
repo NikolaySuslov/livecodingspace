@@ -54,7 +54,7 @@ define( [ "module", "vwf/model", "vwf/utility", "vwf/model/ohm/ohm.min"], functi
                     var found = false;
                     if (prototypes) {
                         for (var i = 0; i < prototypes.length && !found; i++) {
-                            found = (prototypes[i] === "http://vwf.example.com/ohm/node.vwf");
+                            found = (prototypes[i] === "proxy/ohm/node.vwf");
                         }
                     }
                     return found;

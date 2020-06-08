@@ -1006,7 +1006,9 @@ define([
 
                     var userGUI = [];
 
-                    let worldOwner = self.helpers.getRoot(false).root.split('/')[0];
+                    let worldOwner = self.helpers.getRoot().user;
+
+                    let genWorldID = 'world' + self.helpers.randId();
 
                     if (_LCSDB.user().is) {
                         if (worldOwner == _LCSDB.user().is.alias) {
@@ -1021,7 +1023,7 @@ define([
 
                                             $type: "h3",
                                             class: "mdc-typography--title",
-                                            $text: self.helpers.worldStateName
+                                            $text: self.helpers.appPath
 
                                         },
                                         self.widgets.buttonStroked(
@@ -1029,8 +1031,15 @@ define([
                                                 "label": "Save world",
                                                 "onclick": function (e) {
 
-                                                    let fileName = self.helpers.worldStateName;//document.querySelector('#fileName')
-                                                    _app.saveStateAsFile(fileName);
+                                                    _app.saveWorld();
+
+                                                    //let fileName = self.helpers.getRoot().root;
+                                                    //_app.saveState(fileName);
+
+                                                   //// let fileName = self.helpers.worldStateName;
+                                                    ////_app.saveStateAsFile(fileName);
+
+                                                    //document.querySelector('#fileName')
                                                     //document.querySelector("#fileName").value = '';
                                                     //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
                                                 }
@@ -1040,6 +1049,7 @@ define([
                                     ]
                                 }
                             );
+                            
                         }
 
                         userGUI.push(
@@ -1053,8 +1063,8 @@ define([
                                         $components: [
                                             self.widgets.inputTextFieldOutlined({
                                                 "id": 'fileName',
-                                                "label": "World clone name",
-                                                "value": 'world' + self.helpers.randId(), //self.getSaveName() //self.getRoot()
+                                                "label": genWorldID,
+                                                //"value": 'world' + self.helpers.randId(), //self.getSaveName() //self.getRoot()
                                                 "change": function (e) {
                                                 }
                                             })
@@ -1085,15 +1095,19 @@ define([
                                             "onclick": function (e) {
                                                 let fileName = document.querySelector('#fileName')
 
-                                                let worldOwner = self.helpers.getRoot(false).root.split('/')[0];
+                                                let worldOwner = self.helpers.getRoot().user;
+                                                let worldName = _app.worldName;
 
                                                 if (_LCSDB.user().is) {
-                                                    if (worldOwner == _LCSDB.user().is.alias) {
-                                                        _app.saveStateAsFile(fileName.value);
-                                                    } else {
-                                                        console.log('clone world with prototype to: ' + fileName);
-                                                        _app.cloneWorldState(fileName.value);
-                                                    }
+
+                                                    let wn = fileName.value ? fileName.value : genWorldID;
+                                                    _app.cloneWorld(worldName, worldOwner, wn, true)
+                                                    // if (worldOwner == _LCSDB.user().is.alias) {
+                                                    //     _app.saveStateAsFile(fileName.value);
+                                                    // } else {
+                                                    //     console.log('clone world with prototype to: ' + fileName);
+                                                    //     _app.cloneWorldState(fileName.value);
+                                                    // }
                                                 }
 
                                                 //saveStateAsFile.call(self, fileName.value);
@@ -1108,7 +1122,41 @@ define([
                             }
 
 
-                        )
+                        );
+                        if (worldOwner == _LCSDB.user().is.alias) {
+
+                            userGUI.push(
+                                {
+
+                                    $type: "div",
+                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                    $components: [
+                                        {
+                                            $type: "p",
+                                        },
+                                        self.widgets.buttonStroked(
+                                            {
+                                                "label": "Save state",
+                                                "onclick": function (e) {
+
+                                                   // _app.saveWorld();
+                                                   let myWorldName = self.helpers.getRoot().root;
+                                                   let fileName = document.querySelector('#fileName');
+                                                   let wn = fileName.value ? fileName.value : myWorldName;
+                                                    _app.saveState(wn);
+
+                                                    //document.querySelector('#fileName')
+                                                    //document.querySelector("#fileName").value = '';
+                                                    //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
+                                                }
+                                            })
+
+
+                                    ]
+                                }
+                            );
+
+                        }
 
                         // let saveGUI = document.querySelector('#saveGUI');
                         // saveGUI.$components = userGUI.concat(saveGUI.$components);
@@ -2057,9 +2105,9 @@ define([
 
                     var gizmoCell = {};
                     if (this._currentNode !== self.kernel.application()) {
-                        if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
+                        if (nodeProtos.includes('proxy/aframe/componentNode.vwf')) {
                             //gizmoCell = {};
-                            if (nodeProtos.includes('http://vwf.example.com/aframe/a-sound-component.vwf')) {
+                            if (nodeProtos.includes('proxy/aframe/a-sound-component.vwf')) {
                                 //console.log("sound gui")
                                 gizmoCell = audioGUI
                             }
@@ -2138,7 +2186,7 @@ define([
                         }
 
 
-                        if (node.extendsID == "http://vwf.example.com/aframe/acamera.vwf") {
+                        if (node.extendsID == "proxy/aframe/acamera.vwf") {
                             viewerProps = {
                                 $type: "li",
                                 class: "mdc-list-item",
@@ -2630,6 +2678,7 @@ define([
                 _editorNode: '',
                 _method: { body: '' },
                 _methodName: '',
+                _tabIndex: '',
                 _getNodeMethods: function () {
                     let node = self.nodes[this._editorNode];
                     return node.methods
@@ -2677,6 +2726,7 @@ define([
                 //     }
                 // },
                 _listElement: function (m) {
+
                     return {
                         $type: "li",
                         class: "mdc-list-item",
@@ -3159,8 +3209,8 @@ define([
                     }, 1000);
                 },
                 _updateMe: function () {
-                    let clientNodes = self.nodes["http://vwf.example.com/clients.vwf"];
-                    if (clientNodes) this._watchNodes = self.nodes["http://vwf.example.com/clients.vwf"].children.slice();
+                    let clientNodes = self.nodes["proxy/clients.vwf"];
+                    if (clientNodes) this._watchNodes = self.nodes["proxy/clients.vwf"].children.slice();
                 },
                 $update: function () {
                     //this._clientNodes
@@ -3211,7 +3261,7 @@ define([
                 $init: function () {
                     this.style.visibility = 'hidden';
                     let fileName = 'appui_js';
-                    let worldName = self.helpers.getRoot(true).root;//url.split('/')[0];
+                    let worldName = self.helpers.getRoot().root;//url.split('/')[0];
                     let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);
 
                     userDB.get('worlds').get(worldName).get(fileName).once(res => {
@@ -3381,7 +3431,7 @@ define([
                                     e.preventDefault();
                                     //self.currentNodeID = m.ID;
 
-                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["proxy/clients.vwf"]);
                                     // document.querySelector('#clientsWindow').style.visibility = 'visible';
                                     let sideBar = document.querySelector('#sideBar');
                                     sideBar._sideBarComponent = createSettings;
@@ -3439,7 +3489,7 @@ define([
                                     e.preventDefault();
                                     //self.currentNodeID = m.ID;
 
-                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["proxy/clients.vwf"]);
                                     // document.querySelector('#clientsWindow').style.visibility = 'visible';
                                     let sideBar = document.querySelector('#sideBar');
                                     sideBar._sideBarComponent = avatarSettings;
@@ -3470,7 +3520,7 @@ define([
                                     e.preventDefault();
                                     //self.currentNodeID = m.ID;
 
-                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["proxy/clients.vwf"]);
 
                                     let sideBar = document.querySelector('#sideBar');
                                     sideBar._sideBarComponent = viewSettings;
@@ -3499,7 +3549,7 @@ define([
                                     e.preventDefault();
                                     //self.currentNodeID = m.ID;
 
-                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["http://vwf.example.com/clients.vwf"]);
+                                    // document.querySelector('#clientsList')._setClientNodes(self.nodes["proxy/clients.vwf"]);
 
                                     let sideBar = document.querySelector('#sideBar');
 
@@ -3824,7 +3874,7 @@ define([
             }
 
             if (childID == vwf_view.kernel.find("", "/")[0] && childExtendsID && this.kernel.test(childExtendsID,
-                "self::element(*,'http://vwf.example.com/aframe/ascene.vwf')", childExtendsID)) {
+                "self::element(*,'proxy/aframe/ascene.vwf')", childExtendsID)) {
                 this.scenes[childID] = node;
             }
 
@@ -4215,7 +4265,7 @@ define([
         let nodeProtos = getPrototypes(self.kernel, node.extendsID);
 
 
-            if (nodeProtos.includes('http://vwf.example.com/aframe/componentNode.vwf')) {
+            if (nodeProtos.includes('proxy/aframe/componentNode.vwf')) {
                 return true
             }
         
@@ -4227,7 +4277,7 @@ define([
         let node = self.nodes[nodeID];
         let nodeProtos = getPrototypes(self.kernel, node.extendsID);
 
-            if (nodeProtos.includes('http://vwf.example.com/aframe/node.vwf')) {
+            if (nodeProtos.includes('proxy/aframe/node.vwf')) {
                 return true
             }
         

@@ -1,0 +1,21 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "offsetcamera",
+    "properties": {},
+    "methods": {
+        "initialize": {},
+        "createCamera": {
+            "parameters": [
+                "fw",
+                "fh",
+                "xoffset",
+                "yoffset",
+                "subcamWidth",
+                "subcamHeight"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "offsetcamera.js"
+    }
+}

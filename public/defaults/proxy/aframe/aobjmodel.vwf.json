@@ -1,0 +1,23 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-obj-model",
+  "properties": {
+    "src": null,
+    "mtl": null
+  },
+  "methods": {
+    "updateModel": {
+      "parameters": [
+        "obj"
+      ]
+    },
+    "updateModelMtl": {
+      "parameters": [
+        "mtl"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "aobjmodel.js"
+  }
+}

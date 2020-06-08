@@ -1217,7 +1217,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 // Global node and descendant deltas.
 
                 nodes: [  // TODO: all global objects
-                    this.getNode( "http://vwf.example.com/clients.vwf", full ),
+                    this.getNode( "proxy/clients.vwf", full ),
                     this.getNode( this.application(), full ),
                 ],
 
@@ -1360,8 +1360,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         // Resolve relative URIs, but leave host-relative, locally-absolute
                         // references intact.
 
-                        nodeURI = nodeComponent[0] == "/" ?
-                            nodeComponent : require( "vwf/utility" ).resolveURI( nodeComponent, baseURI );
+                        nodeURI = nodeComponent 
+                        //nodeComponent[0] == "/" ? nodeComponent : require( "vwf/utility" ).resolveURI( nodeComponent, baseURI );
 
                         // Load the document if we haven't seen this URI yet. Mark the components
                         // list to indicate that this component is loading.
@@ -1424,7 +1424,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                     if ( componentIsDescriptor( nodeComponent ) && nodeComponent.includes && componentIsURI( nodeComponent.includes ) ) {  // TODO: for "includes:", accept an already-loaded component (which componentIsURI exludes) since the descriptor will be loaded again
 
-                        var prototypeURI = require( "vwf/utility" ).resolveURI( nodeComponent.includes, nodeURI || baseURI );
+                        var prototypeURI = nodeComponent.includes //require( "vwf/utility" ).resolveURI( nodeComponent.includes, nodeURI || baseURI );
 
                       loadComponent( prototypeURI, undefined, function( prototypeDescriptor ) /* async */ {
                             prototypeDescriptor = resolvedDescriptor( prototypeDescriptor, prototypeURI );
@@ -1772,7 +1772,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         /// 
         /// @see {@link module:vwf/api/kernel.getNode}
 
-        this.getNode = function( nodeID, full, normalize ) {  // TODO: options to include/exclude children, prototypes
+        this.getNode = function( nodeID, full, normalize, proto ) {  // TODO: options to include/exclude children, prototypes
 
             this.logger.debuggx( "getNode", nodeID, full );
 
@@ -1844,6 +1844,39 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 // Want everything, or only want patches but the node is not patchable.
 
                 nodeComponent.properties = this.getProperties( nodeID );
+
+                // Description of Getters & Setters
+                let jsProps = vwf.models.javascript.nodes[nodeID];
+                let getters = jsProps.private.getters;
+                let setters = jsProps.private.setters;
+
+                Object.keys(nodeComponent.properties).forEach(el=>{
+
+                    if(Object.keys(getters).includes(el) || Object.keys(setters).includes(el)){
+
+                        let prop = {
+                            value: nodeComponent.properties[el]
+                        }
+                      
+                            if(typeof getters[el] == 'function'){
+                                let fn = getters[el].toString()
+                                prop.get = fn.slice(fn.indexOf("{") + 1, fn.lastIndexOf("}"));
+                                
+                            } else {
+                                prop.get = ""
+                            }
+                        
+                            if(typeof setters[el] == 'function'){
+                                let fn = setters[el].toString()
+                                prop.set = fn.slice(fn.indexOf("{") + 1, fn.lastIndexOf("}"));
+                            } else {
+                                prop.set = ""
+                            }
+                        
+                        nodeComponent.properties[el] = prop
+                    }
+                })
+                ///end of Getters & Setters
 
                 for ( var propertyName in nodeComponent.properties ) {
                     var propertyValue = nodeComponent.properties[propertyName];
@@ -1950,6 +1983,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             // Scripts.
 
             // TODO: scripts
+
+            if(node.scripts){
+                console.log("SCRIPTS: ", node.scripts)
+            }
+
 
             // Normalize for consistency.
 
@@ -2109,7 +2147,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
                     if ( componentIsDescriptor( childComponent ) && childComponent.includes && componentIsURI( childComponent.includes ) ) {  // TODO: for "includes:", accept an already-loaded component (which componentIsURI exludes) since the descriptor will be loaded again
 
-                        var prototypeURI = require( "vwf/utility" ).resolveURI( childComponent.includes, baseURI );
+                        var prototypeURI = childComponent.includes //require( "vwf/utility" ).resolveURI( childComponent.includes, baseURI );
 
                         var sync = true; // will loadComponent() complete synchronously?
 
@@ -2180,7 +2218,7 @@ if ( ! childComponent.source ) {
     if ( prototype_intrinsics.source ) {
         var prototype_uri = vwf.uri( prototypeID );
         var prototype_properties = vwf.getProperties( prototypeID );
-        childComponent.source = require( "vwf/utility" ).resolveURI( prototype_intrinsics.source, prototype_uri );
+        childComponent.source = prototype_intrinsics.source//require( "vwf/utility" ).resolveURI( prototype_intrinsics.source, prototype_uri );
         childComponent.type = prototype_intrinsics.type;
         childComponent.properties = childComponent.properties || {};
         Object.keys( prototype_properties ).forEach( function( prototype_property_name ) {
@@ -2252,8 +2290,8 @@ if ( ! childComponent.source ) {
 
                     // Resolve the asset source URL for the drivers.
 
-                    resolvedSource = childComponent.source &&
-                        require( "vwf/utility" ).resolveURI( childComponent.source, baseURI );
+                    resolvedSource = childComponent.source && childComponent.source
+                        //require( "vwf/utility" ).resolveURI( childComponent.source, baseURI );
 
                     // Call creatingNode() on each model. The node is considered to be constructed
                     // after all models have run.
@@ -4479,10 +4517,10 @@ if ( ! childComponent.source ) {
         this.findClients = function( nodeID, matchPattern, callback /* ( matchID ) */ ) {
 
             this.logger.warn( "`kernel.findClients` is deprecated. Use " +
-                "`kernel.find( nodeID, \"doc('http://vwf.example.com/clients.vwf')/pattern\" )`" +
+                "`kernel.find( nodeID, \"doc('proxy/clients.vwf')/pattern\" )`" +
                 " instead." );
 
-            var clientsMatchPattern = "doc('http://vwf.example.com/clients.vwf')" +
+            var clientsMatchPattern = "doc('proxy/clients.vwf')" +
                 ( matchPattern[0] === "/" ? "" : "/" ) + matchPattern;
 
             return this.find( nodeID || this.application(), clientsMatchPattern, callback );
@@ -4547,12 +4585,12 @@ if ( ! childComponent.source ) {
 
                 queue.suspend( "while loading " + nodeURI ); // suspend the queue
 
-                let fetchUrl =  remappedURI( require( "vwf/utility" ).resolveURI( nodeURI, baseURI ) );
-                let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_") + '_yaml';
+                let fetchUrl =  remappedURI(nodeURI, baseURI);
+                let dbName = fetchUrl.split(".").join("_");
 
                 const parseComp = function(f) {
 
-                    let result = YAML.parse(f);
+                    let result = JSON.parse(f);
 
                     let nativeObject = result;
                     // console.log(nativeObject);
@@ -4566,23 +4604,19 @@ if ( ! childComponent.source ) {
                          vwf.logger.warnx( "loadComponent", "error loading", nodeURI + ":", error );
                          errback_async( error );
                          queue.resume( "after loading " + nodeURI ); // resume the queue; may invoke dispatch(), so call last before returning to the host
-     
- 
                      }
 
                 }
 
 
-            var fileName = "";
+            //var fileName = "";
            // let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);    
-            let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
-
-                if(dbName.includes("vwf_example_com")){
+                if(dbName.includes("proxy")){
                     //userDB = await window._LCS_SYS_USER.get('proxy').then();
-                   fileName = dbName;
+                let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
+                   let fileName = dbName + '_json';
                    let dbNode = proxyDB.get('proxy').get(fileName);
-
-                   let nodeProm = new Promise(res => dbNode.once(res))
+                   let nodeProm = new Promise(res => dbNode.once(res));
 
                    nodeProm.then(comp=>{
                     parseComp (comp);
@@ -4595,9 +4629,8 @@ if ( ! childComponent.source ) {
                 //    });
 
                 } else {
-                    let worldName = dbName.split('/')[0];
-                    //userDB = await window._LCS_WORLD_USER.get('worlds').path(worldName).then();
-                   fileName = dbName.replace(worldName + '/', "");
+                    let worldName = dbName.split('/')[1];
+                    let fileName = dbName.split('/')[2]+ '_json'; 
                    let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
 
                    let nodeProm = new Promise(res => dbNode.once(res))
@@ -4642,8 +4675,8 @@ if ( ! childComponent.source ) {
 
                 queue.suspend( "while loading " + scriptURI ); // suspend the queue
 
-                let fetchUrl = remappedURI( require( "vwf/utility" ).resolveURI( scriptURI, baseURI ) );
-                let dbName = fetchUrl.replace(window.location.origin + '/', "").split(".").join("_");
+                let fetchUrl = remappedURI( scriptURI, baseURI );
+                let dbName = fetchUrl.split(".").join("_")
 
                 const parseComp = function(res) {
 
@@ -4663,17 +4696,16 @@ if ( ! childComponent.source ) {
 
 
 
-                let worldName = dbName.split('/')[0];
-                //var userDB = window._LCS_WORLD_USER.get('worlds').get(worldName);
-                var fileName = "";
+                let worldName = dbName.split('/')[1];
 
                 //let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);  
 
-                let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
+              
+                if(dbName.includes("proxy")){
+                    let proxyDB = vwf.proxy ? _LCSDB.user(vwf.proxy): _LCSDB.user(_LCS_WORLD_USER.pub);
 
-                if(dbName.includes("vwf_example_com")){
                     //userDB = window._LCS_SYS_USER.get('proxy');
-                    fileName = dbName;
+                    let fileName = dbName;
                     let dbNode = proxyDB.get('proxy').get(fileName);
                     let nodeProm = new Promise(res => dbNode.once(res))
 
@@ -4686,7 +4718,7 @@ if ( ! childComponent.source ) {
                     // });
  
                 } else {
-                    fileName = dbName.replace(worldName + '/', "");
+                    let fileName = dbName.split('/')[2];//dbName.replace(worldName + '/', "");
 
                     let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
                     let nodeProm = new Promise(res => dbNode.once(res))
@@ -5244,16 +5276,28 @@ if ( ! childComponent.source ) {
         /// 
         /// @name module:vwf~remappedURI
 
-        var remappedURI = function( uri ) {
+        var remappedURI = function( uri, baseURI ) {
 
-            var match = uri.match( RegExp( "http://(vwf.example.com)/(.*)" ) );
+            // var match = uri.match( RegExp( "http://(vwf.example.com)/(.*)" ) );
 
-            if ( match ) {
-                uri = window.location.protocol + "//" + window.location.host +
-                    "/proxy/" + match[1] + "/" + match[2];
+            // if ( match ) {
+            //     uri = window.location.protocol + "//" + window.location.host +
+            //         "/proxy/" + match[1] + "/" + match[2];
+            // }
+            if ( baseURI && uri[0] !== "/") {
+
+                let newURI = "";
+                let parts = baseURI.split('/');
+                parts[parts.length-1] = uri;
+                parts.map(el=>{
+                    newURI = newURI + el + '/';
+                })
+
+                return newURI.slice(0,-1)
+
             }
+            return uri
 
-            return uri;
         };
 
         // -- resolvedDescriptor -------------------------------------------------------------------
@@ -5433,7 +5477,7 @@ if ( ! childComponent.source ) {
                 case "children":
 
                     if ( markers.memberIndex == 0 && componentIsURI( object ) ) {
-                        return require( "vwf/utility" ).resolveURI( object, baseURI );
+                        return object//require( "vwf/utility" ).resolveURI( object, baseURI );
                     }
 
                     break;
@@ -5441,7 +5485,7 @@ if ( ! childComponent.source ) {
                 case "scripts":
 
                     if ( markers.memberIndex == 1 && names[0] == "source" ) {
-                        return require( "vwf/utility" ).resolveURI( object, baseURI );
+                        return object//require( "vwf/utility" ).resolveURI( object, baseURI );
                     }
 
                     break;

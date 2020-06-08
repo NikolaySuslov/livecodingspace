@@ -1,0 +1,5 @@
+{
+    "extends": "proxy/aframe/componentNode.vwf",
+    "type": "component",
+    "properties": {}
+}

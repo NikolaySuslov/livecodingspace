@@ -1,0 +1,10 @@
+{
+  "extends": "proxy/aframe/node.vwf",
+  "type": "image",
+  "properties": {
+    "itemID": null,
+    "itemSrc": null,
+    "width": null,
+    "height": null
+  }
+}

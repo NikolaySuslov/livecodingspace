@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "collideNonVisible": null,
+    "debug": null,
+    "enabled": null,
+    "objects": null,
+    "interval": null
+  }
+}
