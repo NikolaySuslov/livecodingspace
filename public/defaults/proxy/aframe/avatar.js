@@ -335,39 +335,11 @@ this.updateAvatarRotation = function (rotation) {
 
 this.followAvatarControl = function (position, rotation) {
 
-
-    //this.position = goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
-
     let myRot = goog.vec.Vec3.clone(this.rotation);
     let myHeadRot = goog.vec.Vec3.clone(this.avatarNode.myHead.rotation);
-    //let myBodyRot = goog.vec.Vec3.clone(this.avatarNode.myBody.rotation);
-
-    //let myRot = AFRAME.utils.coordinates.parse(this.rotation);
-    //let myHeadRot = AFRAME.utils.coordinates.parse(this.avatarNode.myHead.rotation);
-    //let myBodyRot = AFRAME.utils.coordinates.parse(this.avatarNode.myBody.rotation);
-
-    //   if(myRot[0] == null || myRot[2] == null) {
-    //     debugger
-    // }
-
     this.rotation = [myRot[0], rotation.y, myRot[2]];
-    //this.rotation = [myRot.x, rotation.y, myRot.z];
-
-
-
-    // let myRot = this.avatarBodyModel.rotation;
-    // this.avatarBodyModel.rotation = [myRot.x, -rotation.y, myRot.z];
-
-    //this.avatarBody.rotation = [rotation.x, myRot.y, rotation.z];
-
-    //this.avatarNameNode.rotation = [myRot.x, myRot.y, rotation.z]; 
-
     this.avatarNode.myHead.rotation = [rotation.x, myHeadRot[1], rotation.z];
-    //this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
-    
-    // this.avatarNode.myCursor.rotation = [rotation.x, myHeadRot.y, rotation.z];
 
-    // this.avatarCamera.rotation = [rotation.x, myHeadRot.y, rotation.z];  
 }
 
 this.setUserAvatar = function(aName){

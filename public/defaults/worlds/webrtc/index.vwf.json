@@ -1,12 +1,6 @@
 {
   "extends": "proxy/aframe/ascene.vwf",
-  "properties":{
-    "eee": {
-      "value": "test",
-      "get": "",
-      "set": ""
-    }
-  },
+  "properties":{},
   "children": {
     "floorTexture": {
     "extends": "proxy/aframe/a-asset-image-item.vwf",
@@ -88,7 +82,7 @@
     "spaceText": {
       "extends": "proxy/aframe/atext.vwf",
       "properties": {
-        "value": "Paint App",
+        "value": "WebRTC app",
         "color": "white",
         "position": [
           -2,
@@ -122,87 +116,6 @@
           }
         }
       }
-    },
-    "drawBox": {
-      "extends": "proxy/aframe/aentity.vwf",
-      "properties": {
-        "position": [
-          0,
-          0,
-          0
-        ]
-      }
-    },
-    "defaultXRCostume": {
-      "extends": "proxy/aframe/abox.vwf",
-      "properties": {
-        "displayName": "defaultXRCostume",
-        "position": [
-          0,
-          0,
-          0
-        ],
-        "height": "0.01",
-        "width": "0.01",
-        "depth": "0.3",
-        "penDown": false,
-        "penName": "drawNode",
-        "myProperty":{
-          "set": "this.setMyProp(value)",
-          "get": "return this.getMyProp()",
-          "value": "fancy"
-        }
-      },
-      "methods": {
-        "triggerdown": {},
-        "triggerup": {},
-        "onMove": {},
-        "met": {},
-        "getMyProp":{},
-        "setMyProp": {
-          "parameters": ["val"]
-        }
-      },
-      "scripts":{
-        "source": "controller.js"
-      },
-      "children": {
-        "material": {
-          "extends": "proxy/aframe/aMaterialComponent.vwf",
-          "type": "component",
-          "properties": {
-            "color": "#6aa171"
-          }
-        },
-        "pointer": {
-          "extends": "proxy/aframe/abox.vwf",
-          "properties": {
-            "position": [
-              0,
-              0,
-              -0.25
-            ],
-            "height": "0.05",
-            "width": "0.05",
-            "depth": "0.05"
-          },
-          "children": {
-            "material": {
-              "extends": "proxy/aframe/aMaterialComponent.vwf",
-              "type": "component",
-              "properties": {
-                "color": "green"
-              }
-            }
-          }
-        }
-      }
     }
-  },
-  "methods": {
-    "some": {}
-  },
-  "scripts":{
-    "source": "pointer.js"
   }
 }

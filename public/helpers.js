@@ -208,6 +208,8 @@ class Helpers {
             //source = source;//JSON.stringify(source, null, '\t');
         } else if (typeof source == 'object') {
             convert = JSON.stringify(source, null, '\t')
+        } else if (typeof source == 'string') {
+            convert = source
         }
 
         return convert

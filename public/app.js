@@ -1545,16 +1545,16 @@ class App {
       let myWorld = _LCSDB.user().get('worlds').get(newWorldName).put({ id: newWorldName });
       myWorld.put(worldObj, function (res) {
         if (currentState) {
-          _app.saveWorld();
+          _app.saveWorld(newWorldName);
         }
         _app.helpers.notyOK('World cloned!')
       });
     })
   }
 
-  async saveWorld() {
+  async saveWorld(wn) {
 
-    let name = this.worldName;
+    let name = wn ? wn : this.worldName;
 
     let proto = this.helpers.getWorldProto();
     _LCSDB.user().get('worlds').get(name).get('index_vwf_json').put(JSON.stringify(proto), res => {

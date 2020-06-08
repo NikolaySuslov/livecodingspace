@@ -1033,8 +1033,8 @@ define([
 
                                                     _app.saveWorld();
 
-                                                    let fileName = self.helpers.getRoot().root;
-                                                    _app.saveState(fileName);
+                                                    //let fileName = self.helpers.getRoot().root;
+                                                    //_app.saveState(fileName);
 
                                                    //// let fileName = self.helpers.worldStateName;
                                                     ////_app.saveStateAsFile(fileName);

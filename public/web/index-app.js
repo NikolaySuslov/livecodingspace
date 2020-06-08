@@ -164,7 +164,8 @@ class IndexApp {
                                 }
                             }),
                         {
-                            $type: "p"
+                            $type: "span",
+                            style: "padding-right: 20px;"
                         },
                         window._app.widgets.buttonStroked(
                             {
@@ -178,7 +179,7 @@ class IndexApp {
                         {
                             $type: "p"
                         },
-                        window._app.widgets.buttonStroked(
+                        window._app.widgets.buttonRaised(
                             {
                                 "label": _l.t("my world protos"),
                                 "onclick": function (e) {
