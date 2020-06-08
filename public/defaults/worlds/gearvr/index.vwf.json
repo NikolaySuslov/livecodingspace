@@ -1,0 +1,115 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "properties": {
+    "fog": "type: linear; color: #ECECEC; far: 20; near: 0"
+  },
+  "children": {
+    "assetBG2": {
+      "extends": "proxy/aframe/a-asset-image-item.vwf",
+      "properties": {
+        "itemID": "bg2",
+        "itemSrc": "/defaults/assets/checker.jpg"
+      }
+    },
+    "myLight": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "point",
+        "color": "white",
+        "position": [
+          0,
+          10,
+          5
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "groundPlane": {
+      "extends": "proxy/aframe/aplane.vwf",
+      "properties": {
+        "height": "50",
+        "width": "50",
+        "rotation": [
+          -90,
+          0,
+          0
+        ]
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "wireframe": false,
+            "src": "#bg2",
+            "repeat": "10 10"
+          }
+        }
+      }
+    },
+    "spaceText": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "Virtual World Framework & VR Controllers",
+        "color": "#2b5d83",
+        "position": [
+          -2,
+          2.5,
+          -3
+        ]
+      }
+    },
+    "cube": {
+      "extends": "proxy/aframe/abox.vwf",
+      "properties": {
+        "position": [
+          0,
+          1,
+          -3
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "depth": "1",
+        "height": "1",
+        "width": "1",
+        "class": "gearvrhit"
+      },
+      "methods": {
+        "hitstartEventMethod": {
+          "body": "    this.material.opacity = 0.7\n",
+          "type": "application/javascript"
+        },
+        "hitendEventMethod": {
+          "body": "    this.material.opacity = 1.0\n",
+          "type": "application/javascript"
+        }
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#3c7249"
+          }
+        },
+        "aabb-collider-listener": {
+          "extends": "proxy/aframe/app-aabb-collider-listener-component.vwf",
+          "type": "component"
+        }
+      }
+    },
+    "newSky": {
+      "extends": "proxy/aframe/aentity.vwf",
+      "children": {
+        "skyshader": {
+          "extends": "proxy/aframe/app-skyshader-component.vwf"
+        }
+      }
+    }
+  }
+}

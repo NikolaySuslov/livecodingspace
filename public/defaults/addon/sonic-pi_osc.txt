@@ -5,7 +5,7 @@ oldT2 = 0
 set :tC3, current_time
 oldT3 = 0
 
-latency = 0.2
+latency = 0.3
 
 #use_sched_ahead_time 0.4
 #set_sched_ahead_time! 0.3
@@ -14,8 +14,8 @@ live_loop :sample01 do
   
   use_sched_ahead_time latency
   
-  a = sync "/osc/trigger/sample01"
-  nowT = a[0]
+  a, b, c = sync "/osc*/trigger/sample01"
+  nowT = a
   inc = nowT - oldT1
   oldT1 = nowT
   print inc
@@ -33,7 +33,7 @@ live_loop :sample01 do
   time_warp delta do
     t = current_time
     set :tC1, t
-    sample a[1], amp: a[2]
+    sample b, amp: c
   end
   
 end
@@ -42,8 +42,8 @@ live_loop :sample02 do
   
   use_sched_ahead_time latency
   
-  a = sync "/osc/trigger/sample02"
-  nowT = a[0]
+  a, b, c = sync "/osc*/trigger/sample02"
+  nowT = a
   inc = nowT - oldT2
   oldT2 = nowT
   print inc
@@ -61,7 +61,7 @@ live_loop :sample02 do
     t = current_time
     set :tC2, t
     print current_time
-    sample a[1], amp: a[2]
+    sample b, amp: c
   end
   
 end
@@ -70,8 +70,8 @@ live_loop :synth01 do
   
   use_sched_ahead_time latency
   
-  a = sync "/osc/trigger/synth01"
-  nowT = a[0]
+  a, b, c, d, e, f = sync "/osc*/trigger/synth01"
+  nowT = a
   inc = nowT - oldT3
   oldT3 = nowT
   print inc
@@ -89,7 +89,7 @@ live_loop :synth01 do
     t = current_time
     set :tC3, t
     print current_time
-    synth a[1], note: a[2], cutoff: a[3], sustain: a[4], amp: 0.15
+    synth b, note: c, cutoff: d, sustain: e, amp: f
   end
   
 end
