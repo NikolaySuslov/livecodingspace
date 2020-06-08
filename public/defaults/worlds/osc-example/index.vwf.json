@@ -124,7 +124,6 @@
       }
       },
       "methods":{
-        "initialize": {},
         "initLang": {},
         "ohmLang_grammar": {},
         "ohmLang_get": {},
