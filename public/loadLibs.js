@@ -2,6 +2,9 @@
 
 loadjs([
     '/lib/async/async.min.js',
+    '/lib/fun/ramda.min.js',
+    '/lib/fun/infestines.js',
+    '/lib/fun/partial.lenses.min.js',
     '/lib/socket.io/socket.io.js',
     '/lib/cell.js',
     '/lib/he.js',
@@ -10,10 +13,11 @@ loadjs([
     '/lib/polyglot/polyglot.min.js',
     '/lib/mdc/dist/material-components-web.min.js',
     '/lib/ace/ace.js',
-    '/lib/yamljs/dist/yaml.js',
+    //'/lib/yamljs/dist/yaml.js',
     '/lib/wt/drag-drop.js',
     '/lib/wt/buffer5.6.0.min.js',
-    '/lib/hashids/hashids.min.js'
+    '/lib/hashids/hashids.min.js',
+    '/lib/treeview/treeview.min.js',
 ],'forall', {
     async: false
 });

@@ -1,0 +1,56 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "alphaTest": null,
+    "depthTest": null,
+    "flatShading": null,
+    "npot": null,
+    "offset": null,
+    "opacity": null,
+    "remain": null,
+    "repeat": null,
+    "shader": null,
+    "side": null,
+    "transparent": null,
+    "vertexColors": null,
+    "visible": null,
+    "ambient-occlusion-map": null,
+    "ambient-occlusion-map-intensity": null,
+    "ambient-occlusion-texture-offset": null,
+    "ambient-occlusion-texture-repeat": null,
+    "color": null,
+    "displacement-bias": null,
+    "displacement-map": null,
+    "displacement-scale": null,
+    "displacement-texture-offset": null,
+    "displacement-texture-repeat": null,
+    "emissive": null,
+    "emissiveIntensity": null,
+    "height": null,
+    "envMap": null,
+    "fog": null,
+    "metalness": null,
+    "normal-map": null,
+    "normal-scale": null,
+    "normal-texture-offset": null,
+    "normal-texture-repeat": null,
+    "roughness": null,
+    "sphericalEnvMap": null,
+    "width": null,
+    "wireframe": null,
+    "wireframe-linewidth": null,
+    "src": null
+  },
+  "methods": {
+    "refreshSrc": {},
+    "updateSrc": {
+      "parameters": [
+        "srcID"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "aMaterialComponent.js"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "info":{
+      "title": "VWF & AFrame Example App"
+    },
+    "model": {
+      "vwf/model/aframe": {}
+    },
+    "view": {
+      "vwf/view/aframe": null,
+      "vwf/view/editor-new": null,
+      "vwf/view/webrtc": null
+    }
+  }

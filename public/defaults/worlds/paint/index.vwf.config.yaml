@@ -1,8 +1,0 @@
----
-info:
-  title: "Paint App"
-model:
-  vwf/model/aframe:
-view:
-  vwf/view/aframe:
-  vwf/view/editor-new:

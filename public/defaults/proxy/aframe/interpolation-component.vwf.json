@@ -1,0 +1,10 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "enabled": null,
+    "deltaPos": null,
+    "deltaRot": null,
+    "deltaScale": null
+  }
+}

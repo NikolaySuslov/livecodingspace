@@ -1,0 +1,9 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-cursor",
+  "properties": {
+    "fuse": null,
+    "fuse-timeout": null,
+    "max-distance": null
+  }
+}

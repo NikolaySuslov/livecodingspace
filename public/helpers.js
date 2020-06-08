@@ -19,13 +19,13 @@ class Helpers {
     reduceSaveObject(path) {
         let obj = Object.assign({}, path);
 
-        if(path.saveObject){
-            if ( path.saveObject[ "queue" ] ) {
-                if ( path.saveObject[ "queue" ][ "time" ] ) {
+        if (path.saveObject) {
+            if (path.saveObject["queue"]) {
+                if (path.saveObject["queue"]["time"]) {
                     obj.saveObject = {
                         "init": true,
-                        "queue":{
-                            "time": path.saveObject[ "queue" ][ "time" ]
+                        "queue": {
+                            "time": path.saveObject["queue"]["time"]
                         }
                     }
                 }
@@ -81,9 +81,9 @@ class Helpers {
         return result;
     }
 
-    GetNamespace( processedURL ) {
-        if ( ( processedURL[ 'instance' ] ) && ( processedURL[ 'public_path' ] ) ) {
-            return this.JoinPath( processedURL[ 'public_path' ], processedURL[ 'application' ], processedURL[ 'instance' ] );
+    GetNamespace(processedURL) {
+        if ((processedURL['instance']) && (processedURL['public_path'])) {
+            return this.JoinPath(processedURL['public_path'], processedURL['application'], processedURL['instance']);
         }
         return undefined;
     }
@@ -108,34 +108,11 @@ class Helpers {
         return result;
     }
 
-    async GetExtension(path) {
+    getInstanceID(obj) {
 
-        if (path.match(/\.vwf$/)) {
+        // "/world/index.vwf/CcI3c1MnTsblg3H7"
+        return obj.split('/')[3]
 
-            // ["", ".yaml", ".json"]
-
-            let check1 = await this.IsFileExist(this.JoinPath(path + "").split(".").join("_"));
-            if(check1)
-                return ""
-
-            let check2 = await this.IsFileExist(this.JoinPath(path + ".yaml").split(".").join("_"));
-            if(check2)
-                return ".yaml"
-
-            let check3 = await this.IsFileExist(this.JoinPath(path + ".json").split(".").join("_"));
-            if(check3)
-                return ".json"
-
-
-
-
-            // for (const res of this.template_extensions) {
-            //     let check = await this.IsFileExist(this.JoinPath(path + res).split(".").join("_"));
-            //     if (check) return res
-            // }
-        }
-
-        return undefined;
     }
 
     get appPath() {
@@ -158,54 +135,17 @@ class Helpers {
 
     }
 
-    getRoot(noUser) {
-        var app = window.location.pathname;
-        var pathSplit = app.split('/');
-        if (pathSplit[0] == "") {
-            pathSplit.shift();
-        }
-        if (pathSplit[pathSplit.length - 1] == "") {
-            pathSplit.pop();
-        }
-        var inst = undefined;
-        var instIndex = pathSplit.length - 1;
-        if (pathSplit.length > 2) {
-            if (pathSplit[pathSplit.length - 2] == "load") {
-                instIndex = pathSplit.length - 3;
-            }
-        }
-        if (pathSplit.length > 3) {
-            if (pathSplit[pathSplit.length - 3] == "load") {
-                instIndex = pathSplit.length - 4;
-            }
-        }
+    getRoot() {
 
-        inst = pathSplit[instIndex];
+        let data = JSON.parse(localStorage.getItem('lcs_app'));
 
-        var root = "";
-        for (var i = 0; i < instIndex; i++) {
-            if (root != "") {
-                root = root + "/";
-            }
-            root = root + pathSplit[i];
+        return {
+            "root": data.path.public_path.slice(1),
+            "inst": data.path.instance,
+            "user": data.user
         }
-
-        if (root.indexOf('.vwf') != -1) root = root.substring(0, root.lastIndexOf('/'));
-
-        if (noUser) {
-            return {
-                "root": root.replace(pathSplit[0] + '/', ""),
-                "inst": inst
-            }
-        } else {
-
-            return {
-                "root": root,
-                "inst": inst
-            }
-        }
-
     }
+
 
     get worldUser() {
         return this.getRoot(false).root.split('/')[0];
@@ -260,6 +200,22 @@ class Helpers {
     };
 
 
+    convertFileSource(file, source) {
+        //var source = (typeof(sourceToEdit) =="object") ? JSON.stringify(sourceToEdit): sourceToEdit;
+        var convert;
+        if (file.includes('_json') && (typeof source !== 'object')) {
+            convert = (typeof JSON.parse(source) == 'object') ? JSON.stringify(JSON.parse(source), null, '\t') : source
+            //source = source;//JSON.stringify(source, null, '\t');
+        } else if (typeof source == 'object') {
+            convert = JSON.stringify(source, null, '\t')
+        } else if (typeof source == 'string') {
+            convert = source
+        }
+
+        return convert
+    }
+
+
     async getHtmlText(url) {
 
         let file = await fetch(url, { method: 'get' });
@@ -267,73 +223,132 @@ class Helpers {
         return text
     }
 
-
     removeProps(obj) {
-        Object.keys(obj).forEach(key =>
-            (key === 'id' || key === 'patches' || key === 'random' || key === 'sequence') && delete obj[key] ||
-            (obj[key] && typeof obj[key] === 'object') && this.removeProps(obj[key])
+
+        let rm = L.lazy(rec =>
+            L.ifElse(R.is(String),
+                L.when(x => x == 'id'
+                    || x == 'patches'
+                    || x == 'random'
+                    || x == 'sequence'), [L.keysEverywhere, rec], L.optional)
         );
-        return obj;
+
+        return L.remove(rm, obj)
+
+        // Object.keys(obj).forEach(key =>
+        //     (key === 'id' || key === 'patches' || key === 'random' || key === 'sequence') && delete obj[key] ||
+        //     (obj[key] && typeof obj[key] === 'object') && this.removeProps(obj[key])
+        // );
+        //return obj;
     };
+
+    removeGrammarObj(obj) {
+
+        let rm = L.lazy(rec =>
+            L.ifElse(R.is(String),
+                L.when(x => x == 'grammar'
+                    || x == 'semantics'), [L.keysEverywhere, rec], L.optional)
+        );
+
+        return L.remove(rm, obj)
+
+        // Object.keys(obj).forEach(key =>
+        //     (key === 'grammar' || key === 'semantics') && delete obj[key] ||
+        //     (obj[key] && typeof obj[key] === 'object') && this.removeGrammarObj(obj[key])
+        // );
+        // return obj;
+    };
+
+
+    collectMethods(obj) {
+
+        let files = {};
+
+        Object.keys(obj.children).forEach(childName => {
+
+            let child = obj.children[childName];
+            if (child.scritps && child.methods)
+                files[childName] = "";
+            let methods = child.methods;
+            Object.keys(methods).forEach(el => {
+                let method = methods[el];
+                if (method.body) {
+                    let params = method.parameters ? method.parameters.toString() : '';
+                    let funDef = "this." + el + ' = function(' + params + ') { \n' + method.body + '\n' + '}';
+                    files[childName] = files[childName].concat('\n').concat(funDef);
+                }
+            })
+        })
+        return files
+    }
+
+    getNodeJSProps(nodeID) {
+        let node = vwf.models.javascript.nodes[nodeID]
+        return node
+    }
+
+    getWorldProto() {
+        let worldID = vwf.application();
+        let nodeDef = this.getNodeDef(worldID);
+
+        const rm = L.lazy(rec =>
+            L.ifElse(R.is(String), L.when(x => x.includes('avatar-') || x.includes('xcontroller-') || x.includes('gearvr-')), [L.keys, rec], L.optional)
+        )
+
+        let fixedDef = L.remove(['children', L.props(rm)], nodeDef)
+
+        return fixedDef
+    }
 
     getNodeDef(nodeID) {
         let node = vwf.getNode(nodeID, true);
         let nodeDefPure = this.removeProps(node);
         let nodeDef = this.removeGrammarObj(nodeDefPure);
 
-        let finalDef = this.replaceFloatArraysInNodeDef(nodeDef); 
+        let finalDef = this.replaceFloatArraysInNodeDef(nodeDef);
 
         return finalDef
     }
 
-    replaceFloatArraysInNodeDef(state){
+    replaceFloatArraysInNodeDef(state) {
 
         var objectIsTypedArray = function (candidate) {
             var typedArrayTypes = [
-              Int8Array,
-              Uint8Array,
-              // Uint8ClampedArray,
-              Int16Array,
-              Uint16Array,
-              Int32Array,
-              Uint32Array,
-              Float32Array,
-              Float64Array
+                Int8Array,
+                Uint8Array,
+                // Uint8ClampedArray,
+                Int16Array,
+                Uint16Array,
+                Int32Array,
+                Uint32Array,
+                Float32Array,
+                Float64Array
             ];
-      
+
             var isTypedArray = false;
-      
+
             if (typeof candidate == "object" && candidate != null) {
-              typedArrayTypes.forEach(function (typedArrayType) {
-                isTypedArray = isTypedArray || candidate instanceof typedArrayType;
-              });
+                typedArrayTypes.forEach(function (typedArrayType) {
+                    isTypedArray = isTypedArray || candidate instanceof typedArrayType;
+                });
             }
-      
+
             return isTypedArray;
-          };
-      
-          var transitTransformation = function (object) {
+        };
+
+        var transitTransformation = function (object) {
             return objectIsTypedArray(object) ?
-              Array.prototype.slice.call(object) : object;
-          };
-      
-      
-          let value = require("vwf/utility").transform(
+                Array.prototype.slice.call(object) : object;
+        };
+
+
+        let value = require("vwf/utility").transform(
             state, transitTransformation
-          );
-      
-          return value
+        );
+
+        return value
 
     }
-
-    removeGrammarObj(obj) {
-        Object.keys(obj).forEach(key =>
-            (key === 'grammar' || key === 'semantics') && delete obj[key] ||
-            (obj[key] && typeof obj[key] === 'object') && this.removeGrammarObj(obj[key])
-        );
-        return obj;
-    };
-
 
     httpGet(url) {
         return new Promise(function (resolve, reject) {
@@ -369,35 +384,30 @@ class Helpers {
         }
     }
 
-    authUser(alias, pass){
-
+    authUser(alias, pass) {
+        let self = this;
+        
         _LCSDB.user().auth(alias, pass
-                , function(ack) {
-    
+            , function (ack) {
+
                 if (ack.err) {
-                    new Noty({
-                        text: ack.err,
-                        timeout: 2000,
-                        theme: 'mint',
-                        layout: 'bottomRight',
-                        type: 'error'
-                    }).show();
-    
+                    self.notyErr(ack.err)
+
                 }
-             }
-             );
+            }
+        );
 
     }
-    
-   testJSON (text) {
-        if (typeof text!=="string"){
+
+    testJSON(text) {
+        if (typeof text !== "string") {
             return false;
         }
-        try{
+        try {
             JSON.parse(text);
             return true;
         }
-        catch (error){
+        catch (error) {
             return false;
         }
     }
@@ -406,52 +416,76 @@ class Helpers {
 
         //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
         let alias = '~@' + userName;
-        let user = await (new Promise(res=>_LCSDB.get(alias).once(res)));
-       
-        if(user) {
+        let user = await (new Promise(res => _LCSDB.get(alias).once(res)));
 
-        if(Object.keys(user).length > 1){
-            let pubs = await Promise.all(Object.keys(user).filter(el=>el !== '_').map(el => _LCSDB.user(el.slice(1)).then(res=>{
-                let ts = Gun.state.is(res, 'pub')
-                return {pub: res.pub, time: ts}
-            })))
-            //console.log(pubs);
-            pubs.sort(function(a,b){
-                return new Date(b.time) - new Date(a.time);
-              });
-            
-            return pubs[0].pub
+        if (user) {
 
-        } else {
-            return Object.keys(user)[1].slice(1)
+            if (Object.keys(user).length > 1) {
+                let pubs = await Promise.all(Object.keys(user).filter(el => el !== '_').map(el => _LCSDB.user(el.slice(1)).then(res => {
+                    let ts = Gun.state.is(res, 'pub')
+                    return { pub: res.pub, time: ts }
+                })))
+                //console.log(pubs);
+                pubs.sort(function (a, b) {
+                    return new Date(b.time) - new Date(a.time);
+                });
+
+                return pubs[0].pub
+
+            } else {
+                return Object.keys(user)[1].slice(1)
+            }
+
         }
 
     }
 
-    }
+    checkUserCollision() {
 
-   checkUserCollision(){
+        //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
 
-     //TODO: Fix for using hashids instead users aliases with pubs sorted by time of registration
-
-        _app.helpers.getUserPub(_LCSDB.user().is.alias).then(res=>{
-            if(_LCSDB.user().is.pub !== res){
-              if(window.confirm("ERROR: User name collision. Try to delete user collision?")) {
-                _LCSDB.user().delete();
-                window.reload();
+        _app.helpers.getUserPub(_LCSDB.user().is.alias).then(res => {
+            if (_LCSDB.user().is.pub !== res) {
+                if (window.confirm("ERROR: User name collision. Try to delete user collision?")) {
+                    _LCSDB.user().delete();
+                    window.reload();
+                }
             }
-            }
-          })
+        })
 
     }
 
     async getUserAlias(userPub) {
 
-        let user = await (new Promise(res=>_LCSDB.user(userPub).get('alias').once(res)));
-       
-        if(user)
+        let user = await (new Promise(res => _LCSDB.user(userPub).get('alias').once(res)));
+
+        if (user)
             return user
 
+    }
+
+    notyOK(msg) {
+
+        let noty = new Noty({
+            text: msg,
+            timeout: 2000,
+            theme: 'mint',
+            layout: 'bottomRight',
+            type: 'success'
+        });
+        noty.show();
+    }
+
+    notyErr(msg) {
+
+        let noty = new Noty({
+            text: msg,
+            timeout: 2000,
+            theme: 'mint',
+            layout: 'bottomRight',
+            type: 'error'
+        });
+        noty.show();
     }
 
 }

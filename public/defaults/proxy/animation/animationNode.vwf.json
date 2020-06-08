@@ -1,0 +1,73 @@
+{
+"extends": "proxy/animation/animation.vwf",
+"methods":{
+  "animationUpdate":{
+    "parameters": [
+        "time", "duration"
+    ]
+  },
+  "translateBy":{
+    "parameters": [
+        "translation", "duration"
+    ]
+  },
+  "translateTo":{
+    "parameters": [
+        "translation", "duration"
+    ]
+  },
+  "rotateBy":{
+    "parameters": [
+        "rotation", "duration", "frame"
+    ]
+  },
+  "rotateTo":{
+    "parameters": [
+        "rotation", "duration", "frame"
+    ]
+  },
+  "quaterniateBy":{
+    "parameters": [
+        "quaternion", "duration", "frame"
+    ]
+  },
+  "quaterniateTo":{
+    "parameters": [
+        "quaternion", "duration"
+    ]
+  },
+  "scaleBy":{
+    "parameters": [
+        "scale", "duration"
+    ]
+  },
+  "scaleTo":{
+    "parameters": [
+        "scale", "duration"
+    ]
+  },
+  "transformBy":{
+    "parameters": [
+        "transform", "duration"
+    ]
+  },
+  "transformTo":{
+    "parameters": [
+        "transform", "duration"
+    ]
+  },
+  "worldTransformBy":{
+    "parameters": [
+        "transform", "duration"
+    ]
+  },
+  "worldTransformTo":{
+    "parameters": [
+        "transform", "duration"
+    ]
+  }
+},
+  "events":{
+    "changingTransformFromView": {}
+  }
+}

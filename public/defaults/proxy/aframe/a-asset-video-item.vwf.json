@@ -1,0 +1,10 @@
+{
+  "extends": "proxy/aframe/node.vwf",
+  "type": "video",
+  "properties": {
+    "itemID": null,
+    "itemSrc": null,
+    "videoWidth": null,
+    "videoHeight": null
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-sphere",
+  "properties": {
+    "phi-length": null,
+    "phi-start": null,
+    "radius": null,
+    "segments-depth": null,
+    "segments-height": null,
+    "segments-width": null,
+    "theta-length": null,
+    "theta-start": null
+  }
+}

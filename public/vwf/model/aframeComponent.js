@@ -64,7 +64,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
                     var found = false;
                     if (prototypes) {
                         for (var i = 0; i < prototypes.length && !found; i++) {
-                            found = (prototypes[i] === "http://vwf.example.com/aframe/componentNode.vwf");
+                            found = (prototypes[i] === "proxy/aframe/componentNode.vwf");
                         }
                     }
                     return found;
@@ -507,7 +507,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
                 //isALineDefinition(node.prototypes)
                 //if (value === undefined && node.componentName == 'line') { //isALineDefinition( node.prototypes )
-                if (node.extendsID == "http://vwf.example.com/aframe/lineComponent.vwf") {
+                if (node.extendsID == "proxy/aframe/lineComponent.vwf") {
                     if (value === undefined && aframeObject.el.getAttribute(aframeObject.compName)) {
 
                         value = propertyValue;
@@ -1030,7 +1030,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/anim-mixer-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/anim-mixer-component.vwf");
             }
         }
         return found;
@@ -1040,7 +1040,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/interpolation-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/interpolation-component.vwf");
             }
         }
         return found;
@@ -1050,7 +1050,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/linepath.vwf");
+                found = (prototypes[i] == "proxy/aframe/linepath.vwf");
             }
         }
         return found;
@@ -1060,7 +1060,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/aMaterialComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/aMaterialComponent.vwf");
             }
         }
         return found;
@@ -1070,7 +1070,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/a-sound-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/a-sound-component.vwf");
             }
         }
         return found;
@@ -1081,7 +1081,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/viewOffsetCamera-component.vwf");
             }
         }
         return found;
@@ -1092,7 +1092,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/gizmoComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/gizmoComponent.vwf");
             }
         }
         return found;
@@ -1102,7 +1102,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/aSceneFogComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/aSceneFogComponent.vwf");
             }
         }
         return found;
@@ -1112,7 +1112,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/shadowComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/shadowComponent.vwf");
             }
         }
         return found;
@@ -1122,7 +1122,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/aabb-collider-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/aabb-collider-component.vwf");
             }
         }
         return found;
@@ -1132,7 +1132,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/a-mirror-component.vwf");
+                found = (prototypes[i] == "proxy/aframe/a-mirror-component.vwf");
             }
         }
         return found;
@@ -1143,7 +1143,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/raycasterComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/raycasterComponent.vwf");
             }
         }
         return found;
@@ -1153,7 +1153,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] ==  "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf");
+                found = (prototypes[i] ==  "proxy/aframe/app-raycaster-listener-component.vwf");
             }
         }
         return found;
@@ -1163,7 +1163,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] ==  "http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf");
+                found = (prototypes[i] ==  "proxy/aframe/app-aabb-collider-listener-component.vwf");
             }
         }
         return found;
@@ -1173,7 +1173,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/lineComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/lineComponent.vwf");
             }
         }
         return found;
@@ -1183,7 +1183,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/gearvr-controlsComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/gearvr-controlsComponent.vwf");
             }
         }
         return found;
@@ -1193,7 +1193,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/componentNode.vwf");
+                found = (prototypes[i] == "proxy/aframe/componentNode.vwf");
             }
         }
         return found;
@@ -1203,7 +1203,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         var found = false;
         if (prototypes) {
             for (var i = 0; i < prototypes.length && !found; i++) {
-                found = (prototypes[i] == "http://vwf.example.com/aframe/aentityComponent.vwf");
+                found = (prototypes[i] == "proxy/aframe/aentityComponent.vwf");
             }
         }
         return found;
@@ -1220,7 +1220,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => { return item.id == aframeObj.id })[0];
 
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/lineComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/lineComponent.vwf")) {
             // aframeObj.id = node.parentID;
             // aframeObj.el = sceneEl.children[node.parentID];
 
@@ -1234,7 +1234,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/gizmoComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/gizmoComponent.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1243,7 +1243,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aSceneFogComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/aSceneFogComponent.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
 
@@ -1258,7 +1258,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/raycasterComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/raycasterComponent.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1269,7 +1269,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
 
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/shadowComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/shadowComponent.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "shadow";
@@ -1277,7 +1277,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aabb-collider-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/aabb-collider-component.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "aabb-collider";
@@ -1285,7 +1285,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/a-mirror-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/a-mirror-component.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "mirror";
@@ -1293,7 +1293,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/viewOffsetCamera-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/viewOffsetCamera-component.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "viewoffset";
@@ -1301,7 +1301,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/streamSoundComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/streamSoundComponent.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1310,7 +1310,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/linepath.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/linepath.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1319,7 +1319,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/aMaterialComponent.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/aMaterialComponent.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "material";
@@ -1327,7 +1327,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/a-sound-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/a-sound-component.vwf")) {
 
             // aframeObj.el.setAttribute(node.type, {});
             aframeObj.compName = "sound";
@@ -1335,7 +1335,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/interpolation-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/interpolation-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1344,7 +1344,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/anim-mixer-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/anim-mixer-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1353,7 +1353,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-envmap-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-envmap-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1363,7 +1363,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
         }
 
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-avatarbvh-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-avatarbvh-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1372,7 +1372,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-sun-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-sun-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1382,7 +1382,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-skyshader-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-skyshader-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1391,7 +1391,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-raycaster-listener-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-raycaster-listener-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1400,7 +1400,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-aabb-collider-listener-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-aabb-collider-listener-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});
@@ -1409,7 +1409,7 @@ define(["module", "vwf/model", "vwf/utility"], function (module, model, utility)
 
         }
 
-        if (self.state.isComponentClass(protos, "http://vwf.example.com/aframe/app-cursor-listener-component.vwf")) {
+        if (self.state.isComponentClass(protos, "proxy/aframe/app-cursor-listener-component.vwf")) {
 
 
             // aframeObj.el.setAttribute(node.type, {});

@@ -1,0 +1,31 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "gearvr",
+    "properties": {},
+    "methods": {
+        "initialize": {},
+        "updateController": {},
+        "createSimpleController": {},
+        "createControllerFromGLTF": {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "createController": {
+            "parameters": [
+                "modelSrc"
+            ]
+        },
+        "updateVRControl": {
+            "parameters": [
+                "position",
+                "rotation"
+            ]
+        },
+        "triggerdown": {},
+        "triggerup": {}
+    },
+    "scripts": {
+        "source": "gearvrcontroller.js"
+    }
+}

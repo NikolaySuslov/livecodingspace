@@ -1,0 +1,13 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-sky",
+  "properties": {
+    "phi-length": null,
+    "phi-start": null,
+    "radius": null,
+    "segments-height": null,
+    "segments-width": null,
+    "theta-length": null,
+    "theta-start": null
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "fullWidth": null,
+    "fullHeight": null,
+    "xoffset": null,
+    "yoffset": null,
+    "subcamWidth": null,
+    "subcamHeight": null
+  },
+  "methods": {
+    "setParams": {}
+  },
+  "scripts": {
+    "source": "viewOffsetCamera-component.js"
+  }
+}

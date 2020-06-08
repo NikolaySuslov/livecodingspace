@@ -1,0 +1,121 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "properties":{},
+  "children": {
+    "floorTexture": {
+    "extends": "proxy/aframe/a-asset-image-item.vwf",
+    "properties": {
+        "itemID": "bg2",
+        "itemSrc": "/defaults/assets/checker.jpg"
+    }
+  },
+  "skyTexture": {
+    "extends": "proxy/aframe/a-asset-image-item.vwf",
+    "properties": {
+        "itemID": "sky",
+        "itemSrc": "/defaults/assets/skyes/sky3.jpg"
+    }
+  },
+    "fog": {
+      "extends": "proxy/aframe/aSceneFogComponent.vwf",
+      "type": "component",
+      "properties": {
+        "fogType": "linear",
+        "fogColor": "#ECECEC",
+        "far": 20,
+        "near": 0
+      }
+    },
+    "groundPlane": {
+      "extends": "proxy/aframe/aplane.vwf",
+      "properties": {
+        "height": "50",
+        "width": "50",
+        "rotation": [
+          -90,
+          0,
+          0
+        ]
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "wireframe": false,
+            "src": "#bg2",
+            "repeat": "10 10"
+          }
+        }
+      }
+    },
+    "myLight": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "point",
+        "color": "white",
+        "position": [
+          0,
+          3,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "sky": {
+      "extends": "proxy/aframe/asky.vwf",
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#ECECEC",
+            "src": "#sky",
+            "fog": false,
+            "side": "back"
+          }
+        }
+      }
+    },
+    "spaceText": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "WebRTC app",
+        "color": "white",
+        "position": [
+          -2,
+          2.5,
+          -2
+        ]
+      }
+    },
+    "box": {
+      "extends": "proxy/aframe/abox.vwf",
+      "properties": {
+        "position": [
+          0,
+          0,
+          -3
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "depth": "3",
+        "height": "0.2",
+        "width": "3"
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#3c7249"
+          }
+        }
+      }
+    }
+  }
+}

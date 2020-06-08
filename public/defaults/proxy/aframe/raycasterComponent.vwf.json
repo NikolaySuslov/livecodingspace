@@ -1,0 +1,15 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "direction": null,
+    "far": null,
+    "interval": null,
+    "near": null,
+    "objects": null,
+    "origin": null,
+    "recursive": null,
+    "showLine": null,
+    "useWorldCoordinates": null
+  }
+}

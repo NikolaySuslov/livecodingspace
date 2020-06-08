@@ -1,0 +1,17 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-gltf-model",
+  "properties": {
+    "src": null
+  },
+  "methods": {
+    "updateModel": {
+      "parameters": [
+        "obj"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "agltfmodel.js"
+  }
+}

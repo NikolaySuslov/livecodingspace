@@ -1,0 +1,8 @@
+{
+  "extends": "proxy/aframe/node.vwf",
+  "type": "audio",
+  "properties": {
+    "itemID": null,
+    "itemSrc": null
+  }
+}

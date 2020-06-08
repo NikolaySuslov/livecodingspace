@@ -108,7 +108,7 @@ define(["module", "vwf/view"], function (module, view) {
                 return;
             }
 
-            if (this.nodes[childID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf") {
+            if (this.nodes[childID].extends == "proxy/aframe/a-sound-component.vwf") {
                 console.log(vwf.getProperty(childID, 'isPlaying'));
                 self.kernel.callMethod(childID, "playSound");
             }
@@ -238,7 +238,7 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
-            // if (this.nodes[nodeId].extends == "http://vwf.example.com/aframe/a-sound-component.vwf"){
+            // if (this.nodes[nodeId].extends == "proxy/aframe/a-sound-component.vwf"){
             //     if (propertyName == "currentTime"){
             //         console.log(node.aframeObj.el.components.sound.listener.context.currentTime);
             //     }
@@ -255,7 +255,7 @@ define(["module", "vwf/view"], function (module, view) {
             }
 
 
-            if (this.nodes[nodeID].extends == "http://vwf.example.com/aframe/a-sound-component.vwf") {
+            if (this.nodes[nodeID].extends == "proxy/aframe/a-sound-component.vwf") {
                 if (methodName == "stopSound") {
 
                     console.log("stop sound");
@@ -296,7 +296,7 @@ define(["module", "vwf/view"], function (module, view) {
         // self.tickTime = 0;
 
         let interNodes = Object.entries(self.nodes).filter(node =>
-            node[1].extends == 'http://vwf.example.com/aframe/interpolation-component.vwf');
+            node[1].extends == 'proxy/aframe/interpolation-component.vwf');
 
         interNodes.forEach(node => {
             let nodeID = node[0];

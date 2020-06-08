@@ -32,7 +32,7 @@ define( [ "module" ], function( module ) {
         /// 
         /// @field
 
-        protoNodeURI: "http://vwf.example.com/node.vwf",
+        protoNodeURI: "proxy/node.vwf",
 
         /// The component descriptor of the VWF proto-prototype node `node.vwf`.
         /// 

@@ -1,0 +1,14 @@
+{
+  "extends": "proxy/aframe/aentity.vwf",
+  "type": "a-cone",
+  "properties": {
+    "height": null,
+    "open-ended": null,
+    "radius-bottom": null,
+    "radius-top": null,
+    "segments-height": null,
+    "segments-radial": null,
+    "theta-length": null,
+    "theta-start": null
+  }
+}

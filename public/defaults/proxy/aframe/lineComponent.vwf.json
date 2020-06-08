@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/aframe/aentityComponent.vwf",
+  "type": "component",
+  "properties": {
+    "start": null,
+    "end": null,
+    "color": null,
+    "opacity": null,
+    "visible": null
+  }
+}
