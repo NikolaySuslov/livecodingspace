@@ -64,7 +64,7 @@ define(["module", "vwf/view"], function (module, view) {
 
             this.threeDoFMobile = AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected() && !navigator.userAgent.includes('Quest');
             this.sixDoFMobile = AFRAME.utils.device.checkHeadsetConnected() && navigator.userAgent.includes('Quest');
-            this.sixDoFDesktop = !AFRAME.utils.device.isMobile && !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
+            this.sixDoFDesktop = !AFRAME.utils.device.isMobile() && !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
 
 
         },
