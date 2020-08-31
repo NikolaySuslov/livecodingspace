@@ -1,0 +1,10 @@
+{
+  "info":{
+    "title": "Pure App"
+  },
+  "model": {
+  },
+  "view": {
+    "/drivers/view/editor": null
+  }
+}

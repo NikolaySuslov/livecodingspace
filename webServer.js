@@ -14,7 +14,8 @@ var express = require('express'),
     http = require('http'),
     https = require('https'),
     //logger = require('./server/logger'),
-    config = require('./server/readConfig')
+    config = require('./server/readConfig'),
+    history = require('connect-history-api-fallback')
 
 var app = express();
 
@@ -87,7 +88,8 @@ function startServer() {
     config.readConfigFile();
 
     app.use(compression());
-    app.use(serveStatic(__dirname + '/public'));
+    app.use(history());
+    app.use(serveStatic(path.join(__dirname) + '/public'));
     app.use(cors());
 
     // app.use(function(req, res, next) {
@@ -131,9 +133,10 @@ function startServer() {
 
 
     // send all requests to index.html so browserHistory in React Router works
-    app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname + '/public/', 'index.html'))
-    })
+    // app.get('*', function (req, res) {
+    //     res.sendFile(path.join(__dirname + '/public/', 'index.html'))
+    // })
+   
 
     //=========end of specific===========
 

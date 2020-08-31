@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "LEGO Boost app",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Demo connecting to LEGO Boost"
+        },
+        "ru": {
+            "title": "LEGO Boost приложение",
+            "imgUrl": "/defaults/worlds/webrtc/webimg.jpg",
+            "text": "Пример приложения с использованием LEGO Boost"
+        }
+    }
+}

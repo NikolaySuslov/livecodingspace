@@ -171,7 +171,7 @@
           },
           "methods": {
             "run": {
-              "body": "    var time = vwf.now;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);\n    this.position = [pos[0], pos[1], Math.sin(time)];\n    this.rotation = [rot[0], rot[1], Math.sin(time)*100];\n    this.future( 0.01 ).run();\n",
+              "body": "    var time = this.time;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);\n    this.position = [pos[0], pos[1], Math.sin(time)];\n    this.rotation = [rot[0], rot[1], Math.sin(time)*100];\n    this.future( 0.01 ).run();\n",
               "type": "application/javascript"
             }
           },

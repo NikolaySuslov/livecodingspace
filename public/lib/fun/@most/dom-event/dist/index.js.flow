@@ -1,0 +1,91 @@
+// @flow
+
+import type { Stream } from "@most/types"
+
+declare export function domEvent(event: 'blur', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function domEvent(event: 'focus', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function domEvent(event: 'focusin', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function domEvent(event: 'focusout', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function domEvent(event: 'click', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'dblclick', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mousedown', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mouseup', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mousemove', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mouseover', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mouseenter', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mouseout', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'mouseleave', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function domEvent(event: 'change', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function domEvent(event: 'select', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function domEvent(event: 'submit', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'keydown', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function domEvent(event: 'keypress', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function domEvent(event: 'keyup', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function domEvent(event: 'input', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'contextmenu', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function domEvent(event: 'resize', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function domEvent(event: 'scroll', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function domEvent(event: 'error', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function domEvent(event: 'hashchange', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'popstate', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'load', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'unload', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function domEvent(event: 'pointerdown', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointerup', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointermove', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointerover', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointerenter', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointerout', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function domEvent(event: 'pointerleave', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function domEvent(event: 'touchstart', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function domEvent(event: 'touchend', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function domEvent(event: 'touchmove', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function domEvent(event: 'touchcancel', node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+
+declare export function domEvent(event: string, node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function blur(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function focus(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function focusin(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function focusout(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<FocusEvent>
+declare export function click(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function dblclick(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mousedown(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mouseup(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mousemove(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mouseover(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mouseenter(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mouseout(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function mouseleave(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<MouseEvent>
+declare export function change(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function select(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function submit(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function keydown(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function keypress(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function keyup(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<KeyboardEvent>
+declare export function input(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function contextmenu(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function resize(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function scroll(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<UIEvent>
+declare export function error(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function hashchange(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function popstate(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function load(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function unload(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function pointerdown(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointerup(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointermove(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointerover(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointerenter(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointerout(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+declare export function pointerleave(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<Event>
+
+declare export function touchstart(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function touchend(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function touchmove(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
+declare export function touchcancel(node: EventTarget, capture?: EventListenerOptionsOrUseCapture): Stream<TouchEvent>
