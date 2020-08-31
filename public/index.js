@@ -1,14 +1,19 @@
 //Load all required JS libs
 
 loadjs([
-    '/index.css',
-    '/lib/socket.io.js',
-    '/lib/he.js',
     '/lib/ui/noty/noty.css',
     '/lib/ui/noty/themes/mint.css',
     '/lib/ui/noty/noty.js',
     '/lib/ui/nprogress/nprogress.css',
     '/lib/ui/nprogress/nprogress.js',
+],'sys', {
+    async: false
+});
+
+loadjs([
+    '/index.css',
+    '/lib/socket.io.js',
+    '/lib/he.js',
     '/lib/locale/polyglot.min.js',
     '/lib/hashids.min.js',
 ],'forall', {
@@ -16,6 +21,7 @@ loadjs([
 });
 
 loadjs([
+    '/lib/ohm/ohm.min.js',
     '/lib/fun/@most/prelude/dist/index.js',
     '/lib/fun/@most/scheduler/dist/index.js',
     '/lib/fun/@most/disposable/dist/index.js',
@@ -51,11 +57,14 @@ loadjs(['/lib/gundb/gun.min.js',
 );
 
 
-loadjs.ready(['fun', 'forall'], function() {
-    NProgress.start();
+loadjs.ready(['sys', 'fun', 'forall'], function() {
     }).ready('gundb', function() {
         import('/core/app.js')
             .then((module) => {
                 new module.App
         });
+})
+
+document.addEventListener('DOMContentLoaded', function(){
+    NProgress.start();
 })

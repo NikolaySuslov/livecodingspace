@@ -1524,7 +1524,6 @@ class App {
 
     return loadjs([
       '/lib/async.min.js',
-      '/lib/ohm/ohm.min.js',
       '/lib/qheap.js',
       '/lib/lively.vm_standalone.js',
       '/lib/crypto.js',
