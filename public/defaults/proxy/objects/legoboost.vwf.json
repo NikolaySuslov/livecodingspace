@@ -1,0 +1,73 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "legoboost",
+    "properties": {
+        "boostID": {
+            "set": "this.value = value; this.boostID = value; this.displayName = value",
+            "get": "return this.value"
+          },
+        "led": null,
+        "rawLed": null,
+          "roll": {
+            "set": "this.setRoll(value)",
+            "get": "return this.getRoll()"
+          },
+          "pitch": {
+            "set": "this.setPitch(value)",
+            "get": "return this.getPitch()"
+          },
+          "motorA": null,
+          "motorB": null,
+          "motorC": null,
+          "rawMotorA": null,
+          "rawMotorB": null,
+          "rawMotorC": null,
+          "tracking": null
+    },
+    "methods": {
+        "createVisual": {},
+        "gotDeviceInfo": {
+            "parameters": ["info", "key"],
+            "type": "application/javascript"
+        },
+        "getDeviceInfo": {
+            "parameters": ["value"],
+            "body": "\/\/get device info \n",
+            "type": "application/javascript"
+        },
+        "setLed": {
+            "parameters": ["value", "sync"],
+            "type": "application/javascript"
+        },
+        "setDelay": {
+            "parameters": ["value", "sync"],
+            "type": "application/javascript"
+        },
+        "sat_setLed": {
+            "parameters": ["value"]
+        },
+        "sat_setDelay": {
+            "parameters": ["value"]
+        },
+        "setMotorAngle":{
+            "parameters": ["port", "angle", "dutyCycle", "sync"]
+        },
+        "sat_setMotorAngle":{
+            "parameters": ["port", "angle", "dutyCycle"]
+        },
+        "setVisualMotorRotation":{
+            "parameters": ["port", "angle", "dutyCycle"]
+        },
+        "setVisualLed":{
+            "parameters": ["value"]
+        },
+        "getRoll":{},
+        "setRoll":{},
+        "getPitch":{},
+        "setPitch":{},
+        "trackLego":{}
+    },
+    "scripts": {
+        "source": "legoboost.js"
+    }
+}

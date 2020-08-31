@@ -100,6 +100,7 @@ class IndexApp {
         //add HTML
         let entry = document.createElement("div");
         entry.setAttribute("id", 'app');
+        //entry.classList.add("mdc-typography");
         document.body.appendChild(entry);
 
         let divs = ['appGUI', 'userLobby', 'worldsGUI'];
@@ -514,11 +515,11 @@ class IndexApp {
             $init: function () {
 
                 if (_app.isLuminary) {
-                    let luminaryPath = _app.luminaryPath;
-                    let ref = _LCSDB.get(luminaryPath);
+                    //let luminaryPath = _app.luminaryPath;
+                    //let ref = _lum //.get(luminaryPath);
                     setInterval(function () {
 
-                        ref.get('allclients').once().map().once(res => {
+                        _LCSDB.get('allclients').once().map().once(res => {
 
                             if (res) {
                                 if (res.id) {
@@ -986,11 +987,13 @@ class IndexApp {
 
                 let arSettings = {
                     model: {
-                        'vwf/model/aframe': null
+                        '/drivers/model/aframe': null,
+                        '/drivers/model/aframeComponent': null
                     },
                     view: {
-                        'vwf/view/aframe': null,
-                        'vwf/view/editor-new': null
+                        '/drivers/view/aframe': null,
+                        '/drivers/view/aframeComponent': null,
+                        '/drivers/view/editor': null
                     }
                 }
 
@@ -1001,11 +1004,13 @@ class IndexApp {
 
                 let arSettings = {
                     model: {
-                        'vwf/model/aframe': null
+                        '/drivers/model/aframe': null,
+                        '/drivers/model/aframeComponent': null
                     },
                     view: {
-                        'vwf/view/aframe': null,
-                        'vwf/view/aframe-ar-driver': null
+                        '/drivers/view/aframe': null,
+                        '/drivers/view/aframeComponent': null,
+                        '/drivers/view/aframe-ar-driver': null
                     }
                 }
 

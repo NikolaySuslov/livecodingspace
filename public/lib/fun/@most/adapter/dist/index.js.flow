@@ -1,0 +1,6 @@
+// @flow
+import type { Stream } from '@most/types'
+
+export type Adapter<A, B> = [A => void, Stream<B>]
+
+declare export function createAdapter <A> (): Adapter<A, A>

@@ -1,0 +1,16 @@
+{
+    "info":{
+      "title": "VWF & AFrame Example App"
+    },
+    "model": {
+      "/drivers/model/aframe": null,
+      "/drivers/model/aframeComponent": null,
+      "/drivers/model/lego-boost": null
+    },
+    "view": {
+      "/drivers/view/aframe": null,
+      "/drivers/view/aframeComponent": null,
+      "/drivers/view/editor": null,
+      "/drivers/view/lego-boost": null
+    }
+  }

@@ -125,7 +125,7 @@
       },
       "methods": {
         "run": {
-          "body": "    var time = vwf.now;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    this.rotation = [rot[0], Math.sin(time)*50, rot[2]];\n    this.future( 0.01 ).run();\n",
+          "body": "    var time = this.time;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    this.rotation = [rot[0], Math.sin(time)*50, rot[2]];\n    this.future( 0.01 ).run();\n",
           "type": "application/javascript"
         }
       },
@@ -307,53 +307,11 @@
         "camera1": {
           "extends": "proxy/aframe/offsetcamera.vwf",
           "children": {
-            "cam": {
-              "extends": "proxy/aframe/acamera.vwf",
-              "properties": {
-                "look-controls-enabled": "false",
-                "wasd-controls-enabled": "false",
-                "user-height": "0"
-              },
-              "children": {
-                "viewoffset": {
-                  "extends": "proxy/aframe/viewOffsetCamera-component.vwf",
-                  "properties": {
-                    "fullWidth": 3000,
-                    "fullHeight": 2000,
-                    "xoffset": 0,
-                    "yoffset": 0,
-                    "subcamWidth": 1500,
-                    "subcamHeight": 2000
-                  }
-                }
-              }
-            }
           }
         },
         "camera2": {
           "extends": "proxy/aframe/offsetcamera.vwf",
           "children": {
-            "cam": {
-              "extends": "proxy/aframe/acamera.vwf",
-              "properties": {
-                "look-controls-enabled": "false",
-                "wasd-controls-enabled": "false",
-                "user-height": "0"
-              },
-              "children": {
-                "viewoffset": {
-                  "extends": "proxy/aframe/viewOffsetCamera-component.vwf",
-                  "properties": {
-                    "fullWidth": 3000,
-                    "fullHeight": 2000,
-                    "xoffset": 1500,
-                    "yoffset": 0,
-                    "subcamWidth": 1500,
-                    "subcamHeight": 2000
-                  }
-                }
-              }
-            }
           }
         }
       }

@@ -468,6 +468,32 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
 
 }
 
+
+this.createLegoBoost = function (boostID, parentName) {
+    var self = this;
+    let nodeName = 'legoboost-' + this.smallRandomId();
+
+    let legoBoostNode = {
+        "extends": "proxy/objects/legoboost.vwf",
+        "properties": {
+            "boostID": boostID,
+            "position": "0 1 0",
+            "displayName": boostID,
+            "tracking": false
+        }
+    }
+
+    let rootNode = parentName ? this.getChildByName(parentName) : this;
+    rootNode.children.create(nodeName, legoBoostNode, function( child ) {
+
+        child.createVisual();
+        child.trackLego();
+
+    })
+
+
+}
+
 this.createModel = function (modelType, modelSrc, avatar) {
 
     var self = this;
@@ -650,7 +676,7 @@ this.createPrimitive = function (type, params, name, node, avatar) {
             if (avatar) child.lookAt(self.children[avatar].worldPosition());
             
             if (type == "text"){
-                child.properties.font = "/vwf/model/aframe/fonts/custom-msdf.json"
+                child.properties.font = "/drivers/model/aframe/fonts/custom-msdf.json"
             }
           });
     }
@@ -830,7 +856,7 @@ this.createImage = function (imgSrc, name, node, avatar) {
     
         } else {
 
-            let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+            let allNodes = vwf.models["/drivers/model/aframe"].model.state.nodes;
             let imgAssetNode = allNodes[child.id];
     
             imgAssetNode.aframeObj.onload = function(){
@@ -924,7 +950,7 @@ this.createVideo = function (vidSrc, name, node, avatar) {
 
         } else {
 
-            let allNodes = vwf.models["vwf/model/aframe"].model.state.nodes;
+            let allNodes = vwf.models["/drivers/model/aframe"].model.state.nodes;
             let imgAssetNode = allNodes[child.id];
     
             imgAssetNode.aframeObj.onloadeddata = function(){
