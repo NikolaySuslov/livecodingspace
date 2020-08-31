@@ -1,112 +1,27 @@
 <!-- 
 The MIT License (MIT)
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
-    <!-- <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>Live Coding Space 0.2</title>
-    <!-- <script type="text/javascript" src="/lib/page.js"></script> -->
+    <title>Live Coding Space 0.7</title>
 
-    <script type="text/javascript" src="/lib/loadjs/loadjs.js"></script>
-    <script type="text/javascript" src="/loadLibs.js"></script>
-
-    <link href="/lib/noty/noty.css" rel="stylesheet">
-    <link href="/lib/noty/themes/mint.css" rel="stylesheet">
-    <link href="/lib/treeview/treeview.min.css" rel="stylesheet">
-
-   <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"> --> 
-    <link rel="stylesheet" href="/lib/mdc/dist/material-components-web.min.css">
-    <link rel="stylesheet" type="text/css" href="/vwf/model/aframe/addon/virtualgc/virtual-gamepad-controls.css" />
-    <link rel="stylesheet" type="text/css" href="/lib/index.css" />
-
-    <script type="text/javascript" src="/lib/closure/base.js"></script>
-    <script type="text/javascript">goog.require('goog.vec.Vec2')</script>
-    <script type="text/javascript">goog.require('goog.vec.Mat4')</script>
-    <script type="text/javascript">goog.require('goog.vec.Quaternion')</script>
+    <base href="/">
+    <script type="text/javascript" src="/lib/loadjs.min.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    
+    <!-- TODO: move goog.closure to VWF model and import as ES module -->
+    <script type="text/javascript" src="/drivers/model/math/closure/base.js"></script>
+    <script type="text/javascript" src="/drivers/model/math/goog.closure.js"></script>
 
 </head>
-
-<body class="mdc-typography">
-
-    <div id="load-progressbar" role="progressbar"
-        class="mdc-linear-progress mdc-linear-progress--indeterminate loader visible">
-        <div class="mdc-linear-progress__buffering-dots"></div>
-        <div class="mdc-linear-progress__buffer"></div>
-        <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-            <span class="mdc-linear-progress__bar-inner"></span>
-        </div>
-        <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-            <span class="mdc-linear-progress__bar-inner"></span>
-        </div>
-    </div>
-
-    <div id="incompatibleBrowser">
-        <div>
-            <span style="color:#3090C7;">
-                <br />
-                <br />Your browser does not support this app</span>
-        </div>
-    </div>
-    <div id="vwf-root"></div>
-
-    <div id="ui-controls" class="guiwindow">
-        <i id="hideui" class="mdc-icon-button material-icons" role="button" aria-pressed="true"
-            aria-label="Hide Toollbar" tabindex="0" data-toggle-on='{"label": "Hide", "content": "grid_on"}'
-            data-toggle-off='{"label": "Show", "content": "grid_off"}'>
-            grid_on
-        </i>
-
-        <i id="fullscreenui" class="mdc-icon-button material-icons" role="button" aria-pressed="true"
-            aria-label="Hide Toollbar" tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}'
-            data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
-            fullscreen
-        </i>
-    </div>
-
-    <script>
-        window.addEventListener("load", function (event) {
-
-            console.log("All resources finished loading!");
-
-            const iconEl = document.querySelector('#hideui');
-            const compHideUI = new mdc.iconButton.MDCIconButtonToggle(iconEl);
-            iconEl.addEventListener('MDCIconButtonToggle:change', (e) => {
-
-                let ui = document.querySelector('.mdc-top-app-bar');
-                if (ui) {
-
-                    let chkAttr = e.detail.isOn;
-                    if (chkAttr) {
-                        ui.style.visibility = 'visible'
-                    } else {
-                        ui.style.visibility = 'hidden'
-                    }
-                }
-
-            });
-
-            const fullScreenToggle = document.querySelector('#fullscreenui');
-            const compfullScreen = new mdc.iconButton.MDCIconButtonToggle(fullScreenToggle);
-            fullScreenToggle.addEventListener('MDCIconButtonToggle:change', (e) => {
-
-                if (screenfull.enabled) {
-                    screenfull.toggle();
-                } else {
-                    // Ignore or do something else
-                }
-            });
-
-        });
-
-    </script>
+<body>
+<div id="root"></div>
 </body>
-
 </html>

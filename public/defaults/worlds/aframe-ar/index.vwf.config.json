@@ -3,11 +3,14 @@
     "title": "VWF & AFrame Example App"
   },
   "model": {
-    "vwf/model/aframe": {}
+    "/drivers/model/aframe": {},
+    "/drivers/model/aframeComponent": {}
   },
   "view": {
-    "vwf/view/aframe": null,
-    "vwf/view/aframe-ar-driver": null
+    "/drivers/view/aframe": null,
+    "/drivers/view/aframeComponent": null,
+    "/drivers/view/aframe-ar-driver": null
   }
 }
   
+

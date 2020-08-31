@@ -5,7 +5,7 @@
 .world-card__16-9-media {
 background-repeat: no-repeat;
 height: 176px;
-background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('images/default.jpg') center / cover;
+background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('/defaults/assets/webimg.jpg') center / cover;
 
 }
 

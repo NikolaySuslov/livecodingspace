@@ -54,7 +54,7 @@ this.rotateBy = function(rotation, duration, frame) {
     let deltaQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
        (THREE.Math.degToRad(rotationValue[0])),
        (THREE.Math.degToRad(rotationValue[1])),
-       (THREE.Math.degToRad(rotationValue[2])), 'YXZ'
+       (THREE.Math.degToRad(rotationValue[2])), 'XYZ'
      ));
      this.quaterniateBy( deltaQuaternion, duration, frame ); //@ sourceURL=node3.animation.rotateBy.vwf
 }
@@ -64,7 +64,7 @@ this.rotateTo = function(rotation, duration){
     let stopQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
         (THREE.Math.degToRad(rotationValue[0])),
         (THREE.Math.degToRad(rotationValue[1])),
-        (THREE.Math.degToRad(rotationValue[2])), 'YXZ'
+        (THREE.Math.degToRad(rotationValue[2])), 'XYZ'
       ));
     this.quaterniateTo( stopQuaternion, duration ); //@ sourceURL=node3.animation.rotateTo.vwf
 }
@@ -74,7 +74,7 @@ this.quaterniateBy = function(quaternion, duration, frame) {
       this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
           (THREE.Math.degToRad(this.rotation[0])),
           (THREE.Math.degToRad(this.rotation[1])),
-          (THREE.Math.degToRad(this.rotation[2])), 'YXZ'
+          (THREE.Math.degToRad(this.rotation[2])), 'XYZ'
         ));
       var deltaQuaternion = (new THREE.Quaternion).copy(quaternion);
       if ( ! frame || frame == "rotated" ) {
@@ -92,7 +92,7 @@ this.quaterniateBy = function(quaternion, duration, frame) {
           let step = (time >= duration) ? 1 : time / duration;
 
           THREE.Quaternion.slerp(this.startQuaternionSIM, this.stopQuaternionSIM, q, step || 0);
-          let interp = e.setFromQuaternion(q, 'YXZ');
+          let interp = e.setFromQuaternion(q, 'XYZ');
           this.rotation = [THREE.Math.radToDeg(interp.x), THREE.Math.radToDeg(interp.y), THREE.Math.radToDeg(interp.z)];
         }
         this.animationPlay(0, duration);
@@ -100,13 +100,46 @@ this.quaterniateBy = function(quaternion, duration, frame) {
       else {
         let eE = new THREE.Euler();
         let eQ = (new THREE.Quaternion).copy(this.stopQuaternionSIM);
-        let interpE = eE.setFromQuaternion(eQ, 'YXZ');
+        let interpE = eE.setFromQuaternion(eQ, 'XYZ');
         this.rotation = [THREE.Math.radToDeg(interpE.x),THREE.Math.radToDeg(interpE.y), THREE.Math.radToDeg(interpE.z)];
         //this.quaternion = this.stopQuaternionSIM;
       } //@ sourceURL=node3.animation.quaterniateBy.vwf
 
     }
   
+    this.quaterniateTo = function(quaternion, duration) {
+
+      this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
+        (THREE.Math.degToRad(this.rotation[0])),
+        (THREE.Math.degToRad(this.rotation[1])),
+        (THREE.Math.degToRad(this.rotation[2])), 'XYZ'
+      ));
+    this.stopQuaternionSIM = (new THREE.Quaternion).copy(quaternion);
+    if(duration > 0) {
+      this.animationDuration = duration;
+      this.animationUpdate = function(time, duration) {
+
+        let q = new THREE.Quaternion();
+        let e = new THREE.Euler();
+        let step = (time >= duration) ? 1 : time / duration;
+
+        THREE.Quaternion.slerp(this.startQuaternionSIM, this.stopQuaternionSIM, q, step || 0);
+        let interp = e.setFromQuaternion(q, 'XYZ');
+        this.rotation = [THREE.Math.radToDeg(interp.x), THREE.Math.radToDeg(interp.y), THREE.Math.radToDeg(interp.z)];
+      }
+      this.animationPlay(0, duration);
+    }
+    else {
+      let eE = new THREE.Euler();
+      let eQ = (new THREE.Quaternion).copy(this.stopQuaternionSIM);
+      let interpE = eE.setFromQuaternion(eQ, 'XYZ');
+      this.rotation = [THREE.Math.radToDeg(interpE.x),THREE.Math.radToDeg(interpE.y), THREE.Math.radToDeg(interpE.z)];
+      //this.quaternion = this.stopQuaternionSIM;
+    } //@ sourceURL=node3.animation.quaterniateTo.vwf
+
+    }
+
+
     this.scaleBy = function(scale, duration){
 
       this.startScaleSIM = this.scale || goog.vec.Vec3.createFromValues( 1, 1, 1 );

@@ -138,6 +138,12 @@
         "width",
         "pos"
       ]
+    },
+    "createLegoBoost": {
+      "parameters": [
+        "boostID",
+        "parentName"
+      ]
     }
   },
   "scripts": {

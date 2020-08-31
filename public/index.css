@@ -1,0 +1,163 @@
+body {
+  background-color: rgb(255, 255, 255);
+  /* Prevent selection of HTML divs */
+  user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  margin: 0px;
+}
+
+#root {
+  position:absolute;
+  z-index:-1;
+}
+
+#root>div, #root>canvas {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.vwf-err {
+    border: 2px solid red;
+    font: 14px Arial;
+    background: #FFFFDD;
+    color: #880000;
+    padding: 8px;
+    width: 300px;
+}
+
+.overlay {
+  position:absolute;
+  top:30%;
+  width:99%;
+  pointer-events:none;
+}
+
+/*
+.overlay p {
+  padding:0px;
+  margin:0px;
+}
+*/
+
+.overlay a:link {
+  color:#888888;
+}
+
+.overlay a:visited {
+  color:#888888;
+}
+
+.overlay a:hover {
+  color:#CCCCCC;
+}
+
+.loading {
+  margin:auto auto;
+  color:#FFF;
+  width:600px;
+  height:400px;
+  background:#050505;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -khtml-border-radius: 20px;
+  border-radius: 20px;
+  font:18px Arial;
+  /*visibility: hidden;*/
+}
+
+.requirements {
+	margin-left: 100px;
+}
+
+.req {
+  font-size:14px;
+  position:relative;
+  left:20px;
+}
+
+ .guiwindow {
+
+  position: absolute;
+  border: 0;
+  right: 0px;
+  bottom: 70px;
+  cursor: pointer;
+  min-width: 50px;
+  min-height: 30px;
+  padding-right: 2%;
+  padding-top: 4%;
+  position: absolute;
+  transition: background-color .05s ease;
+  -webkit-transition: background-color .05s ease;
+  z-index: 9999;
+ }
+
+ .loader {
+  z-index: 10;
+  position: absolute;
+  top: 0px;
+ }
+
+ .visible {
+  visibility: visible;
+}
+
+.not-visible {
+  visibility: hidden;
+}
+
+.dragdropArea {
+  width: 400px;
+  height: 200px;
+  border-width: medium;
+  border: rgb(3, 81, 137);
+  border-style: dotted;
+}
+
+.drag {
+  border: 5px solid rgba(195, 0, 0, 0.751);
+}
+
+a.link-in-text {
+  outline: none;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px solid;
+}
+
+
+a.link-in-text:link {
+  border-bottom: 1px solid;
+}
+
+
+
+a.link-in-text:visited {
+  border-bottom: 1px solid;
+}
+
+
+a.link-in-text:focus {
+  border-bottom: 2px solid; 
+  
+}
+
+a.link-in-text:hover {   
+  border-bottom: 2px solid; 
+}
+
+a.link-in-text:active {
+  
+  border-bottom: 1px solid; 
+}
+
+.unselectable {
+  -moz-user-select: text;
+  -khtml-user-select: text;
+  -webkit-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+ }

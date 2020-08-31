@@ -254,7 +254,7 @@
           },
           "methods": {
             "run": {
-              "body": "    var time = vwf.now;\n    let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);\n    this.position = [pos[0], pos[1], Math.sin(time)]\n    this.future( 0.01 ).run();\n",
+              "body": "    var time = this.time;\n    let pos = this.position; //AFRAME.utils.coordinates.parse(this.position);\n    this.position = [pos[0], pos[1], Math.sin(time)]\n    this.future( 0.01 ).run();\n",
               "type": "application/javascript"
             }
           },

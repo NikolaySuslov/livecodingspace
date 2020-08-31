@@ -69,5 +69,8 @@
 },
   "events":{
     "changingTransformFromView": {}
+  },
+  "scripts": {
+    "source": "animationNode.js"
   }
 }
