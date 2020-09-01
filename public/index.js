@@ -58,7 +58,9 @@ loadjs(['/lib/gundb/gun.min.js',
 
 
 loadjs.ready(['sys', 'fun', 'forall'], function() {
+    document.addEventListener('DOMContentLoaded', function(){
         NProgress.start();
+    })
     }).ready('gundb', function() {
         import('/core/app.js')
             .then((module) => {

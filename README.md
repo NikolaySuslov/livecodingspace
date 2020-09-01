@@ -9,11 +9,14 @@ Based on: **Virtual World Framework (Croquet)** | **A-Frame** | **Ohm language**
 
 ## Updates
 
+- [08.2020] All core application components are now ES6 modules
 - [10.2019] **Krestianstvo Luminary** working prototype included
+
+### [Changelog](CHANGELOG.md)
 
 ## Architecture
 
-**[LiveCoding.space](https://livecoding.space)** ```v0.2``` architecture moves **[Virtual World Framework](https://github.com/virtual-world-framework/vwf)** architecture towards pure-decentralized application by introducing:
+**[LiveCoding.space](https://livecoding.space)** architecture moves **[Virtual World Framework](https://github.com/virtual-world-framework/vwf)** architecture towards pure-decentralized application by introducing:
 
 - **single page web application**
 - **client-side router** (generating **instances IDs** by client) ([about Page.js](https://visionmedia.github.io/page.js/))
@@ -48,7 +51,7 @@ alongside with the existed features from the initial version ```v0.1```:
 
 All code is published under the MIT license
 
-Copyright (c) 2014-2019 Nikolai Suslov and the Krestianstvo.org project contributors.
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
