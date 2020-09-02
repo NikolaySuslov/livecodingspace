@@ -10,6 +10,7 @@ import { Helpers } from '/core/helpers.js';
 import { VWF } from '/core/vwf.js';
 import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/ui/widgets.js';
+import {Spinner} from '/lib/ui/spinjs/spin.js';
 
 import { createAdapter } from '/lib/fun/@most/adapter/dist/index.mjs';
 import *  as mostSubject from '/lib/fun/@most/subject/dist/index.all.js';
@@ -29,8 +30,9 @@ class App {
     M.scheduler = mostScheduler;
     M.prelude = mostPrelude;
     M.e = mostDomEvent;
+    
     ///
-
+    this.setupLoadScreen();
     window._noty = new Noty;
     this.helpers = new Helpers;
     this.log = this.helpers.log;
@@ -60,6 +62,8 @@ class App {
         window.IndexApp = res.default;
         this.setPageRoutes();
       });
+
+
 
   }
 
@@ -192,6 +196,36 @@ class App {
 
     if (lcsappConfig)
       localStorage.setItem('lcs_app', lcsappConfig);
+
+  }
+
+  setupLoadScreen(){
+
+    let opts = {
+      lines: 13,
+      length: 28,
+      width: 14,
+      radius: 42,
+      scale: 1,
+      corners: 1,
+      color: '#CCC',
+      opacity: 0.25,
+      rotate: 0,
+      direction: 1,
+      speed: 1,
+      trail: 60,
+      fps: 20,
+      zIndex: 2e9,
+      className: 'spinner',
+      top: '50%',
+      left: '50%',
+      shadow: false,
+      hwaccel: false,
+      position: 'absolute',
+     }
+
+    let el = document.getElementById('loadscreen');
+    this.spinner = new Spinner(opts).spin(el);
 
   }
 
@@ -453,11 +487,12 @@ class App {
 
   HandleDebugIndex() {
 
-    window._app.hideProgressBar();
+
     //window._app.hideUIControl();
 
     _app.generalIndex().then(r=>{
 
+    _app.hideProgressBar();   
     let el = document.createElement("div");
     el.setAttribute("id", "appGUI");
     document.body.appendChild(el);
@@ -1249,7 +1284,7 @@ class App {
     _app.generalIndex().then(res=>{
       if (!_app.indexApp) {
         _app.indexApp = new IndexApp('index');
-        window._app.hideProgressBar();
+        _app.hideProgressBar();
       }
     })
 
@@ -1760,34 +1795,14 @@ class App {
 
 
   hideProgressBar() {
-
-    NProgress.done();
-    NProgress.remove();
-    //TODO:
-
-    // var progressbar = document.getElementById("load-progressbar");
-    // if (progressbar) {
-    //   progressbar.classList.remove("visible");
-    //   progressbar.classList.remove("mdc-linear-progress--indeterminate");
-
-    //   progressbar.classList.add("not-visible");
-    //   progressbar.classList.add("mdc-linear-progress--closed");
-
-    // }
-
+    let el = document.getElementById('loadscreen');
+    el.getElementsByClassName('spinner')[0].remove();
+    //window._spinner.stop(false);
   }
 
   showProgressBar() {
-
-    //TODO:
-    // let progressbar = document.getElementById("load-progressbar");
-    // if (progressbar) {
-    //   progressbar.classList.remove("not-visible");
-    //   progressbar.classList.remove("mdc-linear-progress--closed");
-
-    //   progressbar.classList.add("visible");
-    //   progressbar.classList.add("mdc-linear-progress--indeterminate");
-    // }
+    let el = document.getElementById('loadscreen');
+    _app.spinner.spin(el);
 
   }
 
