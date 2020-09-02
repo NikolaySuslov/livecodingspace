@@ -203,7 +203,7 @@ class App {
 
     let opts = {
       lines: 13,
-      length: 28,
+      length: 5,
       width: 14,
       radius: 42,
       scale: 1,
