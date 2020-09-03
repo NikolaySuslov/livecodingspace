@@ -72,19 +72,19 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             style: obj.fieldStyle
                         },
                         {
-                            $type: "div",
+                            $type: "span",
                             class: "mdc-notched-outline",
                             $components:[
                                 {
-                                    $type: "div",
+                                    $type: "span",
                                     class: "mdc-notched-outline__leading"
                                 },
                                 {
-                                    $type: "div",
+                                    $type: "span",
                                     class: "mdc-notched-outline__notch",
                                     $components:[
                                         {
-                                            $type: "label",
+                                            $type: "span",
                                             class: "mdc-floating-label",
                                             for: obj.id,
                                             $text: obj.label
@@ -92,7 +92,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             ]
                                 },
                                 {
-                                    $type: "div",
+                                    $type: "span",
                                     class: "mdc-notched-outline__trailing"
                                 }
 
@@ -117,13 +117,17 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 return {
                     $cell: true,
                     $type: "div",
-                    class: "mdc-text-field text-field mdc-ripple-upgraded",
+                    class: "mdc-text-field mdc-text-field--filled",
                     _mdc: null,
                     $init: function(){
                     //new mdc.mdc.notchedOutline.MDCNotchedOutline(document.querySelector('.mdc-notched-outline'));
                        this._mdc = new mdc.textField.MDCTextField.attachTo(this);
                     },
                     $components:[
+                        {
+                            $type: "span",
+                            class: "mdc-text-field__ripple",
+                        },
                         {
                             $type: "input",
                             type: "text",
@@ -133,13 +137,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             onchange: obj.change
                         },
                         {
-                            $type: "label",
+                            $type: "span",
                             class: "mdc-floating-label",
                             for: obj.id,
                             $text: obj.label
                         },
                         {
-                            $type: "div",
+                            $type: "span",
                             class: "mdc-line-ripple"
                         }
                         

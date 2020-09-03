@@ -52,16 +52,28 @@ class LCSEditor extends Fabric {
                document.querySelector('body').classList.add("editor-body", "mdc-typography");
                 document.querySelector('body').innerHTML +=
                 `<div id="ui-controls" class="guiwindow">
-                    <i id="hideui" class="mdc-icon-button material-icons" role="button" aria-pressed="true"
-                        aria-label="Hide Toollbar" tabindex="0" data-toggle-on='{"label": "Hide", "content": "grid_on"}'
-                        data-toggle-off='{"label": "Show", "content": "grid_off"}'>
-                        grid_on
-                    </i>
-                    <i id="fullscreenui" class="mdc-icon-button material-icons" role="button" aria-pressed="true"
-                        aria-label="Hide Toollbar" tabindex="0" data-toggle-on='{"label": "Hide", "content": "fullscreen"}'
-                        data-toggle-off='{"label": "Show", "content": "fullscreen_exit"}'>
-                        fullscreen
-                    </i>
+
+                <button id="hideui"
+                    class="mdc-icon-button"
+                    role="button" aria-pressed="true">
+                    <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">grid_off</i>
+                    <i class="material-icons mdc-icon-button__icon">grid_on</i>
+                </button>
+
+                <button id="fullscreenui"
+                    class="mdc-icon-button"
+                    role="button" aria-pressed="true">
+                    <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">fullscreen_exit</i>
+                    <i class="material-icons mdc-icon-button__icon">fullscreen</i>
+                </button>
+
+                <button id="qrcodeui"
+                class="mdc-icon-button"
+                role="button" aria-pressed="true">
+                <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">qr_code_2</i>
+                <i class="material-icons mdc-icon-button__icon">qr_code_2</i>
+            </button>
+
                 </div>
                 `
                 function initOverGUI() {
@@ -72,13 +84,13 @@ class LCSEditor extends Fabric {
                 
                       const iconEl = document.querySelector('#hideui');
                       const compHideUI = new mdc.iconButton.MDCIconButtonToggle(iconEl);
-                      iconEl.addEventListener('MDCIconButtonToggle:change', (e) => {
+                      compHideUI.listen('MDCIconButtonToggle:change', (e) => {
                 
                           let ui = document.querySelector('.mdc-top-app-bar');
                           if (ui) {
                 
-                              let chkAttr = e.detail.isOn;
-                              if (chkAttr) {
+                              let chkAttr = ui.style.visibility; //e.detail.isOn;
+                              if (chkAttr == 'hidden') {
                                   ui.style.visibility = 'visible'
                               } else {
                                   ui.style.visibility = 'hidden'
@@ -252,7 +264,7 @@ class LCSEditor extends Fabric {
                                     $components: [
                                 self.widgets.inputTextFieldOutlined({
                                     "id": 'assetsrc',
-                                    "fieldStyle": 'width: 400px',
+                                    "fieldStyle": 'width: 350px',
                                     "label": "Enter URL to asset source",
                                     "value": '',
                                     "change": function (e) {
@@ -436,7 +448,7 @@ class LCSEditor extends Fabric {
                                     $components: [
                                         self.widgets.inputTextFieldOutlined({
                                             "id": 'googlepolyid',
-                                            "fieldStyle": 'width: 400px',
+                                            "fieldStyle": 'width: 350px',
                                             "label": "Enter Google Poly model ID",
                                             "value": '',
                                             "change": function (e) {
