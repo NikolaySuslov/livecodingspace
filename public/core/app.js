@@ -69,6 +69,7 @@ class App {
 
   setPageRoutes() {
     //client routes
+    page('*', this.HandleQuery);
     page('/', this.HandleIndex);
     page('/setup', this.HandleSetupIndex);
     page('/debug', this.HandleDebugIndex);
@@ -77,10 +78,11 @@ class App {
     page('/worlds', this.HandleIndex);
     page('/:user/worlds', this.HandleUserWorlds);
     page('/:user/:type/:name/edit/:file', this.HandleFileEdit);
-    page('/:user/:space', this.HandleParsableRequestGenID);
+    page('/:user/:space', this.HandleParsableRequestWithID);
+    page('/:user/:space/index.vwf', this.HandleParsableRequestWithID);
     page('/:user/:space/about', this.HandleWorldAbout);
-    page('/:user/:space/:id', this.HandleParsableRequestWithID);
-    page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
+    //page('/:user/:space/:id', this.HandleParsableRequestWithID);
+    //page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
     page('/:user/:space/load/:savename', this.HandleParsableLoadRequest);
     page('/:user/:space/:id/load/:savename', this.HandleParsableRequestWithID);
     page('/:user/:space/index.vwf/:id/load/:savename', this.HandleParsableRequestWithID);
@@ -1274,6 +1276,13 @@ class App {
     return p
   }
 
+  ////////HANDLERS//////
+
+  HandleQuery(ctx, next) {
+    ctx.query = qs.parse(location.search.slice(1));
+    next();
+  }
+
   HandleIndex() {
 
     console.log("INDEX");
@@ -1292,7 +1301,15 @@ class App {
 
   HandleNoPage() {
 
-    console.log("no such page")
+    console.log("no such page");
+    _app.hideProgressBar();
+
+    let t404 = `
+    <h1>404 no page...</h1>
+    `; 
+    let el = document.getElementById("loadscreen");
+    el.innerHTML = t404;
+
   }
 
   //handle parcable requests
@@ -1368,6 +1385,11 @@ class App {
 
   }
 
+  generateInstanceID(){
+
+    window.location.pathname = pathname + '/' + app.helpers.GenerateInstanceID()
+
+  }
 
   HandleParsableRequestWithID(ctx) {
 
@@ -1375,9 +1397,28 @@ class App {
     console.log(ctx.params);
     var pathname = ctx.pathname;
     let user = ctx.params.user;
-    let genID = ctx.params.id;
     let space = ctx.params.space;
     let savename = ctx.params.savename;
+    //let genID = ctx.params.id;
+
+    let query = ctx.query;
+    var genID = undefined;
+
+    if(Object.keys(query).length > 0){
+      if(query.k){
+        genID = query.k
+      } 
+    }
+
+     if (!genID){
+       genID = app.helpers.GenerateInstanceID();
+       let urlAddon = '?k=' + genID;
+       let state = {
+         path: ctx.pathname + urlAddon
+       }
+       window.history.pushState(state, space, window.location.href + urlAddon);
+     }
+  
 
     if (pathname[pathname.length - 1] == '/') {
       pathname = pathname.slice(0, -1)
@@ -1796,8 +1837,12 @@ class App {
 
   hideProgressBar() {
     let el = document.getElementById('loadscreen');
-    el.getElementsByClassName('spinner')[0].remove();
-    //window._spinner.stop(false);
+    if(el){
+      el.getElementsByClassName('spinner')[0].remove();
+      //window._spinner.stop(false);
+    }
+
+
   }
 
   showProgressBar() {

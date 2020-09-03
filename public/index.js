@@ -15,6 +15,7 @@ loadjs([
     '/lib/he.js',
     '/lib/locale/polyglot.min.js',
     '/lib/hashids.min.js',
+    '/lib/page-query.js'
 ],'forall', {
     async: false
 });
