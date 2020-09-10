@@ -1416,7 +1416,8 @@ class App {
        let state = {
          path: ctx.pathname + urlAddon
        }
-       window.history.pushState(state, space, window.location.href + urlAddon);
+
+       window.history.replaceState(state, space, window.location.href + urlAddon);
      }
   
 
