@@ -1568,6 +1568,7 @@ class App {
         '/lib/ui/screenfull/screenfull.min.js',
         '/lib/ui/drag-drop.js',
         '/lib/buffer5.6.0.min.js',
+        '/lib/ui/qrcode.min.js',
         '/drivers/view/editor/draggabilly/draggabilly.pkgd.js',
         '/drivers/view/editor/colorpicker/colorpicker.min.js',
         '/drivers/view/editor/colorpicker/themes.css',

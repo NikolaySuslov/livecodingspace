@@ -67,12 +67,12 @@ class LCSEditor extends Fabric {
                     <i class="material-icons mdc-icon-button__icon">fullscreen</i>
                 </button>
 
-                <button id="qrcodeui"
+               <!-- <button id="qrcodeui"
                 class="mdc-icon-button"
                 role="button" aria-pressed="true">
                 <i class="material-icons mdc-icon-button__icon mdc-icon-button__icon--on">qr_code_2</i>
                 <i class="material-icons mdc-icon-button__icon">qr_code_2</i>
-            </button>
+            </button> -->
 
                 </div>
                 `
@@ -109,13 +109,70 @@ class LCSEditor extends Fabric {
                               // Ignore or do something else
                           }
                       });
+
+                    //   const qrEl = document.querySelector('#qrcodeui');
+                    //   const compQrUI = new mdc.iconButton.MDCIconButtonToggle(qrEl);
+                    //   compQrUI.listen('MDCIconButtonToggle:change', (e) => {
                 
-                  //});
+                    //       if(self.qrcodedialog){
+                    //         self.qrcodedialog.open();
+                    //       }
+                
+                    //   });
+
+                
+               
                 
                   }
 
+              window.getWorldLink = function() {
+                navigator.clipboard.writeText(window.location.href).then(function() {
+                    /* clipboard successfully set */
+                    console.log("Got Link successfully!")
+                  }, function() {
+                    console.log("Got Link failed!")
+                    /* clipboard write failed */
+                  });
+              }    
+
+               function makeQRCode() {
+
+               document.querySelector('body').innerHTML += `
+                    <div class="mdc-dialog" id="qrcodedialog">
+                    <div class="mdc-dialog__container">
+                      <div class="mdc-dialog__surface"
+                        role="alertdialog"
+                        aria-modal="true"
+                        aria-labelledby="my-dialog-title"
+                        aria-describedby="my-dialog-content">
+                        <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+                        <h2 class="mdc-dialog__title" id="my-dialog-title">QR Code for this World</h2>
+                        <div class="mdc-dialog__content" id="my-dialog-content">
+                            <div id="qrcode"></div>
+                        </div>
+                        <div class="mdc-dialog__actions">
+                        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept"
+                        onclick="getWorldLink()">
+                          <div class="mdc-button__ripple"></div>
+                          <span class="mdc-button__label">Copy link</span>
+                        </button>
+                        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                          <div class="mdc-button__ripple"></div>
+                          <span class="mdc-button__label">OK</span>
+                        </button>
+                      </div>
+                      </div>
+                    </div>
+                    <div class="mdc-dialog__scrim"></div>
+                  </div>
+                `
+                self.qrcode = new QRCode(document.getElementById("qrcode"), window.location.href);
+                self.qrcodedialog = new mdc.dialog.MDCDialog(document.getElementById('qrcodedialog'));
+               }   
+
                   mdc.autoInit();
-                  initOverGUI();
+
+                 
                 // $('body').append('<script>mdc.autoInit()</script>');
     
     
@@ -126,6 +183,9 @@ class LCSEditor extends Fabric {
                 }
                 );
     
+                makeQRCode(); 
+                initOverGUI();
+
                 _LCSDB.on('auth', function (ack) {
                     if (ack.sea.pub) {
                         self.helpers.checkUserCollision();
@@ -2318,25 +2378,25 @@ class LCSEditor extends Fabric {
                                 $type: "ul",
                                 class: "mdc-list",
                                 $components: [
-    
-                                    self.widgets.buttonStroked(
-                                        {
-                                            "label": "<--",
-                                            "onclick": function (e) {
-                                                let node = self.nodes[this._currentNode];
-                                                if (node.parentID !== 0) {
-                                                    //self.currentNodeID = node.parentID,
-                                                    document.querySelector('#currentNode')._setNode(node.parentID)
-                                                }
-    
-                                            }
-    
-                                        }),
+
     
                                     {
                                         $type: "li",
                                         class: "mdc-list-item",
                                         $components: [
+                                            self.widgets.buttonSimple(
+                                                {
+                                                    "label": "<-",
+                                                    "onclick": function (e) {
+                                                        let node = self.nodes[this._currentNode];
+                                                        if (node.parentID !== 0) {
+                                                            //self.currentNodeID = node.parentID,
+                                                            document.querySelector('#currentNode')._setNode(node.parentID)
+                                                        }
+            
+                                                    }
+            
+                                                }),
                                             {
                                                 $text: "name",
                                                 $type: "span",
@@ -2359,9 +2419,42 @@ class LCSEditor extends Fabric {
     
                                                     //console.log(node.properties.displayName)
                                                 },
-                                                class: "mdc-list-item__text mdc-typography--headline"
+                                                class: "mdc-list-item__text mdc-typography--headline6"
                                                 //<h1 class="mdc-typography--display4">Big header</h1>
-                                            }]
+                                            },
+                                            self.widgets.icontoggle({
+                                                'styleClass': "", //mdc-top-app-bar__action-item
+                                                'id': "selectNodeSwitch",
+                                                'label': 'select',
+                                                'on': JSON.stringify({ "content": "radio_button_checked", "label": "Select" }),
+                                                'off': JSON.stringify({ "content": "radio_button_unchecked", "label": "Unselect" }),
+                                                'state': false,
+                                                'init': function () {
+                    
+                                                    this._comp = mdc.iconButton.MDCIconButtonToggle.attachTo(this);
+                                                    this.addEventListener('MDCIconButtonToggle:change', (e) => {
+                    
+                                                        let avatarID = 'avatar-' + vwf.moniker_;
+                                                        let avatarNode = self.nodes['avatar-' + vwf.moniker_];
+                                                        let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
+                    
+                                                        if (mode) {
+                    
+                                                            console.log("unselect");
+                                                            vwf_view.kernel.setProperty(avatarID, "selectMode", false);
+                    
+                                                        } else {
+                    
+                                                            console.log("select")
+                                                            vwf_view.kernel.setProperty(avatarID, "selectMode", true);
+                                                        }
+                    
+                                                    });
+                    
+                                                }
+                                            })
+                                        
+                                        ]
                                     }, listDivider,
                                     {
                                         // $cell: true,
@@ -3738,8 +3831,6 @@ class LCSEditor extends Fabric {
                 );
     
     
-    
-    
                 let toolbar = {
                     $cell: true,
                     $type: "div",
@@ -3767,82 +3858,73 @@ class LCSEditor extends Fabric {
                                 $type: "div",
                                 class: "mdc-menu-anchor",
                                 $components: [
-                                    {
-                                        $type: "a",
-                                        class: "mdc-icon-button material-icons mdc-top-app-bar__action-item",
-                                        id: "toggleCreate",
-                                        $text: "apps",
-                                        'aria-label': "More"
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-menu mdc-menu-surface",
-                                        "tabindex": "-1",
-                                        id: "create-menu",
-                                        $init: function () {
-    
-                                            //var menuEl = document.querySelector('#demo-menu');
-                                            var menu = new mdc.menu.MDCMenu(this);
-                                            var toggle = document.querySelector('#toggleCreate');
-                                            toggle.addEventListener('click', function () {
-                                                menu.open = !menu.open;
+                                    self.widgets.icontoggle({
+                                        'styleClass': "mdc-top-app-bar__action-item",
+                                        'id': "qrcodeIcon",
+                                        'label': 'select',
+                                        'on': JSON.stringify({ "content": "qr_code_2", "label": "qr" }),
+                                        'off': JSON.stringify({ "content": "qr_code_2", "label": "qr" }),
+                                        'state': false,
+                                        'init': function () {
+            
+                                            this._comp = mdc.iconButton.MDCIconButtonToggle.attachTo(this);
+                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
+                                                
+                                                if(self.qrcodedialog){
+                                                    self.qrcodedialog.open();
+                                                  }
+                                  
+            
                                             });
-    
-                                        },
-                                        style: "transform-origin: right top 0px; right: 0px; top: 0px;",
-                                        $components: [
-                                            {
-                                                $type: "ul",
-                                                class: "mdc-menu__items mdc-list",
-                                                role: "menu",
-                                                'aria-hidden': "true",
-                                                // style: "transform: scale(1, 1);",
-                                                $components: [
-                                                    {
-                                                        $type: "li",
-                                                        class: "mdc-list-item",
-                                                        role: "menuitem",
-                                                        tabindex: "0",
-                                                        $text: "Apps"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-    
-                            self.widgets.icontoggle({
-                                'styleClass': "mdc-top-app-bar__action-item",
-                                'id': "selectNodeSwitch",
-                                'label': 'select',
-                                'on': JSON.stringify({ "content": "radio_button_checked", "label": "Select" }),
-                                'off': JSON.stringify({ "content": "radio_button_unchecked", "label": "Unselect" }),
-                                'state': false,
-                                'init': function () {
-    
-                                    this._comp = mdc.iconButton.MDCIconButtonToggle.attachTo(this);
-                                    this.addEventListener('MDCIconButtonToggle:change', (e) => {
-    
-                                        let avatarID = 'avatar-' + vwf.moniker_;
-                                        let avatarNode = self.nodes['avatar-' + vwf.moniker_];
-                                        let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
-    
-                                        if (mode) {
-    
-                                            console.log("unselect");
-                                            vwf_view.kernel.setProperty(avatarID, "selectMode", false);
-    
-                                        } else {
-    
-                                            console.log("select")
-                                            vwf_view.kernel.setProperty(avatarID, "selectMode", true);
+            
                                         }
+                                    }),
+                                    // {
+                                    //     $type: "a",
+                                    //     class: "mdc-icon-button material-icons mdc-top-app-bar__action-item",
+                                    //     id: "toggleCreate",
+                                    //     $text: "apps",
+                                    //     'aria-label': "More"
+                                    // },
+                                    // {
+                                    //     $type: "div",
+                                    //     class: "mdc-menu mdc-menu-surface",
+                                    //     "tabindex": "-1",
+                                    //     id: "create-menu",
+                                    //     $init: function () {
     
-                                    });
+                                    //         //var menuEl = document.querySelector('#demo-menu');
+                                    //         var menu = new mdc.menu.MDCMenu(this);
+                                    //         var toggle = document.querySelector('#toggleCreate');
+                                    //         toggle.addEventListener('click', function () {
+                                    //             menu.open = !menu.open;
+                                    //         });
     
-                                }
-                            })
+                                    //     },
+                                    //     style: "transform-origin: right top 0px; right: 0px; top: 0px;",
+                                    //     $components: [
+                                    //         {
+                                    //             $type: "ul",
+                                    //             class: "mdc-menu__items mdc-list",
+                                    //             role: "menu",
+                                    //             'aria-hidden': "true",
+                                    //             // style: "transform: scale(1, 1);",
+                                    //             $components: [
+                                    //                 {
+                                    //                     $type: "li",
+                                    //                     class: "mdc-list-item",
+                                    //                     role: "menuitem",
+                                    //                     tabindex: "0",
+                                    //                     $text: "Apps"
+                                    //                 }
+                                    //             ]
+                                    //         }
+                                    //     ]
+                                    // }
+                                ]
+                            }
+    
+                         
     
                         ]
                     },
@@ -3912,7 +3994,6 @@ class LCSEditor extends Fabric {
                     ]
                 }
                 );
-    
                 // var toggleNodes = document.querySelectorAll('.mdc-icon-button');
                 // toggleNodes.forEach(el => {
                 //     mdc.iconButton.MDCIconButtonToggle.attachTo(el);
