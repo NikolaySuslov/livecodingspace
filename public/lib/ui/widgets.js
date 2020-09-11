@@ -709,7 +709,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 _app.widgets.emptyDiv,
                 window._app.widgets.buttonRaised(
                     {
-                        "label": 'Connection settings',
+                        "label": 'Settings',
                         "onclick": function (e) {
                             e.preventDefault();
                             window.location.pathname = '/settings';
