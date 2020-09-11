@@ -155,6 +155,8 @@ var checkbox = __importStar(__webpack_require__(/*! @material/checkbox/index */ 
 exports.checkbox = checkbox;
 var chips = __importStar(__webpack_require__(/*! @material/chips/index */ "./packages/mdc-chips/index.ts"));
 exports.chips = chips;
+var circularProgress = __importStar(__webpack_require__(/*! @material/circular-progress/index */ "./packages/mdc-circular-progress/index.ts"));
+exports.circularProgress = circularProgress;
 var dataTable = __importStar(__webpack_require__(/*! @material/data-table/index */ "./packages/mdc-data-table/index.ts"));
 exports.dataTable = dataTable;
 var dialog = __importStar(__webpack_require__(/*! @material/dialog/index */ "./packages/mdc-dialog/index.ts"));
@@ -209,6 +211,7 @@ exports.topAppBar = topAppBar;
 index_1.default.register('MDCCheckbox', checkbox.MDCCheckbox);
 index_1.default.register('MDCChip', chips.MDCChip);
 index_1.default.register('MDCChipSet', chips.MDCChipSet);
+index_1.default.register('MDCCircularProgress', circularProgress.MDCCircularProgress);
 index_1.default.register('MDCDataTable', dataTable.MDCDataTable);
 index_1.default.register('MDCDialog', dialog.MDCDialog);
 index_1.default.register('MDCDrawer', drawer.MDCDrawer);
@@ -407,15 +410,17 @@ exports.strings = {
  */
 
 var __values = this && this.__values || function (o) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator],
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
         i = 0;
     if (m) return m.call(o);
-    return {
+    if (o && typeof o.length === "number") return {
         next: function next() {
             if (o && i >= o.length) o = void 0;
             return { value: o && o[i++], done: !o };
         }
     };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-auto-init/constants.ts");
@@ -508,6 +513,7 @@ mdcAutoInit.register = function (componentName, Constructor, warn) {
 mdcAutoInit.deregister = function (componentName) {
     delete registry[componentName];
 };
+/** @nocollapse */
 mdcAutoInit.deregisterAll = function () {
     var keys = Object.keys(registry);
     keys.forEach(this.deregister, this);
@@ -584,12 +590,12 @@ var MDCComponent = /** @class */function () {
         for (var _i = 2; _i < arguments.length; _i++) {
             args[_i - 2] = arguments[_i];
         }
-        this.root_ = root;
+        this.root = root;
         this.initialize.apply(this, __spread(args));
         // Note that we initialize foundation here and not within the constructor's default param so that
         // this.root_ is defined and can be used within the foundation class.
-        this.foundation_ = foundation === undefined ? this.getDefaultFoundation() : foundation;
-        this.foundation_.init();
+        this.foundation = foundation === undefined ? this.getDefaultFoundation() : foundation;
+        this.foundation.init();
         this.initialSyncWithDOM();
     }
     MDCComponent.attachTo = function (root) {
@@ -623,13 +629,13 @@ var MDCComponent = /** @class */function () {
     MDCComponent.prototype.destroy = function () {
         // Subclasses may implement this method to release any resources / deregister any listeners they have
         // attached. An example of this might be deregistering a resize event from the window object.
-        this.foundation_.destroy();
+        this.foundation.destroy();
     };
     MDCComponent.prototype.listen = function (evtType, handler, options) {
-        this.root_.addEventListener(evtType, handler, options);
+        this.root.addEventListener(evtType, handler, options);
     };
     MDCComponent.prototype.unlisten = function (evtType, handler, options) {
-        this.root_.removeEventListener(evtType, handler, options);
+        this.root.removeEventListener(evtType, handler, options);
     };
     /**
      * Fires a cross-browser-compatible custom event from the component root of the given type, with the given data.
@@ -648,7 +654,7 @@ var MDCComponent = /** @class */function () {
             evt = document.createEvent('CustomEvent');
             evt.initCustomEvent(evtType, shouldBubble, false, evtData);
         }
-        this.root_.dispatchEvent(evt);
+        this.root.dispatchEvent(evt);
     };
     return MDCComponent;
 }();
@@ -696,7 +702,7 @@ var MDCFoundation = /** @class */function () {
         if (adapter === void 0) {
             adapter = {};
         }
-        this.adapter_ = adapter;
+        this.adapter = adapter;
     }
     Object.defineProperty(MDCFoundation, "cssClasses", {
         get: function get() {
@@ -862,6 +868,7 @@ var events_1 = __webpack_require__(/*! @material/dom/events */ "./packages/mdc-d
 var ponyfill_1 = __webpack_require__(/*! @material/dom/ponyfill */ "./packages/mdc-dom/ponyfill.ts");
 var component_2 = __webpack_require__(/*! @material/ripple/component */ "./packages/mdc-ripple/component.ts");
 var foundation_1 = __webpack_require__(/*! @material/ripple/foundation */ "./packages/mdc-ripple/foundation.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-checkbox/constants.ts");
 var foundation_2 = __webpack_require__(/*! ./foundation */ "./packages/mdc-checkbox/foundation.ts");
 var CB_PROTO_PROPS = ['checked', 'indeterminate'];
 var MDCCheckbox = /** @class */function (_super) {
@@ -906,7 +913,7 @@ var MDCCheckbox = /** @class */function (_super) {
             return this.nativeControl_.disabled;
         },
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
@@ -921,13 +928,18 @@ var MDCCheckbox = /** @class */function (_super) {
         enumerable: true,
         configurable: true
     });
+    MDCCheckbox.prototype.initialize = function () {
+        var DATA_INDETERMINATE_ATTR = constants_1.strings.DATA_INDETERMINATE_ATTR;
+        this.nativeControl_.indeterminate = this.nativeControl_.getAttribute(DATA_INDETERMINATE_ATTR) === 'true';
+        this.nativeControl_.removeAttribute(DATA_INDETERMINATE_ATTR);
+    };
     MDCCheckbox.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.handleChange_ = function () {
-            return _this.foundation_.handleChange();
+            return _this.foundation.handleChange();
         };
         this.handleAnimationEnd_ = function () {
-            return _this.foundation_.handleAnimationEnd();
+            return _this.foundation.handleAnimationEnd();
         };
         this.nativeControl_.addEventListener('change', this.handleChange_);
         this.listen(util_1.getCorrectEventName(window, 'animationend'), this.handleAnimationEnd_);
@@ -946,16 +958,16 @@ var MDCCheckbox = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             forceLayout: function forceLayout() {
-                return _this.root_.offsetWidth;
+                return _this.root.offsetWidth;
             },
             hasNativeControl: function hasNativeControl() {
                 return !!_this.nativeControl_;
             },
             isAttachedToDOM: function isAttachedToDOM() {
-                return Boolean(_this.root_.parentNode);
+                return Boolean(_this.root.parentNode);
             },
             isChecked: function isChecked() {
                 return _this.checked;
@@ -964,16 +976,16 @@ var MDCCheckbox = /** @class */function (_super) {
                 return _this.indeterminate;
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                _this.root.classList.remove(className);
             },
             removeNativeControlAttr: function removeNativeControlAttr(attr) {
-                return _this.nativeControl_.removeAttribute(attr);
+                _this.nativeControl_.removeAttribute(attr);
             },
             setNativeControlAttr: function setNativeControlAttr(attr, value) {
-                return _this.nativeControl_.setAttribute(attr, value);
+                _this.nativeControl_.setAttribute(attr, value);
             },
             setNativeControlDisabled: function setNativeControlDisabled(disabled) {
-                return _this.nativeControl_.disabled = disabled;
+                _this.nativeControl_.disabled = disabled;
             }
         };
         return new foundation_2.MDCCheckboxFoundation(adapter);
@@ -982,7 +994,7 @@ var MDCCheckbox = /** @class */function (_super) {
         var _this = this;
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
-        var adapter = __assign({}, component_2.MDCRipple.createAdapter(this), { deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
+        var adapter = __assign(__assign({}, component_2.MDCRipple.createAdapter(this)), { deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
                 return _this.nativeControl_.removeEventListener(evtType, handler, events_1.applyPassive());
             }, isSurfaceActive: function isSurfaceActive() {
                 return ponyfill_1.matches(_this.nativeControl_, ':active');
@@ -991,7 +1003,7 @@ var MDCCheckbox = /** @class */function (_super) {
             }, registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.nativeControl_.addEventListener(evtType, handler, events_1.applyPassive());
             } });
-        return new component_2.MDCRipple(this.root_, new foundation_1.MDCRippleFoundation(adapter));
+        return new component_2.MDCRipple(this.root, new foundation_1.MDCRippleFoundation(adapter));
     };
     MDCCheckbox.prototype.installPropertyChangeHooks_ = function () {
         var _this = this;
@@ -1012,7 +1024,7 @@ var MDCCheckbox = /** @class */function (_super) {
                 get: nativeGetter,
                 set: function set(state) {
                     desc.set.call(nativeCb, state);
-                    _this.foundation_.handleChange();
+                    _this.foundation.handleChange();
                 }
             };
             Object.defineProperty(nativeCb, controlState, nativeCbDesc);
@@ -1031,8 +1043,8 @@ var MDCCheckbox = /** @class */function (_super) {
     };
     Object.defineProperty(MDCCheckbox.prototype, "nativeControl_", {
         get: function get() {
-            var NATIVE_CONTROL_SELECTOR = foundation_2.MDCCheckboxFoundation.strings.NATIVE_CONTROL_SELECTOR;
-            var el = this.root_.querySelector(NATIVE_CONTROL_SELECTOR);
+            var NATIVE_CONTROL_SELECTOR = constants_1.strings.NATIVE_CONTROL_SELECTOR;
+            var el = this.root.querySelector(NATIVE_CONTROL_SELECTOR);
             if (!el) {
                 throw new Error("Checkbox component requires a " + NATIVE_CONTROL_SELECTOR + " element");
             }
@@ -1105,6 +1117,7 @@ exports.cssClasses = {
 exports.strings = {
     ARIA_CHECKED_ATTR: 'aria-checked',
     ARIA_CHECKED_INDETERMINATE_VALUE: 'mixed',
+    DATA_INDETERMINATE_ATTR: 'data-indeterminate',
     NATIVE_CONTROL_SELECTOR: '.mdc-checkbox__native-control',
     TRANSITION_STATE_CHECKED: 'checked',
     TRANSITION_STATE_INDETERMINATE: 'indeterminate',
@@ -1186,7 +1199,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-checkbo
 var MDCCheckboxFoundation = /** @class */function (_super) {
     __extends(MDCCheckboxFoundation, _super);
     function MDCCheckboxFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCCheckboxFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCCheckboxFoundation.defaultAdapter), adapter)) || this;
         _this.currentCheckState_ = constants_1.strings.TRANSITION_STATE_INIT;
         _this.currentAnimationClass_ = '';
         _this.animEndLatchTimer_ = 0;
@@ -1255,17 +1268,17 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
     MDCCheckboxFoundation.prototype.init = function () {
         this.currentCheckState_ = this.determineCheckState_();
         this.updateAriaChecked_();
-        this.adapter_.addClass(constants_1.cssClasses.UPGRADED);
+        this.adapter.addClass(constants_1.cssClasses.UPGRADED);
     };
     MDCCheckboxFoundation.prototype.destroy = function () {
         clearTimeout(this.animEndLatchTimer_);
     };
     MDCCheckboxFoundation.prototype.setDisabled = function (disabled) {
-        this.adapter_.setNativeControlDisabled(disabled);
+        this.adapter.setNativeControlDisabled(disabled);
         if (disabled) {
-            this.adapter_.addClass(constants_1.cssClasses.DISABLED);
+            this.adapter.addClass(constants_1.cssClasses.DISABLED);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.DISABLED);
+            this.adapter.removeClass(constants_1.cssClasses.DISABLED);
         }
     };
     /**
@@ -1278,7 +1291,7 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
         }
         clearTimeout(this.animEndLatchTimer_);
         this.animEndLatchTimer_ = setTimeout(function () {
-            _this.adapter_.removeClass(_this.currentAnimationClass_);
+            _this.adapter.removeClass(_this.currentAnimationClass_);
             _this.enableAnimationEndHandler_ = false;
         }, constants_1.numbers.ANIM_END_LATCH_MS);
     };
@@ -1289,7 +1302,7 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
         this.transitionCheckState_();
     };
     MDCCheckboxFoundation.prototype.transitionCheckState_ = function () {
-        if (!this.adapter_.hasNativeControl()) {
+        if (!this.adapter.hasNativeControl()) {
             return;
         }
         var oldState = this.currentCheckState_;
@@ -1301,23 +1314,23 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
         var TRANSITION_STATE_UNCHECKED = constants_1.strings.TRANSITION_STATE_UNCHECKED;
         var SELECTED = constants_1.cssClasses.SELECTED;
         if (newState === TRANSITION_STATE_UNCHECKED) {
-            this.adapter_.removeClass(SELECTED);
+            this.adapter.removeClass(SELECTED);
         } else {
-            this.adapter_.addClass(SELECTED);
+            this.adapter.addClass(SELECTED);
         }
         // Check to ensure that there isn't a previously existing animation class, in case for example
         // the user interacted with the checkbox before the animation was finished.
         if (this.currentAnimationClass_.length > 0) {
             clearTimeout(this.animEndLatchTimer_);
-            this.adapter_.forceLayout();
-            this.adapter_.removeClass(this.currentAnimationClass_);
+            this.adapter.forceLayout();
+            this.adapter.removeClass(this.currentAnimationClass_);
         }
         this.currentAnimationClass_ = this.getTransitionAnimationClass_(oldState, newState);
         this.currentCheckState_ = newState;
         // Check for parentNode so that animations are only run when the element is attached
         // to the DOM.
-        if (this.adapter_.isAttachedToDOM() && this.currentAnimationClass_.length > 0) {
-            this.adapter_.addClass(this.currentAnimationClass_);
+        if (this.adapter.isAttachedToDOM() && this.currentAnimationClass_.length > 0) {
+            this.adapter.addClass(this.currentAnimationClass_);
             this.enableAnimationEndHandler_ = true;
         }
     };
@@ -1325,10 +1338,10 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
         var TRANSITION_STATE_INDETERMINATE = constants_1.strings.TRANSITION_STATE_INDETERMINATE,
             TRANSITION_STATE_CHECKED = constants_1.strings.TRANSITION_STATE_CHECKED,
             TRANSITION_STATE_UNCHECKED = constants_1.strings.TRANSITION_STATE_UNCHECKED;
-        if (this.adapter_.isIndeterminate()) {
+        if (this.adapter.isIndeterminate()) {
             return TRANSITION_STATE_INDETERMINATE;
         }
-        return this.adapter_.isChecked() ? TRANSITION_STATE_CHECKED : TRANSITION_STATE_UNCHECKED;
+        return this.adapter.isChecked() ? TRANSITION_STATE_CHECKED : TRANSITION_STATE_UNCHECKED;
     };
     MDCCheckboxFoundation.prototype.getTransitionAnimationClass_ = function (oldState, newState) {
         var TRANSITION_STATE_INIT = constants_1.strings.TRANSITION_STATE_INIT,
@@ -1358,12 +1371,12 @@ var MDCCheckboxFoundation = /** @class */function (_super) {
     };
     MDCCheckboxFoundation.prototype.updateAriaChecked_ = function () {
         // Ensure aria-checked is set to mixed if checkbox is in indeterminate state.
-        if (this.adapter_.isIndeterminate()) {
-            this.adapter_.setNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR, constants_1.strings.ARIA_CHECKED_INDETERMINATE_VALUE);
+        if (this.adapter.isIndeterminate()) {
+            this.adapter.setNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR, constants_1.strings.ARIA_CHECKED_INDETERMINATE_VALUE);
         } else {
             // The on/off state does not need to keep track of aria-checked, since
             // the screenreader uses the checked property on the checkbox element.
-            this.adapter_.removeNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR);
+            this.adapter.removeNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR);
         }
     };
     return MDCCheckboxFoundation;
@@ -1502,7 +1515,7 @@ var MDCChipSet = /** @class */function (_super) {
          * @return An array of the IDs of all selected chips.
          */
         get: function get() {
-            return this.foundation_.getSelectedChipIds();
+            return this.foundation.getSelectedChipIds();
         },
         enumerable: true,
         configurable: true
@@ -1523,20 +1536,20 @@ var MDCChipSet = /** @class */function (_super) {
         var _this = this;
         this.chips_.forEach(function (chip) {
             if (chip.id && chip.selected) {
-                _this.foundation_.select(chip.id);
+                _this.foundation.select(chip.id);
             }
         });
         this.handleChipInteraction_ = function (evt) {
-            return _this.foundation_.handleChipInteraction(evt.detail);
+            return _this.foundation.handleChipInteraction(evt.detail);
         };
         this.handleChipSelection_ = function (evt) {
-            return _this.foundation_.handleChipSelection(evt.detail);
+            return _this.foundation.handleChipSelection(evt.detail);
         };
         this.handleChipRemoval_ = function (evt) {
-            return _this.foundation_.handleChipRemoval(evt.detail);
+            return _this.foundation.handleChipRemoval(evt.detail);
         };
         this.handleChipNavigation_ = function (evt) {
-            return _this.foundation_.handleChipNavigation(evt.detail);
+            return _this.foundation.handleChipNavigation(evt.detail);
         };
         this.listen(INTERACTION_EVENT, this.handleChipInteraction_);
         this.listen(SELECTION_EVENT, this.handleChipSelection_);
@@ -1581,10 +1594,10 @@ var MDCChipSet = /** @class */function (_super) {
                 return _this.findChipIndex_(chipId);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             isRTL: function isRTL() {
-                return window.getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
+                return window.getComputedStyle(_this.root).getPropertyValue('direction') === 'rtl';
             },
             removeChipAtIndex: function removeChipAtIndex(index) {
                 if (index >= 0 && index < _this.chips_.length) {
@@ -1608,7 +1621,7 @@ var MDCChipSet = /** @class */function (_super) {
      * Instantiates chip components on all of the chip set's child chip elements.
      */
     MDCChipSet.prototype.instantiateChips_ = function (chipFactory) {
-        var chipElements = [].slice.call(this.root_.querySelectorAll(CHIP_SELECTOR));
+        var chipElements = [].slice.call(this.root.querySelectorAll(CHIP_SELECTOR));
         return chipElements.map(function (el) {
             el.id = el.id || "mdc-chip-" + ++idCounter;
             return chipFactory(el);
@@ -1744,7 +1757,7 @@ var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/c
 var MDCChipSetFoundation = /** @class */function (_super) {
     __extends(MDCChipSetFoundation, _super);
     function MDCChipSetFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCChipSetFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCChipSetFoundation.defaultAdapter), adapter)) || this;
         /**
          * The ids of the selected chips in the set. Only used for choice chip set or filter chip set.
          */
@@ -1821,9 +1834,9 @@ var MDCChipSetFoundation = /** @class */function (_super) {
      */
     MDCChipSetFoundation.prototype.handleChipInteraction = function (_a) {
         var chipId = _a.chipId;
-        var index = this.adapter_.getIndexOfChipById(chipId);
+        var index = this.adapter.getIndexOfChipById(chipId);
         this.removeFocusFromChipsExcept_(index);
-        if (this.adapter_.hasClass(constants_2.cssClasses.CHOICE) || this.adapter_.hasClass(constants_2.cssClasses.FILTER)) {
+        if (this.adapter.hasClass(constants_2.cssClasses.CHOICE) || this.adapter.hasClass(constants_2.cssClasses.FILTER)) {
             this.toggleSelect_(chipId);
         }
     };
@@ -1852,16 +1865,16 @@ var MDCChipSetFoundation = /** @class */function (_super) {
         var chipId = _a.chipId,
             removedAnnouncement = _a.removedAnnouncement;
         if (removedAnnouncement) {
-            this.adapter_.announceMessage(removedAnnouncement);
+            this.adapter.announceMessage(removedAnnouncement);
         }
-        var index = this.adapter_.getIndexOfChipById(chipId);
+        var index = this.adapter.getIndexOfChipById(chipId);
         this.deselectAndNotifyClients_(chipId);
-        this.adapter_.removeChipAtIndex(index);
-        var maxIndex = this.adapter_.getChipListCount() - 1;
+        this.adapter.removeChipAtIndex(index);
+        var maxIndex = this.adapter.getChipListCount() - 1;
         var nextIndex = Math.min(index, maxIndex);
         this.removeFocusFromChipsExcept_(nextIndex);
         // After removing a chip, we should focus the trailing action for the next chip.
-        this.adapter_.focusChipTrailingActionAtIndex(nextIndex);
+        this.adapter.focusChipTrailingActionAtIndex(nextIndex);
     };
     /**
      * Handles a chip navigation event.
@@ -1870,14 +1883,17 @@ var MDCChipSetFoundation = /** @class */function (_super) {
         var chipId = _a.chipId,
             key = _a.key,
             source = _a.source;
-        var maxIndex = this.adapter_.getChipListCount() - 1;
-        var index = this.adapter_.getIndexOfChipById(chipId);
+        var maxIndex = this.adapter.getChipListCount() - 1;
+        var index = this.adapter.getIndexOfChipById(chipId);
         // Early exit if the index is out of range or the key is unusable
         if (index === -1 || !constants_1.navigationKeys.has(key)) {
             return;
         }
-        var isRTL = this.adapter_.isRTL();
-        var shouldIncrement = key === constants_1.strings.ARROW_RIGHT_KEY && !isRTL || key === constants_1.strings.ARROW_LEFT_KEY && isRTL || key === constants_1.strings.ARROW_DOWN_KEY;
+        var isRTL = this.adapter.isRTL();
+        var isLeftKey = key === constants_1.strings.ARROW_LEFT_KEY || key === constants_1.strings.IE_ARROW_LEFT_KEY;
+        var isRightKey = key === constants_1.strings.ARROW_RIGHT_KEY || key === constants_1.strings.IE_ARROW_RIGHT_KEY;
+        var isDownKey = key === constants_1.strings.ARROW_DOWN_KEY || key === constants_1.strings.IE_ARROW_DOWN_KEY;
+        var shouldIncrement = !isRTL && isRightKey || isRTL && isLeftKey || isDownKey;
         var isHome = key === constants_1.strings.HOME_KEY;
         var isEnd = key === constants_1.strings.END_KEY;
         if (shouldIncrement) {
@@ -1899,22 +1915,24 @@ var MDCChipSetFoundation = /** @class */function (_super) {
     MDCChipSetFoundation.prototype.focusChipAction_ = function (index, key, source) {
         var shouldJumpChips = constants_1.jumpChipKeys.has(key);
         if (shouldJumpChips && source === constants_1.EventSource.PRIMARY) {
-            return this.adapter_.focusChipPrimaryActionAtIndex(index);
+            return this.adapter.focusChipPrimaryActionAtIndex(index);
         }
         if (shouldJumpChips && source === constants_1.EventSource.TRAILING) {
-            return this.adapter_.focusChipTrailingActionAtIndex(index);
+            return this.adapter.focusChipTrailingActionAtIndex(index);
         }
         var dir = this.getDirection_(key);
         if (dir === constants_1.Direction.LEFT) {
-            return this.adapter_.focusChipTrailingActionAtIndex(index);
+            return this.adapter.focusChipTrailingActionAtIndex(index);
         }
         if (dir === constants_1.Direction.RIGHT) {
-            return this.adapter_.focusChipPrimaryActionAtIndex(index);
+            return this.adapter.focusChipPrimaryActionAtIndex(index);
         }
     };
     MDCChipSetFoundation.prototype.getDirection_ = function (key) {
-        var isRTL = this.adapter_.isRTL();
-        if (key === constants_1.strings.ARROW_LEFT_KEY && !isRTL || key === constants_1.strings.ARROW_RIGHT_KEY && isRTL) {
+        var isRTL = this.adapter.isRTL();
+        var isLeftKey = key === constants_1.strings.ARROW_LEFT_KEY || key === constants_1.strings.IE_ARROW_LEFT_KEY;
+        var isRightKey = key === constants_1.strings.ARROW_RIGHT_KEY || key === constants_1.strings.IE_ARROW_RIGHT_KEY;
+        if (!isRTL && isLeftKey || isRTL && isRightKey) {
             return constants_1.Direction.LEFT;
         }
         return constants_1.Direction.RIGHT;
@@ -1929,8 +1947,8 @@ var MDCChipSetFoundation = /** @class */function (_super) {
         var index = this.selectedChipIds_.indexOf(chipId);
         if (index >= 0) {
             this.selectedChipIds_.splice(index, 1);
-            var chipIndex = this.adapter_.getIndexOfChipById(chipId);
-            this.adapter_.selectChipAtIndex(chipIndex, /** isSelected */false, shouldNotifyClients);
+            var chipIndex = this.adapter.getIndexOfChipById(chipId);
+            this.adapter.selectChipAtIndex(chipIndex, /** isSelected */false, shouldNotifyClients);
         }
     };
     /**
@@ -1950,10 +1968,10 @@ var MDCChipSetFoundation = /** @class */function (_super) {
         }
     };
     MDCChipSetFoundation.prototype.removeFocusFromChipsExcept_ = function (index) {
-        var chipCount = this.adapter_.getChipListCount();
+        var chipCount = this.adapter.getChipListCount();
         for (var i = 0; i < chipCount; i++) {
             if (i !== index) {
-                this.adapter_.removeFocusFromChipAtIndex(i);
+                this.adapter.removeFocusFromChipAtIndex(i);
             }
         }
     };
@@ -1964,15 +1982,15 @@ var MDCChipSetFoundation = /** @class */function (_super) {
         if (this.selectedChipIds_.indexOf(chipId) >= 0) {
             return;
         }
-        if (this.adapter_.hasClass(constants_2.cssClasses.CHOICE) && this.selectedChipIds_.length > 0) {
+        if (this.adapter.hasClass(constants_2.cssClasses.CHOICE) && this.selectedChipIds_.length > 0) {
             var previouslySelectedChip = this.selectedChipIds_[0];
-            var previouslySelectedIndex = this.adapter_.getIndexOfChipById(previouslySelectedChip);
+            var previouslySelectedIndex = this.adapter.getIndexOfChipById(previouslySelectedChip);
             this.selectedChipIds_ = [];
-            this.adapter_.selectChipAtIndex(previouslySelectedIndex, /** isSelected */false, shouldNotifyClients);
+            this.adapter.selectChipAtIndex(previouslySelectedIndex, /** isSelected */false, shouldNotifyClients);
         }
         this.selectedChipIds_.push(chipId);
-        var index = this.adapter_.getIndexOfChipById(chipId);
-        this.adapter_.selectChipAtIndex(index, /** isSelected */true, shouldNotifyClients);
+        var index = this.adapter.getIndexOfChipById(chipId);
+        this.adapter.selectChipAtIndex(index, /** isSelected */true, shouldNotifyClients);
     };
     return MDCChipSetFoundation;
 }(foundation_1.MDCFoundation);
@@ -2095,9 +2113,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
 var component_2 = __webpack_require__(/*! @material/ripple/component */ "./packages/mdc-ripple/component.ts");
 var foundation_1 = __webpack_require__(/*! @material/ripple/foundation */ "./packages/mdc-ripple/foundation.ts");
-var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/chip/constants.ts");
+var component_3 = __webpack_require__(/*! ../trailingaction/component */ "./packages/mdc-chips/trailingaction/component.ts");
+var constants_1 = __webpack_require__(/*! ../trailingaction/constants */ "./packages/mdc-chips/trailingaction/constants.ts");
+var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/chip/constants.ts");
 var foundation_2 = __webpack_require__(/*! ./foundation */ "./packages/mdc-chips/chip/foundation.ts");
-var INTERACTION_EVENTS = ['click', 'keydown'];
 var MDCChip = /** @class */function (_super) {
     __extends(MDCChip, _super);
     function MDCChip() {
@@ -2108,13 +2127,13 @@ var MDCChip = /** @class */function (_super) {
          * @return Whether the chip is selected.
          */
         get: function get() {
-            return this.foundation_.isSelected();
+            return this.foundation.isSelected();
         },
         /**
          * Sets selected state on the chip.
          */
         set: function set(selected) {
-            this.foundation_.setSelected(selected);
+            this.foundation.setSelected(selected);
         },
         enumerable: true,
         configurable: true
@@ -2124,13 +2143,23 @@ var MDCChip = /** @class */function (_super) {
          * @return Whether a trailing icon click should trigger exit/removal of the chip.
          */
         get: function get() {
-            return this.foundation_.getShouldRemoveOnTrailingIconClick();
+            return this.foundation.getShouldRemoveOnTrailingIconClick();
         },
         /**
          * Sets whether a trailing icon click should trigger exit/removal of the chip.
          */
         set: function set(shouldRemove) {
-            this.foundation_.setShouldRemoveOnTrailingIconClick(shouldRemove);
+            this.foundation.setShouldRemoveOnTrailingIconClick(shouldRemove);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCChip.prototype, "setShouldFocusPrimaryActionOnClick", {
+        /**
+         * Sets whether a clicking on the chip should focus the primary action.
+         */
+        set: function set(shouldFocus) {
+            this.foundation.setShouldFocusPrimaryActionOnClick(shouldFocus);
         },
         enumerable: true,
         configurable: true
@@ -2144,7 +2173,7 @@ var MDCChip = /** @class */function (_super) {
     });
     Object.defineProperty(MDCChip.prototype, "id", {
         get: function get() {
-            return this.root_.id;
+            return this.root.id;
         },
         enumerable: true,
         configurable: true
@@ -2152,62 +2181,77 @@ var MDCChip = /** @class */function (_super) {
     MDCChip.attachTo = function (root) {
         return new MDCChip(root);
     };
-    MDCChip.prototype.initialize = function (rippleFactory) {
+    MDCChip.prototype.initialize = function (rippleFactory, trailingActionFactory) {
         var _this = this;
         if (rippleFactory === void 0) {
             rippleFactory = function rippleFactory(el, foundation) {
                 return new component_2.MDCRipple(el, foundation);
             };
         }
-        this.leadingIcon_ = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
-        this.trailingIcon_ = this.root_.querySelector(constants_1.strings.TRAILING_ICON_SELECTOR);
-        this.checkmark_ = this.root_.querySelector(constants_1.strings.CHECKMARK_SELECTOR);
-        this.primaryAction_ = this.root_.querySelector(constants_1.strings.PRIMARY_ACTION_SELECTOR);
-        this.trailingAction_ = this.root_.querySelector(constants_1.strings.TRAILING_ACTION_SELECTOR);
+        if (trailingActionFactory === void 0) {
+            trailingActionFactory = function trailingActionFactory(el) {
+                return new component_3.MDCChipTrailingAction(el);
+            };
+        }
+        this.leadingIcon_ = this.root.querySelector(constants_2.strings.LEADING_ICON_SELECTOR);
+        this.checkmark_ = this.root.querySelector(constants_2.strings.CHECKMARK_SELECTOR);
+        this.primaryAction_ = this.root.querySelector(constants_2.strings.PRIMARY_ACTION_SELECTOR);
+        var trailingActionEl = this.root.querySelector(constants_2.strings.TRAILING_ACTION_SELECTOR);
+        if (trailingActionEl) {
+            this.trailingAction_ = trailingActionFactory(trailingActionEl);
+        }
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
-        var rippleAdapter = __assign({}, component_2.MDCRipple.createAdapter(this), { computeBoundingRect: function computeBoundingRect() {
-                return _this.foundation_.getDimensions();
+        var rippleAdapter = __assign(__assign({}, component_2.MDCRipple.createAdapter(this)), { computeBoundingRect: function computeBoundingRect() {
+                return _this.foundation.getDimensions();
             } });
-        this.ripple_ = rippleFactory(this.root_, new foundation_1.MDCRippleFoundation(rippleAdapter));
+        this.ripple_ = rippleFactory(this.root, new foundation_1.MDCRippleFoundation(rippleAdapter));
     };
     MDCChip.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.handleInteraction_ = function (evt) {
-            return _this.foundation_.handleInteraction(evt);
+        // Custom events
+        this.handleTrailingActionInteraction_ = function () {
+            _this.foundation.handleTrailingActionInteraction();
         };
-        this.handleTransitionEnd_ = function (evt) {
-            return _this.foundation_.handleTransitionEnd(evt);
+        this.handleTrailingActionNavigation_ = function (evt) {
+            _this.foundation.handleTrailingActionNavigation(evt);
         };
-        this.handleTrailingIconInteraction_ = function (evt) {
-            return _this.foundation_.handleTrailingIconInteraction(evt);
+        // Native events
+        this.handleClick_ = function () {
+            _this.foundation.handleClick();
         };
         this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
+            _this.foundation.handleKeydown(evt);
         };
-        INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.listen(evtType, _this.handleInteraction_);
-        });
+        this.handleTransitionEnd_ = function (evt) {
+            _this.foundation.handleTransitionEnd(evt);
+        };
+        this.handleFocusIn_ = function (evt) {
+            _this.foundation.handleFocusIn(evt);
+        };
+        this.handleFocusOut_ = function (evt) {
+            _this.foundation.handleFocusOut(evt);
+        };
         this.listen('transitionend', this.handleTransitionEnd_);
+        this.listen('click', this.handleClick_);
         this.listen('keydown', this.handleKeydown_);
-        if (this.trailingIcon_) {
-            INTERACTION_EVENTS.forEach(function (evtType) {
-                _this.trailingIcon_.addEventListener(evtType, _this.handleTrailingIconInteraction_);
-            });
+        this.listen('focusin', this.handleFocusIn_);
+        this.listen('focusout', this.handleFocusOut_);
+        if (this.trailingAction_) {
+            this.listen(constants_1.strings.INTERACTION_EVENT, this.handleTrailingActionInteraction_);
+            this.listen(constants_1.strings.NAVIGATION_EVENT, this.handleTrailingActionNavigation_);
         }
     };
     MDCChip.prototype.destroy = function () {
-        var _this = this;
         this.ripple_.destroy();
-        INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.unlisten(evtType, _this.handleInteraction_);
-        });
         this.unlisten('transitionend', this.handleTransitionEnd_);
         this.unlisten('keydown', this.handleKeydown_);
-        if (this.trailingIcon_) {
-            INTERACTION_EVENTS.forEach(function (evtType) {
-                _this.trailingIcon_.removeEventListener(evtType, _this.handleTrailingIconInteraction_);
-            });
+        this.unlisten('click', this.handleClick_);
+        this.unlisten('focusin', this.handleFocusIn_);
+        this.unlisten('focusout', this.handleFocusOut_);
+        if (this.trailingAction_) {
+            this.unlisten(constants_1.strings.INTERACTION_EVENT, this.handleTrailingActionInteraction_);
+            this.unlisten(constants_1.strings.NAVIGATION_EVENT, this.handleTrailingActionNavigation_);
         }
         _super.prototype.destroy.call(this);
     };
@@ -2215,7 +2259,7 @@ var MDCChip = /** @class */function (_super) {
      * Begins the exit animation which leads to removal of the chip.
      */
     MDCChip.prototype.beginExit = function () {
-        this.foundation_.beginExit();
+        this.foundation.beginExit();
     };
     MDCChip.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -2223,7 +2267,7 @@ var MDCChip = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             addClassToLeadingIcon: function addClassToLeadingIcon(className) {
                 if (_this.leadingIcon_) {
@@ -2244,50 +2288,60 @@ var MDCChip = /** @class */function (_super) {
                 }
             },
             getAttribute: function getAttribute(attr) {
-                return _this.root_.getAttribute(attr);
+                return _this.root.getAttribute(attr);
             },
             getCheckmarkBoundingClientRect: function getCheckmarkBoundingClientRect() {
                 return _this.checkmark_ ? _this.checkmark_.getBoundingClientRect() : null;
             },
             getComputedStyleValue: function getComputedStyleValue(propertyName) {
-                return window.getComputedStyle(_this.root_).getPropertyValue(propertyName);
+                return window.getComputedStyle(_this.root).getPropertyValue(propertyName);
             },
             getRootBoundingClientRect: function getRootBoundingClientRect() {
-                return _this.root_.getBoundingClientRect();
+                return _this.root.getBoundingClientRect();
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             hasLeadingIcon: function hasLeadingIcon() {
                 return !!_this.leadingIcon_;
             },
-            hasTrailingAction: function hasTrailingAction() {
-                return !!_this.trailingAction_;
-            },
             isRTL: function isRTL() {
-                return window.getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
+                return window.getComputedStyle(_this.root).getPropertyValue('direction') === 'rtl';
+            },
+            isTrailingActionNavigable: function isTrailingActionNavigable() {
+                if (_this.trailingAction_) {
+                    return _this.trailingAction_.isNavigable();
+                }
+                return false;
             },
             notifyInteraction: function notifyInteraction() {
-                return _this.emit(constants_1.strings.INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
+                return _this.emit(constants_2.strings.INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
             },
             notifyNavigation: function notifyNavigation(key, source) {
-                return _this.emit(constants_1.strings.NAVIGATION_EVENT, { chipId: _this.id, key: key, source: source }, true /* shouldBubble */);
+                return _this.emit(constants_2.strings.NAVIGATION_EVENT, { chipId: _this.id, key: key, source: source }, true /* shouldBubble */);
             },
             notifyRemoval: function notifyRemoval(removedAnnouncement) {
-                _this.emit(constants_1.strings.REMOVAL_EVENT, { chipId: _this.id, removedAnnouncement: removedAnnouncement }, true /* shouldBubble */);
+                _this.emit(constants_2.strings.REMOVAL_EVENT, { chipId: _this.id, removedAnnouncement: removedAnnouncement }, true /* shouldBubble */);
             },
             notifySelection: function notifySelection(selected, shouldIgnore) {
-                return _this.emit(constants_1.strings.SELECTION_EVENT, { chipId: _this.id, selected: selected, shouldIgnore: shouldIgnore }, true /* shouldBubble */);
+                return _this.emit(constants_2.strings.SELECTION_EVENT, { chipId: _this.id, selected: selected, shouldIgnore: shouldIgnore }, true /* shouldBubble */);
             },
             notifyTrailingIconInteraction: function notifyTrailingIconInteraction() {
-                return _this.emit(constants_1.strings.TRAILING_ICON_INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
+                return _this.emit(constants_2.strings.TRAILING_ICON_INTERACTION_EVENT, { chipId: _this.id }, true /* shouldBubble */);
             },
+            notifyEditStart: function notifyEditStart() {},
+            notifyEditFinish: function notifyEditFinish() {},
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             removeClassFromLeadingIcon: function removeClassFromLeadingIcon(className) {
                 if (_this.leadingIcon_) {
                     _this.leadingIcon_.classList.remove(className);
+                }
+            },
+            removeTrailingActionFocus: function removeTrailingActionFocus() {
+                if (_this.trailingAction_) {
+                    _this.trailingAction_.removeFocus();
                 }
             },
             setPrimaryActionAttr: function setPrimaryActionAttr(attr, value) {
@@ -2296,32 +2350,27 @@ var MDCChip = /** @class */function (_super) {
                 }
             },
             setStyleProperty: function setStyleProperty(propertyName, value) {
-                return _this.root_.style.setProperty(propertyName, value);
-            },
-            setTrailingActionAttr: function setTrailingActionAttr(attr, value) {
-                if (_this.trailingAction_) {
-                    _this.trailingAction_.setAttribute(attr, value);
-                }
+                return _this.root.style.setProperty(propertyName, value);
             }
         };
         return new foundation_2.MDCChipFoundation(adapter);
     };
     MDCChip.prototype.setSelectedFromChipSet = function (selected, shouldNotifyClients) {
-        this.foundation_.setSelectedFromChipSet(selected, shouldNotifyClients);
+        this.foundation.setSelectedFromChipSet(selected, shouldNotifyClients);
     };
     MDCChip.prototype.focusPrimaryAction = function () {
-        this.foundation_.focusPrimaryAction();
+        this.foundation.focusPrimaryAction();
     };
     MDCChip.prototype.focusTrailingAction = function () {
-        this.foundation_.focusTrailingAction();
+        this.foundation.focusTrailingAction();
     };
     MDCChip.prototype.removeFocus = function () {
-        this.foundation_.removeFocus();
+        this.foundation.removeFocus();
     };
     MDCChip.prototype.remove = function () {
-        var parent = this.root_.parentNode;
+        var parent = this.root.parentNode;
         if (parent !== null) {
-            parent.removeChild(this.root_);
+            parent.removeChild(this.root);
         }
     };
     return MDCChip;
@@ -2365,14 +2414,14 @@ exports.MDCChip = MDCChip;
 Object.defineProperty(exports, "__esModule", { value: true });
 var Direction;
 (function (Direction) {
-    Direction[Direction["RIGHT"] = 0] = "RIGHT";
-    Direction[Direction["LEFT"] = 1] = "LEFT";
+    Direction["LEFT"] = "left";
+    Direction["RIGHT"] = "right";
 })(Direction = exports.Direction || (exports.Direction = {}));
 var EventSource;
 (function (EventSource) {
-    EventSource[EventSource["PRIMARY"] = 0] = "PRIMARY";
-    EventSource[EventSource["TRAILING"] = 1] = "TRAILING";
-    EventSource[EventSource["NONE"] = 2] = "NONE";
+    EventSource["PRIMARY"] = "primary";
+    EventSource["TRAILING"] = "trailing";
+    EventSource["NONE"] = "none";
 })(EventSource = exports.EventSource || (exports.EventSource = {}));
 exports.strings = {
     ADDED_ANNOUNCEMENT_ATTRIBUTE: 'data-mdc-chip-added-announcement',
@@ -2388,6 +2437,11 @@ exports.strings = {
     ENTER_KEY: 'Enter',
     ENTRY_ANIMATION_NAME: 'mdc-chip-entry',
     HOME_KEY: 'Home',
+    IE_ARROW_DOWN_KEY: 'Down',
+    IE_ARROW_LEFT_KEY: 'Left',
+    IE_ARROW_RIGHT_KEY: 'Right',
+    IE_ARROW_UP_KEY: 'Up',
+    IE_DELETE_KEY: 'Del',
     INTERACTION_EVENT: 'MDCChip:interaction',
     LEADING_ICON_SELECTOR: '.mdc-chip__icon--leading',
     NAVIGATION_EVENT: 'MDCChip:navigation',
@@ -2397,7 +2451,7 @@ exports.strings = {
     SELECTION_EVENT: 'MDCChip:selection',
     SPACEBAR_KEY: ' ',
     TAB_INDEX: 'tabindex',
-    TRAILING_ACTION_SELECTOR: '.mdc-chip__trailing-action',
+    TRAILING_ACTION_SELECTOR: '.mdc-chip-trailing-action',
     TRAILING_ICON_INTERACTION_EVENT: 'MDCChip:trailingIconInteraction',
     TRAILING_ICON_SELECTOR: '.mdc-chip__icon--trailing'
 };
@@ -2405,9 +2459,12 @@ exports.cssClasses = {
     CHECKMARK: 'mdc-chip__checkmark',
     CHIP_EXIT: 'mdc-chip--exit',
     DELETABLE: 'mdc-chip--deletable',
+    EDITABLE: 'mdc-chip--editable',
+    EDITING: 'mdc-chip--editing',
     HIDDEN_LEADING_ICON: 'mdc-chip__icon--leading-hidden',
     LEADING_ICON: 'mdc-chip__icon--leading',
     PRIMARY_ACTION: 'mdc-chip__primary-action',
+    PRIMARY_ACTION_FOCUSED: 'mdc-chip--primary-action-focused',
     SELECTED: 'mdc-chip--selected',
     TEXT: 'mdc-chip__text',
     TRAILING_ACTION: 'mdc-chip__trailing-action',
@@ -2421,12 +2478,18 @@ exports.navigationKeys.add(exports.strings.ARROW_DOWN_KEY);
 exports.navigationKeys.add(exports.strings.ARROW_UP_KEY);
 exports.navigationKeys.add(exports.strings.END_KEY);
 exports.navigationKeys.add(exports.strings.HOME_KEY);
+exports.navigationKeys.add(exports.strings.IE_ARROW_LEFT_KEY);
+exports.navigationKeys.add(exports.strings.IE_ARROW_RIGHT_KEY);
+exports.navigationKeys.add(exports.strings.IE_ARROW_DOWN_KEY);
+exports.navigationKeys.add(exports.strings.IE_ARROW_UP_KEY);
 exports.jumpChipKeys = new Set();
 // IE11 has no support for new Set with iterable so we need to initialize this by hand
 exports.jumpChipKeys.add(exports.strings.ARROW_UP_KEY);
 exports.jumpChipKeys.add(exports.strings.ARROW_DOWN_KEY);
 exports.jumpChipKeys.add(exports.strings.HOME_KEY);
 exports.jumpChipKeys.add(exports.strings.END_KEY);
+exports.jumpChipKeys.add(exports.strings.IE_ARROW_UP_KEY);
+exports.jumpChipKeys.add(exports.strings.IE_ARROW_DOWN_KEY);
 
 /***/ }),
 
@@ -2504,12 +2567,23 @@ var emptyClientRect = {
     top: 0,
     width: 0
 };
+var FocusBehavior;
+(function (FocusBehavior) {
+    FocusBehavior[FocusBehavior["SHOULD_FOCUS"] = 0] = "SHOULD_FOCUS";
+    FocusBehavior[FocusBehavior["SHOULD_NOT_FOCUS"] = 1] = "SHOULD_NOT_FOCUS";
+})(FocusBehavior || (FocusBehavior = {}));
 var MDCChipFoundation = /** @class */function (_super) {
     __extends(MDCChipFoundation, _super);
     function MDCChipFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCChipFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCChipFoundation.defaultAdapter), adapter)) || this;
         /** Whether a trailing icon click should immediately trigger exit/removal of the chip. */
         _this.shouldRemoveOnTrailingIconClick_ = true;
+        /**
+         * Whether the primary action should receive focus on click. Should only be
+         * set to true for clients who programmatically give focus to a different
+         * element on the page when a chip is clicked (like a menu).
+         */
+        _this.shouldFocusPrimaryActionOnClick_ = true;
         return _this;
     }
     Object.defineProperty(MDCChipFoundation, "strings", {
@@ -2562,11 +2636,17 @@ var MDCChipFoundation = /** @class */function (_super) {
                 hasLeadingIcon: function hasLeadingIcon() {
                     return false;
                 },
-                hasTrailingAction: function hasTrailingAction() {
-                    return false;
-                },
                 isRTL: function isRTL() {
                     return false;
+                },
+                isTrailingActionNavigable: function isTrailingActionNavigable() {
+                    return false;
+                },
+                notifyEditFinish: function notifyEditFinish() {
+                    return undefined;
+                },
+                notifyEditStart: function notifyEditStart() {
+                    return undefined;
                 },
                 notifyInteraction: function notifyInteraction() {
                     return undefined;
@@ -2589,13 +2669,13 @@ var MDCChipFoundation = /** @class */function (_super) {
                 removeClassFromLeadingIcon: function removeClassFromLeadingIcon() {
                     return undefined;
                 },
+                removeTrailingActionFocus: function removeTrailingActionFocus() {
+                    return undefined;
+                },
                 setPrimaryActionAttr: function setPrimaryActionAttr() {
                     return undefined;
                 },
                 setStyleProperty: function setStyleProperty() {
-                    return undefined;
-                },
-                setTrailingActionAttr: function setTrailingActionAttr() {
                     return undefined;
                 }
             };
@@ -2604,7 +2684,13 @@ var MDCChipFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCChipFoundation.prototype.isSelected = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
+        return this.adapter.hasClass(constants_1.cssClasses.SELECTED);
+    };
+    MDCChipFoundation.prototype.isEditable = function () {
+        return this.adapter.hasClass(constants_1.cssClasses.EDITABLE);
+    };
+    MDCChipFoundation.prototype.isEditing = function () {
+        return this.adapter.hasClass(constants_1.cssClasses.EDITING);
     };
     MDCChipFoundation.prototype.setSelected = function (selected) {
         this.setSelected_(selected);
@@ -2622,17 +2708,20 @@ var MDCChipFoundation = /** @class */function (_super) {
     MDCChipFoundation.prototype.setShouldRemoveOnTrailingIconClick = function (shouldRemove) {
         this.shouldRemoveOnTrailingIconClick_ = shouldRemove;
     };
+    MDCChipFoundation.prototype.setShouldFocusPrimaryActionOnClick = function (shouldFocus) {
+        this.shouldFocusPrimaryActionOnClick_ = shouldFocus;
+    };
     MDCChipFoundation.prototype.getDimensions = function () {
         var _this = this;
         var getRootRect = function getRootRect() {
-            return _this.adapter_.getRootBoundingClientRect();
+            return _this.adapter.getRootBoundingClientRect();
         };
         var getCheckmarkRect = function getCheckmarkRect() {
-            return _this.adapter_.getCheckmarkBoundingClientRect();
+            return _this.adapter.getCheckmarkBoundingClientRect();
         };
         // When a chip has a checkmark and not a leading icon, the bounding rect changes in size depending on the current
         // size of the checkmark.
-        if (!this.adapter_.hasLeadingIcon()) {
+        if (!this.adapter.hasLeadingIcon()) {
             var checkmarkRect = getCheckmarkRect();
             if (checkmarkRect) {
                 var rootRect = getRootRect();
@@ -2656,15 +2745,15 @@ var MDCChipFoundation = /** @class */function (_super) {
      * Begins the exit animation which leads to removal of the chip.
      */
     MDCChipFoundation.prototype.beginExit = function () {
-        this.adapter_.addClass(constants_1.cssClasses.CHIP_EXIT);
+        this.adapter.addClass(constants_1.cssClasses.CHIP_EXIT);
     };
-    /**
-     * Handles an interaction event on the root element.
-     */
-    MDCChipFoundation.prototype.handleInteraction = function (evt) {
-        if (this.shouldHandleInteraction_(evt)) {
-            this.adapter_.notifyInteraction();
-            this.focusPrimaryAction_();
+    MDCChipFoundation.prototype.handleClick = function () {
+        this.adapter.notifyInteraction();
+        this.setPrimaryActionFocusable_(this.getFocusBehavior_());
+    };
+    MDCChipFoundation.prototype.handleDoubleClick = function () {
+        if (this.isEditable()) {
+            this.startEditing();
         }
     };
     /**
@@ -2673,165 +2762,218 @@ var MDCChipFoundation = /** @class */function (_super) {
     MDCChipFoundation.prototype.handleTransitionEnd = function (evt) {
         var _this = this;
         // Handle transition end event on the chip when it is about to be removed.
-        var shouldHandle = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHIP_EXIT);
+        var shouldHandle = this.adapter.eventTargetHasClass(evt.target, constants_1.cssClasses.CHIP_EXIT);
         var widthIsAnimating = evt.propertyName === 'width';
         var opacityIsAnimating = evt.propertyName === 'opacity';
         if (shouldHandle && opacityIsAnimating) {
             // See: https://css-tricks.com/using-css-transitions-auto-dimensions/#article-header-id-5
-            var chipWidth_1 = this.adapter_.getComputedStyleValue('width');
+            var chipWidth_1 = this.adapter.getComputedStyleValue('width');
             // On the next frame (once we get the computed width), explicitly set the chip's width
             // to its current pixel width, so we aren't transitioning out of 'auto'.
             requestAnimationFrame(function () {
-                _this.adapter_.setStyleProperty('width', chipWidth_1);
+                _this.adapter.setStyleProperty('width', chipWidth_1);
                 // To mitigate jitter, start transitioning padding and margin before width.
-                _this.adapter_.setStyleProperty('padding', '0');
-                _this.adapter_.setStyleProperty('margin', '0');
+                _this.adapter.setStyleProperty('padding', '0');
+                _this.adapter.setStyleProperty('margin', '0');
                 // On the next frame (once width is explicitly set), transition width to 0.
                 requestAnimationFrame(function () {
-                    _this.adapter_.setStyleProperty('width', '0');
+                    _this.adapter.setStyleProperty('width', '0');
                 });
             });
             return;
         }
         if (shouldHandle && widthIsAnimating) {
-            this.removeFocus_();
-            var removedAnnouncement = this.adapter_.getAttribute(constants_1.strings.REMOVED_ANNOUNCEMENT_ATTRIBUTE);
-            this.adapter_.notifyRemoval(removedAnnouncement);
+            this.removeFocus();
+            var removedAnnouncement = this.adapter.getAttribute(constants_1.strings.REMOVED_ANNOUNCEMENT_ATTRIBUTE);
+            this.adapter.notifyRemoval(removedAnnouncement);
         }
         // Handle a transition end event on the leading icon or checkmark, since the transition end event bubbles.
         if (!opacityIsAnimating) {
             return;
         }
-        var shouldHideLeadingIcon = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.LEADING_ICON) && this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
-        var shouldShowLeadingIcon = this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.CHECKMARK) && !this.adapter_.hasClass(constants_1.cssClasses.SELECTED);
+        var shouldHideLeadingIcon = this.adapter.eventTargetHasClass(evt.target, constants_1.cssClasses.LEADING_ICON) && this.adapter.hasClass(constants_1.cssClasses.SELECTED);
+        var shouldShowLeadingIcon = this.adapter.eventTargetHasClass(evt.target, constants_1.cssClasses.CHECKMARK) && !this.adapter.hasClass(constants_1.cssClasses.SELECTED);
         if (shouldHideLeadingIcon) {
-            return this.adapter_.addClassToLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+            this.adapter.addClassToLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+            return;
         }
         if (shouldShowLeadingIcon) {
-            return this.adapter_.removeClassFromLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+            this.adapter.removeClassFromLeadingIcon(constants_1.cssClasses.HIDDEN_LEADING_ICON);
+            return;
         }
+    };
+    MDCChipFoundation.prototype.handleFocusIn = function (evt) {
+        // Early exit if the event doesn't come from the primary action
+        if (!this.eventFromPrimaryAction_(evt)) {
+            return;
+        }
+        this.adapter.addClass(constants_1.cssClasses.PRIMARY_ACTION_FOCUSED);
+    };
+    MDCChipFoundation.prototype.handleFocusOut = function (evt) {
+        // Early exit if the event doesn't come from the primary action
+        if (!this.eventFromPrimaryAction_(evt)) {
+            return;
+        }
+        if (this.isEditing()) {
+            this.finishEditing();
+        }
+        this.adapter.removeClass(constants_1.cssClasses.PRIMARY_ACTION_FOCUSED);
     };
     /**
      * Handles an interaction event on the trailing icon element. This is used to
      * prevent the ripple from activating on interaction with the trailing icon.
      */
-    MDCChipFoundation.prototype.handleTrailingIconInteraction = function (evt) {
-        if (this.shouldHandleInteraction_(evt)) {
-            this.adapter_.notifyTrailingIconInteraction();
-            this.removeChip_(evt);
-        }
+    MDCChipFoundation.prototype.handleTrailingActionInteraction = function () {
+        this.adapter.notifyTrailingIconInteraction();
+        this.removeChip_();
     };
     /**
      * Handles a keydown event from the root element.
      */
     MDCChipFoundation.prototype.handleKeydown = function (evt) {
-        if (this.shouldRemoveChip_(evt)) {
-            return this.removeChip_(evt);
+        if (this.isEditing()) {
+            if (this.shouldFinishEditing(evt)) {
+                evt.preventDefault();
+                this.finishEditing();
+            }
+            // When editing, the foundation should only handle key events that finish
+            // the editing process.
+            return;
         }
-        var key = evt.key;
+        if (this.isEditable()) {
+            if (this.shouldStartEditing(evt)) {
+                evt.preventDefault();
+                this.startEditing();
+            }
+        }
+        if (this.shouldNotifyInteraction_(evt)) {
+            this.adapter.notifyInteraction();
+            this.setPrimaryActionFocusable_(this.getFocusBehavior_());
+            return;
+        }
+        if (this.isDeleteAction_(evt)) {
+            evt.preventDefault();
+            this.removeChip_();
+            return;
+        }
         // Early exit if the key is not usable
-        if (!constants_1.navigationKeys.has(key)) {
+        if (!constants_1.navigationKeys.has(evt.key)) {
             return;
         }
         // Prevent default behavior for movement keys which could include scrolling
         evt.preventDefault();
-        this.focusNextAction_(evt);
+        this.focusNextAction_(evt.key, constants_1.EventSource.PRIMARY);
     };
+    MDCChipFoundation.prototype.handleTrailingActionNavigation = function (evt) {
+        return this.focusNextAction_(evt.detail.key, constants_1.EventSource.TRAILING);
+    };
+    /**
+     * Called by the chip set to remove focus from the chip actions.
+     */
     MDCChipFoundation.prototype.removeFocus = function () {
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
+        this.adapter.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
+        this.adapter.removeTrailingActionFocus();
     };
+    /**
+     * Called by the chip set to focus the primary action.
+     *
+     */
     MDCChipFoundation.prototype.focusPrimaryAction = function () {
-        this.focusPrimaryAction_();
+        this.setPrimaryActionFocusable_(FocusBehavior.SHOULD_FOCUS);
     };
+    /**
+     * Called by the chip set to focus the trailing action (if present), otherwise
+     * gives focus to the trailing action.
+     */
     MDCChipFoundation.prototype.focusTrailingAction = function () {
-        if (!this.adapter_.hasTrailingAction()) {
-            return this.focusPrimaryAction_();
-        }
-        this.focusTrailingAction_();
-    };
-    MDCChipFoundation.prototype.focusNextAction_ = function (evt) {
-        var key = evt.key;
-        var hasTrailingAction = this.adapter_.hasTrailingAction();
-        var dir = this.getDirection_(key);
-        var source = this.getEvtSource_(evt);
-        // Early exit if the key should jump keys or the chip only has one action (i.e. no trailing action)
-        if (constants_1.jumpChipKeys.has(key) || !hasTrailingAction) {
-            this.adapter_.notifyNavigation(key, source);
+        var trailingActionIsNavigable = this.adapter.isTrailingActionNavigable();
+        if (trailingActionIsNavigable) {
+            this.adapter.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
+            this.adapter.focusTrailingAction();
             return;
         }
+        this.focusPrimaryAction();
+    };
+    MDCChipFoundation.prototype.setPrimaryActionFocusable_ = function (focusBehavior) {
+        this.adapter.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '0');
+        if (focusBehavior === FocusBehavior.SHOULD_FOCUS) {
+            this.adapter.focusPrimaryAction();
+        }
+        this.adapter.removeTrailingActionFocus();
+    };
+    MDCChipFoundation.prototype.getFocusBehavior_ = function () {
+        if (this.shouldFocusPrimaryActionOnClick_) {
+            return FocusBehavior.SHOULD_FOCUS;
+        }
+        return FocusBehavior.SHOULD_NOT_FOCUS;
+    };
+    MDCChipFoundation.prototype.focusNextAction_ = function (key, source) {
+        var isTrailingActionNavigable = this.adapter.isTrailingActionNavigable();
+        var dir = this.getDirection_(key);
+        // Early exit if the key should jump chips
+        if (constants_1.jumpChipKeys.has(key) || !isTrailingActionNavigable) {
+            return this.adapter.notifyNavigation(key, source);
+        }
         if (source === constants_1.EventSource.PRIMARY && dir === constants_1.Direction.RIGHT) {
-            return this.focusTrailingAction_();
+            return this.focusTrailingAction();
         }
         if (source === constants_1.EventSource.TRAILING && dir === constants_1.Direction.LEFT) {
-            return this.focusPrimaryAction_();
+            return this.focusPrimaryAction();
         }
-        this.adapter_.notifyNavigation(key, constants_1.EventSource.NONE);
-    };
-    MDCChipFoundation.prototype.getEvtSource_ = function (evt) {
-        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.PRIMARY_ACTION)) {
-            return constants_1.EventSource.PRIMARY;
-        }
-        if (this.adapter_.eventTargetHasClass(evt.target, constants_1.cssClasses.TRAILING_ACTION)) {
-            return constants_1.EventSource.TRAILING;
-        }
-        return constants_1.EventSource.NONE;
+        this.adapter.notifyNavigation(key, constants_1.EventSource.NONE);
     };
     MDCChipFoundation.prototype.getDirection_ = function (key) {
-        var isRTL = this.adapter_.isRTL();
-        if (key === constants_1.strings.ARROW_LEFT_KEY && !isRTL || key === constants_1.strings.ARROW_RIGHT_KEY && isRTL) {
+        var isRTL = this.adapter.isRTL();
+        var isLeftKey = key === constants_1.strings.ARROW_LEFT_KEY || key === constants_1.strings.IE_ARROW_LEFT_KEY;
+        var isRightKey = key === constants_1.strings.ARROW_RIGHT_KEY || key === constants_1.strings.IE_ARROW_RIGHT_KEY;
+        if (!isRTL && isLeftKey || isRTL && isRightKey) {
             return constants_1.Direction.LEFT;
         }
         return constants_1.Direction.RIGHT;
     };
-    MDCChipFoundation.prototype.focusPrimaryAction_ = function () {
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '0');
-        this.adapter_.focusPrimaryAction();
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.focusTrailingAction_ = function () {
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '0');
-        this.adapter_.focusTrailingAction();
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.removeFocus_ = function () {
-        this.adapter_.setTrailingActionAttr(constants_1.strings.TAB_INDEX, '-1');
-        this.adapter_.setPrimaryActionAttr(constants_1.strings.TAB_INDEX, '-1');
-    };
-    MDCChipFoundation.prototype.removeChip_ = function (evt) {
-        evt.stopPropagation();
-        // Prevent default behavior for backspace on Firefox which causes a page
-        // navigation.
-        evt.preventDefault();
+    MDCChipFoundation.prototype.removeChip_ = function () {
         if (this.shouldRemoveOnTrailingIconClick_) {
             this.beginExit();
         }
     };
-    MDCChipFoundation.prototype.shouldHandleInteraction_ = function (evt) {
-        if (evt.type === 'click') {
-            return true;
-        }
-        var keyEvt = evt;
-        return keyEvt.key === constants_1.strings.ENTER_KEY || keyEvt.key === constants_1.strings.SPACEBAR_KEY;
+    MDCChipFoundation.prototype.shouldStartEditing = function (evt) {
+        return this.eventFromPrimaryAction_(evt) && evt.key === constants_1.strings.ENTER_KEY;
     };
-    MDCChipFoundation.prototype.shouldRemoveChip_ = function (evt) {
-        var isDeletable = this.adapter_.hasClass(constants_1.cssClasses.DELETABLE);
-        return isDeletable && (evt.key === constants_1.strings.BACKSPACE_KEY || evt.key === constants_1.strings.DELETE_KEY);
+    MDCChipFoundation.prototype.shouldFinishEditing = function (evt) {
+        return evt.key === constants_1.strings.ENTER_KEY;
+    };
+    MDCChipFoundation.prototype.shouldNotifyInteraction_ = function (evt) {
+        return evt.key === constants_1.strings.ENTER_KEY || evt.key === constants_1.strings.SPACEBAR_KEY;
+    };
+    MDCChipFoundation.prototype.isDeleteAction_ = function (evt) {
+        var isDeletable = this.adapter.hasClass(constants_1.cssClasses.DELETABLE);
+        return isDeletable && (evt.key === constants_1.strings.BACKSPACE_KEY || evt.key === constants_1.strings.DELETE_KEY || evt.key === constants_1.strings.IE_DELETE_KEY);
     };
     MDCChipFoundation.prototype.setSelected_ = function (selected) {
         if (selected) {
-            this.adapter_.addClass(constants_1.cssClasses.SELECTED);
-            this.adapter_.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'true');
+            this.adapter.addClass(constants_1.cssClasses.SELECTED);
+            this.adapter.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'true');
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.SELECTED);
-            this.adapter_.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'false');
+            this.adapter.removeClass(constants_1.cssClasses.SELECTED);
+            this.adapter.setPrimaryActionAttr(constants_1.strings.ARIA_CHECKED, 'false');
         }
     };
     MDCChipFoundation.prototype.notifySelection_ = function (selected) {
-        this.adapter_.notifySelection(selected, false);
+        this.adapter.notifySelection(selected, false);
     };
     MDCChipFoundation.prototype.notifyIgnoredSelection_ = function (selected) {
-        this.adapter_.notifySelection(selected, true);
+        this.adapter.notifySelection(selected, true);
+    };
+    MDCChipFoundation.prototype.eventFromPrimaryAction_ = function (evt) {
+        return this.adapter.eventTargetHasClass(evt.target, constants_1.cssClasses.PRIMARY_ACTION);
+    };
+    MDCChipFoundation.prototype.startEditing = function () {
+        this.adapter.addClass(constants_1.cssClasses.EDITING);
+        this.adapter.notifyEditStart();
+    };
+    MDCChipFoundation.prototype.finishEditing = function () {
+        this.adapter.removeClass(constants_1.cssClasses.EDITING);
+        this.adapter.notifyEditFinish();
     };
     return MDCChipFoundation;
 }(foundation_1.MDCFoundation);
@@ -2925,15 +3067,16 @@ function __export(m) {
   }
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./trailingaction/index */ "./packages/mdc-chips/trailingaction/index.ts"));
 __export(__webpack_require__(/*! ./chip/index */ "./packages/mdc-chips/chip/index.ts"));
 __export(__webpack_require__(/*! ./chip-set/index */ "./packages/mdc-chips/chip-set/index.ts"));
 
 /***/ }),
 
-/***/ "./packages/mdc-data-table/component.ts":
-/*!**********************************************!*\
-  !*** ./packages/mdc-data-table/component.ts ***!
-  \**********************************************/
+/***/ "./packages/mdc-chips/trailingaction/component.ts":
+/*!********************************************************!*\
+  !*** ./packages/mdc-chips/trailingaction/component.ts ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2941,7 +3084,7 @@ __export(__webpack_require__(/*! ./chip-set/index */ "./packages/mdc-chips/chip-
 
 /**
  * @license
- * Copyright 2019 Google Inc.
+ * Copyright 2020 Google Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -2983,10 +3126,838 @@ var __extends = this && this.__extends || function () {
 }();
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
+var component_2 = __webpack_require__(/*! @material/ripple/component */ "./packages/mdc-ripple/component.ts");
+var foundation_1 = __webpack_require__(/*! @material/ripple/foundation */ "./packages/mdc-ripple/foundation.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/trailingaction/constants.ts");
+var foundation_2 = __webpack_require__(/*! ./foundation */ "./packages/mdc-chips/trailingaction/foundation.ts");
+var MDCChipTrailingAction = /** @class */function (_super) {
+    __extends(MDCChipTrailingAction, _super);
+    function MDCChipTrailingAction() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Object.defineProperty(MDCChipTrailingAction.prototype, "ripple", {
+        get: function get() {
+            return this.ripple_;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MDCChipTrailingAction.attachTo = function (root) {
+        return new MDCChipTrailingAction(root);
+    };
+    MDCChipTrailingAction.prototype.initialize = function (rippleFactory) {
+        if (rippleFactory === void 0) {
+            rippleFactory = function rippleFactory(el, foundation) {
+                return new component_2.MDCRipple(el, foundation);
+            };
+        }
+        // DO NOT INLINE this variable. For backward compatibility, foundations take
+        // a Partial<MDCFooAdapter>. To ensure we don't accidentally omit any
+        // methods, we need a separate, strongly typed adapter variable.
+        var rippleAdapter = component_2.MDCRipple.createAdapter(this);
+        this.ripple_ = rippleFactory(this.root, new foundation_1.MDCRippleFoundation(rippleAdapter));
+    };
+    MDCChipTrailingAction.prototype.initialSyncWithDOM = function () {
+        var _this = this;
+        this.handleClick_ = function (evt) {
+            _this.foundation.handleClick(evt);
+        };
+        this.handleKeydown_ = function (evt) {
+            _this.foundation.handleKeydown(evt);
+        };
+        this.listen('click', this.handleClick_);
+        this.listen('keydown', this.handleKeydown_);
+    };
+    MDCChipTrailingAction.prototype.destroy = function () {
+        this.ripple_.destroy();
+        this.unlisten('click', this.handleClick_);
+        this.unlisten('keydown', this.handleKeydown_);
+        _super.prototype.destroy.call(this);
+    };
+    MDCChipTrailingAction.prototype.getDefaultFoundation = function () {
+        var _this = this;
+        // DO NOT INLINE this variable. For backward compatibility, foundations take
+        // a Partial<MDCFooAdapter>. To ensure we don't accidentally omit any
+        // methods, we need a separate, strongly typed adapter variable.
+        var adapter = {
+            focus: function focus() {
+                // TODO(b/157231863): Migate MDCComponent#root to HTMLElement
+                _this.root.focus();
+            },
+            getAttribute: function getAttribute(attr) {
+                return _this.root.getAttribute(attr);
+            },
+            notifyInteraction: function notifyInteraction(trigger) {
+                return _this.emit(constants_1.strings.INTERACTION_EVENT, { trigger: trigger }, true /* shouldBubble */);
+            },
+            notifyNavigation: function notifyNavigation(key) {
+                _this.emit(constants_1.strings.NAVIGATION_EVENT, { key: key }, true /* shouldBubble */);
+            },
+            setAttribute: function setAttribute(attr, value) {
+                _this.root.setAttribute(attr, value);
+            }
+        };
+        return new foundation_2.MDCChipTrailingActionFoundation(adapter);
+    };
+    MDCChipTrailingAction.prototype.isNavigable = function () {
+        return this.foundation.isNavigable();
+    };
+    MDCChipTrailingAction.prototype.focus = function () {
+        this.foundation.focus();
+    };
+    MDCChipTrailingAction.prototype.removeFocus = function () {
+        this.foundation.removeFocus();
+    };
+    return MDCChipTrailingAction;
+}(component_1.MDCComponent);
+exports.MDCChipTrailingAction = MDCChipTrailingAction;
+
+/***/ }),
+
+/***/ "./packages/mdc-chips/trailingaction/constants.ts":
+/*!********************************************************!*\
+  !*** ./packages/mdc-chips/trailingaction/constants.ts ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var InteractionTrigger;
+(function (InteractionTrigger) {
+    InteractionTrigger[InteractionTrigger["UNSPECIFIED"] = 0] = "UNSPECIFIED";
+    InteractionTrigger[InteractionTrigger["CLICK"] = 1] = "CLICK";
+    InteractionTrigger[InteractionTrigger["BACKSPACE_KEY"] = 2] = "BACKSPACE_KEY";
+    InteractionTrigger[InteractionTrigger["DELETE_KEY"] = 3] = "DELETE_KEY";
+    InteractionTrigger[InteractionTrigger["SPACEBAR_KEY"] = 4] = "SPACEBAR_KEY";
+    InteractionTrigger[InteractionTrigger["ENTER_KEY"] = 5] = "ENTER_KEY";
+})(InteractionTrigger = exports.InteractionTrigger || (exports.InteractionTrigger = {}));
+exports.strings = {
+    ARIA_HIDDEN: 'aria-hidden',
+    INTERACTION_EVENT: 'MDCChipTrailingAction:interaction',
+    NAVIGATION_EVENT: 'MDCChipTrailingAction:navigation',
+    TAB_INDEX: 'tabindex'
+};
+
+/***/ }),
+
+/***/ "./packages/mdc-chips/trailingaction/foundation.ts":
+/*!*********************************************************!*\
+  !*** ./packages/mdc-chips/trailingaction/foundation.ts ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+var __assign = this && this.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var keyboard_1 = __webpack_require__(/*! @material/dom/keyboard */ "./packages/mdc-dom/keyboard.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/trailingaction/constants.ts");
+var MDCChipTrailingActionFoundation = /** @class */function (_super) {
+    __extends(MDCChipTrailingActionFoundation, _super);
+    function MDCChipTrailingActionFoundation(adapter) {
+        return _super.call(this, __assign(__assign({}, MDCChipTrailingActionFoundation.defaultAdapter), adapter)) || this;
+    }
+    Object.defineProperty(MDCChipTrailingActionFoundation, "strings", {
+        get: function get() {
+            return constants_1.strings;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCChipTrailingActionFoundation, "defaultAdapter", {
+        get: function get() {
+            return {
+                focus: function focus() {
+                    return undefined;
+                },
+                getAttribute: function getAttribute() {
+                    return null;
+                },
+                setAttribute: function setAttribute() {
+                    return undefined;
+                },
+                notifyInteraction: function notifyInteraction() {
+                    return undefined;
+                },
+                notifyNavigation: function notifyNavigation() {
+                    return undefined;
+                }
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MDCChipTrailingActionFoundation.prototype.handleClick = function (evt) {
+        evt.stopPropagation();
+        this.adapter.notifyInteraction(constants_1.InteractionTrigger.CLICK);
+    };
+    MDCChipTrailingActionFoundation.prototype.handleKeydown = function (evt) {
+        evt.stopPropagation();
+        var key = keyboard_1.normalizeKey(evt);
+        if (this.shouldNotifyInteractionFromKey_(key)) {
+            var trigger = this.getTriggerFromKey_(key);
+            this.adapter.notifyInteraction(trigger);
+            return;
+        }
+        if (keyboard_1.isNavigationEvent(evt)) {
+            this.adapter.notifyNavigation(key);
+            return;
+        }
+    };
+    MDCChipTrailingActionFoundation.prototype.removeFocus = function () {
+        this.adapter.setAttribute(constants_1.strings.TAB_INDEX, '-1');
+    };
+    MDCChipTrailingActionFoundation.prototype.focus = function () {
+        this.adapter.setAttribute(constants_1.strings.TAB_INDEX, '0');
+        this.adapter.focus();
+    };
+    MDCChipTrailingActionFoundation.prototype.isNavigable = function () {
+        return this.adapter.getAttribute(constants_1.strings.ARIA_HIDDEN) !== 'true';
+    };
+    MDCChipTrailingActionFoundation.prototype.shouldNotifyInteractionFromKey_ = function (key) {
+        var isFromActionKey = key === keyboard_1.KEY.ENTER || key === keyboard_1.KEY.SPACEBAR;
+        var isFromDeleteKey = key === keyboard_1.KEY.BACKSPACE || key === keyboard_1.KEY.DELETE;
+        return isFromActionKey || isFromDeleteKey;
+    };
+    MDCChipTrailingActionFoundation.prototype.getTriggerFromKey_ = function (key) {
+        if (key === keyboard_1.KEY.SPACEBAR) {
+            return constants_1.InteractionTrigger.SPACEBAR_KEY;
+        }
+        if (key === keyboard_1.KEY.ENTER) {
+            return constants_1.InteractionTrigger.ENTER_KEY;
+        }
+        if (key === keyboard_1.KEY.DELETE) {
+            return constants_1.InteractionTrigger.DELETE_KEY;
+        }
+        if (key === keyboard_1.KEY.BACKSPACE) {
+            return constants_1.InteractionTrigger.BACKSPACE_KEY;
+        }
+        // Default case, should never be returned
+        return constants_1.InteractionTrigger.UNSPECIFIED;
+    };
+    return MDCChipTrailingActionFoundation;
+}(foundation_1.MDCFoundation);
+exports.MDCChipTrailingActionFoundation = MDCChipTrailingActionFoundation;
+// tslint:disable-next-line:no-default-export Needed for backward compatibility with MDC Web v0.44.0 and earlier.
+exports.default = MDCChipTrailingActionFoundation;
+
+/***/ }),
+
+/***/ "./packages/mdc-chips/trailingaction/index.ts":
+/*!****************************************************!*\
+  !*** ./packages/mdc-chips/trailingaction/index.ts ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./component */ "./packages/mdc-chips/trailingaction/component.ts"));
+__export(__webpack_require__(/*! ./foundation */ "./packages/mdc-chips/trailingaction/foundation.ts"));
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-chips/trailingaction/constants.ts");
+exports.trailingActionStrings = constants_1.strings;
+
+/***/ }),
+
+/***/ "./packages/mdc-circular-progress/component.ts":
+/*!*****************************************************!*\
+  !*** ./packages/mdc-circular-progress/component.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
+var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-circular-progress/foundation.ts");
+var MDCCircularProgress = /** @class */function (_super) {
+    __extends(MDCCircularProgress, _super);
+    function MDCCircularProgress() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    MDCCircularProgress.prototype.initialize = function () {
+        this.determinateCircle_ = this.root.querySelector(foundation_1.MDCCircularProgressFoundation.strings.DETERMINATE_CIRCLE_SELECTOR);
+    };
+    MDCCircularProgress.attachTo = function (root) {
+        return new MDCCircularProgress(root);
+    };
+    Object.defineProperty(MDCCircularProgress.prototype, "determinate", {
+        /**
+         * Sets whether the progress indicator is in determinate mode.
+         * @param isDeterminate Whether the indicator should be determinate.
+         */
+        set: function set(value) {
+            this.foundation.setDeterminate(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCCircularProgress.prototype, "progress", {
+        /**
+         * Sets the current progress value. In indeterminate mode, this has no
+         * visual effect but will be reflected if the indicator is switched to
+         * determinate mode.
+         * @param value The current progress value, which must be between 0 and 1.
+         */
+        set: function set(value) {
+            this.foundation.setProgress(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCCircularProgress.prototype, "isClosed", {
+        /**
+         * Whether the progress indicator is hidden.
+         */
+        get: function get() {
+            return this.foundation.isClosed();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Shows the progress indicator.
+     */
+    MDCCircularProgress.prototype.open = function () {
+        this.foundation.open();
+    };
+    /**
+     * Hides the progress indicator.
+     */
+    MDCCircularProgress.prototype.close = function () {
+        this.foundation.close();
+    };
+    MDCCircularProgress.prototype.getDefaultFoundation = function () {
+        var _this = this;
+        // DO NOT INLINE this variable. For backward compatibility, foundations take
+        // a Partial<MDCFooAdapter>. To ensure we don't accidentally omit any
+        // methods, we need a separate, strongly typed adapter variable.
+        var adapter = {
+            addClass: function addClass(className) {
+                return _this.root.classList.add(className);
+            },
+            getDeterminateCircleAttribute: function getDeterminateCircleAttribute(attributeName) {
+                return _this.determinateCircle_.getAttribute(attributeName);
+            },
+            hasClass: function hasClass(className) {
+                return _this.root.classList.contains(className);
+            },
+            removeClass: function removeClass(className) {
+                return _this.root.classList.remove(className);
+            },
+            removeAttribute: function removeAttribute(attributeName) {
+                return _this.root.removeAttribute(attributeName);
+            },
+            setAttribute: function setAttribute(attributeName, value) {
+                return _this.root.setAttribute(attributeName, value);
+            },
+            setDeterminateCircleAttribute: function setDeterminateCircleAttribute(attributeName, value) {
+                return _this.determinateCircle_.setAttribute(attributeName, value);
+            }
+        };
+        return new foundation_1.MDCCircularProgressFoundation(adapter);
+    };
+    return MDCCircularProgress;
+}(component_1.MDCComponent);
+exports.MDCCircularProgress = MDCCircularProgress;
+
+/***/ }),
+
+/***/ "./packages/mdc-circular-progress/constants.ts":
+/*!*****************************************************!*\
+  !*** ./packages/mdc-circular-progress/constants.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * CSS class names used in component.
+ */
+exports.cssClasses = {
+  INDETERMINATE_CLASS: 'mdc-circular-progress--indeterminate',
+  CLOSED_CLASS: 'mdc-circular-progress--closed'
+};
+/**
+ * Attributes and selectors used in component.
+ */
+exports.strings = {
+  DETERMINATE_CIRCLE_SELECTOR: '.mdc-circular-progress__determinate-circle',
+  ARIA_VALUENOW: 'aria-valuenow',
+  RADIUS: 'r',
+  STROKE_DASHOFFSET: 'stroke-dashoffset'
+};
+
+/***/ }),
+
+/***/ "./packages/mdc-circular-progress/foundation.ts":
+/*!******************************************************!*\
+  !*** ./packages/mdc-circular-progress/foundation.ts ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+var __assign = this && this.__assign || function () {
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) {
+                if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-circular-progress/constants.ts");
+var MDCCircularProgressFoundation = /** @class */function (_super) {
+    __extends(MDCCircularProgressFoundation, _super);
+    function MDCCircularProgressFoundation(adapter) {
+        return _super.call(this, __assign(__assign({}, MDCCircularProgressFoundation.defaultAdapter), adapter)) || this;
+    }
+    Object.defineProperty(MDCCircularProgressFoundation, "cssClasses", {
+        get: function get() {
+            return constants_1.cssClasses;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCCircularProgressFoundation, "strings", {
+        get: function get() {
+            return constants_1.strings;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCCircularProgressFoundation, "defaultAdapter", {
+        get: function get() {
+            return {
+                addClass: function addClass() {
+                    return undefined;
+                },
+                getDeterminateCircleAttribute: function getDeterminateCircleAttribute() {
+                    return null;
+                },
+                hasClass: function hasClass() {
+                    return false;
+                },
+                removeClass: function removeClass() {
+                    return undefined;
+                },
+                removeAttribute: function removeAttribute() {
+                    return undefined;
+                },
+                setAttribute: function setAttribute() {
+                    return undefined;
+                },
+                setDeterminateCircleAttribute: function setDeterminateCircleAttribute() {
+                    return undefined;
+                }
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MDCCircularProgressFoundation.prototype.init = function () {
+        this.isClosed_ = this.adapter.hasClass(constants_1.cssClasses.CLOSED_CLASS);
+        this.isDeterminate_ = !this.adapter.hasClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+        this.progress_ = 0;
+        if (this.isDeterminate_) {
+            this.adapter.setAttribute(constants_1.strings.ARIA_VALUENOW, this.progress_.toString());
+        }
+        this.radius_ = Number(this.adapter.getDeterminateCircleAttribute(constants_1.strings.RADIUS));
+    };
+    MDCCircularProgressFoundation.prototype.isDeterminate = function () {
+        return this.isDeterminate_;
+    };
+    MDCCircularProgressFoundation.prototype.getProgress = function () {
+        return this.progress_;
+    };
+    /**
+     * @return Returns whether the progress indicator is hidden.
+     */
+    MDCCircularProgressFoundation.prototype.isClosed = function () {
+        return this.isClosed_;
+    };
+    /**
+     * Sets whether the progress indicator is in determinate mode.
+     * @param isDeterminate Whether the indicator should be determinate.
+     */
+    MDCCircularProgressFoundation.prototype.setDeterminate = function (isDeterminate) {
+        this.isDeterminate_ = isDeterminate;
+        if (this.isDeterminate_) {
+            this.adapter.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+            this.setProgress(this.progress_);
+        } else {
+            this.adapter.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+            this.adapter.removeAttribute(constants_1.strings.ARIA_VALUENOW);
+        }
+    };
+    /**
+     * Sets the current progress value. In indeterminate mode, this has no
+     * visual effect but will be reflected if the indicator is switched to
+     * determinate mode.
+     * @param value The current progress value, which must be between 0 and 1.
+     */
+    MDCCircularProgressFoundation.prototype.setProgress = function (value) {
+        this.progress_ = value;
+        if (this.isDeterminate_) {
+            var unfilledArcLength = (1 - this.progress_) * (2 * Math.PI * this.radius_);
+            this.adapter.setDeterminateCircleAttribute(constants_1.strings.STROKE_DASHOFFSET, "" + unfilledArcLength);
+            this.adapter.setAttribute(constants_1.strings.ARIA_VALUENOW, this.progress_.toString());
+        }
+    };
+    /**
+     * Shows the progress indicator.
+     */
+    MDCCircularProgressFoundation.prototype.open = function () {
+        this.isClosed_ = false;
+        this.adapter.removeClass(constants_1.cssClasses.CLOSED_CLASS);
+    };
+    /**
+     * Hides the progress indicator
+     */
+    MDCCircularProgressFoundation.prototype.close = function () {
+        this.isClosed_ = true;
+        this.adapter.addClass(constants_1.cssClasses.CLOSED_CLASS);
+    };
+    return MDCCircularProgressFoundation;
+}(foundation_1.MDCFoundation);
+exports.MDCCircularProgressFoundation = MDCCircularProgressFoundation;
+// tslint:disable-next-line:no-default-export Needed for backward compatibility with MDC Web v0.44.0 and earlier.
+exports.default = MDCCircularProgressFoundation;
+
+/***/ }),
+
+/***/ "./packages/mdc-circular-progress/index.ts":
+/*!*************************************************!*\
+  !*** ./packages/mdc-circular-progress/index.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(/*! ./component */ "./packages/mdc-circular-progress/component.ts"));
+__export(__webpack_require__(/*! ./constants */ "./packages/mdc-circular-progress/constants.ts"));
+__export(__webpack_require__(/*! ./foundation */ "./packages/mdc-circular-progress/foundation.ts"));
+
+/***/ }),
+
+/***/ "./packages/mdc-data-table/component.ts":
+/*!**********************************************!*\
+  !*** ./packages/mdc-data-table/component.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2019 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var __extends = this && this.__extends || function () {
+    var _extendStatics = function extendStatics(d, b) {
+        _extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function (d, b) {
+            d.__proto__ = b;
+        } || function (d, b) {
+            for (var p in b) {
+                if (b.hasOwnProperty(p)) d[p] = b[p];
+            }
+        };
+        return _extendStatics(d, b);
+    };
+    return function (d, b) {
+        _extendStatics(d, b);
+        function __() {
+            this.constructor = d;
+        }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+}();
+Object.defineProperty(exports, "__esModule", { value: true });
+var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
 var component_2 = __webpack_require__(/*! @material/checkbox/component */ "./packages/mdc-checkbox/component.ts");
 var ponyfill_1 = __webpack_require__(/*! @material/dom/ponyfill */ "./packages/mdc-dom/ponyfill.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-data-table/constants.ts");
 var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-data-table/foundation.ts");
+/**
+ * Implementation of `MDCDataTableFoundation`
+ */
 var MDCDataTable = /** @class */function (_super) {
     __extends(MDCDataTable, _super);
     function MDCDataTable() {
@@ -3001,53 +3972,64 @@ var MDCDataTable = /** @class */function (_super) {
                 return new component_2.MDCCheckbox(el);
             };
         }
-        this.checkboxFactory_ = checkboxFactory;
+        this.checkboxFactory = checkboxFactory;
     };
     MDCDataTable.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.headerRow_ = this.root_.querySelector("." + constants_1.cssClasses.HEADER_ROW);
-        this.handleHeaderRowCheckboxChange_ = function () {
-            return _this.foundation_.handleHeaderRowCheckboxChange();
+        this.headerRow = this.root.querySelector("." + constants_1.cssClasses.HEADER_ROW);
+        this.handleHeaderRowCheckboxChange = function () {
+            return _this.foundation.handleHeaderRowCheckboxChange();
         };
-        this.headerRow_.addEventListener('change', this.handleHeaderRowCheckboxChange_);
-        this.content_ = this.root_.querySelector("." + constants_1.cssClasses.CONTENT);
-        this.handleRowCheckboxChange_ = function (event) {
-            return _this.foundation_.handleRowCheckboxChange(event);
+        this.headerRow.addEventListener('change', this.handleHeaderRowCheckboxChange);
+        this.headerRowClickListener = function (event) {
+            _this.handleHeaderRowClick(event);
         };
-        this.content_.addEventListener('change', this.handleRowCheckboxChange_);
+        this.headerRow.addEventListener('click', this.headerRowClickListener);
+        this.content = this.root.querySelector("." + constants_1.cssClasses.CONTENT);
+        this.handleRowCheckboxChange = function (event) {
+            return _this.foundation.handleRowCheckboxChange(event);
+        };
+        this.content.addEventListener('change', this.handleRowCheckboxChange);
         this.layout();
     };
     /**
      * Re-initializes header row checkbox and row checkboxes when selectable rows are added or removed from table.
      */
     MDCDataTable.prototype.layout = function () {
-        this.foundation_.layout();
+        this.foundation.layout();
+    };
+    /**
+     * @return Returns array of header row cell elements.
+     */
+    MDCDataTable.prototype.getHeaderCells = function () {
+        return [].slice.call(this.root.querySelectorAll(constants_1.selectors.HEADER_CELL));
     };
     /**
      * @return Returns array of row elements.
      */
     MDCDataTable.prototype.getRows = function () {
-        return this.foundation_.getRows();
+        return this.foundation.getRows();
     };
     /**
      * @return Returns array of selected row ids.
      */
     MDCDataTable.prototype.getSelectedRowIds = function () {
-        return this.foundation_.getSelectedRowIds();
+        return this.foundation.getSelectedRowIds();
     };
     /**
      * Sets selected row ids. Overwrites previously selected rows.
      * @param rowIds Array of row ids that needs to be selected.
      */
     MDCDataTable.prototype.setSelectedRowIds = function (rowIds) {
-        this.foundation_.setSelectedRowIds(rowIds);
+        this.foundation.setSelectedRowIds(rowIds);
     };
     MDCDataTable.prototype.destroy = function () {
-        this.headerRow_.removeEventListener('change', this.handleHeaderRowCheckboxChange_);
-        this.content_.removeEventListener('change', this.handleRowCheckboxChange_);
-        this.headerRowCheckbox_.destroy();
-        this.rowCheckboxList_.forEach(function (checkbox) {
-            return checkbox.destroy();
+        this.headerRow.removeEventListener('change', this.handleHeaderRowCheckboxChange);
+        this.headerRow.removeEventListener('click', this.headerRowClickListener);
+        this.content.removeEventListener('change', this.handleRowCheckboxChange);
+        this.headerRowCheckbox.destroy();
+        this.rowCheckboxList.forEach(function (checkbox) {
+            checkbox.destroy();
         });
     };
     MDCDataTable.prototype.getDefaultFoundation = function () {
@@ -3056,65 +4038,113 @@ var MDCDataTable = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
+            addClass: function addClass(className) {
+                _this.root.classList.add(className);
+            },
+            removeClass: function removeClass(className) {
+                _this.root.classList.remove(className);
+            },
+            getHeaderCellElements: function getHeaderCellElements() {
+                return _this.getHeaderCells();
+            },
+            getHeaderCellCount: function getHeaderCellCount() {
+                return _this.getHeaderCells().length;
+            },
+            getAttributeByHeaderCellIndex: function getAttributeByHeaderCellIndex(index, attribute) {
+                return _this.getHeaderCells()[index].getAttribute(attribute);
+            },
+            setAttributeByHeaderCellIndex: function setAttributeByHeaderCellIndex(index, attribute, value) {
+                _this.getHeaderCells()[index].setAttribute(attribute, value);
+            },
+            setClassNameByHeaderCellIndex: function setClassNameByHeaderCellIndex(index, className) {
+                _this.getHeaderCells()[index].classList.add(className);
+            },
+            removeClassNameByHeaderCellIndex: function removeClassNameByHeaderCellIndex(index, className) {
+                _this.getHeaderCells()[index].classList.remove(className);
+            },
+            notifySortAction: function notifySortAction(data) {
+                _this.emit(constants_1.events.SORTED, data, /** shouldBubble */true);
+            },
+            getTableBodyHeight: function getTableBodyHeight() {
+                var tableBody = _this.root.querySelector(constants_1.selectors.CONTENT);
+                if (!tableBody) {
+                    throw new Error('MDCDataTable: Table body element not found.');
+                }
+                return tableBody.getBoundingClientRect().height + "px";
+            },
+            getTableHeaderHeight: function getTableHeaderHeight() {
+                var tableHeader = _this.root.querySelector(constants_1.selectors.HEADER_ROW);
+                if (!tableHeader) {
+                    throw new Error('MDCDataTable: Table header element not found.');
+                }
+                return tableHeader.getBoundingClientRect().height + "px";
+            },
+            setProgressIndicatorStyles: function setProgressIndicatorStyles(styles) {
+                var progressIndicator = _this.root.querySelector(constants_1.selectors.PROGRESS_INDICATOR);
+                if (!progressIndicator) {
+                    throw new Error('MDCDataTable: Progress indicator element not found.');
+                }
+                _extends(progressIndicator.style, styles);
+            },
             addClassAtRowIndex: function addClassAtRowIndex(rowIndex, className) {
-                return _this.getRows()[rowIndex].classList.add(className);
+                _this.getRows()[rowIndex].classList.add(className);
             },
             getRowCount: function getRowCount() {
                 return _this.getRows().length;
             },
             getRowElements: function getRowElements() {
-                return [].slice.call(_this.root_.querySelectorAll(constants_1.strings.ROW_SELECTOR));
+                return [].slice.call(_this.root.querySelectorAll(constants_1.selectors.ROW));
             },
             getRowIdAtIndex: function getRowIdAtIndex(rowIndex) {
-                return _this.getRows()[rowIndex].getAttribute(constants_1.strings.DATA_ROW_ID_ATTR);
+                return _this.getRows()[rowIndex].getAttribute(constants_1.dataAttributes.ROW_ID);
             },
             getRowIndexByChildElement: function getRowIndexByChildElement(el) {
-                return _this.getRows().indexOf(ponyfill_1.closest(el, constants_1.strings.ROW_SELECTOR));
+                return _this.getRows().indexOf(ponyfill_1.closest(el, constants_1.selectors.ROW));
             },
             getSelectedRowCount: function getSelectedRowCount() {
-                return _this.root_.querySelectorAll(constants_1.strings.ROW_SELECTED_SELECTOR).length;
+                return _this.root.querySelectorAll(constants_1.selectors.ROW_SELECTED).length;
             },
             isCheckboxAtRowIndexChecked: function isCheckboxAtRowIndexChecked(rowIndex) {
-                return _this.rowCheckboxList_[rowIndex].checked;
+                return _this.rowCheckboxList[rowIndex].checked;
             },
             isHeaderRowCheckboxChecked: function isHeaderRowCheckboxChecked() {
-                return _this.headerRowCheckbox_.checked;
+                return _this.headerRowCheckbox.checked;
             },
             isRowsSelectable: function isRowsSelectable() {
-                return !!_this.root_.querySelector(constants_1.strings.ROW_CHECKBOX_SELECTOR);
+                return !!_this.root.querySelector(constants_1.selectors.ROW_CHECKBOX);
             },
             notifyRowSelectionChanged: function notifyRowSelectionChanged(data) {
                 _this.emit(constants_1.events.ROW_SELECTION_CHANGED, {
-                    row: _this.getRowByIndex_(data.rowIndex),
-                    rowId: _this.getRowIdByIndex_(data.rowIndex),
+                    row: _this.getRowByIndex(data.rowIndex),
+                    rowId: _this.getRowIdByIndex(data.rowIndex),
                     rowIndex: data.rowIndex,
                     selected: data.selected
                 },
                 /** shouldBubble */true);
             },
             notifySelectedAll: function notifySelectedAll() {
-                return _this.emit(constants_1.events.SELECTED_ALL, {}, /** shouldBubble */true);
+                _this.emit(constants_1.events.SELECTED_ALL, {}, /** shouldBubble */true);
             },
             notifyUnselectedAll: function notifyUnselectedAll() {
-                return _this.emit(constants_1.events.UNSELECTED_ALL, {}, /** shouldBubble */true);
+                _this.emit(constants_1.events.UNSELECTED_ALL, {}, /** shouldBubble */true);
             },
             registerHeaderRowCheckbox: function registerHeaderRowCheckbox() {
-                if (_this.headerRowCheckbox_) {
-                    _this.headerRowCheckbox_.destroy();
+                if (_this.headerRowCheckbox) {
+                    _this.headerRowCheckbox.destroy();
                 }
-                var checkboxEl = _this.root_.querySelector(constants_1.strings.HEADER_ROW_CHECKBOX_SELECTOR);
-                _this.headerRowCheckbox_ = _this.checkboxFactory_(checkboxEl);
+                var checkboxEl = _this.root.querySelector(constants_1.selectors.HEADER_ROW_CHECKBOX);
+                _this.headerRowCheckbox = _this.checkboxFactory(checkboxEl);
             },
             registerRowCheckboxes: function registerRowCheckboxes() {
-                if (_this.rowCheckboxList_) {
-                    _this.rowCheckboxList_.forEach(function (checkbox) {
-                        return checkbox.destroy();
+                if (_this.rowCheckboxList) {
+                    _this.rowCheckboxList.forEach(function (checkbox) {
+                        checkbox.destroy();
                     });
                 }
-                _this.rowCheckboxList_ = [];
+                _this.rowCheckboxList = [];
                 _this.getRows().forEach(function (rowEl) {
-                    var checkbox = _this.checkboxFactory_(rowEl.querySelector(constants_1.strings.ROW_CHECKBOX_SELECTOR));
-                    _this.rowCheckboxList_.push(checkbox);
+                    var checkbox = _this.checkboxFactory(rowEl.querySelector(constants_1.selectors.ROW_CHECKBOX));
+                    _this.rowCheckboxList.push(checkbox);
                 });
             },
             removeClassAtRowIndex: function removeClassAtRowIndex(rowIndex, className) {
@@ -3124,22 +4154,50 @@ var MDCDataTable = /** @class */function (_super) {
                 _this.getRows()[rowIndex].setAttribute(attr, value);
             },
             setHeaderRowCheckboxChecked: function setHeaderRowCheckboxChecked(checked) {
-                _this.headerRowCheckbox_.checked = checked;
+                _this.headerRowCheckbox.checked = checked;
             },
             setHeaderRowCheckboxIndeterminate: function setHeaderRowCheckboxIndeterminate(indeterminate) {
-                _this.headerRowCheckbox_.indeterminate = indeterminate;
+                _this.headerRowCheckbox.indeterminate = indeterminate;
             },
             setRowCheckboxCheckedAtIndex: function setRowCheckboxCheckedAtIndex(rowIndex, checked) {
-                _this.rowCheckboxList_[rowIndex].checked = checked;
+                _this.rowCheckboxList[rowIndex].checked = checked;
+            },
+            setSortStatusLabelByHeaderCellIndex: function setSortStatusLabelByHeaderCellIndex(columnIndex, sortValue) {
+                var headerCell = _this.getHeaderCells()[columnIndex];
+                var sortStatusLabel = headerCell.querySelector(constants_1.selectors.SORT_STATUS_LABEL);
+                if (!sortStatusLabel) return;
+                sortStatusLabel.textContent = _this.getSortStatusMessageBySortValue(sortValue);
             }
         };
         return new foundation_1.MDCDataTableFoundation(adapter);
     };
-    MDCDataTable.prototype.getRowByIndex_ = function (index) {
+    MDCDataTable.prototype.getRowByIndex = function (index) {
         return this.getRows()[index];
     };
-    MDCDataTable.prototype.getRowIdByIndex_ = function (index) {
-        return this.getRowByIndex_(index).getAttribute(constants_1.strings.DATA_ROW_ID_ATTR);
+    MDCDataTable.prototype.getRowIdByIndex = function (index) {
+        return this.getRowByIndex(index).getAttribute(constants_1.dataAttributes.ROW_ID);
+    };
+    MDCDataTable.prototype.handleHeaderRowClick = function (event) {
+        var headerCell = ponyfill_1.closest(event.target, constants_1.selectors.HEADER_CELL_WITH_SORT);
+        if (!headerCell) {
+            return;
+        }
+        var columnId = headerCell.getAttribute(constants_1.dataAttributes.COLUMN_ID);
+        var columnIndex = this.getHeaderCells().indexOf(headerCell);
+        if (columnIndex === -1) {
+            return;
+        }
+        this.foundation.handleSortAction({ columnId: columnId, columnIndex: columnIndex, headerCell: headerCell });
+    };
+    MDCDataTable.prototype.getSortStatusMessageBySortValue = function (sortValue) {
+        switch (sortValue) {
+            case constants_1.SortValue.ASCENDING:
+                return constants_1.messages.SORTED_IN_ASCENDING;
+            case constants_1.SortValue.DESCENDING:
+                return constants_1.messages.SORTED_IN_DESCENDING;
+            default:
+                return '';
+        }
     };
     return MDCDataTable;
 }(component_1.MDCComponent);
@@ -3180,29 +4238,105 @@ exports.MDCDataTable = MDCDataTable;
  */
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * CSS class names used in component.
+ */
 exports.cssClasses = {
-    CELL: 'mdc-data-table__cell',
-    CELL_NUMERIC: 'mdc-data-table__cell--numeric',
-    CONTENT: 'mdc-data-table__content',
-    HEADER_ROW: 'mdc-data-table__header-row',
-    HEADER_ROW_CHECKBOX: 'mdc-data-table__header-row-checkbox',
-    ROOT: 'mdc-data-table',
-    ROW: 'mdc-data-table__row',
-    ROW_CHECKBOX: 'mdc-data-table__row-checkbox',
-    ROW_SELECTED: 'mdc-data-table__row--selected'
+  CELL: 'mdc-data-table__cell',
+  CELL_NUMERIC: 'mdc-data-table__cell--numeric',
+  CONTENT: 'mdc-data-table__content',
+  HEADER_CELL: 'mdc-data-table__header-cell',
+  HEADER_CELL_LABEL: 'mdc-data-table__header-cell-label',
+  HEADER_CELL_SORTED: 'mdc-data-table__header-cell--sorted',
+  HEADER_CELL_SORTED_DESCENDING: 'mdc-data-table__header-cell--sorted-descending',
+  HEADER_CELL_WITH_SORT: 'mdc-data-table__header-cell--with-sort',
+  HEADER_CELL_WRAPPER: 'mdc-data-table__header-cell-wrapper',
+  HEADER_ROW: 'mdc-data-table__header-row',
+  HEADER_ROW_CHECKBOX: 'mdc-data-table__header-row-checkbox',
+  IN_PROGRESS: 'mdc-data-table--in-progress',
+  PROGRESS_INDICATOR: 'mdc-data-table__progress-indicator',
+  ROOT: 'mdc-data-table',
+  ROW: 'mdc-data-table__row',
+  ROW_CHECKBOX: 'mdc-data-table__row-checkbox',
+  ROW_SELECTED: 'mdc-data-table__row--selected',
+  SORT_ICON_BUTTON: 'mdc-data-table__sort-icon-button',
+  SORT_STATUS_LABEL: 'mdc-data-table__sort-status-label',
+  PAGINATION_ROWS_PER_PAGE_SELECT: 'mdc-data-table__pagination-rows-per-page-select',
+  PAGINATION_ROWS_PER_PAGE_LABEL: 'mdc-data-table__pagination-rows-per-page-label'
 };
+/**
+ * DOM attributes used in component.
+ */
+exports.attributes = {
+  ARIA_SELECTED: 'aria-selected',
+  ARIA_SORT: 'aria-sort'
+};
+/**
+ * List of data attributes used in component.
+ */
+exports.dataAttributes = {
+  COLUMN_ID: 'data-column-id',
+  ROW_ID: 'data-row-id'
+};
+/**
+ * CSS selectors used in component.
+ */
+exports.selectors = {
+  CONTENT: "." + exports.cssClasses.CONTENT,
+  HEADER_CELL: "." + exports.cssClasses.HEADER_CELL,
+  HEADER_CELL_WITH_SORT: "." + exports.cssClasses.HEADER_CELL_WITH_SORT,
+  HEADER_ROW: "." + exports.cssClasses.HEADER_ROW,
+  HEADER_ROW_CHECKBOX: "." + exports.cssClasses.HEADER_ROW_CHECKBOX,
+  PROGRESS_INDICATOR: "." + exports.cssClasses.PROGRESS_INDICATOR,
+  ROW: "." + exports.cssClasses.ROW,
+  ROW_CHECKBOX: "." + exports.cssClasses.ROW_CHECKBOX,
+  ROW_SELECTED: "." + exports.cssClasses.ROW_SELECTED,
+  SORT_ICON_BUTTON: "." + exports.cssClasses.SORT_ICON_BUTTON,
+  SORT_STATUS_LABEL: "." + exports.cssClasses.SORT_STATUS_LABEL
+};
+/**
+ * Messages used in component.
+ */
+exports.messages = {
+  SORTED_IN_DESCENDING: 'Sorted in descending order',
+  SORTED_IN_ASCENDING: 'Sorted in ascending order'
+};
+/**
+ * Attributes and selectors used in component.
+ * @deprecated Use `attributes`, `dataAttributes` and `selectors` instead.
+ */
 exports.strings = {
-    ARIA_SELECTED: 'aria-selected',
-    DATA_ROW_ID_ATTR: 'data-row-id',
-    HEADER_ROW_CHECKBOX_SELECTOR: "." + exports.cssClasses.HEADER_ROW_CHECKBOX,
-    ROW_CHECKBOX_SELECTOR: "." + exports.cssClasses.ROW_CHECKBOX,
-    ROW_SELECTED_SELECTOR: "." + exports.cssClasses.ROW_SELECTED,
-    ROW_SELECTOR: "." + exports.cssClasses.ROW
+  ARIA_SELECTED: exports.attributes.ARIA_SELECTED,
+  ARIA_SORT: exports.attributes.ARIA_SORT,
+  DATA_ROW_ID_ATTR: exports.dataAttributes.ROW_ID,
+  HEADER_ROW_CHECKBOX_SELECTOR: exports.selectors.HEADER_ROW_CHECKBOX,
+  ROW_CHECKBOX_SELECTOR: exports.selectors.ROW_CHECKBOX,
+  ROW_SELECTED_SELECTOR: exports.selectors.ROW_SELECTED,
+  ROW_SELECTOR: exports.selectors.ROW
 };
+/**
+ * Sort values defined by ARIA.
+ * See https://www.w3.org/WAI/PF/aria/states_and_properties#aria-sort
+ */
+var SortValue;
+(function (SortValue) {
+  // Items are sorted in ascending order by this column.
+  SortValue["ASCENDING"] = "ascending";
+  // Items are sorted in descending order by this column.
+  SortValue["DESCENDING"] = "descending";
+  // There is no defined sort applied to the column.
+  SortValue["NONE"] = "none";
+  // A sort algorithm other than ascending or descending has been applied.
+  SortValue["OTHER"] = "other";
+})(SortValue = exports.SortValue || (exports.SortValue = {}));
+/**
+ * Event names used in component.
+ */
 exports.events = {
-    ROW_SELECTION_CHANGED: 'MDCDataTable:rowSelectionChanged',
-    SELECTED_ALL: 'MDCDataTable:selectedAll',
-    UNSELECTED_ALL: 'MDCDataTable:unselectedAll'
+  ROW_SELECTION_CHANGED: 'MDCDataTable:rowSelectionChanged',
+  SELECTED_ALL: 'MDCDataTable:selectedAll',
+  UNSELECTED_ALL: 'MDCDataTable:unselectedAll',
+  SORTED: 'MDCDataTable:sorted'
 };
 
 /***/ }),
@@ -3271,6 +4405,11 @@ var __assign = this && this.__assign || function () {
     return __assign.apply(this, arguments);
 };
 var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+    function adopt(value) {
+        return value instanceof P ? value : new P(function (resolve) {
+            resolve(value);
+        });
+    }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) {
             try {
@@ -3287,9 +4426,7 @@ var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, gene
             }
         }
         function step(result) {
-            result.done ? resolve(result.value) : new P(function (resolve) {
-                resolve(result.value);
-            }).then(fulfilled, rejected);
+            result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
         }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
@@ -3353,16 +4490,32 @@ var __generator = this && this.__generator || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-data-table/constants.ts");
+/**
+ * The Foundation of data table component containing pure business logic, any
+ * logic requiring DOM manipulation are delegated to adapter methods.
+ */
 var MDCDataTableFoundation = /** @class */function (_super) {
     __extends(MDCDataTableFoundation, _super);
     function MDCDataTableFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCDataTableFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCDataTableFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCDataTableFoundation, "defaultAdapter", {
         get: function get() {
             return {
+                addClass: function addClass() {
+                    return undefined;
+                },
                 addClassAtRowIndex: function addClassAtRowIndex() {
                     return undefined;
+                },
+                getAttributeByHeaderCellIndex: function getAttributeByHeaderCellIndex() {
+                    return '';
+                },
+                getHeaderCellCount: function getHeaderCellCount() {
+                    return 0;
+                },
+                getHeaderCellElements: function getHeaderCellElements() {
+                    return [];
                 },
                 getRowCount: function getRowCount() {
                     return 0;
@@ -3379,6 +4532,12 @@ var MDCDataTableFoundation = /** @class */function (_super) {
                 getSelectedRowCount: function getSelectedRowCount() {
                     return 0;
                 },
+                getTableBodyHeight: function getTableBodyHeight() {
+                    return '';
+                },
+                getTableHeaderHeight: function getTableHeaderHeight() {
+                    return '';
+                },
                 isCheckboxAtRowIndexChecked: function isCheckboxAtRowIndexChecked() {
                     return false;
                 },
@@ -3394,6 +4553,9 @@ var MDCDataTableFoundation = /** @class */function (_super) {
                 notifySelectedAll: function notifySelectedAll() {
                     return undefined;
                 },
+                notifySortAction: function notifySortAction() {
+                    return undefined;
+                },
                 notifyUnselectedAll: function notifyUnselectedAll() {
                     return undefined;
                 },
@@ -3403,10 +4565,22 @@ var MDCDataTableFoundation = /** @class */function (_super) {
                 registerRowCheckboxes: function registerRowCheckboxes() {
                     return undefined;
                 },
+                removeClass: function removeClass() {
+                    return undefined;
+                },
                 removeClassAtRowIndex: function removeClassAtRowIndex() {
                     return undefined;
                 },
+                removeClassNameByHeaderCellIndex: function removeClassNameByHeaderCellIndex() {
+                    return undefined;
+                },
                 setAttributeAtRowIndex: function setAttributeAtRowIndex() {
+                    return undefined;
+                },
+                setAttributeByHeaderCellIndex: function setAttributeByHeaderCellIndex() {
+                    return undefined;
+                },
+                setClassNameByHeaderCellIndex: function setClassNameByHeaderCellIndex() {
                     return undefined;
                 },
                 setHeaderRowCheckboxChecked: function setHeaderRowCheckboxChecked() {
@@ -3415,7 +4589,13 @@ var MDCDataTableFoundation = /** @class */function (_super) {
                 setHeaderRowCheckboxIndeterminate: function setHeaderRowCheckboxIndeterminate() {
                     return undefined;
                 },
+                setProgressIndicatorStyles: function setProgressIndicatorStyles() {
+                    return undefined;
+                },
                 setRowCheckboxCheckedAtIndex: function setRowCheckboxCheckedAtIndex() {
+                    return undefined;
+                },
+                setSortStatusLabelByHeaderCellIndex: function setSortStatusLabelByHeaderCellIndex() {
                     return undefined;
                 }
             };
@@ -3428,10 +4608,10 @@ var MDCDataTableFoundation = /** @class */function (_super) {
      * Use this if registering checkbox is synchronous.
      */
     MDCDataTableFoundation.prototype.layout = function () {
-        if (this.adapter_.isRowsSelectable()) {
-            this.adapter_.registerHeaderRowCheckbox();
-            this.adapter_.registerRowCheckboxes();
-            this.setHeaderRowCheckboxState_();
+        if (this.adapter.isRowsSelectable()) {
+            this.adapter.registerHeaderRowCheckbox();
+            this.adapter.registerRowCheckboxes();
+            this.setHeaderRowCheckboxState();
         }
     };
     /**
@@ -3443,14 +4623,14 @@ var MDCDataTableFoundation = /** @class */function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.adapter_.isRowsSelectable()) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.adapter_.registerHeaderRowCheckbox()];
+                        if (!this.adapter.isRowsSelectable()) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.adapter.registerHeaderRowCheckbox()];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.adapter_.registerRowCheckboxes()];
+                        return [4 /*yield*/, this.adapter.registerRowCheckboxes()];
                     case 2:
                         _a.sent();
-                        this.setHeaderRowCheckboxState_();
+                        this.setHeaderRowCheckboxState();
                         _a.label = 3;
                     case 3:
                         return [2 /*return*/];
@@ -3462,32 +4642,48 @@ var MDCDataTableFoundation = /** @class */function (_super) {
      * @return Returns array of row elements.
      */
     MDCDataTableFoundation.prototype.getRows = function () {
-        return this.adapter_.getRowElements();
+        return this.adapter.getRowElements();
+    };
+    /**
+     * @return Array of header cell elements.
+     */
+    MDCDataTableFoundation.prototype.getHeaderCells = function () {
+        return this.adapter.getHeaderCellElements();
     };
     /**
      * Sets selected row ids. Overwrites previously selected rows.
      * @param rowIds Array of row ids that needs to be selected.
      */
     MDCDataTableFoundation.prototype.setSelectedRowIds = function (rowIds) {
-        for (var rowIndex = 0; rowIndex < this.adapter_.getRowCount(); rowIndex++) {
-            var rowId = this.adapter_.getRowIdAtIndex(rowIndex);
+        for (var rowIndex = 0; rowIndex < this.adapter.getRowCount(); rowIndex++) {
+            var rowId = this.adapter.getRowIdAtIndex(rowIndex);
             var isSelected = false;
             if (rowId && rowIds.indexOf(rowId) >= 0) {
                 isSelected = true;
             }
-            this.adapter_.setRowCheckboxCheckedAtIndex(rowIndex, isSelected);
-            this.selectRowAtIndex_(rowIndex, isSelected);
+            this.adapter.setRowCheckboxCheckedAtIndex(rowIndex, isSelected);
+            this.selectRowAtIndex(rowIndex, isSelected);
         }
-        this.setHeaderRowCheckboxState_();
+        this.setHeaderRowCheckboxState();
+    };
+    /**
+     * @return Returns array of all row ids.
+     */
+    MDCDataTableFoundation.prototype.getRowIds = function () {
+        var rowIds = [];
+        for (var rowIndex = 0; rowIndex < this.adapter.getRowCount(); rowIndex++) {
+            rowIds.push(this.adapter.getRowIdAtIndex(rowIndex));
+        }
+        return rowIds;
     };
     /**
      * @return Returns array of selected row ids.
      */
     MDCDataTableFoundation.prototype.getSelectedRowIds = function () {
         var selectedRowIds = [];
-        for (var rowIndex = 0; rowIndex < this.adapter_.getRowCount(); rowIndex++) {
-            if (this.adapter_.isCheckboxAtRowIndexChecked(rowIndex)) {
-                selectedRowIds.push(this.adapter_.getRowIdAtIndex(rowIndex));
+        for (var rowIndex = 0; rowIndex < this.adapter.getRowCount(); rowIndex++) {
+            if (this.adapter.isCheckboxAtRowIndexChecked(rowIndex)) {
+                selectedRowIds.push(this.adapter.getRowIdAtIndex(rowIndex));
             }
         }
         return selectedRowIds;
@@ -3496,56 +4692,119 @@ var MDCDataTableFoundation = /** @class */function (_super) {
      * Handles header row checkbox change event.
      */
     MDCDataTableFoundation.prototype.handleHeaderRowCheckboxChange = function () {
-        var isHeaderChecked = this.adapter_.isHeaderRowCheckboxChecked();
-        for (var rowIndex = 0; rowIndex < this.adapter_.getRowCount(); rowIndex++) {
-            this.adapter_.setRowCheckboxCheckedAtIndex(rowIndex, isHeaderChecked);
-            this.selectRowAtIndex_(rowIndex, isHeaderChecked);
+        var isHeaderChecked = this.adapter.isHeaderRowCheckboxChecked();
+        for (var rowIndex = 0; rowIndex < this.adapter.getRowCount(); rowIndex++) {
+            this.adapter.setRowCheckboxCheckedAtIndex(rowIndex, isHeaderChecked);
+            this.selectRowAtIndex(rowIndex, isHeaderChecked);
         }
         if (isHeaderChecked) {
-            this.adapter_.notifySelectedAll();
+            this.adapter.notifySelectedAll();
         } else {
-            this.adapter_.notifyUnselectedAll();
+            this.adapter.notifyUnselectedAll();
         }
     };
     /**
      * Handles change event originated from row checkboxes.
      */
     MDCDataTableFoundation.prototype.handleRowCheckboxChange = function (event) {
-        var rowIndex = this.adapter_.getRowIndexByChildElement(event.target);
+        var rowIndex = this.adapter.getRowIndexByChildElement(event.target);
         if (rowIndex === -1) {
             return;
         }
-        var selected = this.adapter_.isCheckboxAtRowIndexChecked(rowIndex);
-        this.selectRowAtIndex_(rowIndex, selected);
-        this.setHeaderRowCheckboxState_();
-        var rowId = this.adapter_.getRowIdAtIndex(rowIndex);
-        this.adapter_.notifyRowSelectionChanged({ rowId: rowId, rowIndex: rowIndex, selected: selected });
+        var selected = this.adapter.isCheckboxAtRowIndexChecked(rowIndex);
+        this.selectRowAtIndex(rowIndex, selected);
+        this.setHeaderRowCheckboxState();
+        var rowId = this.adapter.getRowIdAtIndex(rowIndex);
+        this.adapter.notifyRowSelectionChanged({ rowId: rowId, rowIndex: rowIndex, selected: selected });
+    };
+    /**
+     * Handles sort action on sortable header cell.
+     */
+    MDCDataTableFoundation.prototype.handleSortAction = function (eventData) {
+        var columnId = eventData.columnId,
+            columnIndex = eventData.columnIndex,
+            headerCell = eventData.headerCell;
+        // Reset sort attributes / classes on other header cells.
+        for (var index = 0; index < this.adapter.getHeaderCellCount(); index++) {
+            if (index === columnIndex) {
+                continue;
+            }
+            this.adapter.removeClassNameByHeaderCellIndex(index, constants_1.cssClasses.HEADER_CELL_SORTED);
+            this.adapter.removeClassNameByHeaderCellIndex(index, constants_1.cssClasses.HEADER_CELL_SORTED_DESCENDING);
+            this.adapter.setAttributeByHeaderCellIndex(index, constants_1.strings.ARIA_SORT, constants_1.SortValue.NONE);
+            this.adapter.setSortStatusLabelByHeaderCellIndex(index, constants_1.SortValue.NONE);
+        }
+        // Set appropriate sort attributes / classes on target header cell.
+        this.adapter.setClassNameByHeaderCellIndex(columnIndex, constants_1.cssClasses.HEADER_CELL_SORTED);
+        var currentSortValue = this.adapter.getAttributeByHeaderCellIndex(columnIndex, constants_1.strings.ARIA_SORT);
+        var sortValue = constants_1.SortValue.NONE;
+        // Set to descending if sorted on ascending order.
+        if (currentSortValue === constants_1.SortValue.ASCENDING) {
+            this.adapter.setClassNameByHeaderCellIndex(columnIndex, constants_1.cssClasses.HEADER_CELL_SORTED_DESCENDING);
+            this.adapter.setAttributeByHeaderCellIndex(columnIndex, constants_1.strings.ARIA_SORT, constants_1.SortValue.DESCENDING);
+            sortValue = constants_1.SortValue.DESCENDING;
+            // Set to ascending if sorted on descending order.
+        } else if (currentSortValue === constants_1.SortValue.DESCENDING) {
+            this.adapter.removeClassNameByHeaderCellIndex(columnIndex, constants_1.cssClasses.HEADER_CELL_SORTED_DESCENDING);
+            this.adapter.setAttributeByHeaderCellIndex(columnIndex, constants_1.strings.ARIA_SORT, constants_1.SortValue.ASCENDING);
+            sortValue = constants_1.SortValue.ASCENDING;
+        } else {
+            // Set to ascending by default when not sorted.
+            this.adapter.setAttributeByHeaderCellIndex(columnIndex, constants_1.strings.ARIA_SORT, constants_1.SortValue.ASCENDING);
+            sortValue = constants_1.SortValue.ASCENDING;
+        }
+        this.adapter.setSortStatusLabelByHeaderCellIndex(columnIndex, sortValue);
+        this.adapter.notifySortAction({
+            columnId: columnId,
+            columnIndex: columnIndex,
+            headerCell: headerCell,
+            sortValue: sortValue
+        });
+    };
+    /**
+     * Shows progress indicator blocking only the table body content when in
+     * loading state.
+     */
+    MDCDataTableFoundation.prototype.showProgress = function () {
+        var height = this.adapter.getTableBodyHeight();
+        var top = this.adapter.getTableHeaderHeight();
+        this.adapter.setProgressIndicatorStyles({
+            height: height,
+            top: top
+        });
+        this.adapter.addClass(constants_1.cssClasses.IN_PROGRESS);
+    };
+    /**
+     * Hides progress indicator when data table is finished loading.
+     */
+    MDCDataTableFoundation.prototype.hideProgress = function () {
+        this.adapter.removeClass(constants_1.cssClasses.IN_PROGRESS);
     };
     /**
      * Updates header row checkbox state based on number of rows selected.
      */
-    MDCDataTableFoundation.prototype.setHeaderRowCheckboxState_ = function () {
-        if (this.adapter_.getSelectedRowCount() === this.adapter_.getRowCount()) {
-            this.adapter_.setHeaderRowCheckboxChecked(true);
-            this.adapter_.setHeaderRowCheckboxIndeterminate(false);
-        } else if (this.adapter_.getSelectedRowCount() === 0) {
-            this.adapter_.setHeaderRowCheckboxIndeterminate(false);
-            this.adapter_.setHeaderRowCheckboxChecked(false);
+    MDCDataTableFoundation.prototype.setHeaderRowCheckboxState = function () {
+        if (this.adapter.getSelectedRowCount() === this.adapter.getRowCount()) {
+            this.adapter.setHeaderRowCheckboxChecked(true);
+            this.adapter.setHeaderRowCheckboxIndeterminate(false);
+        } else if (this.adapter.getSelectedRowCount() === 0) {
+            this.adapter.setHeaderRowCheckboxIndeterminate(false);
+            this.adapter.setHeaderRowCheckboxChecked(false);
         } else {
-            this.adapter_.setHeaderRowCheckboxIndeterminate(true);
-            this.adapter_.setHeaderRowCheckboxChecked(false);
+            this.adapter.setHeaderRowCheckboxIndeterminate(true);
+            this.adapter.setHeaderRowCheckboxChecked(false);
         }
     };
     /**
      * Sets the attributes of row element based on selection state.
      */
-    MDCDataTableFoundation.prototype.selectRowAtIndex_ = function (rowIndex, selected) {
+    MDCDataTableFoundation.prototype.selectRowAtIndex = function (rowIndex, selected) {
         if (selected) {
-            this.adapter_.addClassAtRowIndex(rowIndex, constants_1.cssClasses.ROW_SELECTED);
-            this.adapter_.setAttributeAtRowIndex(rowIndex, constants_1.strings.ARIA_SELECTED, 'true');
+            this.adapter.addClassAtRowIndex(rowIndex, constants_1.cssClasses.ROW_SELECTED);
+            this.adapter.setAttributeAtRowIndex(rowIndex, constants_1.strings.ARIA_SELECTED, 'true');
         } else {
-            this.adapter_.removeClassAtRowIndex(rowIndex, constants_1.cssClasses.ROW_SELECTED);
-            this.adapter_.setAttributeAtRowIndex(rowIndex, constants_1.strings.ARIA_SELECTED, 'false');
+            this.adapter.removeClassAtRowIndex(rowIndex, constants_1.cssClasses.ROW_SELECTED);
+            this.adapter.setAttributeAtRowIndex(rowIndex, constants_1.strings.ARIA_SELECTED, 'false');
         }
     };
     return MDCDataTableFoundation;
@@ -3650,15 +4909,17 @@ var __extends = this && this.__extends || function () {
     };
 }();
 var __values = this && this.__values || function (o) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator],
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
         i = 0;
     if (m) return m.call(o);
-    return {
+    if (o && typeof o.length === "number") return {
         next: function next() {
             if (o && i >= o.length) o = void 0;
             return { value: o && o[i++], done: !o };
         }
     };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 var __importStar = this && this.__importStar || function (mod) {
     if (mod && mod.__esModule) return mod;
@@ -3683,37 +4944,37 @@ var MDCDialog = /** @class */function (_super) {
     }
     Object.defineProperty(MDCDialog.prototype, "isOpen", {
         get: function get() {
-            return this.foundation_.isOpen();
+            return this.foundation.isOpen();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCDialog.prototype, "escapeKeyAction", {
         get: function get() {
-            return this.foundation_.getEscapeKeyAction();
+            return this.foundation.getEscapeKeyAction();
         },
         set: function set(action) {
-            this.foundation_.setEscapeKeyAction(action);
+            this.foundation.setEscapeKeyAction(action);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCDialog.prototype, "scrimClickAction", {
         get: function get() {
-            return this.foundation_.getScrimClickAction();
+            return this.foundation.getScrimClickAction();
         },
         set: function set(action) {
-            this.foundation_.setScrimClickAction(action);
+            this.foundation.setScrimClickAction(action);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCDialog.prototype, "autoStackButtons", {
         get: function get() {
-            return this.foundation_.getAutoStackButtons();
+            return this.foundation.getAutoStackButtons();
         },
         set: function set(autoStack) {
-            this.foundation_.setAutoStackButtons(autoStack);
+            this.foundation.setAutoStackButtons(autoStack);
         },
         enumerable: true,
         configurable: true
@@ -3728,14 +4989,14 @@ var MDCDialog = /** @class */function (_super) {
                 return new focus_trap_1.FocusTrap(el, focusOptions);
             };
         }
-        var container = this.root_.querySelector(strings.CONTAINER_SELECTOR);
+        var container = this.root.querySelector(strings.CONTAINER_SELECTOR);
         if (!container) {
             throw new Error("Dialog component requires a " + strings.CONTAINER_SELECTOR + " container element");
         }
         this.container_ = container;
-        this.content_ = this.root_.querySelector(strings.CONTENT_SELECTOR);
-        this.buttons_ = [].slice.call(this.root_.querySelectorAll(strings.BUTTON_SELECTOR));
-        this.defaultButton_ = this.root_.querySelector("[" + strings.BUTTON_DEFAULT_ATTRIBUTE + "]");
+        this.content_ = this.root.querySelector(strings.CONTENT_SELECTOR);
+        this.buttons_ = [].slice.call(this.root.querySelectorAll(strings.BUTTON_SELECTOR));
+        this.defaultButton_ = this.root.querySelector("[" + strings.BUTTON_DEFAULT_ATTRIBUTE + "]");
         this.focusTrapFactory_ = focusTrapFactory;
         this.buttonRipples_ = [];
         try {
@@ -3756,9 +5017,9 @@ var MDCDialog = /** @class */function (_super) {
     MDCDialog.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.focusTrap_ = util.createFocusTrapInstance(this.container_, this.focusTrapFactory_, this.getInitialFocusEl_() || undefined);
-        this.handleClick_ = this.foundation_.handleClick.bind(this.foundation_);
-        this.handleKeydown_ = this.foundation_.handleKeydown.bind(this.foundation_);
-        this.handleDocumentKeydown_ = this.foundation_.handleDocumentKeydown.bind(this.foundation_);
+        this.handleClick_ = this.foundation.handleClick.bind(this.foundation);
+        this.handleKeydown_ = this.foundation.handleKeydown.bind(this.foundation);
+        this.handleDocumentKeydown_ = this.foundation.handleDocumentKeydown.bind(this.foundation);
         this.handleLayout_ = this.layout.bind(this);
         var LAYOUT_EVENTS = ['resize', 'orientationchange'];
         this.handleOpening_ = function () {
@@ -3790,16 +5051,16 @@ var MDCDialog = /** @class */function (_super) {
         _super.prototype.destroy.call(this);
     };
     MDCDialog.prototype.layout = function () {
-        this.foundation_.layout();
+        this.foundation.layout();
     };
     MDCDialog.prototype.open = function () {
-        this.foundation_.open();
+        this.foundation.open();
     };
     MDCDialog.prototype.close = function (action) {
         if (action === void 0) {
             action = '';
         }
-        this.foundation_.close(action);
+        this.foundation.close(action);
     };
     MDCDialog.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -3810,7 +5071,7 @@ var MDCDialog = /** @class */function (_super) {
                 return document.body.classList.add(className);
             },
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             areButtonsStacked: function areButtonsStacked() {
                 return util.areTopsMisaligned(_this.buttons_);
@@ -3832,7 +5093,7 @@ var MDCDialog = /** @class */function (_super) {
                 return _this.getInitialFocusEl_();
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             isContentScrollable: function isContentScrollable() {
                 return util.isScrollable(_this.content_);
@@ -3856,7 +5117,7 @@ var MDCDialog = /** @class */function (_super) {
                 return document.body.classList.remove(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             reverseButtons: function reverseButtons() {
                 _this.buttons_.reverse();
@@ -4013,7 +5274,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-dialog/
 var MDCDialogFoundation = /** @class */function (_super) {
     __extends(MDCDialogFoundation, _super);
     function MDCDialogFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCDialogFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCDialogFoundation.defaultAdapter), adapter)) || this;
         _this.isOpen_ = false;
         _this.animationFrame_ = 0;
         _this.animationTimer_ = 0;
@@ -4108,7 +5369,7 @@ var MDCDialogFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCDialogFoundation.prototype.init = function () {
-        if (this.adapter_.hasClass(constants_1.cssClasses.STACKED)) {
+        if (this.adapter.hasClass(constants_1.cssClasses.STACKED)) {
             this.setAutoStackButtons(false);
         }
     };
@@ -4128,17 +5389,17 @@ var MDCDialogFoundation = /** @class */function (_super) {
     MDCDialogFoundation.prototype.open = function () {
         var _this = this;
         this.isOpen_ = true;
-        this.adapter_.notifyOpening();
-        this.adapter_.addClass(constants_1.cssClasses.OPENING);
+        this.adapter.notifyOpening();
+        this.adapter.addClass(constants_1.cssClasses.OPENING);
         // Wait a frame once display is no longer "none", to establish basis for animation
         this.runNextAnimationFrame_(function () {
-            _this.adapter_.addClass(constants_1.cssClasses.OPEN);
-            _this.adapter_.addBodyClass(constants_1.cssClasses.SCROLL_LOCK);
+            _this.adapter.addClass(constants_1.cssClasses.OPEN);
+            _this.adapter.addBodyClass(constants_1.cssClasses.SCROLL_LOCK);
             _this.layout();
             _this.animationTimer_ = setTimeout(function () {
                 _this.handleAnimationTimerEnd_();
-                _this.adapter_.trapFocus(_this.adapter_.getInitialFocusEl());
-                _this.adapter_.notifyOpened();
+                _this.adapter.trapFocus(_this.adapter.getInitialFocusEl());
+                _this.adapter.notifyOpened();
             }, constants_1.numbers.DIALOG_ANIMATION_OPEN_TIME_MS);
         });
     };
@@ -4152,17 +5413,17 @@ var MDCDialogFoundation = /** @class */function (_super) {
             return;
         }
         this.isOpen_ = false;
-        this.adapter_.notifyClosing(action);
-        this.adapter_.addClass(constants_1.cssClasses.CLOSING);
-        this.adapter_.removeClass(constants_1.cssClasses.OPEN);
-        this.adapter_.removeBodyClass(constants_1.cssClasses.SCROLL_LOCK);
+        this.adapter.notifyClosing(action);
+        this.adapter.addClass(constants_1.cssClasses.CLOSING);
+        this.adapter.removeClass(constants_1.cssClasses.OPEN);
+        this.adapter.removeBodyClass(constants_1.cssClasses.SCROLL_LOCK);
         cancelAnimationFrame(this.animationFrame_);
         this.animationFrame_ = 0;
         clearTimeout(this.animationTimer_);
         this.animationTimer_ = setTimeout(function () {
-            _this.adapter_.releaseFocus();
+            _this.adapter.releaseFocus();
             _this.handleAnimationTimerEnd_();
-            _this.adapter_.notifyClosed(action);
+            _this.adapter.notifyClosed(action);
         }, constants_1.numbers.DIALOG_ANIMATION_CLOSE_TIME_MS);
     };
     MDCDialogFoundation.prototype.isOpen = function () {
@@ -4198,12 +5459,12 @@ var MDCDialogFoundation = /** @class */function (_super) {
     };
     /** Handles click on the dialog root element. */
     MDCDialogFoundation.prototype.handleClick = function (evt) {
-        var isScrim = this.adapter_.eventTargetMatches(evt.target, constants_1.strings.SCRIM_SELECTOR);
+        var isScrim = this.adapter.eventTargetMatches(evt.target, constants_1.strings.SCRIM_SELECTOR);
         // Check for scrim click first since it doesn't require querying ancestors.
         if (isScrim && this.scrimClickAction_ !== '') {
             this.close(this.scrimClickAction_);
         } else {
-            var action = this.adapter_.getActionFromEvent(evt);
+            var action = this.adapter.getActionFromEvent(evt);
             if (action) {
                 this.close(action);
             }
@@ -4215,15 +5476,15 @@ var MDCDialogFoundation = /** @class */function (_super) {
         if (!isEnter) {
             return;
         }
-        var action = this.adapter_.getActionFromEvent(evt);
+        var action = this.adapter.getActionFromEvent(evt);
         if (action) {
             // Action button callback is handled in `handleClick`,
             // since space/enter keydowns on buttons trigger click events.
             return;
         }
-        var isDefault = !this.adapter_.eventTargetMatches(evt.target, constants_1.strings.SUPPRESS_DEFAULT_PRESS_SELECTOR);
+        var isDefault = !this.adapter.eventTargetMatches(evt.target, constants_1.strings.SUPPRESS_DEFAULT_PRESS_SELECTOR);
         if (isEnter && isDefault) {
-            this.adapter_.clickDefaultButton();
+            this.adapter.clickDefaultButton();
         }
     };
     /** Handles keydown on the document. */
@@ -4241,8 +5502,8 @@ var MDCDialogFoundation = /** @class */function (_super) {
     };
     MDCDialogFoundation.prototype.handleAnimationTimerEnd_ = function () {
         this.animationTimer_ = 0;
-        this.adapter_.removeClass(constants_1.cssClasses.OPENING);
-        this.adapter_.removeClass(constants_1.cssClasses.CLOSING);
+        this.adapter.removeClass(constants_1.cssClasses.OPENING);
+        this.adapter.removeClass(constants_1.cssClasses.CLOSING);
     };
     /**
      * Runs the given logic on the next animation frame, using setTimeout to factor in Firefox reflow behavior.
@@ -4258,21 +5519,21 @@ var MDCDialogFoundation = /** @class */function (_super) {
     };
     MDCDialogFoundation.prototype.detectStackedButtons_ = function () {
         // Remove the class first to let us measure the buttons' natural positions.
-        this.adapter_.removeClass(constants_1.cssClasses.STACKED);
-        var areButtonsStacked = this.adapter_.areButtonsStacked();
+        this.adapter.removeClass(constants_1.cssClasses.STACKED);
+        var areButtonsStacked = this.adapter.areButtonsStacked();
         if (areButtonsStacked) {
-            this.adapter_.addClass(constants_1.cssClasses.STACKED);
+            this.adapter.addClass(constants_1.cssClasses.STACKED);
         }
         if (areButtonsStacked !== this.areButtonsStacked_) {
-            this.adapter_.reverseButtons();
+            this.adapter.reverseButtons();
             this.areButtonsStacked_ = areButtonsStacked;
         }
     };
     MDCDialogFoundation.prototype.detectScrollableContent_ = function () {
         // Remove the class first to let us measure the natural height of the content.
-        this.adapter_.removeClass(constants_1.cssClasses.SCROLLABLE);
-        if (this.adapter_.isContentScrollable()) {
-            this.adapter_.addClass(constants_1.cssClasses.SCROLLABLE);
+        this.adapter.removeClass(constants_1.cssClasses.SCROLLABLE);
+        if (this.adapter.isContentScrollable()) {
+            this.adapter.addClass(constants_1.cssClasses.SCROLLABLE);
         }
     };
     return MDCDialogFoundation;
@@ -4459,7 +5720,12 @@ var Announcer = /** @class */function () {
         // Timeout is necessary for screen readers like NVDA and VoiceOver.
         setTimeout(function () {
             liveRegion.textContent = message;
+            document.addEventListener('click', clearLiveRegion);
         }, 1);
+        function clearLiveRegion() {
+            liveRegion.textContent = '';
+            document.removeEventListener('click', clearLiveRegion);
+        }
     };
     Announcer.prototype.getLiveRegion = function (priority) {
         var existingLiveRegion = this.liveRegions.get(priority);
@@ -4742,8 +6008,147 @@ var events = __importStar(__webpack_require__(/*! ./events */ "./packages/mdc-do
 exports.events = events;
 var focusTrap = __importStar(__webpack_require__(/*! ./focus-trap */ "./packages/mdc-dom/focus-trap.ts"));
 exports.focusTrap = focusTrap;
+var keyboard = __importStar(__webpack_require__(/*! ./keyboard */ "./packages/mdc-dom/keyboard.ts"));
+exports.keyboard = keyboard;
 var ponyfill = __importStar(__webpack_require__(/*! ./ponyfill */ "./packages/mdc-dom/ponyfill.ts"));
 exports.ponyfill = ponyfill;
+
+/***/ }),
+
+/***/ "./packages/mdc-dom/keyboard.ts":
+/*!**************************************!*\
+  !*** ./packages/mdc-dom/keyboard.ts ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * KEY provides normalized string values for keys.
+ */
+exports.KEY = {
+    UNKNOWN: 'Unknown',
+    BACKSPACE: 'Backspace',
+    ENTER: 'Enter',
+    SPACEBAR: 'Spacebar',
+    PAGE_UP: 'PageUp',
+    PAGE_DOWN: 'PageDown',
+    END: 'End',
+    HOME: 'Home',
+    ARROW_LEFT: 'ArrowLeft',
+    ARROW_UP: 'ArrowUp',
+    ARROW_RIGHT: 'ArrowRight',
+    ARROW_DOWN: 'ArrowDown',
+    DELETE: 'Delete',
+    ESCAPE: 'Escape'
+};
+var normalizedKeys = new Set();
+// IE11 has no support for new Map with iterable so we need to initialize this
+// by hand.
+normalizedKeys.add(exports.KEY.BACKSPACE);
+normalizedKeys.add(exports.KEY.ENTER);
+normalizedKeys.add(exports.KEY.SPACEBAR);
+normalizedKeys.add(exports.KEY.PAGE_UP);
+normalizedKeys.add(exports.KEY.PAGE_DOWN);
+normalizedKeys.add(exports.KEY.END);
+normalizedKeys.add(exports.KEY.HOME);
+normalizedKeys.add(exports.KEY.ARROW_LEFT);
+normalizedKeys.add(exports.KEY.ARROW_UP);
+normalizedKeys.add(exports.KEY.ARROW_RIGHT);
+normalizedKeys.add(exports.KEY.ARROW_DOWN);
+normalizedKeys.add(exports.KEY.DELETE);
+normalizedKeys.add(exports.KEY.ESCAPE);
+var KEY_CODE = {
+    BACKSPACE: 8,
+    ENTER: 13,
+    SPACEBAR: 32,
+    PAGE_UP: 33,
+    PAGE_DOWN: 34,
+    END: 35,
+    HOME: 36,
+    ARROW_LEFT: 37,
+    ARROW_UP: 38,
+    ARROW_RIGHT: 39,
+    ARROW_DOWN: 40,
+    DELETE: 46,
+    ESCAPE: 27
+};
+var mappedKeyCodes = new Map();
+// IE11 has no support for new Map with iterable so we need to initialize this
+// by hand.
+mappedKeyCodes.set(KEY_CODE.BACKSPACE, exports.KEY.BACKSPACE);
+mappedKeyCodes.set(KEY_CODE.ENTER, exports.KEY.ENTER);
+mappedKeyCodes.set(KEY_CODE.SPACEBAR, exports.KEY.SPACEBAR);
+mappedKeyCodes.set(KEY_CODE.PAGE_UP, exports.KEY.PAGE_UP);
+mappedKeyCodes.set(KEY_CODE.PAGE_DOWN, exports.KEY.PAGE_DOWN);
+mappedKeyCodes.set(KEY_CODE.END, exports.KEY.END);
+mappedKeyCodes.set(KEY_CODE.HOME, exports.KEY.HOME);
+mappedKeyCodes.set(KEY_CODE.ARROW_LEFT, exports.KEY.ARROW_LEFT);
+mappedKeyCodes.set(KEY_CODE.ARROW_UP, exports.KEY.ARROW_UP);
+mappedKeyCodes.set(KEY_CODE.ARROW_RIGHT, exports.KEY.ARROW_RIGHT);
+mappedKeyCodes.set(KEY_CODE.ARROW_DOWN, exports.KEY.ARROW_DOWN);
+mappedKeyCodes.set(KEY_CODE.DELETE, exports.KEY.DELETE);
+mappedKeyCodes.set(KEY_CODE.ESCAPE, exports.KEY.ESCAPE);
+var navigationKeys = new Set();
+// IE11 has no support for new Set with iterable so we need to initialize this
+// by hand.
+navigationKeys.add(exports.KEY.PAGE_UP);
+navigationKeys.add(exports.KEY.PAGE_DOWN);
+navigationKeys.add(exports.KEY.END);
+navigationKeys.add(exports.KEY.HOME);
+navigationKeys.add(exports.KEY.ARROW_LEFT);
+navigationKeys.add(exports.KEY.ARROW_UP);
+navigationKeys.add(exports.KEY.ARROW_RIGHT);
+navigationKeys.add(exports.KEY.ARROW_DOWN);
+/**
+ * normalizeKey returns the normalized string for a navigational action.
+ */
+function normalizeKey(evt) {
+    var key = evt.key;
+    // If the event already has a normalized key, return it
+    if (normalizedKeys.has(key)) {
+        return key;
+    }
+    // tslint:disable-next-line:deprecation
+    var mappedKey = mappedKeyCodes.get(evt.keyCode);
+    if (mappedKey) {
+        return mappedKey;
+    }
+    return exports.KEY.UNKNOWN;
+}
+exports.normalizeKey = normalizeKey;
+/**
+ * isNavigationEvent returns whether the event is a navigation event
+ */
+function isNavigationEvent(evt) {
+    return navigationKeys.has(normalizeKey(evt));
+}
+exports.isNavigationEvent = isNavigationEvent;
 
 /***/ }),
 
@@ -4919,16 +6324,16 @@ var MDCDrawer = /** @class */function (_super) {
          * Also returns true if drawer is in the open position.
          */
         get: function get() {
-            return this.foundation_.isOpen();
+            return this.foundation.isOpen();
         },
         /**
          * Toggles the drawer open and closed.
          */
         set: function set(isOpen) {
             if (isOpen) {
-                this.foundation_.open();
+                this.foundation.open();
             } else {
-                this.foundation_.close();
+                this.foundation.close();
             }
         },
         enumerable: true,
@@ -4952,7 +6357,7 @@ var MDCDrawer = /** @class */function (_super) {
                 return new component_2.MDCList(el);
             };
         }
-        var listEl = this.root_.querySelector("." + foundation_1.MDCListFoundation.cssClasses.ROOT);
+        var listEl = this.root.querySelector("." + foundation_1.MDCListFoundation.cssClasses.ROOT);
         if (listEl) {
             this.list_ = listFactory(listEl);
             this.list_.wrapFocus = true;
@@ -4963,19 +6368,19 @@ var MDCDrawer = /** @class */function (_super) {
         var _this = this;
         var MODAL = cssClasses.MODAL;
         var SCRIM_SELECTOR = strings.SCRIM_SELECTOR;
-        this.scrim_ = this.root_.parentNode.querySelector(SCRIM_SELECTOR);
-        if (this.scrim_ && this.root_.classList.contains(MODAL)) {
+        this.scrim_ = this.root.parentNode.querySelector(SCRIM_SELECTOR);
+        if (this.scrim_ && this.root.classList.contains(MODAL)) {
             this.handleScrimClick_ = function () {
-                return _this.foundation_.handleScrimClick();
+                return _this.foundation.handleScrimClick();
             };
             this.scrim_.addEventListener('click', this.handleScrimClick_);
-            this.focusTrap_ = util.createFocusTrapInstance(this.root_, this.focusTrapFactory_);
+            this.focusTrap_ = util.createFocusTrapInstance(this.root, this.focusTrapFactory_);
         }
         this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
+            return _this.foundation.handleKeydown(evt);
         };
         this.handleTransitionEnd_ = function (evt) {
-            return _this.foundation_.handleTransitionEnd(evt);
+            return _this.foundation.handleTransitionEnd(evt);
         };
         this.listen('keydown', this.handleKeydown_);
         this.listen('transitionend', this.handleTransitionEnd_);
@@ -4987,7 +6392,7 @@ var MDCDrawer = /** @class */function (_super) {
             this.list_.destroy();
         }
         var MODAL = cssClasses.MODAL;
-        if (this.scrim_ && this.handleScrimClick_ && this.root_.classList.contains(MODAL)) {
+        if (this.scrim_ && this.handleScrimClick_ && this.root.classList.contains(MODAL)) {
             this.scrim_.removeEventListener('click', this.handleScrimClick_);
             // Ensure drawer is closed to hide scrim and release focus
             this.open = false;
@@ -5000,13 +6405,13 @@ var MDCDrawer = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             elementHasClass: function elementHasClass(element, className) {
                 return element.classList.contains(className);
@@ -5016,12 +6421,12 @@ var MDCDrawer = /** @class */function (_super) {
             },
             restoreFocus: function restoreFocus() {
                 var previousFocus = _this.previousFocus_;
-                if (previousFocus && previousFocus.focus && _this.root_.contains(document.activeElement)) {
+                if (previousFocus && previousFocus.focus && _this.root.contains(document.activeElement)) {
                     previousFocus.focus();
                 }
             },
             focusActiveNavigationItem: function focusActiveNavigationItem() {
-                var activeNavItemEl = _this.root_.querySelector("." + foundation_1.MDCListFoundation.cssClasses.LIST_ITEM_ACTIVATED_CLASS);
+                var activeNavItemEl = _this.root.querySelector("." + foundation_1.MDCListFoundation.cssClasses.LIST_ITEM_ACTIVATED_CLASS);
                 if (activeNavItemEl) {
                     activeNavItemEl.focus();
                 }
@@ -5042,9 +6447,9 @@ var MDCDrawer = /** @class */function (_super) {
         // tslint:enable:object-literal-sort-keys
         var DISMISSIBLE = cssClasses.DISMISSIBLE,
             MODAL = cssClasses.MODAL;
-        if (this.root_.classList.contains(DISMISSIBLE)) {
+        if (this.root.classList.contains(DISMISSIBLE)) {
             return new foundation_2.MDCDismissibleDrawerFoundation(adapter);
-        } else if (this.root_.classList.contains(MODAL)) {
+        } else if (this.root.classList.contains(MODAL)) {
             return new foundation_3.MDCModalDrawerFoundation(adapter);
         } else {
             throw new Error("MDCDrawer: Failed to instantiate component. Supported variants are " + DISMISSIBLE + " and " + MODAL + ".");
@@ -5178,7 +6583,7 @@ var constants_1 = __webpack_require__(/*! ../constants */ "./packages/mdc-drawer
 var MDCDismissibleDrawerFoundation = /** @class */function (_super) {
     __extends(MDCDismissibleDrawerFoundation, _super);
     function MDCDismissibleDrawerFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCDismissibleDrawerFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCDismissibleDrawerFoundation.defaultAdapter), adapter)) || this;
         _this.animationFrame_ = 0;
         _this.animationTimer_ = 0;
         return _this;
@@ -5256,13 +6661,13 @@ var MDCDismissibleDrawerFoundation = /** @class */function (_super) {
         if (this.isOpen() || this.isOpening() || this.isClosing()) {
             return;
         }
-        this.adapter_.addClass(constants_1.cssClasses.OPEN);
-        this.adapter_.addClass(constants_1.cssClasses.ANIMATE);
+        this.adapter.addClass(constants_1.cssClasses.OPEN);
+        this.adapter.addClass(constants_1.cssClasses.ANIMATE);
         // Wait a frame once display is no longer "none", to establish basis for animation
         this.runNextAnimationFrame_(function () {
-            _this.adapter_.addClass(constants_1.cssClasses.OPENING);
+            _this.adapter.addClass(constants_1.cssClasses.OPENING);
         });
-        this.adapter_.saveFocus();
+        this.adapter.saveFocus();
     };
     /**
      * Closes the drawer from the open state.
@@ -5271,28 +6676,28 @@ var MDCDismissibleDrawerFoundation = /** @class */function (_super) {
         if (!this.isOpen() || this.isOpening() || this.isClosing()) {
             return;
         }
-        this.adapter_.addClass(constants_1.cssClasses.CLOSING);
+        this.adapter.addClass(constants_1.cssClasses.CLOSING);
     };
     /**
      * Returns true if the drawer is in the open position.
      * @return true if drawer is in open state.
      */
     MDCDismissibleDrawerFoundation.prototype.isOpen = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.OPEN);
+        return this.adapter.hasClass(constants_1.cssClasses.OPEN);
     };
     /**
      * Returns true if the drawer is animating open.
      * @return true if drawer is animating open.
      */
     MDCDismissibleDrawerFoundation.prototype.isOpening = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.OPENING) || this.adapter_.hasClass(constants_1.cssClasses.ANIMATE);
+        return this.adapter.hasClass(constants_1.cssClasses.OPENING) || this.adapter.hasClass(constants_1.cssClasses.ANIMATE);
     };
     /**
      * Returns true if the drawer is animating closed.
      * @return true if drawer is animating closed.
      */
     MDCDismissibleDrawerFoundation.prototype.isClosing = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.CLOSING);
+        return this.adapter.hasClass(constants_1.cssClasses.CLOSING);
     };
     /**
      * Keydown handler to close drawer when key is escape.
@@ -5315,23 +6720,23 @@ var MDCDismissibleDrawerFoundation = /** @class */function (_super) {
             ANIMATE = constants_1.cssClasses.ANIMATE,
             ROOT = constants_1.cssClasses.ROOT;
         // In Edge, transitionend on ripple pseudo-elements yields a target without classList, so check for Element first.
-        var isRootElement = this.isElement_(evt.target) && this.adapter_.elementHasClass(evt.target, ROOT);
+        var isRootElement = this.isElement_(evt.target) && this.adapter.elementHasClass(evt.target, ROOT);
         if (!isRootElement) {
             return;
         }
         if (this.isClosing()) {
-            this.adapter_.removeClass(OPEN);
+            this.adapter.removeClass(OPEN);
             this.closed_();
-            this.adapter_.restoreFocus();
-            this.adapter_.notifyClose();
+            this.adapter.restoreFocus();
+            this.adapter.notifyClose();
         } else {
-            this.adapter_.focusActiveNavigationItem();
+            this.adapter.focusActiveNavigationItem();
             this.opened_();
-            this.adapter_.notifyOpen();
+            this.adapter.notifyOpen();
         }
-        this.adapter_.removeClass(ANIMATE);
-        this.adapter_.removeClass(OPENING);
-        this.adapter_.removeClass(CLOSING);
+        this.adapter.removeClass(ANIMATE);
+        this.adapter.removeClass(OPENING);
+        this.adapter.removeClass(CLOSING);
     };
     /**
      * Extension point for when drawer finishes open animation.
@@ -5489,13 +6894,13 @@ var MDCModalDrawerFoundation = /** @class */function (_super) {
      * Called when drawer finishes open animation.
      */
     MDCModalDrawerFoundation.prototype.opened_ = function () {
-        this.adapter_.trapFocus();
+        this.adapter.trapFocus();
     };
     /**
      * Called when drawer finishes close animation.
      */
     MDCModalDrawerFoundation.prototype.closed_ = function () {
-        this.adapter_.releaseFocus();
+        this.adapter.releaseFocus();
     };
     return MDCModalDrawerFoundation;
 }(foundation_1.MDCDismissibleDrawerFoundation);
@@ -5616,17 +7021,24 @@ var MDCFloatingLabel = /** @class */function (_super) {
      * @param shouldShake If true, shakes the label by adding a CSS class; otherwise, stops shaking by removing the class.
      */
     MDCFloatingLabel.prototype.shake = function (shouldShake) {
-        this.foundation_.shake(shouldShake);
+        this.foundation.shake(shouldShake);
     };
     /**
      * Styles the label to float/dock.
      * @param shouldFloat If true, floats the label by adding a CSS class; otherwise, docks it by removing the class.
      */
     MDCFloatingLabel.prototype.float = function (shouldFloat) {
-        this.foundation_.float(shouldFloat);
+        this.foundation.float(shouldFloat);
+    };
+    /**
+     * Styles the label as required.
+     * @param isRequired If true, adds an asterisk to the label, indicating that it is required.
+     */
+    MDCFloatingLabel.prototype.setRequired = function (isRequired) {
+        this.foundation.setRequired(isRequired);
     };
     MDCFloatingLabel.prototype.getWidth = function () {
-        return this.foundation_.getWidth();
+        return this.foundation.getWidth();
     };
     MDCFloatingLabel.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -5635,13 +7047,13 @@ var MDCFloatingLabel = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             getWidth: function getWidth() {
-                return ponyfill_1.estimateScrollWidth(_this.root_);
+                return ponyfill_1.estimateScrollWidth(_this.root);
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -5694,6 +7106,7 @@ exports.MDCFloatingLabel = MDCFloatingLabel;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cssClasses = {
   LABEL_FLOAT_ABOVE: 'mdc-floating-label--float-above',
+  LABEL_REQUIRED: 'mdc-floating-label--required',
   LABEL_SHAKE: 'mdc-floating-label--shake',
   ROOT: 'mdc-floating-label'
 };
@@ -5769,7 +7182,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-floatin
 var MDCFloatingLabelFoundation = /** @class */function (_super) {
     __extends(MDCFloatingLabelFoundation, _super);
     function MDCFloatingLabelFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCFloatingLabelFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCFloatingLabelFoundation.defaultAdapter), adapter)) || this;
         _this.shakeAnimationEndHandler_ = function () {
             return _this.handleShakeAnimationEnd_();
         };
@@ -5811,16 +7224,16 @@ var MDCFloatingLabelFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCFloatingLabelFoundation.prototype.init = function () {
-        this.adapter_.registerInteractionHandler('animationend', this.shakeAnimationEndHandler_);
+        this.adapter.registerInteractionHandler('animationend', this.shakeAnimationEndHandler_);
     };
     MDCFloatingLabelFoundation.prototype.destroy = function () {
-        this.adapter_.deregisterInteractionHandler('animationend', this.shakeAnimationEndHandler_);
+        this.adapter.deregisterInteractionHandler('animationend', this.shakeAnimationEndHandler_);
     };
     /**
      * Returns the width of the label element.
      */
     MDCFloatingLabelFoundation.prototype.getWidth = function () {
-        return this.adapter_.getWidth();
+        return this.adapter.getWidth();
     };
     /**
      * Styles the label to produce a shake animation to indicate an error.
@@ -5829,9 +7242,9 @@ var MDCFloatingLabelFoundation = /** @class */function (_super) {
     MDCFloatingLabelFoundation.prototype.shake = function (shouldShake) {
         var LABEL_SHAKE = MDCFloatingLabelFoundation.cssClasses.LABEL_SHAKE;
         if (shouldShake) {
-            this.adapter_.addClass(LABEL_SHAKE);
+            this.adapter.addClass(LABEL_SHAKE);
         } else {
-            this.adapter_.removeClass(LABEL_SHAKE);
+            this.adapter.removeClass(LABEL_SHAKE);
         }
     };
     /**
@@ -5843,15 +7256,27 @@ var MDCFloatingLabelFoundation = /** @class */function (_super) {
             LABEL_FLOAT_ABOVE = _a.LABEL_FLOAT_ABOVE,
             LABEL_SHAKE = _a.LABEL_SHAKE;
         if (shouldFloat) {
-            this.adapter_.addClass(LABEL_FLOAT_ABOVE);
+            this.adapter.addClass(LABEL_FLOAT_ABOVE);
         } else {
-            this.adapter_.removeClass(LABEL_FLOAT_ABOVE);
-            this.adapter_.removeClass(LABEL_SHAKE);
+            this.adapter.removeClass(LABEL_FLOAT_ABOVE);
+            this.adapter.removeClass(LABEL_SHAKE);
+        }
+    };
+    /**
+     * Styles the label as required.
+     * @param isRequired If true, adds an asterisk to the label, indicating that it is required.
+     */
+    MDCFloatingLabelFoundation.prototype.setRequired = function (isRequired) {
+        var LABEL_REQUIRED = MDCFloatingLabelFoundation.cssClasses.LABEL_REQUIRED;
+        if (isRequired) {
+            this.adapter.addClass(LABEL_REQUIRED);
+        } else {
+            this.adapter.removeClass(LABEL_REQUIRED);
         }
     };
     MDCFloatingLabelFoundation.prototype.handleShakeAnimationEnd_ = function () {
         var LABEL_SHAKE = MDCFloatingLabelFoundation.cssClasses.LABEL_SHAKE;
-        this.adapter_.removeClass(LABEL_SHAKE);
+        this.adapter.removeClass(LABEL_SHAKE);
     };
     return MDCFloatingLabelFoundation;
 }(foundation_1.MDCFoundation);
@@ -5967,47 +7392,35 @@ var MDCFormField = /** @class */function (_super) {
     MDCFormField.attachTo = function (root) {
         return new MDCFormField(root);
     };
-    Object.defineProperty(MDCFormField.prototype, "input", {
-        get: function get() {
-            return this.input_;
-        },
-        set: function set(input) {
-            this.input_ = input;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(MDCFormField.prototype, "label_", {
-        get: function get() {
-            var LABEL_SELECTOR = foundation_1.MDCFormFieldFoundation.strings.LABEL_SELECTOR;
-            return this.root_.querySelector(LABEL_SELECTOR);
-        },
-        enumerable: true,
-        configurable: true
-    });
+    MDCFormField.prototype.labelEl = function () {
+        var LABEL_SELECTOR = foundation_1.MDCFormFieldFoundation.strings.LABEL_SELECTOR;
+        return this.root.querySelector(LABEL_SELECTOR);
+    };
     MDCFormField.prototype.getDefaultFoundation = function () {
         var _this = this;
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             activateInputRipple: function activateInputRipple() {
-                if (_this.input_ && _this.input_.ripple) {
-                    _this.input_.ripple.activate();
+                if (_this.input && _this.input.ripple) {
+                    _this.input.ripple.activate();
                 }
             },
             deactivateInputRipple: function deactivateInputRipple() {
-                if (_this.input_ && _this.input_.ripple) {
-                    _this.input_.ripple.deactivate();
+                if (_this.input && _this.input.ripple) {
+                    _this.input.ripple.deactivate();
                 }
             },
             deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
-                if (_this.label_) {
-                    _this.label_.removeEventListener(evtType, handler);
+                var labelEl = _this.labelEl();
+                if (labelEl) {
+                    labelEl.removeEventListener(evtType, handler);
                 }
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
-                if (_this.label_) {
-                    _this.label_.addEventListener(evtType, handler);
+                var labelEl = _this.labelEl();
+                if (labelEl) {
+                    labelEl.addEventListener(evtType, handler);
                 }
             }
         };
@@ -6130,9 +7543,9 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-form-fi
 var MDCFormFieldFoundation = /** @class */function (_super) {
     __extends(MDCFormFieldFoundation, _super);
     function MDCFormFieldFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCFormFieldFoundation.defaultAdapter, adapter)) || this;
-        _this.clickHandler_ = function () {
-            return _this.handleClick_();
+        var _this = _super.call(this, __assign(__assign({}, MDCFormFieldFoundation.defaultAdapter), adapter)) || this;
+        _this.click = function () {
+            _this.handleClick();
         };
         return _this;
     }
@@ -6171,16 +7584,16 @@ var MDCFormFieldFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCFormFieldFoundation.prototype.init = function () {
-        this.adapter_.registerInteractionHandler('click', this.clickHandler_);
+        this.adapter.registerInteractionHandler('click', this.click);
     };
     MDCFormFieldFoundation.prototype.destroy = function () {
-        this.adapter_.deregisterInteractionHandler('click', this.clickHandler_);
+        this.adapter.deregisterInteractionHandler('click', this.click);
     };
-    MDCFormFieldFoundation.prototype.handleClick_ = function () {
+    MDCFormFieldFoundation.prototype.handleClick = function () {
         var _this = this;
-        this.adapter_.activateInputRipple();
+        this.adapter.activateInputRipple();
         requestAnimationFrame(function () {
-            return _this.adapter_.deactivateInputRipple();
+            _this.adapter.deactivateInputRipple();
         });
     };
     return MDCFormFieldFoundation;
@@ -6295,7 +7708,7 @@ var MDCIconButtonToggle = /** @class */function (_super) {
     __extends(MDCIconButtonToggle, _super);
     function MDCIconButtonToggle() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.ripple_ = _this.createRipple_();
+        _this.rippleComponent = _this.createRipple();
         return _this;
     }
     MDCIconButtonToggle.attachTo = function (root) {
@@ -6303,14 +7716,14 @@ var MDCIconButtonToggle = /** @class */function (_super) {
     };
     MDCIconButtonToggle.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.handleClick_ = function () {
-            return _this.foundation_.handleClick();
+        this.handleClick = function () {
+            _this.foundation.handleClick();
         };
-        this.listen('click', this.handleClick_);
+        this.listen('click', this.handleClick);
     };
     MDCIconButtonToggle.prototype.destroy = function () {
-        this.unlisten('click', this.handleClick_);
-        this.ripple_.destroy();
+        this.unlisten('click', this.handleClick);
+        this.ripple.destroy();
         _super.prototype.destroy.call(this);
     };
     MDCIconButtonToggle.prototype.getDefaultFoundation = function () {
@@ -6319,42 +7732,45 @@ var MDCIconButtonToggle = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             notifyChange: function notifyChange(evtData) {
-                return _this.emit(strings.CHANGE_EVENT, evtData);
+                _this.emit(strings.CHANGE_EVENT, evtData);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
+            },
+            getAttr: function getAttr(attrName) {
+                return _this.root.getAttribute(attrName);
             },
             setAttr: function setAttr(attrName, attrValue) {
-                return _this.root_.setAttribute(attrName, attrValue);
+                return _this.root.setAttribute(attrName, attrValue);
             }
         };
         return new foundation_1.MDCIconButtonToggleFoundation(adapter);
     };
     Object.defineProperty(MDCIconButtonToggle.prototype, "ripple", {
         get: function get() {
-            return this.ripple_;
+            return this.rippleComponent;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCIconButtonToggle.prototype, "on", {
         get: function get() {
-            return this.foundation_.isOn();
+            return this.foundation.isOn();
         },
         set: function set(isOn) {
-            this.foundation_.toggle(isOn);
+            this.foundation.toggle(isOn);
         },
         enumerable: true,
         configurable: true
     });
-    MDCIconButtonToggle.prototype.createRipple_ = function () {
-        var ripple = new component_2.MDCRipple(this.root_);
+    MDCIconButtonToggle.prototype.createRipple = function () {
+        var ripple = new component_2.MDCRipple(this.root);
         ripple.unbounded = true;
         return ripple;
     };
@@ -6402,7 +7818,10 @@ exports.cssClasses = {
     ROOT: 'mdc-icon-button'
 };
 exports.strings = {
+    ARIA_LABEL: 'aria-label',
     ARIA_PRESSED: 'aria-pressed',
+    DATA_ARIA_LABEL_OFF: 'data-aria-label-off',
+    DATA_ARIA_LABEL_ON: 'data-aria-label-on',
     CHANGE_EVENT: 'MDCIconButtonToggle:change'
 };
 
@@ -6477,7 +7896,13 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-icon-bu
 var MDCIconButtonToggleFoundation = /** @class */function (_super) {
     __extends(MDCIconButtonToggleFoundation, _super);
     function MDCIconButtonToggleFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCIconButtonToggleFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCIconButtonToggleFoundation.defaultAdapter), adapter)) || this;
+        /**
+         * Whether the icon button has an aria label that changes depending on
+         * toggled state.
+         */
+        _this.hasToggledAriaLabel = false;
+        return _this;
     }
     Object.defineProperty(MDCIconButtonToggleFoundation, "cssClasses", {
         get: function get() {
@@ -6508,6 +7933,9 @@ var MDCIconButtonToggleFoundation = /** @class */function (_super) {
                 removeClass: function removeClass() {
                     return undefined;
                 },
+                getAttr: function getAttr() {
+                    return null;
+                },
                 setAttr: function setAttr() {
                     return undefined;
                 }
@@ -6517,25 +7945,41 @@ var MDCIconButtonToggleFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCIconButtonToggleFoundation.prototype.init = function () {
-        this.adapter_.setAttr(constants_1.strings.ARIA_PRESSED, "" + this.isOn());
+        var ariaLabelOn = this.adapter.getAttr(constants_1.strings.DATA_ARIA_LABEL_ON);
+        var ariaLabelOff = this.adapter.getAttr(constants_1.strings.DATA_ARIA_LABEL_OFF);
+        if (ariaLabelOn && ariaLabelOff) {
+            if (this.adapter.getAttr(constants_1.strings.ARIA_PRESSED) !== null) {
+                throw new Error('MDCIconButtonToggleFoundation: Button should not set ' + '`aria-pressed` if it has a toggled aria label.');
+            }
+            this.hasToggledAriaLabel = true;
+        } else {
+            this.adapter.setAttr(constants_1.strings.ARIA_PRESSED, String(this.isOn()));
+        }
     };
     MDCIconButtonToggleFoundation.prototype.handleClick = function () {
         this.toggle();
-        this.adapter_.notifyChange({ isOn: this.isOn() });
+        this.adapter.notifyChange({ isOn: this.isOn() });
     };
     MDCIconButtonToggleFoundation.prototype.isOn = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.ICON_BUTTON_ON);
+        return this.adapter.hasClass(constants_1.cssClasses.ICON_BUTTON_ON);
     };
     MDCIconButtonToggleFoundation.prototype.toggle = function (isOn) {
         if (isOn === void 0) {
             isOn = !this.isOn();
         }
+        // Toggle UI based on state.
         if (isOn) {
-            this.adapter_.addClass(constants_1.cssClasses.ICON_BUTTON_ON);
+            this.adapter.addClass(constants_1.cssClasses.ICON_BUTTON_ON);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.ICON_BUTTON_ON);
+            this.adapter.removeClass(constants_1.cssClasses.ICON_BUTTON_ON);
         }
-        this.adapter_.setAttr(constants_1.strings.ARIA_PRESSED, "" + isOn);
+        // Toggle aria attributes based on state.
+        if (this.hasToggledAriaLabel) {
+            var ariaLabel = isOn ? this.adapter.getAttr(constants_1.strings.DATA_ARIA_LABEL_ON) : this.adapter.getAttr(constants_1.strings.DATA_ARIA_LABEL_OFF);
+            this.adapter.setAttr(constants_1.strings.ARIA_LABEL, ariaLabel || '');
+        } else {
+            this.adapter.setAttr(constants_1.strings.ARIA_PRESSED, "" + isOn);
+        }
     };
     return MDCIconButtonToggleFoundation;
 }(foundation_1.MDCFoundation);
@@ -6655,20 +8099,20 @@ var MDCLineRipple = /** @class */function (_super) {
      * Activates the line ripple
      */
     MDCLineRipple.prototype.activate = function () {
-        this.foundation_.activate();
+        this.foundation.activate();
     };
     /**
      * Deactivates the line ripple
      */
     MDCLineRipple.prototype.deactivate = function () {
-        this.foundation_.deactivate();
+        this.foundation.deactivate();
     };
     /**
      * Sets the transform origin given a user's click location.
      * The `rippleCenter` is the x-coordinate of the middle of the ripple.
      */
     MDCLineRipple.prototype.setRippleCenter = function (xCoordinate) {
-        this.foundation_.setRippleCenter(xCoordinate);
+        this.foundation.setRippleCenter(xCoordinate);
     };
     MDCLineRipple.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -6677,16 +8121,16 @@ var MDCLineRipple = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             setStyle: function setStyle(propertyName, value) {
-                return _this.root_.style.setProperty(propertyName, value);
+                return _this.root.style.setProperty(propertyName, value);
             },
             registerEventHandler: function registerEventHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -6814,7 +8258,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-line-ri
 var MDCLineRippleFoundation = /** @class */function (_super) {
     __extends(MDCLineRippleFoundation, _super);
     function MDCLineRippleFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCLineRippleFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCLineRippleFoundation.defaultAdapter), adapter)) || this;
         _this.transitionEndHandler_ = function (evt) {
             return _this.handleTransitionEnd(evt);
         };
@@ -6859,29 +8303,29 @@ var MDCLineRippleFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCLineRippleFoundation.prototype.init = function () {
-        this.adapter_.registerEventHandler('transitionend', this.transitionEndHandler_);
+        this.adapter.registerEventHandler('transitionend', this.transitionEndHandler_);
     };
     MDCLineRippleFoundation.prototype.destroy = function () {
-        this.adapter_.deregisterEventHandler('transitionend', this.transitionEndHandler_);
+        this.adapter.deregisterEventHandler('transitionend', this.transitionEndHandler_);
     };
     MDCLineRippleFoundation.prototype.activate = function () {
-        this.adapter_.removeClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
-        this.adapter_.addClass(constants_1.cssClasses.LINE_RIPPLE_ACTIVE);
+        this.adapter.removeClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
+        this.adapter.addClass(constants_1.cssClasses.LINE_RIPPLE_ACTIVE);
     };
     MDCLineRippleFoundation.prototype.setRippleCenter = function (xCoordinate) {
-        this.adapter_.setStyle('transform-origin', xCoordinate + "px center");
+        this.adapter.setStyle('transform-origin', xCoordinate + "px center");
     };
     MDCLineRippleFoundation.prototype.deactivate = function () {
-        this.adapter_.addClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
+        this.adapter.addClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
     };
     MDCLineRippleFoundation.prototype.handleTransitionEnd = function (evt) {
         // Wait for the line ripple to be either transparent or opaque
         // before emitting the animation end event
-        var isDeactivating = this.adapter_.hasClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
+        var isDeactivating = this.adapter.hasClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
         if (evt.propertyName === 'opacity') {
             if (isDeactivating) {
-                this.adapter_.removeClass(constants_1.cssClasses.LINE_RIPPLE_ACTIVE);
-                this.adapter_.removeClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
+                this.adapter.removeClass(constants_1.cssClasses.LINE_RIPPLE_ACTIVE);
+                this.adapter.removeClass(constants_1.cssClasses.LINE_RIPPLE_DEACTIVATING);
             }
         }
     };
@@ -7001,37 +8445,37 @@ var MDCLinearProgress = /** @class */function (_super) {
     };
     Object.defineProperty(MDCLinearProgress.prototype, "determinate", {
         set: function set(value) {
-            this.foundation_.setDeterminate(value);
+            this.foundation.setDeterminate(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCLinearProgress.prototype, "progress", {
         set: function set(value) {
-            this.foundation_.setProgress(value);
+            this.foundation.setProgress(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCLinearProgress.prototype, "buffer", {
         set: function set(value) {
-            this.foundation_.setBuffer(value);
+            this.foundation.setBuffer(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCLinearProgress.prototype, "reverse", {
         set: function set(value) {
-            this.foundation_.setReverse(value);
+            this.foundation.setReverse(value);
         },
         enumerable: true,
         configurable: true
     });
     MDCLinearProgress.prototype.open = function () {
-        this.foundation_.open();
+        this.foundation.open();
     };
     MDCLinearProgress.prototype.close = function () {
-        this.foundation_.close();
+        this.foundation.close();
     };
     MDCLinearProgress.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -7039,31 +8483,34 @@ var MDCLinearProgress = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                _this.root.classList.add(className);
             },
             forceLayout: function forceLayout() {
-                return _this.root_.offsetWidth;
+                _this.root.getBoundingClientRect();
             },
-            getBuffer: function getBuffer() {
-                return _this.root_.querySelector(foundation_1.MDCLinearProgressFoundation.strings.BUFFER_SELECTOR);
+            setBufferBarStyle: function setBufferBarStyle(styleProperty, value) {
+                var bufferBar = _this.root.querySelector(foundation_1.MDCLinearProgressFoundation.strings.BUFFER_BAR_SELECTOR);
+                if (bufferBar) {
+                    bufferBar.style.setProperty(styleProperty, value);
+                }
             },
-            getPrimaryBar: function getPrimaryBar() {
-                return _this.root_.querySelector(foundation_1.MDCLinearProgressFoundation.strings.PRIMARY_BAR_SELECTOR);
+            setPrimaryBarStyle: function setPrimaryBarStyle(styleProperty, value) {
+                var primaryBar = _this.root.querySelector(foundation_1.MDCLinearProgressFoundation.strings.PRIMARY_BAR_SELECTOR);
+                if (primaryBar) {
+                    primaryBar.style.setProperty(styleProperty, value);
+                }
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             removeAttribute: function removeAttribute(attributeName) {
-                _this.root_.removeAttribute(attributeName);
+                _this.root.removeAttribute(attributeName);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                _this.root.classList.remove(className);
             },
             setAttribute: function setAttribute(attributeName, value) {
-                _this.root_.setAttribute(attributeName, value);
-            },
-            setStyle: function setStyle(el, styleProperty, value) {
-                return el.style.setProperty(styleProperty, value);
+                _this.root.setAttribute(attributeName, value);
             }
         };
         return new foundation_1.MDCLinearProgressFoundation(adapter);
@@ -7114,7 +8561,8 @@ exports.cssClasses = {
 };
 exports.strings = {
     ARIA_VALUENOW: 'aria-valuenow',
-    BUFFER_SELECTOR: '.mdc-linear-progress__buffer',
+    BUFFER_BAR_SELECTOR: '.mdc-linear-progress__buffer-bar',
+    FLEX_BASIS: 'flex-basis',
     PRIMARY_BAR_SELECTOR: '.mdc-linear-progress__primary-bar'
 };
 
@@ -7190,7 +8638,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-linear-
 var MDCLinearProgressFoundation = /** @class */function (_super) {
     __extends(MDCLinearProgressFoundation, _super);
     function MDCLinearProgressFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCLinearProgressFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCLinearProgressFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCLinearProgressFoundation, "cssClasses", {
         get: function get() {
@@ -7215,10 +8663,10 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
                 forceLayout: function forceLayout() {
                     return undefined;
                 },
-                getBuffer: function getBuffer() {
+                setBufferBarStyle: function setBufferBarStyle() {
                     return null;
                 },
-                getPrimaryBar: function getPrimaryBar() {
+                setPrimaryBarStyle: function setPrimaryBarStyle() {
                     return null;
                 },
                 hasClass: function hasClass() {
@@ -7232,9 +8680,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
                 },
                 setAttribute: function setAttribute() {
                     return undefined;
-                },
-                setStyle: function setStyle() {
-                    return undefined;
                 }
             };
         },
@@ -7242,78 +8687,87 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCLinearProgressFoundation.prototype.init = function () {
-        this.isDeterminate_ = !this.adapter_.hasClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-        this.isReversed_ = this.adapter_.hasClass(constants_1.cssClasses.REVERSED_CLASS);
-        this.progress_ = 0;
-        this.buffer_ = 1;
+        this.isDeterminate = !this.adapter.hasClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+        this.isReversed = this.adapter.hasClass(constants_1.cssClasses.REVERSED_CLASS);
+        this.progress = 0;
+        this.buffer = 1;
     };
     MDCLinearProgressFoundation.prototype.setDeterminate = function (isDeterminate) {
-        this.isDeterminate_ = isDeterminate;
-        if (this.isDeterminate_) {
-            this.adapter_.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, this.progress_.toString());
-            this.setScale_(this.adapter_.getPrimaryBar(), this.progress_);
-            this.setScale_(this.adapter_.getBuffer(), this.buffer_);
-        } else {
-            if (this.isReversed_) {
-                // Adding/removing REVERSED_CLASS starts a translate animation, while
-                // adding INDETERMINATE_CLASS starts a scale animation. Here, we reset
-                // the translate animation in order to keep it in sync with the new
-                // scale animation that will start from adding INDETERMINATE_CLASS
-                // below.
-                this.adapter_.removeClass(constants_1.cssClasses.REVERSED_CLASS);
-                this.adapter_.forceLayout();
-                this.adapter_.addClass(constants_1.cssClasses.REVERSED_CLASS);
-            }
-            this.adapter_.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.removeAttribute(constants_1.strings.ARIA_VALUENOW);
-            this.setScale_(this.adapter_.getPrimaryBar(), 1);
-            this.setScale_(this.adapter_.getBuffer(), 1);
+        this.isDeterminate = isDeterminate;
+        if (this.isDeterminate) {
+            this.adapter.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+            this.adapter.setAttribute(constants_1.strings.ARIA_VALUENOW, this.progress.toString());
+            this.setPrimaryBarProgress(this.progress);
+            this.setBufferBarProgress(this.buffer);
+            return;
         }
+        if (this.isReversed) {
+            // Adding/removing REVERSED_CLASS starts a translate animation, while
+            // adding INDETERMINATE_CLASS starts a scale animation. Here, we reset
+            // the translate animation in order to keep it in sync with the new
+            // scale animation that will start from adding INDETERMINATE_CLASS
+            // below.
+            this.adapter.removeClass(constants_1.cssClasses.REVERSED_CLASS);
+            this.adapter.forceLayout();
+            this.adapter.addClass(constants_1.cssClasses.REVERSED_CLASS);
+        }
+        this.adapter.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+        this.adapter.removeAttribute(constants_1.strings.ARIA_VALUENOW);
+        this.setPrimaryBarProgress(1);
+        this.setBufferBarProgress(1);
+    };
+    MDCLinearProgressFoundation.prototype.getDeterminate = function () {
+        return this.isDeterminate;
     };
     MDCLinearProgressFoundation.prototype.setProgress = function (value) {
-        this.progress_ = value;
-        if (this.isDeterminate_) {
-            this.setScale_(this.adapter_.getPrimaryBar(), value);
-            this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, value.toString());
+        this.progress = value;
+        if (this.isDeterminate) {
+            this.setPrimaryBarProgress(value);
+            this.adapter.setAttribute(constants_1.strings.ARIA_VALUENOW, value.toString());
         }
     };
+    MDCLinearProgressFoundation.prototype.getProgress = function () {
+        return this.progress;
+    };
     MDCLinearProgressFoundation.prototype.setBuffer = function (value) {
-        this.buffer_ = value;
-        if (this.isDeterminate_) {
-            this.setScale_(this.adapter_.getBuffer(), value);
+        this.buffer = value;
+        if (this.isDeterminate) {
+            this.setBufferBarProgress(value);
         }
     };
     MDCLinearProgressFoundation.prototype.setReverse = function (isReversed) {
-        this.isReversed_ = isReversed;
-        if (!this.isDeterminate_) {
+        this.isReversed = isReversed;
+        if (!this.isDeterminate) {
             // Adding INDETERMINATE_CLASS starts a scale animation, while
             // adding/removing REVERSED_CLASS starts a translate animation. Here, we
             // reset the scale animation in order to keep it in sync with the new
             // translate animation that will start from adding/removing REVERSED_CLASS
             // below.
-            this.adapter_.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
-            this.adapter_.forceLayout();
-            this.adapter_.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+            this.adapter.removeClass(constants_1.cssClasses.INDETERMINATE_CLASS);
+            this.adapter.forceLayout();
+            this.adapter.addClass(constants_1.cssClasses.INDETERMINATE_CLASS);
         }
-        if (this.isReversed_) {
-            this.adapter_.addClass(constants_1.cssClasses.REVERSED_CLASS);
-        } else {
-            this.adapter_.removeClass(constants_1.cssClasses.REVERSED_CLASS);
-        }
-    };
-    MDCLinearProgressFoundation.prototype.open = function () {
-        this.adapter_.removeClass(constants_1.cssClasses.CLOSED_CLASS);
-    };
-    MDCLinearProgressFoundation.prototype.close = function () {
-        this.adapter_.addClass(constants_1.cssClasses.CLOSED_CLASS);
-    };
-    MDCLinearProgressFoundation.prototype.setScale_ = function (el, scaleValue) {
-        if (!el) {
+        if (this.isReversed) {
+            this.adapter.addClass(constants_1.cssClasses.REVERSED_CLASS);
             return;
         }
-        var value = "scaleX(" + scaleValue + ")";
-        this.adapter_.setStyle(el, util_1.getCorrectPropertyName(window, 'transform'), value);
+        this.adapter.removeClass(constants_1.cssClasses.REVERSED_CLASS);
+    };
+    MDCLinearProgressFoundation.prototype.open = function () {
+        this.adapter.removeClass(constants_1.cssClasses.CLOSED_CLASS);
+    };
+    MDCLinearProgressFoundation.prototype.close = function () {
+        this.adapter.addClass(constants_1.cssClasses.CLOSED_CLASS);
+    };
+    MDCLinearProgressFoundation.prototype.setPrimaryBarProgress = function (progressValue) {
+        var value = "scaleX(" + progressValue + ")";
+        // Accessing `window` without a `typeof` check will throw on Node environments.
+        var transformProp = typeof window !== 'undefined' ? util_1.getCorrectPropertyName(window, 'transform') : 'transform';
+        this.adapter.setPrimaryBarStyle(transformProp, value);
+    };
+    MDCLinearProgressFoundation.prototype.setBufferBarProgress = function (progressValue) {
+        var value = progressValue * 100 + "%";
+        this.adapter.setBufferBarStyle(constants_1.strings.FLEX_BASIS, value);
     };
     return MDCLinearProgressFoundation;
 }(foundation_1.MDCFoundation);
@@ -7430,38 +8884,59 @@ var MDCList = /** @class */function (_super) {
     }
     Object.defineProperty(MDCList.prototype, "vertical", {
         set: function set(value) {
-            this.foundation_.setVerticalOrientation(value);
+            this.foundation.setVerticalOrientation(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCList.prototype, "listElements", {
         get: function get() {
-            return [].slice.call(this.root_.querySelectorAll("." + constants_1.cssClasses.LIST_ITEM_CLASS));
+            return [].slice.call(this.root.querySelectorAll("." + constants_1.cssClasses.LIST_ITEM_CLASS));
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCList.prototype, "wrapFocus", {
         set: function set(value) {
-            this.foundation_.setWrapFocus(value);
+            this.foundation.setWrapFocus(value);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCList.prototype, "typeaheadInProgress", {
+        /**
+         * @return Whether typeahead is currently matching a user-specified prefix.
+         */
+        get: function get() {
+            return this.foundation.isTypeaheadInProgress();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCList.prototype, "hasTypeahead", {
+        /**
+         * Sets whether typeahead functionality is enabled on the list.
+         * @param hasTypeahead Whether typeahead is enabled.
+         */
+        set: function set(hasTypeahead) {
+            this.foundation.setHasTypeahead(hasTypeahead);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCList.prototype, "singleSelection", {
         set: function set(isSingleSelectionList) {
-            this.foundation_.setSingleSelection(isSingleSelectionList);
+            this.foundation.setSingleSelection(isSingleSelectionList);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCList.prototype, "selectedIndex", {
         get: function get() {
-            return this.foundation_.getSelectedIndex();
+            return this.foundation.getSelectedIndex();
         },
         set: function set(index) {
-            this.foundation_.setSelectedIndex(index);
+            this.foundation.setSelectedIndex(index);
         },
         enumerable: true,
         configurable: true
@@ -7488,34 +8963,47 @@ var MDCList = /** @class */function (_super) {
         this.unlisten('focusout', this.focusOutEventListener_);
     };
     MDCList.prototype.layout = function () {
-        var direction = this.root_.getAttribute(constants_1.strings.ARIA_ORIENTATION);
+        var direction = this.root.getAttribute(constants_1.strings.ARIA_ORIENTATION);
         this.vertical = direction !== constants_1.strings.ARIA_ORIENTATION_HORIZONTAL;
         // List items need to have at least tabindex=-1 to be focusable.
-        [].slice.call(this.root_.querySelectorAll('.mdc-list-item:not([tabindex])')).forEach(function (el) {
+        [].slice.call(this.root.querySelectorAll('.mdc-list-item:not([tabindex])')).forEach(function (el) {
             el.setAttribute('tabindex', '-1');
         });
         // Child button/a elements are not tabbable until the list item is focused.
-        [].slice.call(this.root_.querySelectorAll(constants_1.strings.FOCUSABLE_CHILD_ELEMENTS)).forEach(function (el) {
+        [].slice.call(this.root.querySelectorAll(constants_1.strings.FOCUSABLE_CHILD_ELEMENTS)).forEach(function (el) {
             return el.setAttribute('tabindex', '-1');
         });
-        this.foundation_.layout();
+        this.foundation.layout();
+    };
+    /**
+     * Extracts the primary text from a list item.
+     * @param item The list item element.
+     * @return The primary text in the element.
+     */
+    MDCList.prototype.getPrimaryText = function (item) {
+        var primaryText = item.querySelector("." + constants_1.cssClasses.LIST_ITEM_PRIMARY_TEXT_CLASS);
+        if (primaryText) {
+            return primaryText.textContent || '';
+        }
+        var singleLineText = item.querySelector("." + constants_1.cssClasses.LIST_ITEM_TEXT_CLASS);
+        return singleLineText && singleLineText.textContent || '';
     };
     /**
      * Initialize selectedIndex value based on pre-selected checkbox list items, single selection or radio.
      */
     MDCList.prototype.initializeListType = function () {
         var _this = this;
-        var checkboxListItems = this.root_.querySelectorAll(constants_1.strings.ARIA_ROLE_CHECKBOX_SELECTOR);
-        var singleSelectedListItem = this.root_.querySelector("\n      ." + constants_1.cssClasses.LIST_ITEM_ACTIVATED_CLASS + ",\n      ." + constants_1.cssClasses.LIST_ITEM_SELECTED_CLASS + "\n    ");
-        var radioSelectedListItem = this.root_.querySelector(constants_1.strings.ARIA_CHECKED_RADIO_SELECTOR);
+        var checkboxListItems = this.root.querySelectorAll(constants_1.strings.ARIA_ROLE_CHECKBOX_SELECTOR);
+        var singleSelectedListItem = this.root.querySelector("\n      ." + constants_1.cssClasses.LIST_ITEM_ACTIVATED_CLASS + ",\n      ." + constants_1.cssClasses.LIST_ITEM_SELECTED_CLASS + "\n    ");
+        var radioSelectedListItem = this.root.querySelector(constants_1.strings.ARIA_CHECKED_RADIO_SELECTOR);
         if (checkboxListItems.length) {
-            var preselectedItems = this.root_.querySelectorAll(constants_1.strings.ARIA_CHECKED_CHECKBOX_SELECTOR);
+            var preselectedItems = this.root.querySelectorAll(constants_1.strings.ARIA_CHECKED_CHECKBOX_SELECTOR);
             this.selectedIndex = [].map.call(preselectedItems, function (listItem) {
                 return _this.listElements.indexOf(listItem);
             });
         } else if (singleSelectedListItem) {
             if (singleSelectedListItem.classList.contains(constants_1.cssClasses.LIST_ITEM_ACTIVATED_CLASS)) {
-                this.foundation_.setUseActivatedClass(true);
+                this.foundation.setUseActivatedClass(true);
             }
             this.singleSelection = true;
             this.selectedIndex = this.listElements.indexOf(singleSelectedListItem);
@@ -7529,7 +9017,20 @@ var MDCList = /** @class */function (_super) {
      * @param isEnabled Sets the list item to enabled or disabled.
      */
     MDCList.prototype.setEnabled = function (itemIndex, isEnabled) {
-        this.foundation_.setEnabled(itemIndex, isEnabled);
+        this.foundation.setEnabled(itemIndex, isEnabled);
+    };
+    /**
+     * Given the next desired character from the user, adds it to the typeahead
+     * buffer. Then, attempts to find the next option matching the buffer. Wraps
+     * around if at the end of options.
+     *
+     * @param nextChar The next character to add to the prefix buffer.
+     * @param startingIndex The index from which to start matching. Defaults to
+     *     the currently focused index.
+     * @return The index of the matched item.
+     */
+    MDCList.prototype.typeaheadMatchItem = function (nextChar, startingIndex) {
+        return this.foundation.typeaheadMatchItem(nextChar, startingIndex, /** skipFocus */true);
     };
     MDCList.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -7557,6 +9058,9 @@ var MDCList = /** @class */function (_super) {
             getListItemCount: function getListItemCount() {
                 return _this.listElements.length;
             },
+            getPrimaryTextAtIndex: function getPrimaryTextAtIndex(index) {
+                return _this.getPrimaryText(_this.listElements[index]);
+            },
             hasCheckboxAtIndex: function hasCheckboxAtIndex(index) {
                 var listItem = _this.listElements[index];
                 return !!listItem.querySelector(constants_1.strings.CHECKBOX_SELECTOR);
@@ -7571,10 +9075,10 @@ var MDCList = /** @class */function (_super) {
                 return toggleEl.checked;
             },
             isFocusInsideList: function isFocusInsideList() {
-                return _this.root_.contains(document.activeElement);
+                return _this.root.contains(document.activeElement);
             },
             isRootFocused: function isRootFocused() {
-                return document.activeElement === _this.root_;
+                return document.activeElement === _this.root;
             },
             listItemAtIndexHasClass: function listItemAtIndexHasClass(index, className) {
                 return _this.listElements[index].classList.contains(className);
@@ -7630,14 +9134,14 @@ var MDCList = /** @class */function (_super) {
      */
     MDCList.prototype.handleFocusInEvent_ = function (evt) {
         var index = this.getListItemIndex_(evt);
-        this.foundation_.handleFocusIn(evt, index);
+        this.foundation.handleFocusIn(evt, index);
     };
     /**
      * Used to figure out which element was clicked before sending the event to the foundation.
      */
     MDCList.prototype.handleFocusOutEvent_ = function (evt) {
         var index = this.getListItemIndex_(evt);
-        this.foundation_.handleFocusOut(evt, index);
+        this.foundation.handleFocusOut(evt, index);
     };
     /**
      * Used to figure out which element was focused when keydown event occurred before sending the event to the
@@ -7646,7 +9150,7 @@ var MDCList = /** @class */function (_super) {
     MDCList.prototype.handleKeydownEvent_ = function (evt) {
         var index = this.getListItemIndex_(evt);
         var target = evt.target;
-        this.foundation_.handleKeydown(evt, target.classList.contains(constants_1.cssClasses.LIST_ITEM_CLASS), index);
+        this.foundation.handleKeydown(evt, target.classList.contains(constants_1.cssClasses.LIST_ITEM_CLASS), index);
     };
     /**
      * Used to figure out which element was clicked before sending the event to the foundation.
@@ -7656,7 +9160,7 @@ var MDCList = /** @class */function (_super) {
         var target = evt.target;
         // Toggle the checkbox only if it's not the target of the event, or the checkbox will have 2 change events.
         var toggleCheckbox = !ponyfill_1.matches(target, constants_1.strings.CHECKBOX_RADIO_SELECTOR);
-        this.foundation_.handleClick(index, toggleCheckbox);
+        this.foundation.handleClick(index, toggleCheckbox);
     };
     return MDCList;
 }(component_1.MDCComponent);
@@ -7702,6 +9206,8 @@ var cssClasses = {
     LIST_ITEM_CLASS: 'mdc-list-item',
     LIST_ITEM_DISABLED_CLASS: 'mdc-list-item--disabled',
     LIST_ITEM_SELECTED_CLASS: 'mdc-list-item--selected',
+    LIST_ITEM_TEXT_CLASS: 'mdc-list-item__text',
+    LIST_ITEM_PRIMARY_TEXT_CLASS: 'mdc-list-item__primary-text',
     ROOT: 'mdc-list'
 };
 exports.cssClasses = cssClasses;
@@ -7724,9 +9230,63 @@ var strings = {
 };
 exports.strings = strings;
 var numbers = {
-    UNSET_INDEX: -1
+    UNSET_INDEX: -1,
+    TYPEAHEAD_BUFFER_CLEAR_TIMEOUT_MS: 300
 };
 exports.numbers = numbers;
+
+/***/ }),
+
+/***/ "./packages/mdc-list/events.ts":
+/*!*************************************!*\
+  !*** ./packages/mdc-list/events.ts ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ELEMENTS_KEY_ALLOWED_IN = ['input', 'button', 'textarea', 'select'];
+/**
+ * Ensures that preventDefault is only called if the containing element
+ * doesn't consume the event, and it will cause an unintended scroll.
+ *
+ * @param evt keyboard event to be prevented.
+ */
+exports.preventDefaultEvent = function (evt) {
+    var target = evt.target;
+    if (!target) {
+        return;
+    }
+    var tagName = ("" + target.tagName).toLowerCase();
+    if (ELEMENTS_KEY_ALLOWED_IN.indexOf(tagName) === -1) {
+        evt.preventDefault();
+    }
+};
 
 /***/ }),
 
@@ -7793,26 +9353,40 @@ var __assign = this && this.__assign || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __importStar = this && this.__importStar || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) {
+        if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    }result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var keyboard_1 = __webpack_require__(/*! @material/dom/keyboard */ "./packages/mdc-dom/keyboard.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-list/constants.ts");
-var ELEMENTS_KEY_ALLOWED_IN = ['input', 'button', 'textarea', 'select'];
+var typeahead = __importStar(__webpack_require__(/*! ./typeahead */ "./packages/mdc-list/typeahead.ts"));
+var events_1 = __webpack_require__(/*! ./events */ "./packages/mdc-list/events.ts");
 function isNumberArray(selectedIndex) {
     return selectedIndex instanceof Array;
 }
 var MDCListFoundation = /** @class */function (_super) {
     __extends(MDCListFoundation, _super);
     function MDCListFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCListFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCListFoundation.defaultAdapter), adapter)) || this;
         _this.wrapFocus_ = false;
         _this.isVertical_ = true;
         _this.isSingleSelectionList_ = false;
         _this.selectedIndex_ = constants_1.numbers.UNSET_INDEX;
-        _this.focusedItemIndex_ = constants_1.numbers.UNSET_INDEX;
+        _this.focusedItemIndex = constants_1.numbers.UNSET_INDEX;
         _this.useActivatedClass_ = false;
         _this.ariaCurrentAttrValue_ = null;
         _this.isCheckboxList_ = false;
         _this.isRadioList_ = false;
+        _this.hasTypeahead = false;
+        // Transiently holds current typeahead prefix from user.
+        _this.typeaheadState = typeahead.initState();
+        _this.sortedIndexByFirstChar = new Map();
         return _this;
     }
     Object.defineProperty(MDCListFoundation, "strings", {
@@ -7886,6 +9460,9 @@ var MDCListFoundation = /** @class */function (_super) {
                 },
                 setTabIndexForListItemChildren: function setTabIndexForListItemChildren() {
                     return undefined;
+                },
+                getPrimaryTextAtIndex: function getPrimaryTextAtIndex() {
+                    return '';
                 }
             };
         },
@@ -7893,13 +9470,16 @@ var MDCListFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCListFoundation.prototype.layout = function () {
-        if (this.adapter_.getListItemCount() === 0) {
+        if (this.adapter.getListItemCount() === 0) {
             return;
         }
-        if (this.adapter_.hasCheckboxAtIndex(0)) {
+        if (this.adapter.hasCheckboxAtIndex(0)) {
             this.isCheckboxList_ = true;
-        } else if (this.adapter_.hasRadioAtIndex(0)) {
+        } else if (this.adapter.hasRadioAtIndex(0)) {
             this.isRadioList_ = true;
+        }
+        if (this.hasTypeahead) {
+            this.sortedIndexByFirstChar = this.typeaheadInitSortedIndex();
         }
     };
     /**
@@ -7919,6 +9499,22 @@ var MDCListFoundation = /** @class */function (_super) {
      */
     MDCListFoundation.prototype.setSingleSelection = function (value) {
         this.isSingleSelectionList_ = value;
+    };
+    /**
+     * Sets whether typeahead is enabled on the list.
+     * @param hasTypeahead Whether typeahead is enabled.
+     */
+    MDCListFoundation.prototype.setHasTypeahead = function (hasTypeahead) {
+        this.hasTypeahead = hasTypeahead;
+        if (hasTypeahead) {
+            this.sortedIndexByFirstChar = this.typeaheadInitSortedIndex();
+        }
+    };
+    /**
+     * @return Whether typeahead is currently matching a user-specified prefix.
+     */
+    MDCListFoundation.prototype.isTypeaheadInProgress = function () {
+        return this.hasTypeahead && typeahead.isTypingInProgress(this.typeaheadState);
     };
     /**
      * Sets the useActivatedClass_ private variable.
@@ -7946,7 +9542,8 @@ var MDCListFoundation = /** @class */function (_super) {
      */
     MDCListFoundation.prototype.handleFocusIn = function (_, listItemIndex) {
         if (listItemIndex >= 0) {
-            this.adapter_.setTabIndexForListItemChildren(listItemIndex, '0');
+            this.focusedItemIndex = listItemIndex;
+            this.adapter.setTabIndexForListItemChildren(listItemIndex, '0');
         }
     };
     /**
@@ -7955,14 +9552,14 @@ var MDCListFoundation = /** @class */function (_super) {
     MDCListFoundation.prototype.handleFocusOut = function (_, listItemIndex) {
         var _this = this;
         if (listItemIndex >= 0) {
-            this.adapter_.setTabIndexForListItemChildren(listItemIndex, '-1');
+            this.adapter.setTabIndexForListItemChildren(listItemIndex, '-1');
         }
         /**
          * Between Focusout & Focusin some browsers do not have focus on any element. Setting a delay to wait till the focus
          * is moved to next element.
          */
         setTimeout(function () {
-            if (!_this.adapter_.isFocusInsideList()) {
+            if (!_this.adapter.isFocusInsideList()) {
                 _this.setTabindexToFirstSelectedItem_();
             }
         }, 0);
@@ -7970,26 +9567,42 @@ var MDCListFoundation = /** @class */function (_super) {
     /**
      * Key handler for the list.
      */
-    MDCListFoundation.prototype.handleKeydown = function (evt, isRootListItem, listItemIndex) {
-        var isArrowLeft = evt.key === 'ArrowLeft' || evt.keyCode === 37;
-        var isArrowUp = evt.key === 'ArrowUp' || evt.keyCode === 38;
-        var isArrowRight = evt.key === 'ArrowRight' || evt.keyCode === 39;
-        var isArrowDown = evt.key === 'ArrowDown' || evt.keyCode === 40;
-        var isHome = evt.key === 'Home' || evt.keyCode === 36;
-        var isEnd = evt.key === 'End' || evt.keyCode === 35;
-        var isEnter = evt.key === 'Enter' || evt.keyCode === 13;
-        var isSpace = evt.key === 'Space' || evt.keyCode === 32;
-        if (this.adapter_.isRootFocused()) {
+    MDCListFoundation.prototype.handleKeydown = function (event, isRootListItem, listItemIndex) {
+        var _this = this;
+        var isArrowLeft = keyboard_1.normalizeKey(event) === 'ArrowLeft';
+        var isArrowUp = keyboard_1.normalizeKey(event) === 'ArrowUp';
+        var isArrowRight = keyboard_1.normalizeKey(event) === 'ArrowRight';
+        var isArrowDown = keyboard_1.normalizeKey(event) === 'ArrowDown';
+        var isHome = keyboard_1.normalizeKey(event) === 'Home';
+        var isEnd = keyboard_1.normalizeKey(event) === 'End';
+        var isEnter = keyboard_1.normalizeKey(event) === 'Enter';
+        var isSpace = keyboard_1.normalizeKey(event) === 'Spacebar';
+        if (this.adapter.isRootFocused()) {
             if (isArrowUp || isEnd) {
-                evt.preventDefault();
+                event.preventDefault();
                 this.focusLastElement();
             } else if (isArrowDown || isHome) {
-                evt.preventDefault();
+                event.preventDefault();
                 this.focusFirstElement();
+            }
+            if (this.hasTypeahead) {
+                var handleKeydownOpts = {
+                    event: event,
+                    focusItemAtIndex: function focusItemAtIndex(index) {
+                        _this.focusItemAtIndex(index);
+                    },
+                    focusedItemIndex: -1,
+                    isTargetListItem: isRootListItem,
+                    sortedIndexByFirstChar: this.sortedIndexByFirstChar,
+                    isItemAtIndexDisabled: function isItemAtIndexDisabled(index) {
+                        return _this.adapter.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+                    }
+                };
+                typeahead.handleKeydown(handleKeydownOpts, this.typeaheadState);
             }
             return;
         }
-        var currentIndex = this.adapter_.getFocusedElementIndex();
+        var currentIndex = this.adapter.getFocusedElementIndex();
         if (currentIndex === -1) {
             currentIndex = listItemIndex;
             if (currentIndex < 0) {
@@ -7998,37 +9611,51 @@ var MDCListFoundation = /** @class */function (_super) {
                 return;
             }
         }
-        var nextIndex;
         if (this.isVertical_ && isArrowDown || !this.isVertical_ && isArrowRight) {
-            this.preventDefaultEvent_(evt);
-            nextIndex = this.focusNextElement(currentIndex);
+            events_1.preventDefaultEvent(event);
+            this.focusNextElement(currentIndex);
         } else if (this.isVertical_ && isArrowUp || !this.isVertical_ && isArrowLeft) {
-            this.preventDefaultEvent_(evt);
-            nextIndex = this.focusPrevElement(currentIndex);
+            events_1.preventDefaultEvent(event);
+            this.focusPrevElement(currentIndex);
         } else if (isHome) {
-            this.preventDefaultEvent_(evt);
-            nextIndex = this.focusFirstElement();
+            events_1.preventDefaultEvent(event);
+            this.focusFirstElement();
         } else if (isEnd) {
-            this.preventDefaultEvent_(evt);
-            nextIndex = this.focusLastElement();
+            events_1.preventDefaultEvent(event);
+            this.focusLastElement();
         } else if (isEnter || isSpace) {
             if (isRootListItem) {
                 // Return early if enter key is pressed on anchor element which triggers synthetic MouseEvent event.
-                var target = evt.target;
+                var target = event.target;
                 if (target && target.tagName === 'A' && isEnter) {
                     return;
                 }
-                this.preventDefaultEvent_(evt);
-                if (this.isSelectableList_()) {
-                    this.setSelectedIndexOnAction_(currentIndex);
+                events_1.preventDefaultEvent(event);
+                if (this.adapter.listItemAtIndexHasClass(currentIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS)) {
+                    return;
                 }
-                this.adapter_.notifyAction(currentIndex);
+                if (!this.isTypeaheadInProgress()) {
+                    if (this.isSelectableList_()) {
+                        this.setSelectedIndexOnAction_(currentIndex);
+                    }
+                    this.adapter.notifyAction(currentIndex);
+                }
             }
         }
-        this.focusedItemIndex_ = currentIndex;
-        if (nextIndex !== undefined) {
-            this.setTabindexAtIndex_(nextIndex);
-            this.focusedItemIndex_ = nextIndex;
+        if (this.hasTypeahead) {
+            var handleKeydownOpts = {
+                event: event,
+                focusItemAtIndex: function focusItemAtIndex(index) {
+                    _this.focusItemAtIndex(index);
+                },
+                focusedItemIndex: this.focusedItemIndex,
+                isTargetListItem: isRootListItem,
+                sortedIndexByFirstChar: this.sortedIndexByFirstChar,
+                isItemAtIndexDisabled: function isItemAtIndexDisabled(index) {
+                    return _this.adapter.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+                }
+            };
+            typeahead.handleKeydown(handleKeydownOpts, this.typeaheadState);
         }
     };
     /**
@@ -8038,18 +9665,21 @@ var MDCListFoundation = /** @class */function (_super) {
         if (index === constants_1.numbers.UNSET_INDEX) {
             return;
         }
+        this.setTabindexAtIndex_(index);
+        this.focusedItemIndex = index;
+        if (this.adapter.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS)) {
+            return;
+        }
         if (this.isSelectableList_()) {
             this.setSelectedIndexOnAction_(index, toggleCheckbox);
         }
-        this.adapter_.notifyAction(index);
-        this.setTabindexAtIndex_(index);
-        this.focusedItemIndex_ = index;
+        this.adapter.notifyAction(index);
     };
     /**
      * Focuses the next element on the list.
      */
     MDCListFoundation.prototype.focusNextElement = function (index) {
-        var count = this.adapter_.getListItemCount();
+        var count = this.adapter.getListItemCount();
         var nextIndex = index + 1;
         if (nextIndex >= count) {
             if (this.wrapFocus_) {
@@ -8059,7 +9689,7 @@ var MDCListFoundation = /** @class */function (_super) {
                 return index;
             }
         }
-        this.adapter_.focusItemAtIndex(nextIndex);
+        this.focusItemAtIndex(nextIndex);
         return nextIndex;
     };
     /**
@@ -8069,22 +9699,22 @@ var MDCListFoundation = /** @class */function (_super) {
         var prevIndex = index - 1;
         if (prevIndex < 0) {
             if (this.wrapFocus_) {
-                prevIndex = this.adapter_.getListItemCount() - 1;
+                prevIndex = this.adapter.getListItemCount() - 1;
             } else {
                 // Return early because first item is already focused.
                 return index;
             }
         }
-        this.adapter_.focusItemAtIndex(prevIndex);
+        this.focusItemAtIndex(prevIndex);
         return prevIndex;
     };
     MDCListFoundation.prototype.focusFirstElement = function () {
-        this.adapter_.focusItemAtIndex(0);
+        this.focusItemAtIndex(0);
         return 0;
     };
     MDCListFoundation.prototype.focusLastElement = function () {
-        var lastIndex = this.adapter_.getListItemCount() - 1;
-        this.adapter_.focusItemAtIndex(lastIndex);
+        var lastIndex = this.adapter.getListItemCount() - 1;
+        this.focusItemAtIndex(lastIndex);
         return lastIndex;
     };
     /**
@@ -8096,22 +9726,11 @@ var MDCListFoundation = /** @class */function (_super) {
             return;
         }
         if (isEnabled) {
-            this.adapter_.removeClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
-            this.adapter_.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'false');
+            this.adapter.removeClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'false');
         } else {
-            this.adapter_.addClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
-            this.adapter_.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'true');
-        }
-    };
-    /**
-     * Ensures that preventDefault is only called if the containing element doesn't
-     * consume the event, and it will cause an unintended scroll.
-     */
-    MDCListFoundation.prototype.preventDefaultEvent_ = function (evt) {
-        var target = evt.target;
-        var tagName = ("" + target.tagName).toLowerCase();
-        if (ELEMENTS_KEY_ALLOWED_IN.indexOf(tagName) === -1) {
-            evt.preventDefault();
+            this.adapter.addClassForElementIndex(itemIndex, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter.setAttributeForElementIndex(itemIndex, constants_1.strings.ARIA_DISABLED, 'true');
         }
     };
     MDCListFoundation.prototype.setSingleSelectionAtIndex_ = function (index) {
@@ -8123,9 +9742,9 @@ var MDCListFoundation = /** @class */function (_super) {
             selectedClassName = constants_1.cssClasses.LIST_ITEM_ACTIVATED_CLASS;
         }
         if (this.selectedIndex_ !== constants_1.numbers.UNSET_INDEX) {
-            this.adapter_.removeClassForElementIndex(this.selectedIndex_, selectedClassName);
+            this.adapter.removeClassForElementIndex(this.selectedIndex_, selectedClassName);
         }
-        this.adapter_.addClassForElementIndex(index, selectedClassName);
+        this.adapter.addClassForElementIndex(index, selectedClassName);
         this.setAriaForSingleSelectionAtIndex_(index);
         this.selectedIndex_ = index;
     };
@@ -8135,47 +9754,47 @@ var MDCListFoundation = /** @class */function (_super) {
     MDCListFoundation.prototype.setAriaForSingleSelectionAtIndex_ = function (index) {
         // Detect the presence of aria-current and get the value only during list initialization when it is in unset state.
         if (this.selectedIndex_ === constants_1.numbers.UNSET_INDEX) {
-            this.ariaCurrentAttrValue_ = this.adapter_.getAttributeForElementIndex(index, constants_1.strings.ARIA_CURRENT);
+            this.ariaCurrentAttrValue_ = this.adapter.getAttributeForElementIndex(index, constants_1.strings.ARIA_CURRENT);
         }
         var isAriaCurrent = this.ariaCurrentAttrValue_ !== null;
         var ariaAttribute = isAriaCurrent ? constants_1.strings.ARIA_CURRENT : constants_1.strings.ARIA_SELECTED;
         if (this.selectedIndex_ !== constants_1.numbers.UNSET_INDEX) {
-            this.adapter_.setAttributeForElementIndex(this.selectedIndex_, ariaAttribute, 'false');
+            this.adapter.setAttributeForElementIndex(this.selectedIndex_, ariaAttribute, 'false');
         }
         var ariaAttributeValue = isAriaCurrent ? this.ariaCurrentAttrValue_ : 'true';
-        this.adapter_.setAttributeForElementIndex(index, ariaAttribute, ariaAttributeValue);
+        this.adapter.setAttributeForElementIndex(index, ariaAttribute, ariaAttributeValue);
     };
     /**
      * Toggles radio at give index. Radio doesn't change the checked state if it is already checked.
      */
     MDCListFoundation.prototype.setRadioAtIndex_ = function (index) {
-        this.adapter_.setCheckedCheckboxOrRadioAtIndex(index, true);
+        this.adapter.setCheckedCheckboxOrRadioAtIndex(index, true);
         if (this.selectedIndex_ !== constants_1.numbers.UNSET_INDEX) {
-            this.adapter_.setAttributeForElementIndex(this.selectedIndex_, constants_1.strings.ARIA_CHECKED, 'false');
+            this.adapter.setAttributeForElementIndex(this.selectedIndex_, constants_1.strings.ARIA_CHECKED, 'false');
         }
-        this.adapter_.setAttributeForElementIndex(index, constants_1.strings.ARIA_CHECKED, 'true');
+        this.adapter.setAttributeForElementIndex(index, constants_1.strings.ARIA_CHECKED, 'true');
         this.selectedIndex_ = index;
     };
     MDCListFoundation.prototype.setCheckboxAtIndex_ = function (index) {
-        for (var i = 0; i < this.adapter_.getListItemCount(); i++) {
+        for (var i = 0; i < this.adapter.getListItemCount(); i++) {
             var isChecked = false;
             if (index.indexOf(i) >= 0) {
                 isChecked = true;
             }
-            this.adapter_.setCheckedCheckboxOrRadioAtIndex(i, isChecked);
-            this.adapter_.setAttributeForElementIndex(i, constants_1.strings.ARIA_CHECKED, isChecked ? 'true' : 'false');
+            this.adapter.setCheckedCheckboxOrRadioAtIndex(i, isChecked);
+            this.adapter.setAttributeForElementIndex(i, constants_1.strings.ARIA_CHECKED, isChecked ? 'true' : 'false');
         }
         this.selectedIndex_ = index;
     };
     MDCListFoundation.prototype.setTabindexAtIndex_ = function (index) {
-        if (this.focusedItemIndex_ === constants_1.numbers.UNSET_INDEX && index !== 0) {
+        if (this.focusedItemIndex === constants_1.numbers.UNSET_INDEX && index !== 0) {
             // If no list item was selected set first list item's tabindex to -1.
             // Generally, tabindex is set to 0 on first list item of list that has no preselected items.
-            this.adapter_.setAttributeForElementIndex(0, 'tabindex', '-1');
-        } else if (this.focusedItemIndex_ >= 0 && this.focusedItemIndex_ !== index) {
-            this.adapter_.setAttributeForElementIndex(this.focusedItemIndex_, 'tabindex', '-1');
+            this.adapter.setAttributeForElementIndex(0, 'tabindex', '-1');
+        } else if (this.focusedItemIndex >= 0 && this.focusedItemIndex !== index) {
+            this.adapter.setAttributeForElementIndex(this.focusedItemIndex, 'tabindex', '-1');
         }
-        this.adapter_.setAttributeForElementIndex(index, 'tabindex', '0');
+        this.adapter.setAttributeForElementIndex(index, 'tabindex', '0');
     };
     /**
      * @return Return true if it is single selectin list, checkbox list or radio list.
@@ -8219,7 +9838,7 @@ var MDCListFoundation = /** @class */function (_super) {
         }
     };
     MDCListFoundation.prototype.isIndexInRange_ = function (index) {
-        var listSize = this.adapter_.getListItemCount();
+        var listSize = this.adapter.getListItemCount();
         return index >= 0 && index < listSize;
     };
     /**
@@ -8230,9 +9849,6 @@ var MDCListFoundation = /** @class */function (_super) {
         if (toggleCheckbox === void 0) {
             toggleCheckbox = true;
         }
-        if (this.adapter_.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS)) {
-            return;
-        }
         if (this.isCheckboxList_) {
             this.toggleCheckboxAtIndex_(index, toggleCheckbox);
         } else {
@@ -8240,12 +9856,12 @@ var MDCListFoundation = /** @class */function (_super) {
         }
     };
     MDCListFoundation.prototype.toggleCheckboxAtIndex_ = function (index, toggleCheckbox) {
-        var isChecked = this.adapter_.isCheckboxCheckedAtIndex(index);
+        var isChecked = this.adapter.isCheckboxCheckedAtIndex(index);
         if (toggleCheckbox) {
             isChecked = !isChecked;
-            this.adapter_.setCheckedCheckboxOrRadioAtIndex(index, isChecked);
+            this.adapter.setCheckedCheckboxOrRadioAtIndex(index, isChecked);
         }
-        this.adapter_.setAttributeForElementIndex(index, constants_1.strings.ARIA_CHECKED, isChecked ? 'true' : 'false');
+        this.adapter.setAttributeForElementIndex(index, constants_1.strings.ARIA_CHECKED, isChecked ? 'true' : 'false');
         // If none of the checkbox items are selected and selectedIndex is not initialized then provide a default value.
         var selectedIndexes = this.selectedIndex_ === constants_1.numbers.UNSET_INDEX ? [] : this.selectedIndex_.slice();
         if (isChecked) {
@@ -8256,6 +9872,58 @@ var MDCListFoundation = /** @class */function (_super) {
             });
         }
         this.selectedIndex_ = selectedIndexes;
+    };
+    MDCListFoundation.prototype.focusItemAtIndex = function (index) {
+        this.setTabindexAtIndex_(index);
+        this.adapter.focusItemAtIndex(index);
+        this.focusedItemIndex = index;
+    };
+    /**
+     * Given the next desired character from the user, adds it to the typeahead
+     * buffer. Then, attempts to find the next option matching the buffer. Wraps
+     * around if at the end of options.
+     *
+     * @param nextChar The next character to add to the prefix buffer.
+     * @param startingIndex The index from which to start matching. Only relevant
+     *     when starting a new match sequence. To start a new match sequence,
+     *     clear the buffer using `clearTypeaheadBuffer`, or wait for the buffer
+     *     to clear after a set interval defined in list foundation. Defaults to
+     *     the currently focused index.
+     * @return The index of the matched item, or -1 if no match.
+     */
+    MDCListFoundation.prototype.typeaheadMatchItem = function (nextChar, startingIndex, skipFocus) {
+        var _this = this;
+        if (skipFocus === void 0) {
+            skipFocus = false;
+        }
+        var opts = {
+            focusItemAtIndex: function focusItemAtIndex(index) {
+                _this.focusItemAtIndex(index);
+            },
+            focusedItemIndex: startingIndex ? startingIndex : this.focusedItemIndex,
+            nextChar: nextChar,
+            sortedIndexByFirstChar: this.sortedIndexByFirstChar,
+            skipFocus: skipFocus,
+            isItemAtIndexDisabled: function isItemAtIndexDisabled(index) {
+                return _this.adapter.listItemAtIndexHasClass(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            }
+        };
+        return typeahead.matchItem(opts, this.typeaheadState);
+    };
+    /**
+     * Initializes the MDCListTextAndIndex data structure by indexing the current
+     * list items by primary text.
+     *
+     * @return The primary texts of all the list items sorted by first character.
+     */
+    MDCListFoundation.prototype.typeaheadInitSortedIndex = function () {
+        return typeahead.initSortedIndex(this.adapter.getListItemCount(), this.adapter.getPrimaryTextAtIndex);
+    };
+    /**
+     * Clears the typeahead buffer.
+     */
+    MDCListFoundation.prototype.clearTypeaheadBuffer = function () {
+        typeahead.clearBuffer(this.typeaheadState);
     };
     return MDCListFoundation;
 }(foundation_1.MDCFoundation);
@@ -8306,6 +9974,312 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(/*! ./component */ "./packages/mdc-list/component.ts"));
 __export(__webpack_require__(/*! ./constants */ "./packages/mdc-list/constants.ts"));
 __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-list/foundation.ts"));
+
+/***/ }),
+
+/***/ "./packages/mdc-list/typeahead.ts":
+/*!****************************************!*\
+  !*** ./packages/mdc-list/typeahead.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @license
+ * Copyright 2020 Google Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var keyboard_1 = __webpack_require__(/*! @material/dom/keyboard */ "./packages/mdc-dom/keyboard.ts");
+var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-list/constants.ts");
+var events_1 = __webpack_require__(/*! ./events */ "./packages/mdc-list/events.ts");
+/**
+ * Initializes a state object for typeahead. Use the same reference for calls to
+ * typeahead functions.
+ *
+ * @return The current state of the typeahead process. Each state reference
+ *     represents a typeahead instance as the reference is typically mutated
+ *     in-place.
+ */
+function initState() {
+    var state = {
+        bufferClearTimeout: 0,
+        currentFirstChar: '',
+        sortedIndexCursor: 0,
+        typeaheadBuffer: ''
+    };
+    return state;
+}
+exports.initState = initState;
+/**
+ * Initializes typeahead state by indexing the current list items by primary
+ * text into the sortedIndexByFirstChar data structure.
+ *
+ * @param listItemCount numer of items in the list
+ * @param getPrimaryTextByItemIndex function that returns the primary text at a
+ *     given index
+ *
+ * @return Map that maps the first character of the primary text to the full
+ *     list text and it's index
+ */
+function initSortedIndex(listItemCount, getPrimaryTextByItemIndex) {
+    var sortedIndexByFirstChar = new Map();
+    // Aggregate item text to index mapping
+    for (var i = 0; i < listItemCount; i++) {
+        var primaryText = getPrimaryTextByItemIndex(i).trim();
+        if (!primaryText) {
+            continue;
+        }
+        var firstChar = primaryText[0].toLowerCase();
+        if (!sortedIndexByFirstChar.has(firstChar)) {
+            sortedIndexByFirstChar.set(firstChar, []);
+        }
+        sortedIndexByFirstChar.get(firstChar).push({ text: primaryText.toLowerCase(), index: i });
+    }
+    // Sort the mapping
+    // TODO(b/157162694): Investigate replacing forEach with Map.values()
+    sortedIndexByFirstChar.forEach(function (values) {
+        values.sort(function (first, second) {
+            return first.index - second.index;
+        });
+    });
+    return sortedIndexByFirstChar;
+}
+exports.initSortedIndex = initSortedIndex;
+/**
+ * Given the next desired character from the user, it attempts to find the next
+ * list option matching the buffer. Wraps around if at the end of options.
+ *
+ * @param opts Options and accessors
+ *   - nextChar - the next character to match against items
+ *   - sortedIndexByFirstChar - output of `initSortedIndex(...)`
+ *   - focusedItemIndex - the index of the currently focused item
+ *   - focusItemAtIndex - function that focuses a list item at given index
+ *   - skipFocus - whether or not to focus the matched item
+ *   - isItemAtIndexDisabled - function that determines whether an item at a
+ *        given index is disabled
+ * @param state The typeahead state instance. See `initState`.
+ *
+ * @return The index of the matched item, or -1 if no match.
+ */
+function matchItem(opts, state) {
+    var nextChar = opts.nextChar,
+        focusItemAtIndex = opts.focusItemAtIndex,
+        sortedIndexByFirstChar = opts.sortedIndexByFirstChar,
+        focusedItemIndex = opts.focusedItemIndex,
+        skipFocus = opts.skipFocus,
+        isItemAtIndexDisabled = opts.isItemAtIndexDisabled;
+    clearTimeout(state.bufferClearTimeout);
+    state.bufferClearTimeout = setTimeout(function () {
+        clearBuffer(state);
+    }, constants_1.numbers.TYPEAHEAD_BUFFER_CLEAR_TIMEOUT_MS);
+    state.typeaheadBuffer = state.typeaheadBuffer + nextChar;
+    var index;
+    if (state.typeaheadBuffer.length === 1) {
+        index = matchFirstChar(sortedIndexByFirstChar, focusedItemIndex, isItemAtIndexDisabled, state);
+    } else {
+        index = matchAllChars(sortedIndexByFirstChar, isItemAtIndexDisabled, state);
+    }
+    if (index !== -1 && !skipFocus) {
+        focusItemAtIndex(index);
+    }
+    return index;
+}
+exports.matchItem = matchItem;
+/**
+ * Matches the user's single input character in the buffer to the
+ * next option that begins with such character. Wraps around if at
+ * end of options. Returns -1 if no match is found.
+ */
+function matchFirstChar(sortedIndexByFirstChar, focusedItemIndex, isItemAtIndexDisabled, state) {
+    var firstChar = state.typeaheadBuffer[0];
+    var itemsMatchingFirstChar = sortedIndexByFirstChar.get(firstChar);
+    if (!itemsMatchingFirstChar) {
+        return -1;
+    }
+    // Has the same firstChar been recently matched?
+    // Also, did starting index remain the same between key presses?
+    // If both hold true, simply increment index.
+    if (firstChar === state.currentFirstChar && itemsMatchingFirstChar[state.sortedIndexCursor].index === focusedItemIndex) {
+        state.sortedIndexCursor = (state.sortedIndexCursor + 1) % itemsMatchingFirstChar.length;
+        var newIndex = itemsMatchingFirstChar[state.sortedIndexCursor].index;
+        if (!isItemAtIndexDisabled(newIndex)) {
+            return newIndex;
+        }
+    }
+    // If we're here, it means one of the following happened:
+    // - either firstChar or startingIndex has changed, invalidating the
+    // cursor.
+    // - The next item of typeahead is disabled, so we have to look further.
+    state.currentFirstChar = firstChar;
+    var newCursorPosition = -1;
+    var cursorPosition;
+    // Find the first non-disabled item as a fallback.
+    for (cursorPosition = 0; cursorPosition < itemsMatchingFirstChar.length; cursorPosition++) {
+        if (!isItemAtIndexDisabled(itemsMatchingFirstChar[cursorPosition].index)) {
+            newCursorPosition = cursorPosition;
+            break;
+        }
+    }
+    // Advance cursor to first item matching the firstChar that is positioned
+    // after starting item. Cursor is unchanged from fallback if there's no
+    // such item.
+    for (; cursorPosition < itemsMatchingFirstChar.length; cursorPosition++) {
+        if (itemsMatchingFirstChar[cursorPosition].index > focusedItemIndex && !isItemAtIndexDisabled(itemsMatchingFirstChar[cursorPosition].index)) {
+            newCursorPosition = cursorPosition;
+            break;
+        }
+    }
+    if (newCursorPosition !== -1) {
+        state.sortedIndexCursor = newCursorPosition;
+        return itemsMatchingFirstChar[state.sortedIndexCursor].index;
+    }
+    return -1;
+}
+/**
+ * Attempts to find the next item that matches all of the typeahead buffer.
+ * Wraps around if at end of options. Returns -1 if no match is found.
+ */
+function matchAllChars(sortedIndexByFirstChar, isItemAtIndexDisabled, state) {
+    var firstChar = state.typeaheadBuffer[0];
+    var itemsMatchingFirstChar = sortedIndexByFirstChar.get(firstChar);
+    if (!itemsMatchingFirstChar) {
+        return -1;
+    }
+    // Do nothing if text already matches
+    var startingItem = itemsMatchingFirstChar[state.sortedIndexCursor];
+    if (startingItem.text.lastIndexOf(state.typeaheadBuffer, 0) === 0 && !isItemAtIndexDisabled(startingItem.index)) {
+        return startingItem.index;
+    }
+    // Find next item that matches completely; if no match, we'll eventually
+    // loop around to same position
+    var cursorPosition = (state.sortedIndexCursor + 1) % itemsMatchingFirstChar.length;
+    var nextCursorPosition = -1;
+    while (cursorPosition !== state.sortedIndexCursor) {
+        var currentItem = itemsMatchingFirstChar[cursorPosition];
+        var matches = currentItem.text.lastIndexOf(state.typeaheadBuffer, 0) === 0;
+        var isEnabled = !isItemAtIndexDisabled(currentItem.index);
+        if (matches && isEnabled) {
+            nextCursorPosition = cursorPosition;
+            break;
+        }
+        cursorPosition = (cursorPosition + 1) % itemsMatchingFirstChar.length;
+    }
+    if (nextCursorPosition !== -1) {
+        state.sortedIndexCursor = nextCursorPosition;
+        return itemsMatchingFirstChar[state.sortedIndexCursor].index;
+    }
+    return -1;
+}
+/**
+ * Whether or not the given typeahead instaance state is currently typing.
+ *
+ * @param state The typeahead state instance. See `initState`.
+ */
+function isTypingInProgress(state) {
+    return state.typeaheadBuffer.length > 0;
+}
+exports.isTypingInProgress = isTypingInProgress;
+/**
+ * Clears the typeahaed buffer so that it resets item matching to the first
+ * character.
+ *
+ * @param state The typeahead state instance. See `initState`.
+ */
+function clearBuffer(state) {
+    state.typeaheadBuffer = '';
+}
+exports.clearBuffer = clearBuffer;
+/**
+ * Given a keydown event, it calculates whether or not to automatically focus a
+ * list item depending on what was typed mimicing the typeahead functionality of
+ * a standard <select> element that is open.
+ *
+ * @param opts Options and accessors
+ *   - event - the KeyboardEvent to handle and parse
+ *   - sortedIndexByFirstChar - output of `initSortedIndex(...)`
+ *   - focusedItemIndex - the index of the currently focused item
+ *   - focusItemAtIndex - function that focuses a list item at given index
+ *   - isItemAtFocusedIndexDisabled - whether or not the currently focused item
+ *      is disabled
+ *   - isTargetListItem - whether or not the event target is a list item
+ * @param state The typeahead state instance. See `initState`.
+ *
+ * @returns index of the item matched by the keydown. -1 if not matched.
+ */
+function handleKeydown(opts, state) {
+    var event = opts.event,
+        isTargetListItem = opts.isTargetListItem,
+        focusedItemIndex = opts.focusedItemIndex,
+        focusItemAtIndex = opts.focusItemAtIndex,
+        sortedIndexByFirstChar = opts.sortedIndexByFirstChar,
+        isItemAtIndexDisabled = opts.isItemAtIndexDisabled;
+    var isArrowLeft = keyboard_1.normalizeKey(event) === 'ArrowLeft';
+    var isArrowUp = keyboard_1.normalizeKey(event) === 'ArrowUp';
+    var isArrowRight = keyboard_1.normalizeKey(event) === 'ArrowRight';
+    var isArrowDown = keyboard_1.normalizeKey(event) === 'ArrowDown';
+    var isHome = keyboard_1.normalizeKey(event) === 'Home';
+    var isEnd = keyboard_1.normalizeKey(event) === 'End';
+    var isEnter = keyboard_1.normalizeKey(event) === 'Enter';
+    var isSpace = keyboard_1.normalizeKey(event) === 'Spacebar';
+    if (isArrowLeft || isArrowUp || isArrowRight || isArrowDown || isHome || isEnd || isEnter) {
+        return -1;
+    }
+    var isCharacterKey = !isSpace && event.key.length === 1;
+    if (isCharacterKey) {
+        events_1.preventDefaultEvent(event);
+        var matchItemOpts = {
+            focusItemAtIndex: focusItemAtIndex,
+            focusedItemIndex: focusedItemIndex,
+            nextChar: event.key.toLowerCase(),
+            sortedIndexByFirstChar: sortedIndexByFirstChar,
+            skipFocus: false,
+            isItemAtIndexDisabled: isItemAtIndexDisabled
+        };
+        return matchItem(matchItemOpts, state);
+    }
+    if (!isSpace) {
+        return -1;
+    }
+    if (isTargetListItem) {
+        events_1.preventDefaultEvent(event);
+    }
+    var typeaheadOnListItem = isTargetListItem && isTypingInProgress(state);
+    if (typeaheadOnListItem) {
+        var matchItemOpts = {
+            focusItemAtIndex: focusItemAtIndex,
+            focusedItemIndex: focusedItemIndex,
+            nextChar: ' ',
+            sortedIndexByFirstChar: sortedIndexByFirstChar,
+            skipFocus: false,
+            isItemAtIndexDisabled: isItemAtIndexDisabled
+        };
+        // space participates in typeahead matching if in rapid typing mode
+        return matchItem(matchItemOpts, state);
+    }
+    return -1;
+}
+exports.handleKeydown = handleKeydown;
 
 /***/ }),
 
@@ -8383,55 +10357,57 @@ var MDCMenuSurface = /** @class */function (_super) {
     };
     MDCMenuSurface.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        var parentEl = this.root_.parentElement;
+        var parentEl = this.root.parentElement;
         this.anchorElement = parentEl && parentEl.classList.contains(constants_1.cssClasses.ANCHOR) ? parentEl : null;
-        if (this.root_.classList.contains(constants_1.cssClasses.FIXED)) {
+        if (this.root.classList.contains(constants_1.cssClasses.FIXED)) {
             this.setFixedPosition(true);
         }
-        this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
+        this.handleKeydown = function (event) {
+            _this.foundation.handleKeydown(event);
         };
-        this.handleBodyClick_ = function (evt) {
-            return _this.foundation_.handleBodyClick(evt);
+        this.handleBodyClick = function (event) {
+            _this.foundation.handleBodyClick(event);
         };
-        this.registerBodyClickListener_ = function () {
-            return document.body.addEventListener('click', _this.handleBodyClick_);
+        // capture so that no race between handleBodyClick and quickOpen when
+        // menusurface opened on button click which registers this listener
+        this.registerBodyClickListener = function () {
+            document.body.addEventListener('click', _this.handleBodyClick, { capture: true });
         };
-        this.deregisterBodyClickListener_ = function () {
-            return document.body.removeEventListener('click', _this.handleBodyClick_);
+        this.deregisterBodyClickListener = function () {
+            document.body.removeEventListener('click', _this.handleBodyClick);
         };
-        this.listen('keydown', this.handleKeydown_);
-        this.listen(constants_1.strings.OPENED_EVENT, this.registerBodyClickListener_);
-        this.listen(constants_1.strings.CLOSED_EVENT, this.deregisterBodyClickListener_);
+        this.listen('keydown', this.handleKeydown);
+        this.listen(constants_1.strings.OPENED_EVENT, this.registerBodyClickListener);
+        this.listen(constants_1.strings.CLOSED_EVENT, this.deregisterBodyClickListener);
     };
     MDCMenuSurface.prototype.destroy = function () {
-        this.unlisten('keydown', this.handleKeydown_);
-        this.unlisten(constants_1.strings.OPENED_EVENT, this.registerBodyClickListener_);
-        this.unlisten(constants_1.strings.CLOSED_EVENT, this.deregisterBodyClickListener_);
+        this.unlisten('keydown', this.handleKeydown);
+        this.unlisten(constants_1.strings.OPENED_EVENT, this.registerBodyClickListener);
+        this.unlisten(constants_1.strings.CLOSED_EVENT, this.deregisterBodyClickListener);
         _super.prototype.destroy.call(this);
     };
     MDCMenuSurface.prototype.isOpen = function () {
-        return this.foundation_.isOpen();
+        return this.foundation.isOpen();
     };
     MDCMenuSurface.prototype.open = function () {
-        this.foundation_.open();
+        this.foundation.open();
     };
     MDCMenuSurface.prototype.close = function (skipRestoreFocus) {
         if (skipRestoreFocus === void 0) {
             skipRestoreFocus = false;
         }
-        this.foundation_.close(skipRestoreFocus);
+        this.foundation.close(skipRestoreFocus);
     };
     Object.defineProperty(MDCMenuSurface.prototype, "quickOpen", {
         set: function set(quickOpen) {
-            this.foundation_.setQuickOpen(quickOpen);
+            this.foundation.setQuickOpen(quickOpen);
         },
         enumerable: true,
         configurable: true
     });
     /** Sets the foundation to use page offsets for an positioning when the menu is hoisted to the body. */
     MDCMenuSurface.prototype.setIsHoisted = function (isHoisted) {
-        this.foundation_.setIsHoisted(isHoisted);
+        this.foundation.setIsHoisted(isHoisted);
     };
     /** Sets the element that the menu-surface is anchored to. */
     MDCMenuSurface.prototype.setMenuSurfaceAnchorElement = function (element) {
@@ -8440,25 +10416,25 @@ var MDCMenuSurface = /** @class */function (_super) {
     /** Sets the menu-surface to position: fixed. */
     MDCMenuSurface.prototype.setFixedPosition = function (isFixed) {
         if (isFixed) {
-            this.root_.classList.add(constants_1.cssClasses.FIXED);
+            this.root.classList.add(constants_1.cssClasses.FIXED);
         } else {
-            this.root_.classList.remove(constants_1.cssClasses.FIXED);
+            this.root.classList.remove(constants_1.cssClasses.FIXED);
         }
-        this.foundation_.setFixedPosition(isFixed);
+        this.foundation.setFixedPosition(isFixed);
     };
     /** Sets the absolute x/y position to position based on. Requires the menu to be hoisted. */
     MDCMenuSurface.prototype.setAbsolutePosition = function (x, y) {
-        this.foundation_.setAbsolutePosition(x, y);
+        this.foundation.setAbsolutePosition(x, y);
         this.setIsHoisted(true);
     };
     /**
      * @param corner Default anchor corner alignment of top-left surface corner.
      */
     MDCMenuSurface.prototype.setAnchorCorner = function (corner) {
-        this.foundation_.setAnchorCorner(corner);
+        this.foundation.setAnchorCorner(corner);
     };
     MDCMenuSurface.prototype.setAnchorMargin = function (margin) {
-        this.foundation_.setAnchorMargin(margin);
+        this.foundation.setAnchorMargin(margin);
     };
     MDCMenuSurface.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -8467,13 +10443,13 @@ var MDCMenuSurface = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             hasAnchor: function hasAnchor() {
                 return !!_this.anchorElement;
@@ -8485,30 +10461,33 @@ var MDCMenuSurface = /** @class */function (_super) {
                 return _this.emit(foundation_1.MDCMenuSurfaceFoundation.strings.OPENED_EVENT, {});
             },
             isElementInContainer: function isElementInContainer(el) {
-                return _this.root_.contains(el);
+                return _this.root.contains(el);
             },
             isRtl: function isRtl() {
-                return getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
+                return getComputedStyle(_this.root).getPropertyValue('direction') === 'rtl';
             },
             setTransformOrigin: function setTransformOrigin(origin) {
                 var propertyName = util.getTransformPropertyName(window) + "-origin";
-                _this.root_.style.setProperty(propertyName, origin);
+                _this.root.style.setProperty(propertyName, origin);
             },
             isFocused: function isFocused() {
-                return document.activeElement === _this.root_;
+                return document.activeElement === _this.root;
             },
             saveFocus: function saveFocus() {
-                _this.previousFocus_ = document.activeElement;
+                _this.previousFocus = document.activeElement;
             },
             restoreFocus: function restoreFocus() {
-                if (_this.root_.contains(document.activeElement)) {
-                    if (_this.previousFocus_ && _this.previousFocus_.focus) {
-                        _this.previousFocus_.focus();
+                if (_this.root.contains(document.activeElement)) {
+                    if (_this.previousFocus && _this.previousFocus.focus) {
+                        _this.previousFocus.focus();
                     }
                 }
             },
             getInnerDimensions: function getInnerDimensions() {
-                return { width: _this.root_.offsetWidth, height: _this.root_.offsetHeight };
+                return {
+                    width: _this.root.offsetWidth,
+                    height: _this.root.offsetHeight
+                };
             },
             getAnchorDimensions: function getAnchorDimensions() {
                 return _this.anchorElement ? _this.anchorElement.getBoundingClientRect() : null;
@@ -8523,13 +10502,14 @@ var MDCMenuSurface = /** @class */function (_super) {
                 return { x: window.pageXOffset, y: window.pageYOffset };
             },
             setPosition: function setPosition(position) {
-                _this.root_.style.left = 'left' in position ? position.left + "px" : '';
-                _this.root_.style.right = 'right' in position ? position.right + "px" : '';
-                _this.root_.style.top = 'top' in position ? position.top + "px" : '';
-                _this.root_.style.bottom = 'bottom' in position ? position.bottom + "px" : '';
+                var rootHTML = _this.root;
+                rootHTML.style.left = 'left' in position ? position.left + "px" : '';
+                rootHTML.style.right = 'right' in position ? position.right + "px" : '';
+                rootHTML.style.top = 'top' in position ? position.top + "px" : '';
+                rootHTML.style.bottom = 'bottom' in position ? position.bottom + "px" : '';
             },
             setMaxHeight: function setMaxHeight(height) {
-                _this.root_.style.maxHeight = height;
+                _this.root.style.maxHeight = height;
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -8579,6 +10559,7 @@ var cssClasses = {
     ANIMATING_CLOSED: 'mdc-menu-surface--animating-closed',
     ANIMATING_OPEN: 'mdc-menu-surface--animating-open',
     FIXED: 'mdc-menu-surface--fixed',
+    IS_OPEN_BELOW: 'mdc-menu-surface--is-open-below',
     OPEN: 'mdc-menu-surface--open',
     ROOT: 'mdc-menu-surface'
 };
@@ -8596,7 +10577,7 @@ var numbers = {
     TRANSITION_OPEN_DURATION: 120,
     /** Total duration of menu-surface close animation. */
     TRANSITION_CLOSE_DURATION: 75,
-    /** Margin left to the edge of the viewport when menu-surface is at maximum possible height. */
+    /** Margin left to the edge of the viewport when menu-surface is at maximum possible height. Also used as a viewport margin. */
     MARGIN_TO_EDGE: 32,
     /** Ratio of anchor width to menu-surface width for switching from corner positioning to center positioning. */
     ANCHOR_TO_MENU_SURFACE_WIDTH_RATIO: 0.67
@@ -8699,15 +10680,17 @@ var __assign = this && this.__assign || function () {
     return __assign.apply(this, arguments);
 };
 var __values = this && this.__values || function (o) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator],
+    var s = typeof Symbol === "function" && Symbol.iterator,
+        m = s && o[s],
         i = 0;
     if (m) return m.call(o);
-    return {
+    if (o && typeof o.length === "number") return {
         next: function next() {
             if (o && i >= o.length) o = void 0;
             return { value: o && o[i++], done: !o };
         }
     };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
@@ -8715,17 +10698,32 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu-su
 var MDCMenuSurfaceFoundation = /** @class */function (_super) {
     __extends(MDCMenuSurfaceFoundation, _super);
     function MDCMenuSurfaceFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCMenuSurfaceFoundation.defaultAdapter, adapter)) || this;
-        _this.isOpen_ = false;
-        _this.isQuickOpen_ = false;
-        _this.isHoistedElement_ = false;
-        _this.isFixedPosition_ = false;
-        _this.openAnimationEndTimerId_ = 0;
-        _this.closeAnimationEndTimerId_ = 0;
-        _this.animationRequestId_ = 0;
-        _this.anchorCorner_ = constants_1.Corner.TOP_START;
-        _this.anchorMargin_ = { top: 0, right: 0, bottom: 0, left: 0 };
-        _this.position_ = { x: 0, y: 0 };
+        var _this = _super.call(this, __assign(__assign({}, MDCMenuSurfaceFoundation.defaultAdapter), adapter)) || this;
+        _this.isSurfaceOpen = false;
+        _this.isQuickOpen = false;
+        _this.isHoistedElement = false;
+        _this.isFixedPosition = false;
+        _this.openAnimationEndTimerId = 0;
+        _this.closeAnimationEndTimerId = 0;
+        _this.animationRequestId = 0;
+        _this.anchorCorner = constants_1.Corner.TOP_START;
+        /**
+         * Corner of the menu surface to which menu surface is attached to anchor.
+         *
+         *  Anchor corner --->+----------+
+         *                    |  ANCHOR  |
+         *                    +----------+
+         *  Origin corner --->+--------------+
+         *                    |              |
+         *                    |              |
+         *                    | MENU SURFACE |
+         *                    |              |
+         *                    |              |
+         *                    +--------------+
+         */
+        _this.originCorner = constants_1.Corner.TOP_START;
+        _this.anchorMargin = { top: 0, right: 0, bottom: 0, left: 0 };
+        _this.position = { x: 0, y: 0 };
         return _this;
     }
     Object.defineProperty(MDCMenuSurfaceFoundation, "cssClasses", {
@@ -8830,77 +10828,88 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
         var _a = MDCMenuSurfaceFoundation.cssClasses,
             ROOT = _a.ROOT,
             OPEN = _a.OPEN;
-        if (!this.adapter_.hasClass(ROOT)) {
+        if (!this.adapter.hasClass(ROOT)) {
             throw new Error(ROOT + " class required in root element.");
         }
-        if (this.adapter_.hasClass(OPEN)) {
-            this.isOpen_ = true;
+        if (this.adapter.hasClass(OPEN)) {
+            this.isSurfaceOpen = true;
         }
     };
     MDCMenuSurfaceFoundation.prototype.destroy = function () {
-        clearTimeout(this.openAnimationEndTimerId_);
-        clearTimeout(this.closeAnimationEndTimerId_);
+        clearTimeout(this.openAnimationEndTimerId);
+        clearTimeout(this.closeAnimationEndTimerId);
         // Cancel any currently running animations.
-        cancelAnimationFrame(this.animationRequestId_);
+        cancelAnimationFrame(this.animationRequestId);
     };
     /**
      * @param corner Default anchor corner alignment of top-left menu surface corner.
      */
     MDCMenuSurfaceFoundation.prototype.setAnchorCorner = function (corner) {
-        this.anchorCorner_ = corner;
+        this.anchorCorner = corner;
+    };
+    /**
+     * Flip menu corner horizontally.
+     */
+    MDCMenuSurfaceFoundation.prototype.flipCornerHorizontally = function () {
+        this.originCorner = this.originCorner ^ constants_1.CornerBit.RIGHT;
     };
     /**
      * @param margin Set of margin values from anchor.
      */
     MDCMenuSurfaceFoundation.prototype.setAnchorMargin = function (margin) {
-        this.anchorMargin_.top = margin.top || 0;
-        this.anchorMargin_.right = margin.right || 0;
-        this.anchorMargin_.bottom = margin.bottom || 0;
-        this.anchorMargin_.left = margin.left || 0;
+        this.anchorMargin.top = margin.top || 0;
+        this.anchorMargin.right = margin.right || 0;
+        this.anchorMargin.bottom = margin.bottom || 0;
+        this.anchorMargin.left = margin.left || 0;
     };
     /** Used to indicate if the menu-surface is hoisted to the body. */
     MDCMenuSurfaceFoundation.prototype.setIsHoisted = function (isHoisted) {
-        this.isHoistedElement_ = isHoisted;
+        this.isHoistedElement = isHoisted;
     };
     /** Used to set the menu-surface calculations based on a fixed position menu. */
     MDCMenuSurfaceFoundation.prototype.setFixedPosition = function (isFixedPosition) {
-        this.isFixedPosition_ = isFixedPosition;
+        this.isFixedPosition = isFixedPosition;
     };
     /** Sets the menu-surface position on the page. */
     MDCMenuSurfaceFoundation.prototype.setAbsolutePosition = function (x, y) {
-        this.position_.x = this.isFinite_(x) ? x : 0;
-        this.position_.y = this.isFinite_(y) ? y : 0;
+        this.position.x = this.isFinite(x) ? x : 0;
+        this.position.y = this.isFinite(y) ? y : 0;
     };
     MDCMenuSurfaceFoundation.prototype.setQuickOpen = function (quickOpen) {
-        this.isQuickOpen_ = quickOpen;
+        this.isQuickOpen = quickOpen;
     };
     MDCMenuSurfaceFoundation.prototype.isOpen = function () {
-        return this.isOpen_;
+        return this.isSurfaceOpen;
     };
     /**
      * Open the menu surface.
      */
     MDCMenuSurfaceFoundation.prototype.open = function () {
         var _this = this;
-        this.adapter_.saveFocus();
-        if (!this.isQuickOpen_) {
-            this.adapter_.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_OPEN);
+        if (this.isSurfaceOpen) {
+            return;
         }
-        this.animationRequestId_ = requestAnimationFrame(function () {
-            _this.adapter_.addClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
-            _this.dimensions_ = _this.adapter_.getInnerDimensions();
-            _this.autoPosition_();
-            if (_this.isQuickOpen_) {
-                _this.adapter_.notifyOpen();
-            } else {
-                _this.openAnimationEndTimerId_ = setTimeout(function () {
-                    _this.openAnimationEndTimerId_ = 0;
-                    _this.adapter_.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_OPEN);
-                    _this.adapter_.notifyOpen();
+        this.adapter.saveFocus();
+        if (this.isQuickOpen) {
+            this.isSurfaceOpen = true;
+            this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
+            this.dimensions = this.adapter.getInnerDimensions();
+            this.autoposition();
+            this.adapter.notifyOpen();
+        } else {
+            this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_OPEN);
+            this.animationRequestId = requestAnimationFrame(function () {
+                _this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
+                _this.dimensions = _this.adapter.getInnerDimensions();
+                _this.autoposition();
+                _this.openAnimationEndTimerId = setTimeout(function () {
+                    _this.openAnimationEndTimerId = 0;
+                    _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_OPEN);
+                    _this.adapter.notifyOpen();
                 }, constants_1.numbers.TRANSITION_OPEN_DURATION);
-            }
-        });
-        this.isOpen_ = true;
+            });
+            this.isSurfaceOpen = true;
+        }
     };
     /**
      * Closes the menu surface.
@@ -8910,30 +10919,38 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
         if (skipRestoreFocus === void 0) {
             skipRestoreFocus = false;
         }
-        if (!this.isQuickOpen_) {
-            this.adapter_.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
+        if (!this.isSurfaceOpen) {
+            return;
         }
-        requestAnimationFrame(function () {
-            _this.adapter_.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
-            if (_this.isQuickOpen_) {
-                _this.adapter_.notifyClose();
-            } else {
-                _this.closeAnimationEndTimerId_ = setTimeout(function () {
-                    _this.closeAnimationEndTimerId_ = 0;
-                    _this.adapter_.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
-                    _this.adapter_.notifyClose();
-                }, constants_1.numbers.TRANSITION_CLOSE_DURATION);
+        if (this.isQuickOpen) {
+            this.isSurfaceOpen = false;
+            if (!skipRestoreFocus) {
+                this.maybeRestoreFocus();
             }
-        });
-        this.isOpen_ = false;
-        if (!skipRestoreFocus) {
-            this.maybeRestoreFocus_();
+            this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
+            this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
+            this.adapter.notifyClose();
+        } else {
+            this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
+            requestAnimationFrame(function () {
+                _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
+                _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
+                _this.closeAnimationEndTimerId = setTimeout(function () {
+                    _this.closeAnimationEndTimerId = 0;
+                    _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
+                    _this.adapter.notifyClose();
+                }, constants_1.numbers.TRANSITION_CLOSE_DURATION);
+            });
+            this.isSurfaceOpen = false;
+            if (!skipRestoreFocus) {
+                this.maybeRestoreFocus();
+            }
         }
     };
     /** Handle clicks and close if not within menu-surface element. */
     MDCMenuSurfaceFoundation.prototype.handleBodyClick = function (evt) {
         var el = evt.target;
-        if (this.adapter_.isElementInContainer(el)) {
+        if (this.adapter.isElementInContainer(el)) {
             return;
         }
         this.close();
@@ -8947,17 +10964,17 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
             this.close();
         }
     };
-    MDCMenuSurfaceFoundation.prototype.autoPosition_ = function () {
+    MDCMenuSurfaceFoundation.prototype.autoposition = function () {
         var _a;
         // Compute measurements for autoposition methods reuse.
-        this.measurements_ = this.getAutoLayoutMeasurements_();
-        var corner = this.getOriginCorner_();
-        var maxMenuSurfaceHeight = this.getMenuSurfaceMaxHeight_(corner);
-        var verticalAlignment = this.hasBit_(corner, constants_1.CornerBit.BOTTOM) ? 'bottom' : 'top';
-        var horizontalAlignment = this.hasBit_(corner, constants_1.CornerBit.RIGHT) ? 'right' : 'left';
-        var horizontalOffset = this.getHorizontalOriginOffset_(corner);
-        var verticalOffset = this.getVerticalOriginOffset_(corner);
-        var _b = this.measurements_,
+        this.measurements = this.getAutoLayoutmeasurements();
+        var corner = this.getoriginCorner();
+        var maxMenuSurfaceHeight = this.getMenuSurfaceMaxHeight(corner);
+        var verticalAlignment = this.hasBit(corner, constants_1.CornerBit.BOTTOM) ? 'bottom' : 'top';
+        var horizontalAlignment = this.hasBit(corner, constants_1.CornerBit.RIGHT) ? 'right' : 'left';
+        var horizontalOffset = this.getHorizontalOriginOffset(corner);
+        var verticalOffset = this.getVerticalOriginOffset(corner);
+        var _b = this.measurements,
             anchorSize = _b.anchorSize,
             surfaceSize = _b.surfaceSize;
         var position = (_a = {}, _a[horizontalAlignment] = horizontalOffset, _a[verticalAlignment] = verticalOffset, _a);
@@ -8966,28 +10983,32 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
             horizontalAlignment = 'center';
         }
         // If the menu-surface has been hoisted to the body, it's no longer relative to the anchor element
-        if (this.isHoistedElement_ || this.isFixedPosition_) {
-            this.adjustPositionForHoistedElement_(position);
+        if (this.isHoistedElement || this.isFixedPosition) {
+            this.adjustPositionForHoistedElement(position);
         }
-        this.adapter_.setTransformOrigin(horizontalAlignment + " " + verticalAlignment);
-        this.adapter_.setPosition(position);
-        this.adapter_.setMaxHeight(maxMenuSurfaceHeight ? maxMenuSurfaceHeight + 'px' : '');
+        this.adapter.setTransformOrigin(horizontalAlignment + " " + verticalAlignment);
+        this.adapter.setPosition(position);
+        this.adapter.setMaxHeight(maxMenuSurfaceHeight ? maxMenuSurfaceHeight + 'px' : '');
+        // If it is opened from the top then add is-open-below class
+        if (!this.hasBit(corner, constants_1.CornerBit.BOTTOM)) {
+            this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
+        }
     };
     /**
      * @return Measurements used to position menu surface popup.
      */
-    MDCMenuSurfaceFoundation.prototype.getAutoLayoutMeasurements_ = function () {
-        var anchorRect = this.adapter_.getAnchorDimensions();
-        var bodySize = this.adapter_.getBodyDimensions();
-        var viewportSize = this.adapter_.getWindowDimensions();
-        var windowScroll = this.adapter_.getWindowScroll();
+    MDCMenuSurfaceFoundation.prototype.getAutoLayoutmeasurements = function () {
+        var anchorRect = this.adapter.getAnchorDimensions();
+        var bodySize = this.adapter.getBodyDimensions();
+        var viewportSize = this.adapter.getWindowDimensions();
+        var windowScroll = this.adapter.getWindowScroll();
         if (!anchorRect) {
             // tslint:disable:object-literal-sort-keys Positional properties are more readable when they're grouped together
             anchorRect = {
-                top: this.position_.y,
-                right: this.position_.x,
-                bottom: this.position_.y,
-                left: this.position_.x,
+                top: this.position.y,
+                right: this.position.x,
+                bottom: this.position.y,
+                left: this.position.x,
                 width: 0,
                 height: 0
             };
@@ -8996,7 +11017,7 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
         return {
             anchorSize: anchorRect,
             bodySize: bodySize,
-            surfaceSize: this.dimensions_,
+            surfaceSize: this.dimensions,
             viewportDistance: {
                 // tslint:disable:object-literal-sort-keys Positional properties are more readable when they're grouped together
                 top: anchorRect.top,
@@ -9009,33 +11030,64 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
         };
     };
     /**
-     * Computes the corner of the anchor from which to animate and position the menu surface.
+     * Computes the corner of the anchor from which to animate and position the
+     * menu surface.
+     *
+     * Only LEFT or RIGHT bit is used to position the menu surface ignoring RTL
+     * context. E.g., menu surface will be positioned from right side on TOP_END.
      */
-    MDCMenuSurfaceFoundation.prototype.getOriginCorner_ = function () {
-        // Defaults: open from the top left.
-        var corner = constants_1.Corner.TOP_LEFT;
-        var _a = this.measurements_,
+    MDCMenuSurfaceFoundation.prototype.getoriginCorner = function () {
+        var corner = this.originCorner;
+        var _a = this.measurements,
             viewportDistance = _a.viewportDistance,
             anchorSize = _a.anchorSize,
             surfaceSize = _a.surfaceSize;
-        var isBottomAligned = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.BOTTOM);
-        var availableTop = isBottomAligned ? viewportDistance.top + anchorSize.height + this.anchorMargin_.bottom : viewportDistance.top + this.anchorMargin_.top;
-        var availableBottom = isBottomAligned ? viewportDistance.bottom - this.anchorMargin_.bottom : viewportDistance.bottom + anchorSize.height - this.anchorMargin_.top;
-        var topOverflow = surfaceSize.height - availableTop;
-        var bottomOverflow = surfaceSize.height - availableBottom;
-        if (bottomOverflow > 0 && topOverflow < bottomOverflow) {
-            corner = this.setBit_(corner, constants_1.CornerBit.BOTTOM);
+        var MARGIN_TO_EDGE = MDCMenuSurfaceFoundation.numbers.MARGIN_TO_EDGE;
+        var isAnchoredToBottom = this.hasBit(this.anchorCorner, constants_1.CornerBit.BOTTOM);
+        var availableTop;
+        var availableBottom;
+        if (isAnchoredToBottom) {
+            availableTop = viewportDistance.top - MARGIN_TO_EDGE + anchorSize.height + this.anchorMargin.bottom;
+            availableBottom = viewportDistance.bottom - MARGIN_TO_EDGE - this.anchorMargin.bottom;
+        } else {
+            availableTop = viewportDistance.top - MARGIN_TO_EDGE + this.anchorMargin.top;
+            availableBottom = viewportDistance.bottom - MARGIN_TO_EDGE + anchorSize.height - this.anchorMargin.top;
         }
-        var isRtl = this.adapter_.isRtl();
-        var isFlipRtl = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.FLIP_RTL);
-        var avoidHorizontalOverlap = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.RIGHT);
-        var isAlignedRight = avoidHorizontalOverlap && !isRtl || !avoidHorizontalOverlap && isFlipRtl && isRtl;
-        var availableLeft = isAlignedRight ? viewportDistance.left + anchorSize.width + this.anchorMargin_.right : viewportDistance.left + this.anchorMargin_.left;
-        var availableRight = isAlignedRight ? viewportDistance.right - this.anchorMargin_.right : viewportDistance.right + anchorSize.width - this.anchorMargin_.left;
-        var leftOverflow = surfaceSize.width - availableLeft;
-        var rightOverflow = surfaceSize.width - availableRight;
-        if (leftOverflow < 0 && isAlignedRight && isRtl || avoidHorizontalOverlap && !isAlignedRight && leftOverflow < 0 || rightOverflow > 0 && leftOverflow < rightOverflow) {
-            corner = this.setBit_(corner, constants_1.CornerBit.RIGHT);
+        var isAvailableBottom = availableBottom - surfaceSize.height > 0;
+        if (!isAvailableBottom && availableTop >= availableBottom) {
+            // Attach bottom side of surface to the anchor.
+            corner = this.setBit(corner, constants_1.CornerBit.BOTTOM);
+        }
+        var isRtl = this.adapter.isRtl();
+        var isFlipRtl = this.hasBit(this.anchorCorner, constants_1.CornerBit.FLIP_RTL);
+        var hasRightBit = this.hasBit(this.anchorCorner, constants_1.CornerBit.RIGHT);
+        // Whether surface attached to right side of anchor element.
+        var isAnchoredToRight = false;
+        // Anchored to start
+        if (isRtl && isFlipRtl) {
+            isAnchoredToRight = !hasRightBit;
+        } else {
+            // Anchored to right
+            isAnchoredToRight = hasRightBit;
+        }
+        var availableLeft;
+        var availableRight;
+        if (isAnchoredToRight) {
+            availableLeft = viewportDistance.left + anchorSize.width + this.anchorMargin.right;
+            availableRight = viewportDistance.right - this.anchorMargin.right;
+        } else {
+            availableLeft = viewportDistance.left + this.anchorMargin.left;
+            availableRight = viewportDistance.right + anchorSize.width - this.anchorMargin.left;
+        }
+        var isAvailableLeft = availableLeft - surfaceSize.width > 0;
+        var isAvailableRight = availableRight - surfaceSize.width > 0;
+        var isOriginCornerAlignedToEnd = this.hasBit(corner, constants_1.CornerBit.FLIP_RTL) && this.hasBit(corner, constants_1.CornerBit.RIGHT);
+        if (isAvailableRight && isOriginCornerAlignedToEnd && isRtl || !isAvailableLeft && isOriginCornerAlignedToEnd) {
+            // Attach left side of surface to the anchor.
+            corner = this.unsetBit(corner, constants_1.CornerBit.RIGHT);
+        } else if (isAvailableLeft && isAnchoredToRight && isRtl || isAvailableLeft && !isAnchoredToRight && hasRightBit || !isAvailableRight && availableLeft >= availableRight) {
+            // Attach right side of surface to the anchor.
+            corner = this.setBit(corner, constants_1.CornerBit.RIGHT);
         }
         return corner;
     };
@@ -9043,22 +11095,22 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
      * @param corner Origin corner of the menu surface.
      * @return Maximum height of the menu surface, based on available space. 0 indicates should not be set.
      */
-    MDCMenuSurfaceFoundation.prototype.getMenuSurfaceMaxHeight_ = function (corner) {
-        var viewportDistance = this.measurements_.viewportDistance;
+    MDCMenuSurfaceFoundation.prototype.getMenuSurfaceMaxHeight = function (corner) {
+        var viewportDistance = this.measurements.viewportDistance;
         var maxHeight = 0;
-        var isBottomAligned = this.hasBit_(corner, constants_1.CornerBit.BOTTOM);
-        var isBottomAnchored = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.BOTTOM);
+        var isBottomAligned = this.hasBit(corner, constants_1.CornerBit.BOTTOM);
+        var isBottomAnchored = this.hasBit(this.anchorCorner, constants_1.CornerBit.BOTTOM);
         var MARGIN_TO_EDGE = MDCMenuSurfaceFoundation.numbers.MARGIN_TO_EDGE;
         // When maximum height is not specified, it is handled from CSS.
         if (isBottomAligned) {
-            maxHeight = viewportDistance.top + this.anchorMargin_.top - MARGIN_TO_EDGE;
+            maxHeight = viewportDistance.top + this.anchorMargin.top - MARGIN_TO_EDGE;
             if (!isBottomAnchored) {
-                maxHeight += this.measurements_.anchorSize.height;
+                maxHeight += this.measurements.anchorSize.height;
             }
         } else {
-            maxHeight = viewportDistance.bottom - this.anchorMargin_.bottom + this.measurements_.anchorSize.height - MARGIN_TO_EDGE;
+            maxHeight = viewportDistance.bottom - this.anchorMargin.bottom + this.measurements.anchorSize.height - MARGIN_TO_EDGE;
             if (isBottomAnchored) {
-                maxHeight -= this.measurements_.anchorSize.height;
+                maxHeight -= this.measurements.anchorSize.height;
             }
         }
         return maxHeight;
@@ -9067,43 +11119,44 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
      * @param corner Origin corner of the menu surface.
      * @return Horizontal offset of menu surface origin corner from corresponding anchor corner.
      */
-    MDCMenuSurfaceFoundation.prototype.getHorizontalOriginOffset_ = function (corner) {
-        var anchorSize = this.measurements_.anchorSize;
+    MDCMenuSurfaceFoundation.prototype.getHorizontalOriginOffset = function (corner) {
+        var anchorSize = this.measurements.anchorSize;
         // isRightAligned corresponds to using the 'right' property on the surface.
-        var isRightAligned = this.hasBit_(corner, constants_1.CornerBit.RIGHT);
-        var avoidHorizontalOverlap = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.RIGHT);
+        var isRightAligned = this.hasBit(corner, constants_1.CornerBit.RIGHT);
+        var avoidHorizontalOverlap = this.hasBit(this.anchorCorner, constants_1.CornerBit.RIGHT);
         if (isRightAligned) {
-            var rightOffset = avoidHorizontalOverlap ? anchorSize.width - this.anchorMargin_.left : this.anchorMargin_.right;
-            // For hoisted or fixed elements, adjust the offset by the difference between viewport width and body width so
-            // when we calculate the right value (`adjustPositionForHoistedElement_`) based on the element position,
-            // the right property is correct.
-            if (this.isHoistedElement_ || this.isFixedPosition_) {
-                return rightOffset - (this.measurements_.viewportSize.width - this.measurements_.bodySize.width);
+            var rightOffset = avoidHorizontalOverlap ? anchorSize.width - this.anchorMargin.left : this.anchorMargin.right;
+            // For hoisted or fixed elements, adjust the offset by the difference
+            // between viewport width and body width so when we calculate the right
+            // value (`adjustPositionForHoistedElement`) based on the element
+            // position, the right property is correct.
+            if (this.isHoistedElement || this.isFixedPosition) {
+                return rightOffset - (this.measurements.viewportSize.width - this.measurements.bodySize.width);
             }
             return rightOffset;
         }
-        return avoidHorizontalOverlap ? anchorSize.width - this.anchorMargin_.right : this.anchorMargin_.left;
+        return avoidHorizontalOverlap ? anchorSize.width - this.anchorMargin.right : this.anchorMargin.left;
     };
     /**
      * @param corner Origin corner of the menu surface.
      * @return Vertical offset of menu surface origin corner from corresponding anchor corner.
      */
-    MDCMenuSurfaceFoundation.prototype.getVerticalOriginOffset_ = function (corner) {
-        var anchorSize = this.measurements_.anchorSize;
-        var isBottomAligned = this.hasBit_(corner, constants_1.CornerBit.BOTTOM);
-        var avoidVerticalOverlap = this.hasBit_(this.anchorCorner_, constants_1.CornerBit.BOTTOM);
+    MDCMenuSurfaceFoundation.prototype.getVerticalOriginOffset = function (corner) {
+        var anchorSize = this.measurements.anchorSize;
+        var isBottomAligned = this.hasBit(corner, constants_1.CornerBit.BOTTOM);
+        var avoidVerticalOverlap = this.hasBit(this.anchorCorner, constants_1.CornerBit.BOTTOM);
         var y = 0;
         if (isBottomAligned) {
-            y = avoidVerticalOverlap ? anchorSize.height - this.anchorMargin_.top : -this.anchorMargin_.bottom;
+            y = avoidVerticalOverlap ? anchorSize.height - this.anchorMargin.top : -this.anchorMargin.bottom;
         } else {
-            y = avoidVerticalOverlap ? anchorSize.height + this.anchorMargin_.bottom : this.anchorMargin_.top;
+            y = avoidVerticalOverlap ? anchorSize.height + this.anchorMargin.bottom : this.anchorMargin.top;
         }
         return y;
     };
     /** Calculates the offsets for positioning the menu-surface when the menu-surface has been hoisted to the body. */
-    MDCMenuSurfaceFoundation.prototype.adjustPositionForHoistedElement_ = function (position) {
+    MDCMenuSurfaceFoundation.prototype.adjustPositionForHoistedElement = function (position) {
         var e_1, _a;
-        var _b = this.measurements_,
+        var _b = this.measurements,
             windowScroll = _b.windowScroll,
             viewportDistance = _b.viewportDistance;
         var props = Object.keys(position);
@@ -9116,7 +11169,7 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
                 value += viewportDistance[prop];
                 // Surfaces that are absolutely positioned need to have additional calculations for scroll
                 // and bottom positioning.
-                if (!this.isFixedPosition_) {
+                if (!this.isFixedPosition) {
                     if (prop === 'top') {
                         value += windowScroll.y;
                     } else if (prop === 'bottom') {
@@ -9144,24 +11197,27 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
      * The last focused element when the menu surface was opened should regain focus, if the user is
      * focused on or within the menu surface when it is closed.
      */
-    MDCMenuSurfaceFoundation.prototype.maybeRestoreFocus_ = function () {
-        var isRootFocused = this.adapter_.isFocused();
-        var childHasFocus = document.activeElement && this.adapter_.isElementInContainer(document.activeElement);
+    MDCMenuSurfaceFoundation.prototype.maybeRestoreFocus = function () {
+        var isRootFocused = this.adapter.isFocused();
+        var childHasFocus = document.activeElement && this.adapter.isElementInContainer(document.activeElement);
         if (isRootFocused || childHasFocus) {
-            this.adapter_.restoreFocus();
+            this.adapter.restoreFocus();
         }
     };
-    MDCMenuSurfaceFoundation.prototype.hasBit_ = function (corner, bit) {
+    MDCMenuSurfaceFoundation.prototype.hasBit = function (corner, bit) {
         return Boolean(corner & bit); // tslint:disable-line:no-bitwise
     };
-    MDCMenuSurfaceFoundation.prototype.setBit_ = function (corner, bit) {
+    MDCMenuSurfaceFoundation.prototype.setBit = function (corner, bit) {
         return corner | bit; // tslint:disable-line:no-bitwise
+    };
+    MDCMenuSurfaceFoundation.prototype.unsetBit = function (corner, bit) {
+        return corner ^ bit;
     };
     /**
      * isFinite that doesn't force conversion to number type.
      * Equivalent to Number.isFinite in ES2015, which is not supported in IE.
      */
-    MDCMenuSurfaceFoundation.prototype.isFinite_ = function (num) {
+    MDCMenuSurfaceFoundation.prototype.isFinite = function (num) {
         return typeof num === 'number' && isFinite(num);
     };
     return MDCMenuSurfaceFoundation;
@@ -9361,8 +11417,8 @@ var MDCMenu = /** @class */function (_super) {
     };
     MDCMenu.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.menuSurface_ = this.menuSurfaceFactory_(this.root_);
-        var list = this.root_.querySelector(constants_1.strings.LIST_SELECTOR);
+        this.menuSurface_ = this.menuSurfaceFactory_(this.root);
+        var list = this.root.querySelector(constants_1.strings.LIST_SELECTOR);
         if (list) {
             this.list_ = this.listFactory_(list);
             this.list_.wrapFocus = true;
@@ -9370,13 +11426,13 @@ var MDCMenu = /** @class */function (_super) {
             this.list_ = null;
         }
         this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
+            return _this.foundation.handleKeydown(evt);
         };
         this.handleItemAction_ = function (evt) {
-            return _this.foundation_.handleItemAction(_this.items[evt.detail.index]);
+            return _this.foundation.handleItemAction(_this.items[evt.detail.index]);
         };
         this.handleMenuSurfaceOpened_ = function () {
-            return _this.foundation_.handleMenuSurfaceOpened();
+            return _this.foundation.handleMenuSurfaceOpened();
         };
         this.menuSurface_.listen(foundation_2.MDCMenuSurfaceFoundation.strings.OPENED_EVENT, this.handleMenuSurfaceOpened_);
         this.listen('keydown', this.handleKeydown_);
@@ -9418,6 +11474,57 @@ var MDCMenu = /** @class */function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MDCMenu.prototype, "hasTypeahead", {
+        /**
+         * Sets whether the menu has typeahead functionality.
+         * @param value Whether typeahead is enabled.
+         */
+        set: function set(value) {
+            if (this.list_) {
+                this.list_.hasTypeahead = value;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCMenu.prototype, "typeaheadInProgress", {
+        /**
+         * @return Whether typeahead logic is currently matching some user prefix.
+         */
+        get: function get() {
+            return this.list_ ? this.list_.typeaheadInProgress : false;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Given the next desired character from the user, adds it to the typeahead
+     * buffer. Then, attempts to find the next option matching the buffer. Wraps
+     * around if at the end of options.
+     *
+     * @param nextChar The next character to add to the prefix buffer.
+     * @param startingIndex The index from which to start matching. Only relevant
+     *     when starting a new match sequence. To start a new match sequence,
+     *     clear the buffer using `clearTypeaheadBuffer`, or wait for the buffer
+     *     to clear after a set interval defined in list foundation. Defaults to
+     *     the currently focused index.
+     * @return The index of the matched item, or -1 if no match.
+     */
+    MDCMenu.prototype.typeaheadMatchItem = function (nextChar, startingIndex) {
+        if (this.list_) {
+            return this.list_.typeaheadMatchItem(nextChar, startingIndex);
+        }
+        return -1;
+    };
+    /**
+     * Layout the underlying list element in the case of any dynamic updates
+     * to its structure.
+     */
+    MDCMenu.prototype.layout = function () {
+        if (this.list_) {
+            this.list_.layout();
+        }
+    };
     Object.defineProperty(MDCMenu.prototype, "items", {
         /**
          * Return the items within the menu. Note that this only contains the set of elements within
@@ -9444,7 +11551,7 @@ var MDCMenu = /** @class */function (_super) {
      * @param focusState Default focus state.
      */
     MDCMenu.prototype.setDefaultFocusState = function (focusState) {
-        this.foundation_.setDefaultFocusState(focusState);
+        this.foundation.setDefaultFocusState(focusState);
     };
     /**
      * @param corner Default anchor corner alignment of top-left menu corner.
@@ -9460,7 +11567,7 @@ var MDCMenu = /** @class */function (_super) {
      * @param index Index of list item within menu.
      */
     MDCMenu.prototype.setSelectedIndex = function (index) {
-        this.foundation_.setSelectedIndex(index);
+        this.foundation.setSelectedIndex(index);
     };
     /**
      * Sets the enabled state to isEnabled for the menu item at the given index.
@@ -9468,7 +11575,7 @@ var MDCMenu = /** @class */function (_super) {
      * @param isEnabled The desired enabled state of the menu item.
      */
     MDCMenu.prototype.setEnabled = function (index, isEnabled) {
-        this.foundation_.setEnabled(index, isEnabled);
+        this.foundation.setEnabled(index, isEnabled);
     };
     /**
      * @return The item within the menu at the index specified.
@@ -9480,6 +11587,17 @@ var MDCMenu = /** @class */function (_super) {
         } else {
             return null;
         }
+    };
+    /**
+     * @param index A menu item's index.
+     * @return The primary text within the menu at the index specified.
+     */
+    MDCMenu.prototype.getPrimaryTextAtIndex = function (index) {
+        var item = this.getOptionByIndex(index);
+        if (item && this.list_) {
+            return this.list_.getPrimaryText(item) || '';
+        }
+        return '';
     };
     MDCMenu.prototype.setFixedPosition = function (isFixed) {
         this.menuSurface_.setFixedPosition(isFixed);
@@ -9540,7 +11658,7 @@ var MDCMenu = /** @class */function (_super) {
                 return _this.items[index].focus();
             },
             focusListRoot: function focusListRoot() {
-                return _this.root_.querySelector(constants_1.strings.LIST_SELECTOR).focus();
+                return _this.root.querySelector(constants_1.strings.LIST_SELECTOR).focus();
             },
             isSelectableItemAtIndex: function isSelectableItemAtIndex(index) {
                 return !!ponyfill_1.closest(_this.items[index], "." + constants_1.cssClasses.MENU_SELECTION_GROUP);
@@ -9693,7 +11811,7 @@ var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu/co
 var MDCMenuFoundation = /** @class */function (_super) {
     __extends(MDCMenuFoundation, _super);
     function MDCMenuFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCMenuFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCMenuFoundation.defaultAdapter), adapter)) || this;
         _this.closeAnimationEndTimerId_ = 0;
         _this.defaultFocusState_ = constants_2.DefaultFocusState.LIST_ROOT;
         return _this;
@@ -9775,29 +11893,29 @@ var MDCMenuFoundation = /** @class */function (_super) {
         if (this.closeAnimationEndTimerId_) {
             clearTimeout(this.closeAnimationEndTimerId_);
         }
-        this.adapter_.closeSurface();
+        this.adapter.closeSurface();
     };
     MDCMenuFoundation.prototype.handleKeydown = function (evt) {
         var key = evt.key,
             keyCode = evt.keyCode;
         var isTab = key === 'Tab' || keyCode === 9;
         if (isTab) {
-            this.adapter_.closeSurface( /** skipRestoreFocus */true);
+            this.adapter.closeSurface( /** skipRestoreFocus */true);
         }
     };
     MDCMenuFoundation.prototype.handleItemAction = function (listItem) {
         var _this = this;
-        var index = this.adapter_.getElementIndex(listItem);
+        var index = this.adapter.getElementIndex(listItem);
         if (index < 0) {
             return;
         }
-        this.adapter_.notifySelected({ index: index });
-        this.adapter_.closeSurface();
+        this.adapter.notifySelected({ index: index });
+        this.adapter.closeSurface();
         // Wait for the menu to close before adding/removing classes that affect styles.
         this.closeAnimationEndTimerId_ = setTimeout(function () {
             // Recompute the index in case the menu contents have changed.
-            var recomputedIndex = _this.adapter_.getElementIndex(listItem);
-            if (_this.adapter_.isSelectableItemAtIndex(recomputedIndex)) {
+            var recomputedIndex = _this.adapter.getElementIndex(listItem);
+            if (recomputedIndex >= 0 && _this.adapter.isSelectableItemAtIndex(recomputedIndex)) {
                 _this.setSelectedIndex(recomputedIndex);
             }
         }, foundation_2.MDCMenuSurfaceFoundation.numbers.TRANSITION_CLOSE_DURATION);
@@ -9805,16 +11923,16 @@ var MDCMenuFoundation = /** @class */function (_super) {
     MDCMenuFoundation.prototype.handleMenuSurfaceOpened = function () {
         switch (this.defaultFocusState_) {
             case constants_2.DefaultFocusState.FIRST_ITEM:
-                this.adapter_.focusItemAtIndex(0);
+                this.adapter.focusItemAtIndex(0);
                 break;
             case constants_2.DefaultFocusState.LAST_ITEM:
-                this.adapter_.focusItemAtIndex(this.adapter_.getMenuItemCount() - 1);
+                this.adapter.focusItemAtIndex(this.adapter.getMenuItemCount() - 1);
                 break;
             case constants_2.DefaultFocusState.NONE:
                 // Do nothing.
                 break;
             default:
-                this.adapter_.focusListRoot();
+                this.adapter.focusListRoot();
                 break;
         }
     };
@@ -9832,16 +11950,16 @@ var MDCMenuFoundation = /** @class */function (_super) {
      */
     MDCMenuFoundation.prototype.setSelectedIndex = function (index) {
         this.validatedIndex_(index);
-        if (!this.adapter_.isSelectableItemAtIndex(index)) {
+        if (!this.adapter.isSelectableItemAtIndex(index)) {
             throw new Error('MDCMenuFoundation: No selection group at specified index.');
         }
-        var prevSelectedIndex = this.adapter_.getSelectedSiblingOfItemAtIndex(index);
+        var prevSelectedIndex = this.adapter.getSelectedSiblingOfItemAtIndex(index);
         if (prevSelectedIndex >= 0) {
-            this.adapter_.removeAttributeFromElementAtIndex(prevSelectedIndex, constants_2.strings.ARIA_CHECKED_ATTR);
-            this.adapter_.removeClassFromElementAtIndex(prevSelectedIndex, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
+            this.adapter.removeAttributeFromElementAtIndex(prevSelectedIndex, constants_2.strings.ARIA_CHECKED_ATTR);
+            this.adapter.removeClassFromElementAtIndex(prevSelectedIndex, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
         }
-        this.adapter_.addClassToElementAtIndex(index, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
-        this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_CHECKED_ATTR, 'true');
+        this.adapter.addClassToElementAtIndex(index, constants_2.cssClasses.MENU_SELECTED_LIST_ITEM);
+        this.adapter.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_CHECKED_ATTR, 'true');
     };
     /**
      * Sets the enabled state to isEnabled for the menu item at the given index.
@@ -9851,15 +11969,15 @@ var MDCMenuFoundation = /** @class */function (_super) {
     MDCMenuFoundation.prototype.setEnabled = function (index, isEnabled) {
         this.validatedIndex_(index);
         if (isEnabled) {
-            this.adapter_.removeClassFromElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
-            this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'false');
+            this.adapter.removeClassFromElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'false');
         } else {
-            this.adapter_.addClassToElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
-            this.adapter_.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'true');
+            this.adapter.addClassToElementAtIndex(index, constants_1.cssClasses.LIST_ITEM_DISABLED_CLASS);
+            this.adapter.addAttributeToElementAtIndex(index, constants_2.strings.ARIA_DISABLED_ATTR, 'true');
         }
     };
     MDCMenuFoundation.prototype.validatedIndex_ = function (index) {
-        var menuSize = this.adapter_.getMenuItemCount();
+        var menuSize = this.adapter.getMenuItemCount();
         var isIndexInRange = index >= 0 && index < menuSize;
         if (!isIndexInRange) {
             throw new Error('MDCMenuFoundation: No list item at specified index.');
@@ -9984,16 +12102,16 @@ var MDCNotchedOutline = /** @class */function (_super) {
         return new MDCNotchedOutline(root);
     };
     MDCNotchedOutline.prototype.initialSyncWithDOM = function () {
-        this.notchElement_ = this.root_.querySelector(constants_1.strings.NOTCH_ELEMENT_SELECTOR);
-        var label = this.root_.querySelector('.' + foundation_1.MDCFloatingLabelFoundation.cssClasses.ROOT);
+        this.notchElement_ = this.root.querySelector(constants_1.strings.NOTCH_ELEMENT_SELECTOR);
+        var label = this.root.querySelector('.' + foundation_1.MDCFloatingLabelFoundation.cssClasses.ROOT);
         if (label) {
             label.style.transitionDuration = '0s';
-            this.root_.classList.add(constants_1.cssClasses.OUTLINE_UPGRADED);
+            this.root.classList.add(constants_1.cssClasses.OUTLINE_UPGRADED);
             requestAnimationFrame(function () {
                 label.style.transitionDuration = '';
             });
         } else {
-            this.root_.classList.add(constants_1.cssClasses.NO_LABEL);
+            this.root.classList.add(constants_1.cssClasses.NO_LABEL);
         }
     };
     /**
@@ -10001,13 +12119,13 @@ var MDCNotchedOutline = /** @class */function (_super) {
      * @param notchWidth The notch width in the outline.
      */
     MDCNotchedOutline.prototype.notch = function (notchWidth) {
-        this.foundation_.notch(notchWidth);
+        this.foundation.notch(notchWidth);
     };
     /**
      * Updates classes and styles to close the notch.
      */
     MDCNotchedOutline.prototype.closeNotch = function () {
-        this.foundation_.closeNotch();
+        this.foundation.closeNotch();
     };
     MDCNotchedOutline.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -10016,10 +12134,10 @@ var MDCNotchedOutline = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             setNotchWidthProperty: function setNotchWidthProperty(width) {
                 return _this.notchElement_.style.setProperty('width', width + 'px');
@@ -10157,7 +12275,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-notched
 var MDCNotchedOutlineFoundation = /** @class */function (_super) {
     __extends(MDCNotchedOutlineFoundation, _super);
     function MDCNotchedOutlineFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCNotchedOutlineFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCNotchedOutlineFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCNotchedOutlineFoundation, "strings", {
         get: function get() {
@@ -10213,16 +12331,16 @@ var MDCNotchedOutlineFoundation = /** @class */function (_super) {
         if (notchWidth > 0) {
             notchWidth += constants_1.numbers.NOTCH_ELEMENT_PADDING; // Add padding from left/right.
         }
-        this.adapter_.setNotchWidthProperty(notchWidth);
-        this.adapter_.addClass(OUTLINE_NOTCHED);
+        this.adapter.setNotchWidthProperty(notchWidth);
+        this.adapter.addClass(OUTLINE_NOTCHED);
     };
     /**
      * Removes notched outline selector to close the notch in the outline.
      */
     MDCNotchedOutlineFoundation.prototype.closeNotch = function () {
         var OUTLINE_NOTCHED = MDCNotchedOutlineFoundation.cssClasses.OUTLINE_NOTCHED;
-        this.adapter_.removeClass(OUTLINE_NOTCHED);
-        this.adapter_.removeNotchWidthProperty();
+        this.adapter.removeClass(OUTLINE_NOTCHED);
+        this.adapter.removeNotchWidthProperty();
     };
     return MDCNotchedOutlineFoundation;
 }(foundation_1.MDCFoundation);
@@ -10370,7 +12488,7 @@ var MDCRadio = /** @class */function (_super) {
             return this.nativeControl_.disabled;
         },
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
@@ -10402,10 +12520,10 @@ var MDCRadio = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             setNativeControlDisabled: function setNativeControlDisabled(disabled) {
                 return _this.nativeControl_.disabled = disabled;
@@ -10418,7 +12536,7 @@ var MDCRadio = /** @class */function (_super) {
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
-        var adapter = __assign({}, component_2.MDCRipple.createAdapter(this), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
+        var adapter = __assign(__assign({}, component_2.MDCRipple.createAdapter(this)), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.nativeControl_.addEventListener(evtType, handler, events_1.applyPassive());
             }, deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
                 return _this.nativeControl_.removeEventListener(evtType, handler, events_1.applyPassive());
@@ -10431,12 +12549,12 @@ var MDCRadio = /** @class */function (_super) {
                 return true;
             } });
         // tslint:enable:object-literal-sort-keys
-        return new component_2.MDCRipple(this.root_, new foundation_1.MDCRippleFoundation(adapter));
+        return new component_2.MDCRipple(this.root, new foundation_1.MDCRippleFoundation(adapter));
     };
     Object.defineProperty(MDCRadio.prototype, "nativeControl_", {
         get: function get() {
             var NATIVE_CONTROL_SELECTOR = foundation_2.MDCRadioFoundation.strings.NATIVE_CONTROL_SELECTOR;
-            var el = this.root_.querySelector(NATIVE_CONTROL_SELECTOR);
+            var el = this.root.querySelector(NATIVE_CONTROL_SELECTOR);
             if (!el) {
                 throw new Error("Radio component requires a " + NATIVE_CONTROL_SELECTOR + " element");
             }
@@ -10565,7 +12683,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-radio/c
 var MDCRadioFoundation = /** @class */function (_super) {
     __extends(MDCRadioFoundation, _super);
     function MDCRadioFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCRadioFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCRadioFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCRadioFoundation, "cssClasses", {
         get: function get() {
@@ -10600,11 +12718,11 @@ var MDCRadioFoundation = /** @class */function (_super) {
     });
     MDCRadioFoundation.prototype.setDisabled = function (disabled) {
         var DISABLED = MDCRadioFoundation.cssClasses.DISABLED;
-        this.adapter_.setNativeControlDisabled(disabled);
+        this.adapter.setNativeControlDisabled(disabled);
         if (disabled) {
-            this.adapter_.addClass(DISABLED);
+            this.adapter.addClass(DISABLED);
         } else {
-            this.adapter_.removeClass(DISABLED);
+            this.adapter.removeClass(DISABLED);
         }
     };
     return MDCRadioFoundation;
@@ -10745,22 +12863,22 @@ var MDCRipple = /** @class */function (_super) {
     MDCRipple.createAdapter = function (instance) {
         return {
             addClass: function addClass(className) {
-                return instance.root_.classList.add(className);
+                return instance.root.classList.add(className);
             },
             browserSupportsCssVars: function browserSupportsCssVars() {
                 return util.supportsCssVariables(window);
             },
             computeBoundingRect: function computeBoundingRect() {
-                return instance.root_.getBoundingClientRect();
+                return instance.root.getBoundingClientRect();
             },
             containsEventTarget: function containsEventTarget(target) {
-                return instance.root_.contains(target);
+                return instance.root.contains(target);
             },
             deregisterDocumentInteractionHandler: function deregisterDocumentInteractionHandler(evtType, handler) {
                 return document.documentElement.removeEventListener(evtType, handler, events_1.applyPassive());
             },
             deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
-                return instance.root_.removeEventListener(evtType, handler, events_1.applyPassive());
+                return instance.root.removeEventListener(evtType, handler, events_1.applyPassive());
             },
             deregisterResizeHandler: function deregisterResizeHandler(handler) {
                 return window.removeEventListener('resize', handler);
@@ -10769,7 +12887,7 @@ var MDCRipple = /** @class */function (_super) {
                 return { x: window.pageXOffset, y: window.pageYOffset };
             },
             isSurfaceActive: function isSurfaceActive() {
-                return ponyfill_1.matches(instance.root_, ':active');
+                return ponyfill_1.matches(instance.root, ':active');
             },
             isSurfaceDisabled: function isSurfaceDisabled() {
                 return Boolean(instance.disabled);
@@ -10781,16 +12899,16 @@ var MDCRipple = /** @class */function (_super) {
                 return document.documentElement.addEventListener(evtType, handler, events_1.applyPassive());
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
-                return instance.root_.addEventListener(evtType, handler, events_1.applyPassive());
+                return instance.root.addEventListener(evtType, handler, events_1.applyPassive());
             },
             registerResizeHandler: function registerResizeHandler(handler) {
                 return window.addEventListener('resize', handler);
             },
             removeClass: function removeClass(className) {
-                return instance.root_.classList.remove(className);
+                return instance.root.classList.remove(className);
             },
             updateCssVariable: function updateCssVariable(varName, value) {
-                return instance.root_.style.setProperty(varName, value);
+                return instance.root.style.setProperty(varName, value);
             }
         };
     };
@@ -10806,19 +12924,19 @@ var MDCRipple = /** @class */function (_super) {
         configurable: true
     });
     MDCRipple.prototype.activate = function () {
-        this.foundation_.activate();
+        this.foundation.activate();
     };
     MDCRipple.prototype.deactivate = function () {
-        this.foundation_.deactivate();
+        this.foundation.deactivate();
     };
     MDCRipple.prototype.layout = function () {
-        this.foundation_.layout();
+        this.foundation.layout();
     };
     MDCRipple.prototype.getDefaultFoundation = function () {
         return new foundation_1.MDCRippleFoundation(MDCRipple.createAdapter(this));
     };
     MDCRipple.prototype.initialSyncWithDOM = function () {
-        var root = this.root_;
+        var root = this.root;
         this.unbounded = 'mdcRippleIsUnbounded' in root.dataset;
     };
     /**
@@ -10828,7 +12946,7 @@ var MDCRipple = /** @class */function (_super) {
      * That's why this function exists.
      */
     MDCRipple.prototype.setUnbounded_ = function () {
-        this.foundation_.setUnbounded(Boolean(this.unbounded_));
+        this.foundation.setUnbounded(Boolean(this.unbounded_));
     };
     return MDCRipple;
 }(component_1.MDCComponent);
@@ -10973,7 +13091,7 @@ var activatedTargets = [];
 var MDCRippleFoundation = /** @class */function (_super) {
     __extends(MDCRippleFoundation, _super);
     function MDCRippleFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCRippleFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCRippleFoundation.defaultAdapter), adapter)) || this;
         _this.activationAnimationHasEnded_ = false;
         _this.activationTimer_ = 0;
         _this.fgDeactivationRemovalTimer_ = 0;
@@ -11091,9 +13209,9 @@ var MDCRippleFoundation = /** @class */function (_super) {
                 ROOT_1 = _a.ROOT,
                 UNBOUNDED_1 = _a.UNBOUNDED;
             requestAnimationFrame(function () {
-                _this.adapter_.addClass(ROOT_1);
-                if (_this.adapter_.isUnbounded()) {
-                    _this.adapter_.addClass(UNBOUNDED_1);
+                _this.adapter.addClass(ROOT_1);
+                if (_this.adapter.isUnbounded()) {
+                    _this.adapter.addClass(UNBOUNDED_1);
                     // Unbounded ripples need layout logic applied immediately to set coordinates for both shade and ripple
                     _this.layoutInternal_();
                 }
@@ -11106,19 +13224,19 @@ var MDCRippleFoundation = /** @class */function (_super) {
             if (this.activationTimer_) {
                 clearTimeout(this.activationTimer_);
                 this.activationTimer_ = 0;
-                this.adapter_.removeClass(MDCRippleFoundation.cssClasses.FG_ACTIVATION);
+                this.adapter.removeClass(MDCRippleFoundation.cssClasses.FG_ACTIVATION);
             }
             if (this.fgDeactivationRemovalTimer_) {
                 clearTimeout(this.fgDeactivationRemovalTimer_);
                 this.fgDeactivationRemovalTimer_ = 0;
-                this.adapter_.removeClass(MDCRippleFoundation.cssClasses.FG_DEACTIVATION);
+                this.adapter.removeClass(MDCRippleFoundation.cssClasses.FG_DEACTIVATION);
             }
             var _a = MDCRippleFoundation.cssClasses,
                 ROOT_2 = _a.ROOT,
                 UNBOUNDED_2 = _a.UNBOUNDED;
             requestAnimationFrame(function () {
-                _this.adapter_.removeClass(ROOT_2);
-                _this.adapter_.removeClass(UNBOUNDED_2);
+                _this.adapter.removeClass(ROOT_2);
+                _this.adapter.removeClass(UNBOUNDED_2);
                 _this.removeCssVars_();
             });
         }
@@ -11147,21 +13265,21 @@ var MDCRippleFoundation = /** @class */function (_super) {
     MDCRippleFoundation.prototype.setUnbounded = function (unbounded) {
         var UNBOUNDED = MDCRippleFoundation.cssClasses.UNBOUNDED;
         if (unbounded) {
-            this.adapter_.addClass(UNBOUNDED);
+            this.adapter.addClass(UNBOUNDED);
         } else {
-            this.adapter_.removeClass(UNBOUNDED);
+            this.adapter.removeClass(UNBOUNDED);
         }
     };
     MDCRippleFoundation.prototype.handleFocus = function () {
         var _this = this;
         requestAnimationFrame(function () {
-            return _this.adapter_.addClass(MDCRippleFoundation.cssClasses.BG_FOCUSED);
+            return _this.adapter.addClass(MDCRippleFoundation.cssClasses.BG_FOCUSED);
         });
     };
     MDCRippleFoundation.prototype.handleBlur = function () {
         var _this = this;
         requestAnimationFrame(function () {
-            return _this.adapter_.removeClass(MDCRippleFoundation.cssClasses.BG_FOCUSED);
+            return _this.adapter.removeClass(MDCRippleFoundation.cssClasses.BG_FOCUSED);
         });
     };
     /**
@@ -11171,7 +13289,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
      * and then initialized at mount time on the client.
      */
     MDCRippleFoundation.prototype.supportsPressRipple_ = function () {
-        return this.adapter_.browserSupportsCssVars();
+        return this.adapter.browserSupportsCssVars();
     };
     MDCRippleFoundation.prototype.defaultActivationState_ = function () {
         return {
@@ -11190,41 +13308,41 @@ var MDCRippleFoundation = /** @class */function (_super) {
         var _this = this;
         if (supportsPressRipple) {
             ACTIVATION_EVENT_TYPES.forEach(function (evtType) {
-                _this.adapter_.registerInteractionHandler(evtType, _this.activateHandler_);
+                _this.adapter.registerInteractionHandler(evtType, _this.activateHandler_);
             });
-            if (this.adapter_.isUnbounded()) {
-                this.adapter_.registerResizeHandler(this.resizeHandler_);
+            if (this.adapter.isUnbounded()) {
+                this.adapter.registerResizeHandler(this.resizeHandler_);
             }
         }
-        this.adapter_.registerInteractionHandler('focus', this.focusHandler_);
-        this.adapter_.registerInteractionHandler('blur', this.blurHandler_);
+        this.adapter.registerInteractionHandler('focus', this.focusHandler_);
+        this.adapter.registerInteractionHandler('blur', this.blurHandler_);
     };
     MDCRippleFoundation.prototype.registerDeactivationHandlers_ = function (evt) {
         var _this = this;
         if (evt.type === 'keydown') {
-            this.adapter_.registerInteractionHandler('keyup', this.deactivateHandler_);
+            this.adapter.registerInteractionHandler('keyup', this.deactivateHandler_);
         } else {
             POINTER_DEACTIVATION_EVENT_TYPES.forEach(function (evtType) {
-                _this.adapter_.registerDocumentInteractionHandler(evtType, _this.deactivateHandler_);
+                _this.adapter.registerDocumentInteractionHandler(evtType, _this.deactivateHandler_);
             });
         }
     };
     MDCRippleFoundation.prototype.deregisterRootHandlers_ = function () {
         var _this = this;
         ACTIVATION_EVENT_TYPES.forEach(function (evtType) {
-            _this.adapter_.deregisterInteractionHandler(evtType, _this.activateHandler_);
+            _this.adapter.deregisterInteractionHandler(evtType, _this.activateHandler_);
         });
-        this.adapter_.deregisterInteractionHandler('focus', this.focusHandler_);
-        this.adapter_.deregisterInteractionHandler('blur', this.blurHandler_);
-        if (this.adapter_.isUnbounded()) {
-            this.adapter_.deregisterResizeHandler(this.resizeHandler_);
+        this.adapter.deregisterInteractionHandler('focus', this.focusHandler_);
+        this.adapter.deregisterInteractionHandler('blur', this.blurHandler_);
+        if (this.adapter.isUnbounded()) {
+            this.adapter.deregisterResizeHandler(this.resizeHandler_);
         }
     };
     MDCRippleFoundation.prototype.deregisterDeactivationHandlers_ = function () {
         var _this = this;
-        this.adapter_.deregisterInteractionHandler('keyup', this.deactivateHandler_);
+        this.adapter.deregisterInteractionHandler('keyup', this.deactivateHandler_);
         POINTER_DEACTIVATION_EVENT_TYPES.forEach(function (evtType) {
-            _this.adapter_.deregisterDocumentInteractionHandler(evtType, _this.deactivateHandler_);
+            _this.adapter.deregisterDocumentInteractionHandler(evtType, _this.deactivateHandler_);
         });
     };
     MDCRippleFoundation.prototype.removeCssVars_ = function () {
@@ -11233,13 +13351,13 @@ var MDCRippleFoundation = /** @class */function (_super) {
         var keys = Object.keys(rippleStrings);
         keys.forEach(function (key) {
             if (key.indexOf('VAR_') === 0) {
-                _this.adapter_.updateCssVariable(rippleStrings[key], null);
+                _this.adapter.updateCssVariable(rippleStrings[key], null);
             }
         });
     };
     MDCRippleFoundation.prototype.activate_ = function (evt) {
         var _this = this;
-        if (this.adapter_.isSurfaceDisabled()) {
+        if (this.adapter.isSurfaceDisabled()) {
             return;
         }
         var activationState = this.activationState_;
@@ -11257,7 +13375,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
         activationState.activationEvent = evt;
         activationState.wasActivatedByPointer = activationState.isProgrammatic ? false : evt !== undefined && (evt.type === 'mousedown' || evt.type === 'touchstart' || evt.type === 'pointerdown');
         var hasActivatedChild = evt !== undefined && activatedTargets.length > 0 && activatedTargets.some(function (target) {
-            return _this.adapter_.containsEventTarget(target);
+            return _this.adapter.containsEventTarget(target);
         });
         if (hasActivatedChild) {
             // Immediately reset activation state, while preserving logic that prevents touch follow-on events
@@ -11294,7 +13412,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
         });
     };
     MDCRippleFoundation.prototype.checkElementMadeActive_ = function (evt) {
-        return evt !== undefined && evt.type === 'keydown' ? this.adapter_.isSurfaceActive() : true;
+        return evt !== undefined && evt.type === 'keydown' ? this.adapter.isSurfaceActive() : true;
     };
     MDCRippleFoundation.prototype.animateActivation_ = function () {
         var _this = this;
@@ -11308,23 +13426,23 @@ var MDCRippleFoundation = /** @class */function (_super) {
         this.layoutInternal_();
         var translateStart = '';
         var translateEnd = '';
-        if (!this.adapter_.isUnbounded()) {
+        if (!this.adapter.isUnbounded()) {
             var _c = this.getFgTranslationCoordinates_(),
                 startPoint = _c.startPoint,
                 endPoint = _c.endPoint;
             translateStart = startPoint.x + "px, " + startPoint.y + "px";
             translateEnd = endPoint.x + "px, " + endPoint.y + "px";
         }
-        this.adapter_.updateCssVariable(VAR_FG_TRANSLATE_START, translateStart);
-        this.adapter_.updateCssVariable(VAR_FG_TRANSLATE_END, translateEnd);
+        this.adapter.updateCssVariable(VAR_FG_TRANSLATE_START, translateStart);
+        this.adapter.updateCssVariable(VAR_FG_TRANSLATE_END, translateEnd);
         // Cancel any ongoing activation/deactivation animations
         clearTimeout(this.activationTimer_);
         clearTimeout(this.fgDeactivationRemovalTimer_);
         this.rmBoundedActivationClasses_();
-        this.adapter_.removeClass(FG_DEACTIVATION);
+        this.adapter.removeClass(FG_DEACTIVATION);
         // Force layout in order to re-trigger the animation.
-        this.adapter_.computeBoundingRect();
-        this.adapter_.addClass(FG_ACTIVATION);
+        this.adapter.computeBoundingRect();
+        this.adapter.addClass(FG_ACTIVATION);
         this.activationTimer_ = setTimeout(function () {
             return _this.activationTimerCallback_();
         }, DEACTIVATION_TIMEOUT_MS);
@@ -11335,7 +13453,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
             wasActivatedByPointer = _a.wasActivatedByPointer;
         var startPoint;
         if (wasActivatedByPointer) {
-            startPoint = util_1.getNormalizedEventCoords(activationEvent, this.adapter_.getWindowPageOffset(), this.adapter_.computeBoundingRect());
+            startPoint = util_1.getNormalizedEventCoords(activationEvent, this.adapter.getWindowPageOffset(), this.adapter.computeBoundingRect());
         } else {
             startPoint = {
                 x: this.frame_.width / 2,
@@ -11364,17 +13482,17 @@ var MDCRippleFoundation = /** @class */function (_super) {
         var activationHasEnded = hasDeactivationUXRun || !isActivated;
         if (activationHasEnded && this.activationAnimationHasEnded_) {
             this.rmBoundedActivationClasses_();
-            this.adapter_.addClass(FG_DEACTIVATION);
+            this.adapter.addClass(FG_DEACTIVATION);
             this.fgDeactivationRemovalTimer_ = setTimeout(function () {
-                _this.adapter_.removeClass(FG_DEACTIVATION);
+                _this.adapter.removeClass(FG_DEACTIVATION);
             }, constants_1.numbers.FG_DEACTIVATION_MS);
         }
     };
     MDCRippleFoundation.prototype.rmBoundedActivationClasses_ = function () {
         var FG_ACTIVATION = MDCRippleFoundation.cssClasses.FG_ACTIVATION;
-        this.adapter_.removeClass(FG_ACTIVATION);
+        this.adapter.removeClass(FG_ACTIVATION);
         this.activationAnimationHasEnded_ = false;
-        this.adapter_.computeBoundingRect();
+        this.adapter.computeBoundingRect();
     };
     MDCRippleFoundation.prototype.resetActivationState_ = function () {
         var _this = this;
@@ -11417,7 +13535,7 @@ var MDCRippleFoundation = /** @class */function (_super) {
     };
     MDCRippleFoundation.prototype.layoutInternal_ = function () {
         var _this = this;
-        this.frame_ = this.adapter_.computeBoundingRect();
+        this.frame_ = this.adapter.computeBoundingRect();
         var maxDim = Math.max(this.frame_.height, this.frame_.width);
         // Surface diameter is treated differently for unbounded vs. bounded ripples.
         // Unbounded ripple diameter is calculated smaller since the surface is expected to already be padded appropriately
@@ -11429,11 +13547,11 @@ var MDCRippleFoundation = /** @class */function (_super) {
             var hypotenuse = Math.sqrt(Math.pow(_this.frame_.width, 2) + Math.pow(_this.frame_.height, 2));
             return hypotenuse + MDCRippleFoundation.numbers.PADDING;
         };
-        this.maxRadius_ = this.adapter_.isUnbounded() ? maxDim : getBoundedRadius();
+        this.maxRadius_ = this.adapter.isUnbounded() ? maxDim : getBoundedRadius();
         // Ripple is sized as a fraction of the largest dimension of the surface, then scales up using a CSS scale transform
         var initialSize = Math.floor(maxDim * MDCRippleFoundation.numbers.INITIAL_ORIGIN_SCALE);
         // Unbounded ripple size should always be even number to equally center align.
-        if (this.adapter_.isUnbounded() && initialSize % 2 !== 0) {
+        if (this.adapter.isUnbounded() && initialSize % 2 !== 0) {
             this.initialSize_ = initialSize - 1;
         } else {
             this.initialSize_ = initialSize;
@@ -11447,15 +13565,15 @@ var MDCRippleFoundation = /** @class */function (_super) {
             VAR_LEFT = _a.VAR_LEFT,
             VAR_TOP = _a.VAR_TOP,
             VAR_FG_SCALE = _a.VAR_FG_SCALE;
-        this.adapter_.updateCssVariable(VAR_FG_SIZE, this.initialSize_ + "px");
-        this.adapter_.updateCssVariable(VAR_FG_SCALE, this.fgScale_);
-        if (this.adapter_.isUnbounded()) {
+        this.adapter.updateCssVariable(VAR_FG_SIZE, this.initialSize_ + "px");
+        this.adapter.updateCssVariable(VAR_FG_SCALE, this.fgScale_);
+        if (this.adapter.isUnbounded()) {
             this.unboundedCoords_ = {
                 left: Math.round(this.frame_.width / 2 - this.initialSize_ / 2),
                 top: Math.round(this.frame_.height / 2 - this.initialSize_ / 2)
             };
-            this.adapter_.updateCssVariable(VAR_LEFT, this.unboundedCoords_.left + "px");
-            this.adapter_.updateCssVariable(VAR_TOP, this.unboundedCoords_.top + "px");
+            this.adapter.updateCssVariable(VAR_LEFT, this.unboundedCoords_.left + "px");
+            this.adapter.updateCssVariable(VAR_TOP, this.unboundedCoords_.top + "px");
         }
     };
     return MDCRippleFoundation;
@@ -11710,30 +13828,30 @@ var MDCSelect = /** @class */function (_super) {
                 return new component_7.MDCSelectHelperText(el);
             };
         }
-        this.selectAnchor_ = this.root_.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
-        this.selectedText_ = this.root_.querySelector(constants_1.strings.SELECTED_TEXT_SELECTOR);
-        if (!this.selectedText_) {
+        this.selectAnchor = this.root.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
+        this.selectedText = this.root.querySelector(constants_1.strings.SELECTED_TEXT_SELECTOR);
+        if (!this.selectedText) {
             throw new Error('MDCSelect: Missing required element: The following selector must be present: ' + ("'" + constants_1.strings.SELECTED_TEXT_SELECTOR + "'"));
         }
-        if (this.selectedText_.hasAttribute(constants_1.strings.ARIA_CONTROLS)) {
-            var helperTextElement = document.getElementById(this.selectedText_.getAttribute(constants_1.strings.ARIA_CONTROLS));
+        if (this.selectAnchor.hasAttribute(constants_1.strings.ARIA_CONTROLS)) {
+            var helperTextElement = document.getElementById(this.selectAnchor.getAttribute(constants_1.strings.ARIA_CONTROLS));
             if (helperTextElement) {
-                this.helperText_ = helperTextFactory(helperTextElement);
+                this.helperText = helperTextFactory(helperTextElement);
             }
         }
-        this.menuSetup_(menuFactory);
-        var labelElement = this.root_.querySelector(constants_1.strings.LABEL_SELECTOR);
-        this.label_ = labelElement ? labelFactory(labelElement) : null;
-        var lineRippleElement = this.root_.querySelector(constants_1.strings.LINE_RIPPLE_SELECTOR);
-        this.lineRipple_ = lineRippleElement ? lineRippleFactory(lineRippleElement) : null;
-        var outlineElement = this.root_.querySelector(constants_1.strings.OUTLINE_SELECTOR);
-        this.outline_ = outlineElement ? outlineFactory(outlineElement) : null;
-        var leadingIcon = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
+        this.menuSetup(menuFactory);
+        var labelElement = this.root.querySelector(constants_1.strings.LABEL_SELECTOR);
+        this.label = labelElement ? labelFactory(labelElement) : null;
+        var lineRippleElement = this.root.querySelector(constants_1.strings.LINE_RIPPLE_SELECTOR);
+        this.lineRipple = lineRippleElement ? lineRippleFactory(lineRippleElement) : null;
+        var outlineElement = this.root.querySelector(constants_1.strings.OUTLINE_SELECTOR);
+        this.outline = outlineElement ? outlineFactory(outlineElement) : null;
+        var leadingIcon = this.root.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
         if (leadingIcon) {
-            this.leadingIcon_ = iconFactory(leadingIcon);
+            this.leadingIcon = iconFactory(leadingIcon);
         }
-        if (!this.root_.classList.contains(constants_1.cssClasses.OUTLINED)) {
-            this.ripple_ = this.createRipple_();
+        if (!this.root.classList.contains(constants_1.cssClasses.OUTLINED)) {
+            this.ripple = this.createRipple();
         }
     };
     /**
@@ -11742,99 +13860,96 @@ var MDCSelect = /** @class */function (_super) {
      */
     MDCSelect.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.handleChange_ = function () {
-            return _this.foundation_.handleChange();
+        this.handleChange = function () {
+            _this.foundation.handleChange();
         };
-        this.handleFocus_ = function () {
-            return _this.foundation_.handleFocus();
+        this.handleFocus = function () {
+            _this.foundation.handleFocus();
         };
-        this.handleBlur_ = function () {
-            return _this.foundation_.handleBlur();
+        this.handleBlur = function () {
+            _this.foundation.handleBlur();
         };
-        this.handleClick_ = function (evt) {
-            _this.selectedText_.focus();
-            _this.foundation_.handleClick(_this.getNormalizedXCoordinate_(evt));
+        this.handleClick = function (evt) {
+            _this.selectAnchor.focus();
+            _this.foundation.handleClick(_this.getNormalizedXCoordinate(evt));
         };
-        this.handleKeydown_ = function (evt) {
-            return _this.foundation_.handleKeydown(evt);
+        this.handleKeydown = function (evt) {
+            _this.foundation.handleKeydown(evt);
         };
-        this.handleMenuItemAction_ = function (evt) {
-            return _this.foundation_.handleMenuItemAction(evt.detail.index);
+        this.handleMenuItemAction = function (evt) {
+            _this.foundation.handleMenuItemAction(evt.detail.index);
         };
-        this.handleMenuOpened_ = function () {
-            return _this.foundation_.handleMenuOpened();
+        this.handleMenuOpened = function () {
+            _this.foundation.handleMenuOpened();
         };
-        this.handleMenuClosed_ = function () {
-            return _this.foundation_.handleMenuClosed();
+        this.handleMenuClosed = function () {
+            _this.foundation.handleMenuClosed();
         };
-        this.selectedText_.addEventListener('focus', this.handleFocus_);
-        this.selectedText_.addEventListener('blur', this.handleBlur_);
-        this.selectedText_.addEventListener('click', this.handleClick_);
-        this.selectedText_.addEventListener('keydown', this.handleKeydown_);
-        this.menu_.listen(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
-        this.menu_.listen(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
-        this.menu_.listen(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction_);
-        this.foundation_.init();
-        // Sets disabled state in foundation
-        this.disabled = this.root_.classList.contains(constants_1.cssClasses.DISABLED);
+        this.selectAnchor.addEventListener('focus', this.handleFocus);
+        this.selectAnchor.addEventListener('blur', this.handleBlur);
+        this.selectAnchor.addEventListener('click', this.handleClick);
+        this.selectAnchor.addEventListener('keydown', this.handleKeydown);
+        this.menu.listen(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed);
+        this.menu.listen(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened);
+        this.menu.listen(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction);
     };
     MDCSelect.prototype.destroy = function () {
-        this.selectedText_.removeEventListener('change', this.handleChange_);
-        this.selectedText_.removeEventListener('focus', this.handleFocus_);
-        this.selectedText_.removeEventListener('blur', this.handleBlur_);
-        this.selectedText_.removeEventListener('keydown', this.handleKeydown_);
-        this.selectedText_.removeEventListener('click', this.handleClick_);
-        this.menu_.unlisten(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed_);
-        this.menu_.unlisten(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened_);
-        this.menu_.unlisten(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction_);
-        this.menu_.destroy();
-        if (this.ripple_) {
-            this.ripple_.destroy();
+        this.selectAnchor.removeEventListener('change', this.handleChange);
+        this.selectAnchor.removeEventListener('focus', this.handleFocus);
+        this.selectAnchor.removeEventListener('blur', this.handleBlur);
+        this.selectAnchor.removeEventListener('keydown', this.handleKeydown);
+        this.selectAnchor.removeEventListener('click', this.handleClick);
+        this.menu.unlisten(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed);
+        this.menu.unlisten(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened);
+        this.menu.unlisten(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction);
+        this.menu.destroy();
+        if (this.ripple) {
+            this.ripple.destroy();
         }
-        if (this.outline_) {
-            this.outline_.destroy();
+        if (this.outline) {
+            this.outline.destroy();
         }
-        if (this.leadingIcon_) {
-            this.leadingIcon_.destroy();
+        if (this.leadingIcon) {
+            this.leadingIcon.destroy();
         }
-        if (this.helperText_) {
-            this.helperText_.destroy();
+        if (this.helperText) {
+            this.helperText.destroy();
         }
         _super.prototype.destroy.call(this);
     };
     Object.defineProperty(MDCSelect.prototype, "value", {
         get: function get() {
-            return this.foundation_.getValue();
+            return this.foundation.getValue();
         },
         set: function set(value) {
-            this.foundation_.setValue(value);
+            this.foundation.setValue(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelect.prototype, "selectedIndex", {
         get: function get() {
-            return this.foundation_.getSelectedIndex();
+            return this.foundation.getSelectedIndex();
         },
         set: function set(selectedIndex) {
-            this.foundation_.setSelectedIndex(selectedIndex, /** closeMenu */true);
+            this.foundation.setSelectedIndex(selectedIndex, /** closeMenu */true);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelect.prototype, "disabled", {
         get: function get() {
-            return this.foundation_.getDisabled();
+            return this.foundation.getDisabled();
         },
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSelect.prototype, "leadingIconAriaLabel", {
         set: function set(label) {
-            this.foundation_.setLeadingIconAriaLabel(label);
+            this.foundation.setLeadingIconAriaLabel(label);
         },
         enumerable: true,
         configurable: true
@@ -11844,7 +13959,7 @@ var MDCSelect = /** @class */function (_super) {
          * Sets the text content of the leading icon.
          */
         set: function set(content) {
-            this.foundation_.setLeadingIconContent(content);
+            this.foundation.setLeadingIconContent(content);
         },
         enumerable: true,
         configurable: true
@@ -11854,7 +13969,20 @@ var MDCSelect = /** @class */function (_super) {
          * Sets the text content of the helper text.
          */
         set: function set(content) {
-            this.foundation_.setHelperTextContent(content);
+            this.foundation.setHelperTextContent(content);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCSelect.prototype, "useDefaultValidation", {
+        /**
+         * Enables or disables the default validation scheme where a required select
+         * must be non-empty. Set to false for custom validation.
+         * @param useDefaultValidation Set this to false to ignore default
+         *     validation scheme.
+         */
+        set: function set(useDefaultValidation) {
+            this.foundation.setUseDefaultValidation(useDefaultValidation);
         },
         enumerable: true,
         configurable: true
@@ -11864,13 +13992,13 @@ var MDCSelect = /** @class */function (_super) {
          * Checks if the select is in a valid state.
          */
         get: function get() {
-            return this.foundation_.isValid();
+            return this.foundation.isValid();
         },
         /**
          * Sets the current invalid state of the select.
          */
         set: function set(isValid) {
-            this.foundation_.setValid(isValid);
+            this.foundation.setValid(isValid);
         },
         enumerable: true,
         configurable: true
@@ -11880,139 +14008,164 @@ var MDCSelect = /** @class */function (_super) {
          * Returns whether the select is required.
          */
         get: function get() {
-            return this.foundation_.getRequired();
+            return this.foundation.getRequired();
         },
         /**
          * Sets the control to the required state.
          */
         set: function set(isRequired) {
-            this.foundation_.setRequired(isRequired);
+            this.foundation.setRequired(isRequired);
         },
         enumerable: true,
         configurable: true
     });
     /**
-     * Recomputes the outline SVG path for the outline element.
+     * Re-calculates if the notched outline should be notched and if the label
+     * should float.
      */
     MDCSelect.prototype.layout = function () {
-        this.foundation_.layout();
+        this.foundation.layout();
+    };
+    /**
+     * Synchronizes the list of options with the state of the foundation. Call
+     * this whenever menu options are dynamically updated.
+     */
+    MDCSelect.prototype.layoutOptions = function () {
+        this.foundation.layoutOptions();
+        this.menu.layout();
     };
     MDCSelect.prototype.getDefaultFoundation = function () {
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
-        var adapter = __assign({}, this.getSelectAdapterMethods_(), this.getCommonAdapterMethods_(), this.getOutlineAdapterMethods_(), this.getLabelAdapterMethods_());
-        return new foundation_2.MDCSelectFoundation(adapter, this.getFoundationMap_());
+        var adapter = __assign(__assign(__assign(__assign({}, this.getSelectAdapterMethods()), this.getCommonAdapterMethods()), this.getOutlineAdapterMethods()), this.getLabelAdapterMethods());
+        return new foundation_2.MDCSelectFoundation(adapter, this.getFoundationMap());
     };
     /**
      * Handles setup for the menu.
      */
-    MDCSelect.prototype.menuSetup_ = function (menuFactory) {
-        this.menuElement_ = this.root_.querySelector(constants_1.strings.MENU_SELECTOR);
-        this.menu_ = menuFactory(this.menuElement_);
+    MDCSelect.prototype.menuSetup = function (menuFactory) {
+        this.menuElement = this.root.querySelector(constants_1.strings.MENU_SELECTOR);
+        this.menu = menuFactory(this.menuElement);
+        this.menu.hasTypeahead = true;
     };
-    MDCSelect.prototype.createRipple_ = function () {
+    MDCSelect.prototype.createRipple = function () {
         var _this = this;
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
-        var adapter = __assign({}, component_6.MDCRipple.createAdapter({ root_: this.selectAnchor_ }), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
-                return _this.selectedText_.addEventListener(evtType, handler);
+        var adapter = __assign(__assign({}, component_6.MDCRipple.createAdapter({ root: this.selectAnchor })), { registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
+                _this.selectAnchor.addEventListener(evtType, handler);
             }, deregisterInteractionHandler: function deregisterInteractionHandler(evtType, handler) {
-                return _this.selectedText_.removeEventListener(evtType, handler);
+                _this.selectAnchor.removeEventListener(evtType, handler);
             } });
         // tslint:enable:object-literal-sort-keys
-        return new component_6.MDCRipple(this.selectAnchor_, new foundation_1.MDCRippleFoundation(adapter));
+        return new component_6.MDCRipple(this.selectAnchor, new foundation_1.MDCRippleFoundation(adapter));
     };
-    MDCSelect.prototype.getSelectAdapterMethods_ = function () {
+    MDCSelect.prototype.getSelectAdapterMethods = function () {
         var _this = this;
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
             getSelectedMenuItem: function getSelectedMenuItem() {
-                return _this.menuElement_.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
+                return _this.menuElement.querySelector(constants_1.strings.SELECTED_ITEM_SELECTOR);
             },
             getMenuItemAttr: function getMenuItemAttr(menuItem, attr) {
                 return menuItem.getAttribute(attr);
             },
             setSelectedText: function setSelectedText(text) {
-                return _this.selectedText_.textContent = text;
+                _this.selectedText.textContent = text;
             },
-            isSelectedTextFocused: function isSelectedTextFocused() {
-                return document.activeElement === _this.selectedText_;
+            isSelectAnchorFocused: function isSelectAnchorFocused() {
+                return document.activeElement === _this.selectAnchor;
             },
-            getSelectedTextAttr: function getSelectedTextAttr(attr) {
-                return _this.selectedText_.getAttribute(attr);
+            getSelectAnchorAttr: function getSelectAnchorAttr(attr) {
+                return _this.selectAnchor.getAttribute(attr);
             },
-            setSelectedTextAttr: function setSelectedTextAttr(attr, value) {
-                return _this.selectedText_.setAttribute(attr, value);
+            setSelectAnchorAttr: function setSelectAnchorAttr(attr, value) {
+                _this.selectAnchor.setAttribute(attr, value);
+            },
+            removeSelectAnchorAttr: function removeSelectAnchorAttr(attr) {
+                _this.selectAnchor.removeAttribute(attr);
+            },
+            addMenuClass: function addMenuClass(className) {
+                _this.menuElement.classList.add(className);
+            },
+            removeMenuClass: function removeMenuClass(className) {
+                _this.menuElement.classList.remove(className);
             },
             openMenu: function openMenu() {
-                return _this.menu_.open = true;
+                _this.menu.open = true;
             },
             closeMenu: function closeMenu() {
-                return _this.menu_.open = false;
+                _this.menu.open = false;
             },
             getAnchorElement: function getAnchorElement() {
-                return _this.root_.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
+                return _this.root.querySelector(constants_1.strings.SELECT_ANCHOR_SELECTOR);
             },
             setMenuAnchorElement: function setMenuAnchorElement(anchorEl) {
-                return _this.menu_.setAnchorElement(anchorEl);
+                _this.menu.setAnchorElement(anchorEl);
             },
             setMenuAnchorCorner: function setMenuAnchorCorner(anchorCorner) {
-                return _this.menu_.setAnchorCorner(anchorCorner);
+                _this.menu.setAnchorCorner(anchorCorner);
             },
             setMenuWrapFocus: function setMenuWrapFocus(wrapFocus) {
-                return _this.menu_.wrapFocus = wrapFocus;
+                _this.menu.wrapFocus = wrapFocus;
             },
             setAttributeAtIndex: function setAttributeAtIndex(index, attributeName, attributeValue) {
-                return _this.menu_.items[index].setAttribute(attributeName, attributeValue);
+                _this.menu.items[index].setAttribute(attributeName, attributeValue);
             },
             removeAttributeAtIndex: function removeAttributeAtIndex(index, attributeName) {
-                return _this.menu_.items[index].removeAttribute(attributeName);
+                _this.menu.items[index].removeAttribute(attributeName);
             },
             focusMenuItemAtIndex: function focusMenuItemAtIndex(index) {
-                return _this.menu_.items[index].focus();
+                _this.menu.items[index].focus();
             },
             getMenuItemCount: function getMenuItemCount() {
-                return _this.menu_.items.length;
+                return _this.menu.items.length;
             },
             getMenuItemValues: function getMenuItemValues() {
-                return _this.menu_.items.map(function (el) {
+                return _this.menu.items.map(function (el) {
                     return el.getAttribute(constants_1.strings.VALUE_ATTR) || '';
                 });
             },
             getMenuItemTextAtIndex: function getMenuItemTextAtIndex(index) {
-                return _this.menu_.items[index].textContent;
+                return _this.menu.getPrimaryTextAtIndex(index);
             },
             addClassAtIndex: function addClassAtIndex(index, className) {
-                return _this.menu_.items[index].classList.add(className);
+                _this.menu.items[index].classList.add(className);
             },
             removeClassAtIndex: function removeClassAtIndex(index, className) {
-                return _this.menu_.items[index].classList.remove(className);
+                _this.menu.items[index].classList.remove(className);
+            },
+            isTypeaheadInProgress: function isTypeaheadInProgress() {
+                return _this.menu.typeaheadInProgress;
+            },
+            typeaheadMatchItem: function typeaheadMatchItem(nextChar, startingIndex) {
+                return _this.menu.typeaheadMatchItem(nextChar, startingIndex);
             }
         };
         // tslint:enable:object-literal-sort-keys
     };
-    MDCSelect.prototype.getCommonAdapterMethods_ = function () {
+    MDCSelect.prototype.getCommonAdapterMethods = function () {
         var _this = this;
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             setRippleCenter: function setRippleCenter(normalizedX) {
-                return _this.lineRipple_ && _this.lineRipple_.setRippleCenter(normalizedX);
+                _this.lineRipple && _this.lineRipple.setRippleCenter(normalizedX);
             },
             activateBottomLine: function activateBottomLine() {
-                return _this.lineRipple_ && _this.lineRipple_.activate();
+                _this.lineRipple && _this.lineRipple.activate();
             },
             deactivateBottomLine: function deactivateBottomLine() {
-                return _this.lineRipple_ && _this.lineRipple_.deactivate();
+                _this.lineRipple && _this.lineRipple.deactivate();
             },
             notifyChange: function notifyChange(value) {
                 var index = _this.selectedIndex;
@@ -12021,34 +14174,37 @@ var MDCSelect = /** @class */function (_super) {
         };
         // tslint:enable:object-literal-sort-keys
     };
-    MDCSelect.prototype.getOutlineAdapterMethods_ = function () {
+    MDCSelect.prototype.getOutlineAdapterMethods = function () {
         var _this = this;
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
             hasOutline: function hasOutline() {
-                return Boolean(_this.outline_);
+                return Boolean(_this.outline);
             },
             notchOutline: function notchOutline(labelWidth) {
-                return _this.outline_ && _this.outline_.notch(labelWidth);
+                _this.outline && _this.outline.notch(labelWidth);
             },
             closeOutline: function closeOutline() {
-                return _this.outline_ && _this.outline_.closeNotch();
+                _this.outline && _this.outline.closeNotch();
             }
         };
         // tslint:enable:object-literal-sort-keys
     };
-    MDCSelect.prototype.getLabelAdapterMethods_ = function () {
+    MDCSelect.prototype.getLabelAdapterMethods = function () {
         var _this = this;
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
             hasLabel: function hasLabel() {
-                return !!_this.label_;
+                return !!_this.label;
             },
             floatLabel: function floatLabel(shouldFloat) {
-                return _this.label_ && _this.label_.float(shouldFloat);
+                _this.label && _this.label.float(shouldFloat);
             },
             getLabelWidth: function getLabelWidth() {
-                return _this.label_ ? _this.label_.getWidth() : 0;
+                return _this.label ? _this.label.getWidth() : 0;
+            },
+            setLabelRequired: function setLabelRequired(isRequired) {
+                _this.label && _this.label.setRequired(isRequired);
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -12056,21 +14212,21 @@ var MDCSelect = /** @class */function (_super) {
     /**
      * Calculates where the line ripple should start based on the x coordinate within the component.
      */
-    MDCSelect.prototype.getNormalizedXCoordinate_ = function (evt) {
+    MDCSelect.prototype.getNormalizedXCoordinate = function (evt) {
         var targetClientRect = evt.target.getBoundingClientRect();
-        var xCoordinate = this.isTouchEvent_(evt) ? evt.touches[0].clientX : evt.clientX;
+        var xCoordinate = this.isTouchEvent(evt) ? evt.touches[0].clientX : evt.clientX;
         return xCoordinate - targetClientRect.left;
     };
-    MDCSelect.prototype.isTouchEvent_ = function (evt) {
+    MDCSelect.prototype.isTouchEvent = function (evt) {
         return Boolean(evt.touches);
     };
     /**
      * Returns a map of all subcomponents to subfoundations.
      */
-    MDCSelect.prototype.getFoundationMap_ = function () {
+    MDCSelect.prototype.getFoundationMap = function () {
         return {
-            helperText: this.helperText_ ? this.helperText_.foundation : undefined,
-            leadingIcon: this.leadingIcon_ ? this.leadingIcon_.foundation : undefined
+            helperText: this.helperText ? this.helperText.foundationForSelect : undefined,
+            leadingIcon: this.leadingIcon ? this.leadingIcon.foundationForSelect : undefined
         };
     };
     return MDCSelect;
@@ -12117,6 +14273,7 @@ var cssClasses = {
     DISABLED: 'mdc-select--disabled',
     FOCUSED: 'mdc-select--focused',
     INVALID: 'mdc-select--invalid',
+    MENU_INVALID: 'mdc-select__menu--invalid',
     OUTLINED: 'mdc-select--outlined',
     REQUIRED: 'mdc-select--required',
     ROOT: 'mdc-select',
@@ -12212,6 +14369,7 @@ var __assign = this && this.__assign || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
+var keyboard_1 = __webpack_require__(/*! @material/dom/keyboard */ "./packages/mdc-dom/keyboard.ts");
 var constants_1 = __webpack_require__(/*! @material/menu-surface/constants */ "./packages/mdc-menu-surface/constants.ts");
 var constants_2 = __webpack_require__(/*! ./constants */ "./packages/mdc-select/constants.ts");
 var MDCSelectFoundation = /** @class */function (_super) {
@@ -12225,18 +14383,23 @@ var MDCSelectFoundation = /** @class */function (_super) {
         if (foundationMap === void 0) {
             foundationMap = {};
         }
-        var _this = _super.call(this, __assign({}, MDCSelectFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCSelectFoundation.defaultAdapter), adapter)) || this;
         // Index of the currently selected menu item.
-        _this.selectedIndex_ = constants_2.numbers.UNSET_INDEX;
+        _this.selectedIndex = constants_2.numbers.UNSET_INDEX;
+        // VALUE_ATTR values of the menu items.
+        _this.menuItemValues = [];
         // Disabled state
-        _this.disabled_ = false;
-        // isMenuOpen_ is used to track the state of the menu by listening to the MDCMenuSurface:closed event
-        // For reference, menu.open will return false if the menu is still closing, but isMenuOpen_ returns false only after
-        // the menu has closed
-        _this.isMenuOpen_ = false;
-        _this.leadingIcon_ = foundationMap.leadingIcon;
-        _this.helperText_ = foundationMap.helperText;
-        _this.menuItemValues_ = _this.adapter_.getMenuItemValues();
+        _this.disabled = false;
+        // isMenuOpen is used to track the state of the menu by listening to the
+        // MDCMenuSurface:closed event For reference, menu.open will return false if
+        // the menu is still closing, but isMenuOpen returns false only after the menu
+        // has closed
+        _this.isMenuOpen = false;
+        // By default, select is invalid if it is required but no value is selected.
+        _this.useDefaultValidation = true;
+        _this.customValidity = true;
+        _this.leadingIcon = foundationMap.leadingIcon;
+        _this.helperText = foundationMap.helperText;
         return _this;
     }
     Object.defineProperty(MDCSelectFoundation, "cssClasses", {
@@ -12294,6 +14457,9 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 getLabelWidth: function getLabelWidth() {
                     return 0;
                 },
+                setLabelRequired: function setLabelRequired() {
+                    return undefined;
+                },
                 hasOutline: function hasOutline() {
                     return false;
                 },
@@ -12312,13 +14478,22 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 setSelectedText: function setSelectedText() {
                     return undefined;
                 },
-                isSelectedTextFocused: function isSelectedTextFocused() {
+                isSelectAnchorFocused: function isSelectAnchorFocused() {
                     return false;
                 },
-                getSelectedTextAttr: function getSelectedTextAttr() {
+                getSelectAnchorAttr: function getSelectAnchorAttr() {
                     return '';
                 },
-                setSelectedTextAttr: function setSelectedTextAttr() {
+                setSelectAnchorAttr: function setSelectAnchorAttr() {
+                    return undefined;
+                },
+                removeSelectAnchorAttr: function removeSelectAnchorAttr() {
+                    return undefined;
+                },
+                addMenuClass: function addMenuClass() {
+                    return undefined;
+                },
+                removeMenuClass: function removeMenuClass() {
                     return undefined;
                 },
                 openMenu: function openMenu() {
@@ -12342,9 +14517,6 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 setAttributeAtIndex: function setAttributeAtIndex() {
                     return undefined;
                 },
-                removeAttributeAtIndex: function removeAttributeAtIndex() {
-                    return undefined;
-                },
                 focusMenuItemAtIndex: function focusMenuItemAtIndex() {
                     return undefined;
                 },
@@ -12365,6 +14537,12 @@ var MDCSelectFoundation = /** @class */function (_super) {
                 },
                 removeClassAtIndex: function removeClassAtIndex() {
                     return undefined;
+                },
+                isTypeaheadInProgress: function isTypeaheadInProgress() {
+                    return false;
+                },
+                typeaheadMatchItem: function typeaheadMatchItem() {
+                    return -1;
                 }
             };
             // tslint:enable:object-literal-sort-keys
@@ -12374,108 +14552,123 @@ var MDCSelectFoundation = /** @class */function (_super) {
     });
     /** Returns the index of the currently selected menu item, or -1 if none. */
     MDCSelectFoundation.prototype.getSelectedIndex = function () {
-        return this.selectedIndex_;
+        return this.selectedIndex;
     };
     MDCSelectFoundation.prototype.setSelectedIndex = function (index, closeMenu) {
         if (closeMenu === void 0) {
             closeMenu = false;
         }
-        if (index >= this.adapter_.getMenuItemCount()) {
+        if (index >= this.adapter.getMenuItemCount()) {
             return;
         }
-        var previouslySelectedIndex = this.selectedIndex_;
-        this.selectedIndex_ = index;
-        if (this.selectedIndex_ === constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.setSelectedText('');
-        } else {
-            this.adapter_.setSelectedText(this.adapter_.getMenuItemTextAtIndex(this.selectedIndex_).trim());
-        }
-        if (previouslySelectedIndex !== constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.removeClassAtIndex(previouslySelectedIndex, constants_2.cssClasses.SELECTED_ITEM_CLASS);
-            this.adapter_.removeAttributeAtIndex(previouslySelectedIndex, constants_2.strings.ARIA_SELECTED_ATTR);
-        }
-        if (this.selectedIndex_ !== constants_2.numbers.UNSET_INDEX) {
-            this.adapter_.addClassAtIndex(this.selectedIndex_, constants_2.cssClasses.SELECTED_ITEM_CLASS);
-            this.adapter_.setAttributeAtIndex(this.selectedIndex_, constants_2.strings.ARIA_SELECTED_ATTR, 'true');
-        }
-        this.layout();
+        this.removeSelectionAtIndex(this.selectedIndex);
+        this.setSelectionAtIndex(index);
         if (closeMenu) {
-            this.adapter_.closeMenu();
+            this.adapter.closeMenu();
         }
         this.handleChange();
     };
     MDCSelectFoundation.prototype.setValue = function (value) {
-        var index = this.menuItemValues_.indexOf(value);
+        var index = this.menuItemValues.indexOf(value);
         this.setSelectedIndex(index);
-        this.handleChange();
     };
     MDCSelectFoundation.prototype.getValue = function () {
-        var listItem = this.adapter_.getSelectedMenuItem();
+        var listItem = this.adapter.getSelectedMenuItem();
         if (listItem) {
-            return this.adapter_.getMenuItemAttr(listItem, constants_2.strings.VALUE_ATTR) || '';
+            return this.adapter.getMenuItemAttr(listItem, constants_2.strings.VALUE_ATTR) || '';
         }
         return '';
     };
     MDCSelectFoundation.prototype.getDisabled = function () {
-        return this.disabled_;
+        return this.disabled;
     };
     MDCSelectFoundation.prototype.setDisabled = function (isDisabled) {
-        this.disabled_ = isDisabled;
-        if (this.disabled_) {
-            this.adapter_.addClass(constants_2.cssClasses.DISABLED);
-            this.adapter_.closeMenu();
+        this.disabled = isDisabled;
+        if (this.disabled) {
+            this.adapter.addClass(constants_2.cssClasses.DISABLED);
+            this.adapter.closeMenu();
         } else {
-            this.adapter_.removeClass(constants_2.cssClasses.DISABLED);
+            this.adapter.removeClass(constants_2.cssClasses.DISABLED);
         }
-        if (this.leadingIcon_) {
-            this.leadingIcon_.setDisabled(this.disabled_);
+        if (this.leadingIcon) {
+            this.leadingIcon.setDisabled(this.disabled);
         }
-        this.adapter_.setSelectedTextAttr('tabindex', this.disabled_ ? '-1' : '0');
-        this.adapter_.setSelectedTextAttr('aria-disabled', this.disabled_.toString());
+        if (this.disabled) {
+            // Prevent click events from focusing select. Simply pointer-events: none
+            // is not enough since screenreader clicks may bypass this.
+            this.adapter.removeSelectAnchorAttr('tabindex');
+        } else {
+            this.adapter.setSelectAnchorAttr('tabindex', '0');
+        }
+        this.adapter.setSelectAnchorAttr('aria-disabled', this.disabled.toString());
+    };
+    /** Opens the menu. */
+    MDCSelectFoundation.prototype.openMenu = function () {
+        this.adapter.addClass(constants_2.cssClasses.ACTIVATED);
+        this.adapter.openMenu();
+        this.isMenuOpen = true;
+        this.adapter.setSelectAnchorAttr('aria-expanded', 'true');
     };
     /**
      * @param content Sets the content of the helper text.
      */
     MDCSelectFoundation.prototype.setHelperTextContent = function (content) {
-        if (this.helperText_) {
-            this.helperText_.setContent(content);
+        if (this.helperText) {
+            this.helperText.setContent(content);
         }
     };
+    /**
+     * Re-calculates if the notched outline should be notched and if the label
+     * should float.
+     */
     MDCSelectFoundation.prototype.layout = function () {
-        if (this.adapter_.hasLabel()) {
-            var openNotch = this.getValue().length > 0;
-            this.notchOutline(openNotch);
+        if (this.adapter.hasLabel()) {
+            var optionHasValue = this.getValue().length > 0;
+            var isFocused = this.adapter.hasClass(constants_2.cssClasses.FOCUSED);
+            var shouldFloatAndNotch = optionHasValue || isFocused;
+            var isRequired = this.adapter.hasClass(constants_2.cssClasses.REQUIRED);
+            this.notchOutline(shouldFloatAndNotch);
+            this.adapter.floatLabel(shouldFloatAndNotch);
+            this.adapter.setLabelRequired(isRequired);
         }
+    };
+    /**
+     * Synchronizes the list of options with the state of the foundation. Call
+     * this whenever menu options are dynamically updated.
+     */
+    MDCSelectFoundation.prototype.layoutOptions = function () {
+        this.menuItemValues = this.adapter.getMenuItemValues();
+        var selectedIndex = this.menuItemValues.indexOf(this.getValue());
+        this.setSelectionAtIndex(selectedIndex);
     };
     MDCSelectFoundation.prototype.handleMenuOpened = function () {
-        if (this.adapter_.getMenuItemValues().length === 0) {
+        if (this.menuItemValues.length === 0) {
             return;
         }
-        this.adapter_.addClass(constants_2.cssClasses.ACTIVATED);
         // Menu should open to the last selected element, should open to first menu item otherwise.
-        var focusItemIndex = this.selectedIndex_ >= 0 ? this.selectedIndex_ : 0;
-        this.adapter_.focusMenuItemAtIndex(focusItemIndex);
+        var focusItemIndex = this.selectedIndex >= 0 ? this.selectedIndex : 0;
+        this.adapter.focusMenuItemAtIndex(focusItemIndex);
     };
     MDCSelectFoundation.prototype.handleMenuClosed = function () {
-        this.adapter_.removeClass(constants_2.cssClasses.ACTIVATED);
-        this.isMenuOpen_ = false;
-        this.adapter_.setSelectedTextAttr('aria-expanded', 'false');
+        this.adapter.removeClass(constants_2.cssClasses.ACTIVATED);
+        this.isMenuOpen = false;
+        this.adapter.setSelectAnchorAttr('aria-expanded', 'false');
         // Unfocus the select if menu is closed without a selection
-        if (!this.adapter_.isSelectedTextFocused()) {
-            this.blur_();
+        if (!this.adapter.isSelectAnchorFocused()) {
+            this.blur();
         }
     };
     /**
      * Handles value changes, via change event or programmatic updates.
      */
     MDCSelectFoundation.prototype.handleChange = function () {
-        this.updateLabel_();
-        this.adapter_.notifyChange(this.getValue());
-        var isRequired = this.adapter_.hasClass(constants_2.cssClasses.REQUIRED);
-        if (isRequired) {
+        this.layout();
+        this.adapter.notifyChange(this.getValue());
+        var isRequired = this.adapter.hasClass(constants_2.cssClasses.REQUIRED);
+        if (isRequired && this.useDefaultValidation) {
             this.setValid(this.isValid());
-            if (this.helperText_) {
-                this.helperText_.setValidity(this.isValid());
+            if (this.helperText) {
+                this.helperText.setValidity(this.isValid());
             }
         }
     };
@@ -12486,148 +14679,172 @@ var MDCSelectFoundation = /** @class */function (_super) {
      * Handles focus events from select element.
      */
     MDCSelectFoundation.prototype.handleFocus = function () {
-        this.adapter_.addClass(constants_2.cssClasses.FOCUSED);
-        if (this.adapter_.hasLabel()) {
-            this.notchOutline(true);
-            this.adapter_.floatLabel(true);
-        }
-        this.adapter_.activateBottomLine();
-        if (this.helperText_) {
-            this.helperText_.showToScreenReader();
-        }
+        this.adapter.addClass(constants_2.cssClasses.FOCUSED);
+        this.layout();
+        this.adapter.activateBottomLine();
     };
     /**
      * Handles blur events from select element.
      */
     MDCSelectFoundation.prototype.handleBlur = function () {
-        if (this.isMenuOpen_) {
+        if (this.isMenuOpen) {
             return;
         }
-        this.blur_();
+        this.blur();
     };
     MDCSelectFoundation.prototype.handleClick = function (normalizedX) {
-        if (this.isMenuOpen_) {
+        if (this.disabled) {
             return;
         }
-        this.adapter_.setRippleCenter(normalizedX);
-        this.adapter_.openMenu();
-        this.isMenuOpen_ = true;
-        this.adapter_.setSelectedTextAttr('aria-expanded', 'true');
+        if (this.isMenuOpen) {
+            this.adapter.closeMenu();
+            return;
+        }
+        this.adapter.setRippleCenter(normalizedX);
+        this.openMenu();
     };
+    /**
+     * Handles keydown events on select element. Depending on the type of
+     * character typed, does typeahead matching or opens menu.
+     */
     MDCSelectFoundation.prototype.handleKeydown = function (event) {
-        if (this.isMenuOpen_) {
+        if (this.isMenuOpen || !this.adapter.hasClass(constants_2.cssClasses.FOCUSED)) {
             return;
         }
-        var isEnter = event.key === 'Enter' || event.keyCode === 13;
-        var isSpace = event.key === 'Space' || event.keyCode === 32;
-        var arrowUp = event.key === 'ArrowUp' || event.keyCode === 38;
-        var arrowDown = event.key === 'ArrowDown' || event.keyCode === 40;
-        if (this.adapter_.hasClass(constants_2.cssClasses.FOCUSED) && (isEnter || isSpace || arrowUp || arrowDown)) {
-            this.adapter_.openMenu();
-            this.isMenuOpen_ = true;
-            this.adapter_.setSelectedTextAttr('aria-expanded', 'true');
+        var isEnter = keyboard_1.normalizeKey(event) === keyboard_1.KEY.ENTER;
+        var isSpace = keyboard_1.normalizeKey(event) === keyboard_1.KEY.SPACEBAR;
+        var arrowUp = keyboard_1.normalizeKey(event) === keyboard_1.KEY.ARROW_UP;
+        var arrowDown = keyboard_1.normalizeKey(event) === keyboard_1.KEY.ARROW_DOWN;
+        // Typeahead
+        if (!isSpace && event.key && event.key.length === 1 || isSpace && this.adapter.isTypeaheadInProgress()) {
+            var key = isSpace ? ' ' : event.key;
+            var typeaheadNextIndex = this.adapter.typeaheadMatchItem(key, this.selectedIndex);
+            if (typeaheadNextIndex >= 0) {
+                this.setSelectedIndex(typeaheadNextIndex);
+            }
             event.preventDefault();
+            return;
         }
+        if (!isEnter && !isSpace && !arrowUp && !arrowDown) {
+            return;
+        }
+        // Increment/decrement index as necessary and open menu.
+        if (arrowUp && this.selectedIndex > 0) {
+            this.setSelectedIndex(this.selectedIndex - 1);
+        } else if (arrowDown && this.selectedIndex < this.adapter.getMenuItemCount() - 1) {
+            this.setSelectedIndex(this.selectedIndex + 1);
+        }
+        this.openMenu();
+        event.preventDefault();
     };
     /**
      * Opens/closes the notched outline.
      */
     MDCSelectFoundation.prototype.notchOutline = function (openNotch) {
-        if (!this.adapter_.hasOutline()) {
+        if (!this.adapter.hasOutline()) {
             return;
         }
-        var isFocused = this.adapter_.hasClass(constants_2.cssClasses.FOCUSED);
+        var isFocused = this.adapter.hasClass(constants_2.cssClasses.FOCUSED);
         if (openNotch) {
             var labelScale = constants_2.numbers.LABEL_SCALE;
-            var labelWidth = this.adapter_.getLabelWidth() * labelScale;
-            this.adapter_.notchOutline(labelWidth);
+            var labelWidth = this.adapter.getLabelWidth() * labelScale;
+            this.adapter.notchOutline(labelWidth);
         } else if (!isFocused) {
-            this.adapter_.closeOutline();
+            this.adapter.closeOutline();
         }
     };
     /**
      * Sets the aria label of the leading icon.
      */
     MDCSelectFoundation.prototype.setLeadingIconAriaLabel = function (label) {
-        if (this.leadingIcon_) {
-            this.leadingIcon_.setAriaLabel(label);
+        if (this.leadingIcon) {
+            this.leadingIcon.setAriaLabel(label);
         }
     };
     /**
      * Sets the text content of the leading icon.
      */
     MDCSelectFoundation.prototype.setLeadingIconContent = function (content) {
-        if (this.leadingIcon_) {
-            this.leadingIcon_.setContent(content);
+        if (this.leadingIcon) {
+            this.leadingIcon.setContent(content);
         }
     };
+    MDCSelectFoundation.prototype.setUseDefaultValidation = function (useDefaultValidation) {
+        this.useDefaultValidation = useDefaultValidation;
+    };
     MDCSelectFoundation.prototype.setValid = function (isValid) {
-        this.adapter_.setSelectedTextAttr('aria-invalid', (!isValid).toString());
+        if (!this.useDefaultValidation) {
+            this.customValidity = isValid;
+        }
+        this.adapter.setSelectAnchorAttr('aria-invalid', (!isValid).toString());
         if (isValid) {
-            this.adapter_.removeClass(constants_2.cssClasses.INVALID);
+            this.adapter.removeClass(constants_2.cssClasses.INVALID);
+            this.adapter.removeMenuClass(constants_2.cssClasses.MENU_INVALID);
         } else {
-            this.adapter_.addClass(constants_2.cssClasses.INVALID);
+            this.adapter.addClass(constants_2.cssClasses.INVALID);
+            this.adapter.addMenuClass(constants_2.cssClasses.MENU_INVALID);
         }
     };
     MDCSelectFoundation.prototype.isValid = function () {
-        if (this.adapter_.hasClass(constants_2.cssClasses.REQUIRED) && !this.adapter_.hasClass(constants_2.cssClasses.DISABLED)) {
+        if (this.useDefaultValidation && this.adapter.hasClass(constants_2.cssClasses.REQUIRED) && !this.adapter.hasClass(constants_2.cssClasses.DISABLED)) {
             // See notes for required attribute under https://www.w3.org/TR/html52/sec-forms.html#the-select-element
             // TL;DR: Invalid if no index is selected, or if the first index is selected and has an empty value.
-            return this.selectedIndex_ !== constants_2.numbers.UNSET_INDEX && (this.selectedIndex_ !== 0 || Boolean(this.getValue()));
+            return this.selectedIndex !== constants_2.numbers.UNSET_INDEX && (this.selectedIndex !== 0 || Boolean(this.getValue()));
         }
-        return true;
+        return this.customValidity;
     };
     MDCSelectFoundation.prototype.setRequired = function (isRequired) {
         if (isRequired) {
-            this.adapter_.addClass(constants_2.cssClasses.REQUIRED);
+            this.adapter.addClass(constants_2.cssClasses.REQUIRED);
         } else {
-            this.adapter_.removeClass(constants_2.cssClasses.REQUIRED);
+            this.adapter.removeClass(constants_2.cssClasses.REQUIRED);
         }
-        this.adapter_.setSelectedTextAttr('aria-required', isRequired.toString());
+        this.adapter.setSelectAnchorAttr('aria-required', isRequired.toString());
+        this.adapter.setLabelRequired(isRequired);
     };
     MDCSelectFoundation.prototype.getRequired = function () {
-        return this.adapter_.getSelectedTextAttr('aria-required') === 'true';
+        return this.adapter.getSelectAnchorAttr('aria-required') === 'true';
     };
     MDCSelectFoundation.prototype.init = function () {
-        var anchorEl = this.adapter_.getAnchorElement();
+        var anchorEl = this.adapter.getAnchorElement();
         if (anchorEl) {
-            this.adapter_.setMenuAnchorElement(anchorEl);
-            this.adapter_.setMenuAnchorCorner(constants_1.Corner.BOTTOM_START);
+            this.adapter.setMenuAnchorElement(anchorEl);
+            this.adapter.setMenuAnchorCorner(constants_1.Corner.BOTTOM_START);
         }
-        this.adapter_.setMenuWrapFocus(false);
-        var value = this.getValue();
-        if (value) {
-            this.setValue(value);
-        }
-        // Initially sync floating label
-        this.updateLabel_();
-    };
-    /**
-     * Notches the outline and floats the label when appropriate.
-     */
-    MDCSelectFoundation.prototype.updateLabel_ = function () {
-        var value = this.getValue();
-        var optionHasValue = value.length > 0;
-        if (this.adapter_.hasLabel()) {
-            this.notchOutline(optionHasValue);
-            if (!this.adapter_.hasClass(constants_2.cssClasses.FOCUSED)) {
-                this.adapter_.floatLabel(optionHasValue);
-            }
-        }
+        this.adapter.setMenuWrapFocus(false);
+        this.setDisabled(this.adapter.hasClass(constants_2.cssClasses.DISABLED));
+        this.layoutOptions();
+        this.layout();
     };
     /**
      * Unfocuses the select component.
      */
-    MDCSelectFoundation.prototype.blur_ = function () {
-        this.adapter_.removeClass(constants_2.cssClasses.FOCUSED);
-        this.updateLabel_();
-        this.adapter_.deactivateBottomLine();
-        var isRequired = this.adapter_.hasClass(constants_2.cssClasses.REQUIRED);
-        if (isRequired) {
+    MDCSelectFoundation.prototype.blur = function () {
+        this.adapter.removeClass(constants_2.cssClasses.FOCUSED);
+        this.layout();
+        this.adapter.deactivateBottomLine();
+        var isRequired = this.adapter.hasClass(constants_2.cssClasses.REQUIRED);
+        if (isRequired && this.useDefaultValidation) {
             this.setValid(this.isValid());
-            if (this.helperText_) {
-                this.helperText_.setValidity(this.isValid());
+            if (this.helperText) {
+                this.helperText.setValidity(this.isValid());
             }
+        }
+    };
+    MDCSelectFoundation.prototype.setSelectionAtIndex = function (index) {
+        this.selectedIndex = index;
+        if (index === constants_2.numbers.UNSET_INDEX) {
+            this.adapter.setSelectedText('');
+            return;
+        }
+        this.adapter.setSelectedText(this.adapter.getMenuItemTextAtIndex(index).trim());
+        this.adapter.addClassAtIndex(index, constants_2.cssClasses.SELECTED_ITEM_CLASS);
+        this.adapter.setAttributeAtIndex(index, constants_2.strings.ARIA_SELECTED_ATTR, 'true');
+    };
+    MDCSelectFoundation.prototype.removeSelectionAtIndex = function (index) {
+        if (index !== constants_2.numbers.UNSET_INDEX) {
+            this.adapter.removeClassAtIndex(index, constants_2.cssClasses.SELECTED_ITEM_CLASS);
+            this.adapter.setAttributeAtIndex(index, constants_2.strings.ARIA_SELECTED_ATTR, 'false');
         }
     };
     return MDCSelectFoundation;
@@ -12700,9 +14917,10 @@ var MDCSelectHelperText = /** @class */function (_super) {
     MDCSelectHelperText.attachTo = function (root) {
         return new MDCSelectHelperText(root);
     };
-    Object.defineProperty(MDCSelectHelperText.prototype, "foundation", {
+    Object.defineProperty(MDCSelectHelperText.prototype, "foundationForSelect", {
+        // Provided for access by MDCSelect component
         get: function get() {
-            return this.foundation_;
+            return this.foundation;
         },
         enumerable: true,
         configurable: true
@@ -12714,22 +14932,22 @@ var MDCSelectHelperText = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             setAttr: function setAttr(attr, value) {
-                return _this.root_.setAttribute(attr, value);
+                return _this.root.setAttribute(attr, value);
             },
             removeAttr: function removeAttr(attr) {
-                return _this.root_.removeAttribute(attr);
+                return _this.root.removeAttribute(attr);
             },
             setContent: function setContent(content) {
-                _this.root_.textContent = content;
+                _this.root.textContent = content;
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -12780,8 +14998,8 @@ var strings = {
 };
 exports.strings = strings;
 var cssClasses = {
-    HELPER_TEXT_PERSISTENT: 'mdc-select-helper-text--persistent',
-    HELPER_TEXT_VALIDATION_MSG: 'mdc-select-helper-text--validation-msg'
+    HELPER_TEXT_VALIDATION_MSG: 'mdc-select-helper-text--validation-msg',
+    HELPER_TEXT_VALIDATION_MSG_PERSISTENT: 'mdc-select-helper-text--validation-msg-persistent'
 };
 exports.cssClasses = cssClasses;
 
@@ -12856,7 +15074,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-select/
 var MDCSelectHelperTextFoundation = /** @class */function (_super) {
     __extends(MDCSelectHelperTextFoundation, _super);
     function MDCSelectHelperTextFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCSelectHelperTextFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCSelectHelperTextFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCSelectHelperTextFoundation, "cssClasses", {
         get: function get() {
@@ -12907,55 +15125,76 @@ var MDCSelectHelperTextFoundation = /** @class */function (_super) {
      * Sets the content of the helper text field.
      */
     MDCSelectHelperTextFoundation.prototype.setContent = function (content) {
-        this.adapter_.setContent(content);
+        this.adapter.setContent(content);
     };
     /**
-     *  Sets the persistency of the helper text.
-     */
-    MDCSelectHelperTextFoundation.prototype.setPersistent = function (isPersistent) {
-        if (isPersistent) {
-            this.adapter_.addClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
-        } else {
-            this.adapter_.removeClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
-        }
-    };
-    /**
-     * @param isValidation True to make the helper text act as an error validation message.
+     * Sets the helper text to act as a validation message.
+     * By default, validation messages are hidden when the select is valid and
+     * visible when the select is invalid.
+     *
+     * @param isValidation True to make the helper text act as an error validation
+     *     message.
      */
     MDCSelectHelperTextFoundation.prototype.setValidation = function (isValidation) {
         if (isValidation) {
-            this.adapter_.addClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+            this.adapter.addClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+            this.adapter.removeClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+        }
+    };
+    /**
+     * Sets the persistency of the validation helper text.
+     * This keeps the validation message visible even if the select is valid,
+     * though it will be displayed in the normal (grey) color.
+     */
+    MDCSelectHelperTextFoundation.prototype.setValidationMsgPersistent = function (isPersistent) {
+        if (isPersistent) {
+            this.adapter.addClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG_PERSISTENT);
+        } else {
+            this.adapter.removeClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG_PERSISTENT);
         }
     };
     /**
      * Makes the helper text visible to screen readers.
      */
     MDCSelectHelperTextFoundation.prototype.showToScreenReader = function () {
-        this.adapter_.removeAttr(constants_1.strings.ARIA_HIDDEN);
+        this.adapter.removeAttr(constants_1.strings.ARIA_HIDDEN);
     };
     /**
-     * Sets the validity of the helper text based on the select validity.
+     * When acting as a validation message, shows/hides the helper text and
+     * triggers alerts as necessary based on the select's validity.
      */
     MDCSelectHelperTextFoundation.prototype.setValidity = function (selectIsValid) {
-        var helperTextIsPersistent = this.adapter_.hasClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
-        var helperTextIsValidationMsg = this.adapter_.hasClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
-        var validationMsgNeedsDisplay = helperTextIsValidationMsg && !selectIsValid;
-        if (validationMsgNeedsDisplay) {
-            this.adapter_.setAttr(constants_1.strings.ROLE, 'alert');
-        } else {
-            this.adapter_.removeAttr(constants_1.strings.ROLE);
+        var isValidationMsg = this.adapter.hasClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+        if (!isValidationMsg) {
+            // Non-validating helper-text is always displayed and does not participate
+            // in validation logic.
+            return;
         }
-        if (!helperTextIsPersistent && !validationMsgNeedsDisplay) {
-            this.hide_();
+        var isPersistentValidationMsg = this.adapter.hasClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG_PERSISTENT);
+        // Validating helper text is displayed if select is invalid, unless it is
+        // set as persistent, in which case it always displays.
+        var msgShouldDisplay = !selectIsValid || isPersistentValidationMsg;
+        if (msgShouldDisplay) {
+            this.showToScreenReader();
+            // In addition to displaying, also trigger an alert if the select
+            // has become invalid.
+            if (!selectIsValid) {
+                this.adapter.setAttr(constants_1.strings.ROLE, 'alert');
+            } else {
+                this.adapter.removeAttr(constants_1.strings.ROLE);
+            }
+            return;
         }
+        // Hide everything.
+        this.adapter.removeAttr(constants_1.strings.ROLE);
+        this.hide();
     };
     /**
      * Hides the help text from screen readers.
      */
-    MDCSelectHelperTextFoundation.prototype.hide_ = function () {
-        this.adapter_.setAttr(constants_1.strings.ARIA_HIDDEN, 'true');
+    MDCSelectHelperTextFoundation.prototype.hide = function () {
+        this.adapter.setAttr(constants_1.strings.ARIA_HIDDEN, 'true');
     };
     return MDCSelectHelperTextFoundation;
 }(foundation_1.MDCFoundation);
@@ -13073,9 +15312,10 @@ var MDCSelectIcon = /** @class */function (_super) {
     MDCSelectIcon.attachTo = function (root) {
         return new MDCSelectIcon(root);
     };
-    Object.defineProperty(MDCSelectIcon.prototype, "foundation", {
+    Object.defineProperty(MDCSelectIcon.prototype, "foundationForSelect", {
+        // Provided for access by MDCSelect component
         get: function get() {
-            return this.foundation_;
+            return this.foundation;
         },
         enumerable: true,
         configurable: true
@@ -13087,16 +15327,16 @@ var MDCSelectIcon = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             getAttr: function getAttr(attr) {
-                return _this.root_.getAttribute(attr);
+                return _this.root.getAttribute(attr);
             },
             setAttr: function setAttr(attr, value) {
-                return _this.root_.setAttribute(attr, value);
+                return _this.root.setAttribute(attr, value);
             },
             removeAttr: function removeAttr(attr) {
-                return _this.root_.removeAttribute(attr);
+                return _this.root.removeAttribute(attr);
             },
             setContent: function setContent(content) {
-                _this.root_.textContent = content;
+                _this.root.textContent = content;
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -13228,7 +15468,7 @@ var INTERACTION_EVENTS = ['click', 'keydown'];
 var MDCSelectIconFoundation = /** @class */function (_super) {
     __extends(MDCSelectIconFoundation, _super);
     function MDCSelectIconFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCSelectIconFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCSelectIconFoundation.defaultAdapter), adapter)) || this;
         _this.savedTabIndex_ = null;
         _this.interactionHandler_ = function (evt) {
             return _this.handleInteraction(evt);
@@ -13278,15 +15518,15 @@ var MDCSelectIconFoundation = /** @class */function (_super) {
     });
     MDCSelectIconFoundation.prototype.init = function () {
         var _this = this;
-        this.savedTabIndex_ = this.adapter_.getAttr('tabindex');
+        this.savedTabIndex_ = this.adapter.getAttr('tabindex');
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.registerInteractionHandler(evtType, _this.interactionHandler_);
+            _this.adapter.registerInteractionHandler(evtType, _this.interactionHandler_);
         });
     };
     MDCSelectIconFoundation.prototype.destroy = function () {
         var _this = this;
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.deregisterInteractionHandler(evtType, _this.interactionHandler_);
+            _this.adapter.deregisterInteractionHandler(evtType, _this.interactionHandler_);
         });
     };
     MDCSelectIconFoundation.prototype.setDisabled = function (disabled) {
@@ -13294,23 +15534,23 @@ var MDCSelectIconFoundation = /** @class */function (_super) {
             return;
         }
         if (disabled) {
-            this.adapter_.setAttr('tabindex', '-1');
-            this.adapter_.removeAttr('role');
+            this.adapter.setAttr('tabindex', '-1');
+            this.adapter.removeAttr('role');
         } else {
-            this.adapter_.setAttr('tabindex', this.savedTabIndex_);
-            this.adapter_.setAttr('role', constants_1.strings.ICON_ROLE);
+            this.adapter.setAttr('tabindex', this.savedTabIndex_);
+            this.adapter.setAttr('role', constants_1.strings.ICON_ROLE);
         }
     };
     MDCSelectIconFoundation.prototype.setAriaLabel = function (label) {
-        this.adapter_.setAttr('aria-label', label);
+        this.adapter.setAttr('aria-label', label);
     };
     MDCSelectIconFoundation.prototype.setContent = function (content) {
-        this.adapter_.setContent(content);
+        this.adapter.setContent(content);
     };
     MDCSelectIconFoundation.prototype.handleInteraction = function (evt) {
         var isEnterKey = evt.key === 'Enter' || evt.keyCode === 13;
         if (evt.type === 'click' || isEnterKey) {
-            this.adapter_.notifyIconAction();
+            this.adapter.notifyIconAction();
         }
     };
     return MDCSelectIconFoundation;
@@ -13478,59 +15718,59 @@ var MDCSlider = /** @class */function (_super) {
     };
     Object.defineProperty(MDCSlider.prototype, "value", {
         get: function get() {
-            return this.foundation_.getValue();
+            return this.foundation.getValue();
         },
         set: function set(value) {
-            this.foundation_.setValue(value);
+            this.foundation.setValue(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSlider.prototype, "min", {
         get: function get() {
-            return this.foundation_.getMin();
+            return this.foundation.getMin();
         },
         set: function set(min) {
-            this.foundation_.setMin(min);
+            this.foundation.setMin(min);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSlider.prototype, "max", {
         get: function get() {
-            return this.foundation_.getMax();
+            return this.foundation.getMax();
         },
         set: function set(max) {
-            this.foundation_.setMax(max);
+            this.foundation.setMax(max);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSlider.prototype, "step", {
         get: function get() {
-            return this.foundation_.getStep();
+            return this.foundation.getStep();
         },
         set: function set(step) {
-            this.foundation_.setStep(step);
+            this.foundation.setStep(step);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSlider.prototype, "disabled", {
         get: function get() {
-            return this.foundation_.isDisabled();
+            return this.foundation.isDisabled();
         },
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
     });
     MDCSlider.prototype.initialize = function () {
-        this.thumbContainer_ = this.root_.querySelector(constants_1.strings.THUMB_CONTAINER_SELECTOR);
-        this.track_ = this.root_.querySelector(constants_1.strings.TRACK_SELECTOR);
-        this.pinValueMarker_ = this.root_.querySelector(constants_1.strings.PIN_VALUE_MARKER_SELECTOR);
-        this.trackMarkerContainer_ = this.root_.querySelector(constants_1.strings.TRACK_MARKER_CONTAINER_SELECTOR);
+        this.thumbContainer_ = this.root.querySelector(constants_1.strings.THUMB_CONTAINER_SELECTOR);
+        this.track_ = this.root.querySelector(constants_1.strings.TRACK_SELECTOR);
+        this.pinValueMarker_ = this.root.querySelector(constants_1.strings.PIN_VALUE_MARKER_SELECTOR);
+        this.trackMarkerContainer_ = this.root.querySelector(constants_1.strings.TRACK_MARKER_CONTAINER_SELECTOR);
     };
     MDCSlider.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -13541,28 +15781,28 @@ var MDCSlider = /** @class */function (_super) {
         // order as the adapter interface.
         var adapter = {
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             getAttribute: function getAttribute(name) {
-                return _this.root_.getAttribute(name);
+                return _this.root.getAttribute(name);
             },
             setAttribute: function setAttribute(name, value) {
-                return _this.root_.setAttribute(name, value);
+                return _this.root.setAttribute(name, value);
             },
             removeAttribute: function removeAttribute(name) {
-                return _this.root_.removeAttribute(name);
+                return _this.root.removeAttribute(name);
             },
             computeBoundingRect: function computeBoundingRect() {
-                return _this.root_.getBoundingClientRect();
+                return _this.root.getBoundingClientRect();
             },
             getTabIndex: function getTabIndex() {
-                return _this.root_.tabIndex;
+                return _this.root.tabIndex;
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler, events_1.applyPassive());
@@ -13616,16 +15856,16 @@ var MDCSlider = /** @class */function (_super) {
                 _this.trackMarkerContainer_.style.setProperty('background', markerBkgdShorthand);
             },
             isRTL: function isRTL() {
-                return getComputedStyle(_this.root_).direction === 'rtl';
+                return getComputedStyle(_this.root).direction === 'rtl';
             }
         };
         // tslint:enable:object-literal-sort-keys
         return new foundation_1.MDCSliderFoundation(adapter);
     };
     MDCSlider.prototype.initialSyncWithDOM = function () {
-        var origValueNow = this.parseFloat_(this.root_.getAttribute(constants_1.strings.ARIA_VALUENOW), this.value);
-        var min = this.parseFloat_(this.root_.getAttribute(constants_1.strings.ARIA_VALUEMIN), this.min);
-        var max = this.parseFloat_(this.root_.getAttribute(constants_1.strings.ARIA_VALUEMAX), this.max);
+        var origValueNow = this.parseFloat_(this.root.getAttribute(constants_1.strings.ARIA_VALUENOW), this.value);
+        var min = this.parseFloat_(this.root.getAttribute(constants_1.strings.ARIA_VALUEMIN), this.min);
+        var max = this.parseFloat_(this.root.getAttribute(constants_1.strings.ARIA_VALUEMAX), this.max);
         // min and max need to be set in the right order to avoid throwing an error
         // when the new min is greater than the default max.
         if (min >= this.max) {
@@ -13635,13 +15875,13 @@ var MDCSlider = /** @class */function (_super) {
             this.min = min;
             this.max = max;
         }
-        this.step = this.parseFloat_(this.root_.getAttribute(constants_1.strings.STEP_DATA_ATTR), this.step);
+        this.step = this.parseFloat_(this.root.getAttribute(constants_1.strings.STEP_DATA_ATTR), this.step);
         this.value = origValueNow;
-        this.disabled = this.root_.hasAttribute(constants_1.strings.ARIA_DISABLED) && this.root_.getAttribute(constants_1.strings.ARIA_DISABLED) !== 'false';
-        this.foundation_.setupTrackMarker();
+        this.disabled = this.root.hasAttribute(constants_1.strings.ARIA_DISABLED) && this.root.getAttribute(constants_1.strings.ARIA_DISABLED) !== 'false';
+        this.foundation.setupTrackMarker();
     };
     MDCSlider.prototype.layout = function () {
-        this.foundation_.layout();
+        this.foundation.layout();
     };
     MDCSlider.prototype.stepUp = function (amount) {
         if (amount === void 0) {
@@ -13706,7 +15946,8 @@ var cssClasses = {
     FOCUS: 'mdc-slider--focus',
     HAS_TRACK_MARKER: 'mdc-slider--display-markers',
     IN_TRANSIT: 'mdc-slider--in-transit',
-    IS_DISCRETE: 'mdc-slider--discrete'
+    IS_DISCRETE: 'mdc-slider--discrete',
+    DISABLE_TOUCH_ACTION: 'mdc-slider--disable-touch-action'
 };
 exports.cssClasses = cssClasses;
 var strings = {
@@ -13797,8 +16038,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(/*! @material/animation/util */ "./packages/mdc-animation/util.ts");
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-slider/constants.ts");
-var DOWN_EVENTS = ['mousedown', 'pointerdown', 'touchstart'];
-var UP_EVENTS = ['mouseup', 'pointerup', 'touchend'];
+// Accessing `window` without a `typeof` check will throw on Node environments.
+var hasWindow = typeof window !== 'undefined';
+var hasPointerEventSupport = hasWindow && !!window.PointerEvent;
+var DOWN_EVENTS = hasPointerEventSupport ? ['pointerdown'] : ['mousedown', 'touchstart'];
+var UP_EVENTS = hasPointerEventSupport ? ['pointerup'] : ['mouseup', 'touchend'];
 var MOVE_EVENT_MAP = {
     mousedown: 'mousemove',
     pointerdown: 'pointermove',
@@ -13817,7 +16061,7 @@ var KEY_IDS = {
 var MDCSliderFoundation = /** @class */function (_super) {
     __extends(MDCSliderFoundation, _super);
     function MDCSliderFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCSliderFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCSliderFoundation.defaultAdapter), adapter)) || this;
         /**
          * We set this to NaN since we want it to be a number, but we can't use '0' or
          * '-1' because those could be valid tabindices set by the client code.
@@ -13957,16 +16201,25 @@ var MDCSliderFoundation = /** @class */function (_super) {
     });
     MDCSliderFoundation.prototype.init = function () {
         var _this = this;
-        this.isDiscrete_ = this.adapter_.hasClass(constants_1.cssClasses.IS_DISCRETE);
-        this.hasTrackMarker_ = this.adapter_.hasClass(constants_1.cssClasses.HAS_TRACK_MARKER);
+        this.isDiscrete_ = this.adapter.hasClass(constants_1.cssClasses.IS_DISCRETE);
+        this.hasTrackMarker_ = this.adapter.hasClass(constants_1.cssClasses.HAS_TRACK_MARKER);
         DOWN_EVENTS.forEach(function (evtName) {
-            _this.adapter_.registerInteractionHandler(evtName, _this.interactionStartHandler_);
-            _this.adapter_.registerThumbContainerInteractionHandler(evtName, _this.thumbContainerPointerHandler_);
+            _this.adapter.registerInteractionHandler(evtName, _this.interactionStartHandler_);
+            _this.adapter.registerThumbContainerInteractionHandler(evtName, _this.thumbContainerPointerHandler_);
         });
-        this.adapter_.registerInteractionHandler('keydown', this.keydownHandler_);
-        this.adapter_.registerInteractionHandler('focus', this.focusHandler_);
-        this.adapter_.registerInteractionHandler('blur', this.blurHandler_);
-        this.adapter_.registerResizeHandler(this.resizeHandler_);
+        if (hasPointerEventSupport) {
+            /*
+             * When pointermove happens, if too much sliding happens, the browser
+             * believes you are panning in the x direction and stops firing
+             * pointermove events and supplies its own gestures. (similar to
+             * preventing default on touchmove)
+             */
+            this.adapter.addClass(constants_1.cssClasses.DISABLE_TOUCH_ACTION);
+        }
+        this.adapter.registerInteractionHandler('keydown', this.keydownHandler_);
+        this.adapter.registerInteractionHandler('focus', this.focusHandler_);
+        this.adapter.registerInteractionHandler('blur', this.blurHandler_);
+        this.adapter.registerResizeHandler(this.resizeHandler_);
         this.layout();
         // At last step, provide a reasonable default value to discrete slider
         if (this.isDiscrete_ && this.getStep() === 0) {
@@ -13976,21 +16229,21 @@ var MDCSliderFoundation = /** @class */function (_super) {
     MDCSliderFoundation.prototype.destroy = function () {
         var _this = this;
         DOWN_EVENTS.forEach(function (evtName) {
-            _this.adapter_.deregisterInteractionHandler(evtName, _this.interactionStartHandler_);
-            _this.adapter_.deregisterThumbContainerInteractionHandler(evtName, _this.thumbContainerPointerHandler_);
+            _this.adapter.deregisterInteractionHandler(evtName, _this.interactionStartHandler_);
+            _this.adapter.deregisterThumbContainerInteractionHandler(evtName, _this.thumbContainerPointerHandler_);
         });
-        this.adapter_.deregisterInteractionHandler('keydown', this.keydownHandler_);
-        this.adapter_.deregisterInteractionHandler('focus', this.focusHandler_);
-        this.adapter_.deregisterInteractionHandler('blur', this.blurHandler_);
-        this.adapter_.deregisterResizeHandler(this.resizeHandler_);
+        this.adapter.deregisterInteractionHandler('keydown', this.keydownHandler_);
+        this.adapter.deregisterInteractionHandler('focus', this.focusHandler_);
+        this.adapter.deregisterInteractionHandler('blur', this.blurHandler_);
+        this.adapter.deregisterResizeHandler(this.resizeHandler_);
     };
     MDCSliderFoundation.prototype.setupTrackMarker = function () {
         if (this.isDiscrete_ && this.hasTrackMarker_ && this.getStep() !== 0) {
-            this.adapter_.setTrackMarkers(this.getStep(), this.getMax(), this.getMin());
+            this.adapter.setTrackMarkers(this.getStep(), this.getMax(), this.getMin());
         }
     };
     MDCSliderFoundation.prototype.layout = function () {
-        this.rect_ = this.adapter_.computeBoundingRect();
+        this.rect_ = this.adapter.computeBoundingRect();
         this.updateUIForCurrentValue_();
     };
     MDCSliderFoundation.prototype.getValue = function () {
@@ -14008,7 +16261,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
         }
         this.max_ = max;
         this.setValue_(this.value_, false, true);
-        this.adapter_.setAttribute(constants_1.strings.ARIA_VALUEMAX, String(this.max_));
+        this.adapter.setAttribute(constants_1.strings.ARIA_VALUEMAX, String(this.max_));
         this.setupTrackMarker();
     };
     MDCSliderFoundation.prototype.getMin = function () {
@@ -14020,7 +16273,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
         }
         this.min_ = min;
         this.setValue_(this.value_, false, true);
-        this.adapter_.setAttribute(constants_1.strings.ARIA_VALUEMIN, String(this.min_));
+        this.adapter.setAttribute(constants_1.strings.ARIA_VALUEMIN, String(this.min_));
         this.setupTrackMarker();
     };
     MDCSliderFoundation.prototype.getStep = function () {
@@ -14044,13 +16297,13 @@ var MDCSliderFoundation = /** @class */function (_super) {
         this.disabled_ = disabled;
         this.toggleClass_(constants_1.cssClasses.DISABLED, this.disabled_);
         if (this.disabled_) {
-            this.savedTabIndex_ = this.adapter_.getTabIndex();
-            this.adapter_.setAttribute(constants_1.strings.ARIA_DISABLED, 'true');
-            this.adapter_.removeAttribute('tabindex');
+            this.savedTabIndex_ = this.adapter.getTabIndex();
+            this.adapter.setAttribute(constants_1.strings.ARIA_DISABLED, 'true');
+            this.adapter.removeAttribute('tabindex');
         } else {
-            this.adapter_.removeAttribute(constants_1.strings.ARIA_DISABLED);
+            this.adapter.removeAttribute(constants_1.strings.ARIA_DISABLED);
             if (!isNaN(this.savedTabIndex_)) {
-                this.adapter_.setAttribute('tabindex', String(this.savedTabIndex_));
+                this.adapter.setAttribute('tabindex', String(this.savedTabIndex_));
             }
         }
     };
@@ -14076,14 +16329,14 @@ var MDCSliderFoundation = /** @class */function (_super) {
         // https://github.com/material-components/material-components-web/issues/1192)
         var upHandler = function upHandler() {
             _this.handleUp_();
-            _this.adapter_.deregisterBodyInteractionHandler(moveEventType, moveHandler);
+            _this.adapter.deregisterBodyInteractionHandler(moveEventType, moveHandler);
             UP_EVENTS.forEach(function (evtName) {
-                return _this.adapter_.deregisterBodyInteractionHandler(evtName, upHandler);
+                return _this.adapter.deregisterBodyInteractionHandler(evtName, upHandler);
             });
         };
-        this.adapter_.registerBodyInteractionHandler(moveEventType, moveHandler);
+        this.adapter.registerBodyInteractionHandler(moveEventType, moveHandler);
         UP_EVENTS.forEach(function (evtName) {
-            return _this.adapter_.registerBodyInteractionHandler(evtName, upHandler);
+            return _this.adapter.registerBodyInteractionHandler(evtName, upHandler);
         });
         this.setValueFromEvt_(downEvent);
     };
@@ -14099,7 +16352,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
      */
     MDCSliderFoundation.prototype.handleUp_ = function () {
         this.setActive_(false);
-        this.adapter_.notifyChange();
+        this.adapter.notifyChange();
     };
     /**
      * Returns the clientX of the event
@@ -14127,7 +16380,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
             min = _a.min_;
         var xPos = clientX - this.rect_.left;
         var pctComplete = xPos / this.rect_.width;
-        if (this.adapter_.isRTL()) {
+        if (this.adapter.isRTL()) {
             pctComplete = 1 - pctComplete;
         }
         // Fit the percentage complete between the range [min,max]
@@ -14146,9 +16399,9 @@ var MDCSliderFoundation = /** @class */function (_super) {
         // Prevent page from scrolling due to key presses that would normally scroll
         // the page
         evt.preventDefault();
-        this.adapter_.addClass(constants_1.cssClasses.FOCUS);
+        this.adapter.addClass(constants_1.cssClasses.FOCUS);
         this.setValue_(value, true);
-        this.adapter_.notifyChange();
+        this.adapter.notifyChange();
     };
     /**
      * Returns the computed name of the event
@@ -14189,7 +16442,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
             min = _a.min_,
             step = _a.step_;
         var delta = step || (max - min) / 100;
-        var valueNeedsToBeFlipped = this.adapter_.isRTL() && (keyId === KEY_IDS.ARROW_LEFT || keyId === KEY_IDS.ARROW_RIGHT);
+        var valueNeedsToBeFlipped = this.adapter.isRTL() && (keyId === KEY_IDS.ARROW_LEFT || keyId === KEY_IDS.ARROW_RIGHT);
         if (valueNeedsToBeFlipped) {
             delta = -delta;
         }
@@ -14216,11 +16469,11 @@ var MDCSliderFoundation = /** @class */function (_super) {
         if (this.preventFocusState_) {
             return;
         }
-        this.adapter_.addClass(constants_1.cssClasses.FOCUS);
+        this.adapter.addClass(constants_1.cssClasses.FOCUS);
     };
     MDCSliderFoundation.prototype.handleBlur_ = function () {
         this.preventFocusState_ = false;
-        this.adapter_.removeClass(constants_1.cssClasses.FOCUS);
+        this.adapter.removeClass(constants_1.cssClasses.FOCUS);
     };
     /**
      * Sets the value of the slider
@@ -14246,12 +16499,12 @@ var MDCSliderFoundation = /** @class */function (_super) {
         }
         value = value || 0; // coerce -0 to 0
         this.value_ = value;
-        this.adapter_.setAttribute(constants_1.strings.ARIA_VALUENOW, String(this.value_));
+        this.adapter.setAttribute(constants_1.strings.ARIA_VALUENOW, String(this.value_));
         this.updateUIForCurrentValue_();
         if (shouldFireInput) {
-            this.adapter_.notifyInput();
+            this.adapter.notifyInput();
             if (this.isDiscrete_) {
-                this.adapter_.setMarkerValue(value);
+                this.adapter.setMarkerValue(value);
             }
         }
     };
@@ -14270,25 +16523,25 @@ var MDCSliderFoundation = /** @class */function (_super) {
             value = _a.value_;
         var pctComplete = (value - min) / (max - min);
         var translatePx = pctComplete * this.rect_.width;
-        if (this.adapter_.isRTL()) {
+        if (this.adapter.isRTL()) {
             translatePx = this.rect_.width - translatePx;
         }
-        var transformProp = util_1.getCorrectPropertyName(window, 'transform');
-        var transitionendEvtName = util_1.getCorrectEventName(window, 'transitionend');
+        var transformProp = hasWindow ? util_1.getCorrectPropertyName(window, 'transform') : 'transform';
+        var transitionendEvtName = hasWindow ? util_1.getCorrectEventName(window, 'transitionend') : 'transitionend';
         if (this.inTransit_) {
             var onTransitionEnd_1 = function onTransitionEnd_1() {
                 _this.setInTransit_(false);
-                _this.adapter_.deregisterThumbContainerInteractionHandler(transitionendEvtName, onTransitionEnd_1);
+                _this.adapter.deregisterThumbContainerInteractionHandler(transitionendEvtName, onTransitionEnd_1);
             };
-            this.adapter_.registerThumbContainerInteractionHandler(transitionendEvtName, onTransitionEnd_1);
+            this.adapter.registerThumbContainerInteractionHandler(transitionendEvtName, onTransitionEnd_1);
         }
         requestAnimationFrame(function () {
             // NOTE(traviskaufman): It would be nice to use calc() here,
             // but IE cannot handle calcs in transforms correctly.
             // See: https://goo.gl/NC2itk
             // Also note that the -50% offset is used to center the slider thumb.
-            _this.adapter_.setThumbContainerStyleProperty(transformProp, "translateX(" + translatePx + "px) translateX(-50%)");
-            _this.adapter_.setTrackStyleProperty(transformProp, "scaleX(" + pctComplete + ")");
+            _this.adapter.setThumbContainerStyleProperty(transformProp, "translateX(" + translatePx + "px) translateX(-50%)");
+            _this.adapter.setTrackStyleProperty(transformProp, "scaleX(" + pctComplete + ")");
         });
     };
     /**
@@ -14310,9 +16563,9 @@ var MDCSliderFoundation = /** @class */function (_super) {
      */
     MDCSliderFoundation.prototype.toggleClass_ = function (className, shouldBePresent) {
         if (shouldBePresent) {
-            this.adapter_.addClass(className);
+            this.adapter.addClass(className);
         } else {
-            this.adapter_.removeClass(className);
+            this.adapter.removeClass(className);
         }
     };
     return MDCSliderFoundation;
@@ -14459,18 +16712,18 @@ var MDCSnackbar = /** @class */function (_super) {
     };
     MDCSnackbar.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.surfaceEl_ = this.root_.querySelector(SURFACE_SELECTOR);
-        this.labelEl_ = this.root_.querySelector(LABEL_SELECTOR);
-        this.actionEl_ = this.root_.querySelector(ACTION_SELECTOR);
+        this.surfaceEl_ = this.root.querySelector(SURFACE_SELECTOR);
+        this.labelEl_ = this.root.querySelector(LABEL_SELECTOR);
+        this.actionEl_ = this.root.querySelector(ACTION_SELECTOR);
         this.handleKeyDown_ = function (evt) {
-            return _this.foundation_.handleKeyDown(evt);
+            return _this.foundation.handleKeyDown(evt);
         };
         this.handleSurfaceClick_ = function (evt) {
             var target = evt.target;
             if (_this.isActionButton_(target)) {
-                _this.foundation_.handleActionButtonClick(evt);
+                _this.foundation.handleActionButtonClick(evt);
             } else if (_this.isActionIcon_(target)) {
-                _this.foundation_.handleActionIconClick(evt);
+                _this.foundation.handleActionIconClick(evt);
             }
         };
         this.registerKeyDownHandler_(this.handleKeyDown_);
@@ -14482,7 +16735,7 @@ var MDCSnackbar = /** @class */function (_super) {
         this.deregisterSurfaceClickHandler_(this.handleSurfaceClick_);
     };
     MDCSnackbar.prototype.open = function () {
-        this.foundation_.open();
+        this.foundation.open();
     };
     /**
      * @param reason Why the snackbar was closed. Value will be passed to CLOSING_EVENT and CLOSED_EVENT via the
@@ -14493,7 +16746,7 @@ var MDCSnackbar = /** @class */function (_super) {
         if (reason === void 0) {
             reason = '';
         }
-        this.foundation_.close(reason);
+        this.foundation.close(reason);
     };
     MDCSnackbar.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -14501,7 +16754,7 @@ var MDCSnackbar = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             announce: function announce() {
                 return _this.announce_(_this.labelEl_);
@@ -14519,34 +16772,34 @@ var MDCSnackbar = /** @class */function (_super) {
                 return _this.emit(OPENING_EVENT, {});
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             }
         };
         return new foundation_1.MDCSnackbarFoundation(adapter);
     };
     Object.defineProperty(MDCSnackbar.prototype, "timeoutMs", {
         get: function get() {
-            return this.foundation_.getTimeoutMs();
+            return this.foundation.getTimeoutMs();
         },
         set: function set(timeoutMs) {
-            this.foundation_.setTimeoutMs(timeoutMs);
+            this.foundation.setTimeoutMs(timeoutMs);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSnackbar.prototype, "closeOnEscape", {
         get: function get() {
-            return this.foundation_.getCloseOnEscape();
+            return this.foundation.getCloseOnEscape();
         },
         set: function set(closeOnEscape) {
-            this.foundation_.setCloseOnEscape(closeOnEscape);
+            this.foundation.setCloseOnEscape(closeOnEscape);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCSnackbar.prototype, "isOpen", {
         get: function get() {
-            return this.foundation_.isOpen();
+            return this.foundation.isOpen();
         },
         enumerable: true,
         configurable: true
@@ -14743,7 +16996,7 @@ var REASON_ACTION = constants_1.strings.REASON_ACTION,
 var MDCSnackbarFoundation = /** @class */function (_super) {
     __extends(MDCSnackbarFoundation, _super);
     function MDCSnackbarFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCSnackbarFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCSnackbarFoundation.defaultAdapter), adapter)) || this;
         _this.isOpen_ = false;
         _this.animationFrame_ = 0;
         _this.animationTimer_ = 0;
@@ -14808,25 +17061,25 @@ var MDCSnackbarFoundation = /** @class */function (_super) {
         this.animationFrame_ = 0;
         clearTimeout(this.animationTimer_);
         this.animationTimer_ = 0;
-        this.adapter_.removeClass(OPENING);
-        this.adapter_.removeClass(OPEN);
-        this.adapter_.removeClass(CLOSING);
+        this.adapter.removeClass(OPENING);
+        this.adapter.removeClass(OPEN);
+        this.adapter.removeClass(CLOSING);
     };
     MDCSnackbarFoundation.prototype.open = function () {
         var _this = this;
         this.clearAutoDismissTimer_();
         this.isOpen_ = true;
-        this.adapter_.notifyOpening();
-        this.adapter_.removeClass(CLOSING);
-        this.adapter_.addClass(OPENING);
-        this.adapter_.announce();
+        this.adapter.notifyOpening();
+        this.adapter.removeClass(CLOSING);
+        this.adapter.addClass(OPENING);
+        this.adapter.announce();
         // Wait a frame once display is no longer "none", to establish basis for animation
         this.runNextAnimationFrame_(function () {
-            _this.adapter_.addClass(OPEN);
+            _this.adapter.addClass(OPEN);
             _this.animationTimer_ = setTimeout(function () {
                 var timeoutMs = _this.getTimeoutMs();
                 _this.handleAnimationTimerEnd_();
-                _this.adapter_.notifyOpened();
+                _this.adapter.notifyOpened();
                 if (timeoutMs !== constants_1.numbers.INDETERMINATE) {
                     _this.autoDismissTimer_ = setTimeout(function () {
                         _this.close(REASON_DISMISS);
@@ -14853,14 +17106,14 @@ var MDCSnackbarFoundation = /** @class */function (_super) {
         this.animationFrame_ = 0;
         this.clearAutoDismissTimer_();
         this.isOpen_ = false;
-        this.adapter_.notifyClosing(reason);
-        this.adapter_.addClass(constants_1.cssClasses.CLOSING);
-        this.adapter_.removeClass(constants_1.cssClasses.OPEN);
-        this.adapter_.removeClass(constants_1.cssClasses.OPENING);
+        this.adapter.notifyClosing(reason);
+        this.adapter.addClass(constants_1.cssClasses.CLOSING);
+        this.adapter.removeClass(constants_1.cssClasses.OPEN);
+        this.adapter.removeClass(constants_1.cssClasses.OPENING);
         clearTimeout(this.animationTimer_);
         this.animationTimer_ = setTimeout(function () {
             _this.handleAnimationTimerEnd_();
-            _this.adapter_.notifyClosed(reason);
+            _this.adapter.notifyClosed(reason);
         }, constants_1.numbers.SNACKBAR_ANIMATION_CLOSE_TIME_MS);
     };
     MDCSnackbarFoundation.prototype.isOpen = function () {
@@ -14904,8 +17157,8 @@ var MDCSnackbarFoundation = /** @class */function (_super) {
     };
     MDCSnackbarFoundation.prototype.handleAnimationTimerEnd_ = function () {
         this.animationTimer_ = 0;
-        this.adapter_.removeClass(constants_1.cssClasses.OPENING);
-        this.adapter_.removeClass(constants_1.cssClasses.CLOSING);
+        this.adapter.removeClass(constants_1.cssClasses.OPENING);
+        this.adapter.removeClass(constants_1.cssClasses.CLOSING);
     };
     /**
      * Runs the given logic on the next animation frame, using setTimeout to factor in Firefox reflow behavior.
@@ -15197,7 +17450,7 @@ var MDCSwitch = /** @class */function (_super) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            return (_a = _this.foundation_).handleChange.apply(_a, __spread(args));
+            return (_a = _this.foundation).handleChange.apply(_a, __spread(args));
         };
         this.nativeControl_.addEventListener('change', this.changeHandler_);
         // Sometimes the checked state of the input element is saved in the history.
@@ -15211,10 +17464,10 @@ var MDCSwitch = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             setNativeControlChecked: function setNativeControlChecked(checked) {
                 return _this.nativeControl_.checked = checked;
@@ -15240,7 +17493,7 @@ var MDCSwitch = /** @class */function (_super) {
             return this.nativeControl_.checked;
         },
         set: function set(checked) {
-            this.foundation_.setChecked(checked);
+            this.foundation.setChecked(checked);
         },
         enumerable: true,
         configurable: true
@@ -15250,7 +17503,7 @@ var MDCSwitch = /** @class */function (_super) {
             return this.nativeControl_.disabled;
         },
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
@@ -15258,10 +17511,10 @@ var MDCSwitch = /** @class */function (_super) {
     MDCSwitch.prototype.createRipple_ = function () {
         var _this = this;
         var RIPPLE_SURFACE_SELECTOR = foundation_2.MDCSwitchFoundation.strings.RIPPLE_SURFACE_SELECTOR;
-        var rippleSurface = this.root_.querySelector(RIPPLE_SURFACE_SELECTOR);
+        var rippleSurface = this.root.querySelector(RIPPLE_SURFACE_SELECTOR);
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
-        var adapter = __assign({}, component_2.MDCRipple.createAdapter(this), { addClass: function addClass(className) {
+        var adapter = __assign(__assign({}, component_2.MDCRipple.createAdapter(this)), { addClass: function addClass(className) {
                 return rippleSurface.classList.add(className);
             }, computeBoundingRect: function computeBoundingRect() {
                 return rippleSurface.getBoundingClientRect();
@@ -15278,12 +17531,12 @@ var MDCSwitch = /** @class */function (_super) {
             }, updateCssVariable: function updateCssVariable(varName, value) {
                 rippleSurface.style.setProperty(varName, value);
             } });
-        return new component_2.MDCRipple(this.root_, new foundation_1.MDCRippleFoundation(adapter));
+        return new component_2.MDCRipple(this.root, new foundation_1.MDCRippleFoundation(adapter));
     };
     Object.defineProperty(MDCSwitch.prototype, "nativeControl_", {
         get: function get() {
             var NATIVE_CONTROL_SELECTOR = foundation_2.MDCSwitchFoundation.strings.NATIVE_CONTROL_SELECTOR;
-            return this.root_.querySelector(NATIVE_CONTROL_SELECTOR);
+            return this.root.querySelector(NATIVE_CONTROL_SELECTOR);
         },
         enumerable: true,
         configurable: true
@@ -15417,7 +17670,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-switch/
 var MDCSwitchFoundation = /** @class */function (_super) {
     __extends(MDCSwitchFoundation, _super);
     function MDCSwitchFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCSwitchFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCSwitchFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCSwitchFoundation, "strings", {
         /** The string constants used by the switch. */
@@ -15461,17 +17714,17 @@ var MDCSwitchFoundation = /** @class */function (_super) {
     });
     /** Sets the checked state of the switch. */
     MDCSwitchFoundation.prototype.setChecked = function (checked) {
-        this.adapter_.setNativeControlChecked(checked);
+        this.adapter.setNativeControlChecked(checked);
         this.updateAriaChecked_(checked);
         this.updateCheckedStyling_(checked);
     };
     /** Sets the disabled state of the switch. */
     MDCSwitchFoundation.prototype.setDisabled = function (disabled) {
-        this.adapter_.setNativeControlDisabled(disabled);
+        this.adapter.setNativeControlDisabled(disabled);
         if (disabled) {
-            this.adapter_.addClass(constants_1.cssClasses.DISABLED);
+            this.adapter.addClass(constants_1.cssClasses.DISABLED);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.DISABLED);
+            this.adapter.removeClass(constants_1.cssClasses.DISABLED);
         }
     };
     /** Handles the change event for the switch native control. */
@@ -15483,13 +17736,13 @@ var MDCSwitchFoundation = /** @class */function (_super) {
     /** Updates the styling of the switch based on its checked state. */
     MDCSwitchFoundation.prototype.updateCheckedStyling_ = function (checked) {
         if (checked) {
-            this.adapter_.addClass(constants_1.cssClasses.CHECKED);
+            this.adapter.addClass(constants_1.cssClasses.CHECKED);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.CHECKED);
+            this.adapter.removeClass(constants_1.cssClasses.CHECKED);
         }
     };
     MDCSwitchFoundation.prototype.updateAriaChecked_ = function (checked) {
-        this.adapter_.setNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR, "" + !!checked);
+        this.adapter.setNativeControlAttr(constants_1.strings.ARIA_CHECKED_ATTR, "" + !!checked);
     };
     return MDCSwitchFoundation;
 }(foundation_1.MDCFoundation);
@@ -15621,7 +17874,7 @@ var MDCTabBar = /** @class */function (_super) {
     });
     Object.defineProperty(MDCTabBar.prototype, "useAutomaticActivation", {
         set: function set(useAutomaticActivation) {
-            this.foundation_.setUseAutomaticActivation(useAutomaticActivation);
+            this.foundation.setUseAutomaticActivation(useAutomaticActivation);
         },
         enumerable: true,
         configurable: true
@@ -15643,10 +17896,10 @@ var MDCTabBar = /** @class */function (_super) {
     MDCTabBar.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.handleTabInteraction_ = function (evt) {
-            return _this.foundation_.handleTabInteraction(evt);
+            return _this.foundation.handleTabInteraction(evt);
         };
         this.handleKeyDown_ = function (evt) {
-            return _this.foundation_.handleKeyDown(evt);
+            return _this.foundation.handleKeyDown(evt);
         };
         this.listen(foundation_1.MDCTabFoundation.strings.INTERACTED_EVENT, this.handleTabInteraction_);
         this.listen('keydown', this.handleKeyDown_);
@@ -15687,13 +17940,13 @@ var MDCTabBar = /** @class */function (_super) {
                 return _this.tabScroller_.getScrollContentWidth();
             },
             getOffsetWidth: function getOffsetWidth() {
-                return _this.root_.offsetWidth;
+                return _this.root.offsetWidth;
             },
             isRTL: function isRTL() {
-                return window.getComputedStyle(_this.root_).getPropertyValue('direction') === 'rtl';
+                return window.getComputedStyle(_this.root).getPropertyValue('direction') === 'rtl';
             },
             setActiveTab: function setActiveTab(index) {
-                return _this.foundation_.activateTab(index);
+                return _this.foundation.activateTab(index);
             },
             activateTabAtIndex: function activateTabAtIndex(index, clientRect) {
                 return _this.tabList_[index].activate(clientRect);
@@ -15746,20 +17999,20 @@ var MDCTabBar = /** @class */function (_super) {
      * @param index The index of the tab
      */
     MDCTabBar.prototype.activateTab = function (index) {
-        this.foundation_.activateTab(index);
+        this.foundation.activateTab(index);
     };
     /**
      * Scrolls the tab at the given index into view
      * @param index THe index of the tab
      */
     MDCTabBar.prototype.scrollIntoView = function (index) {
-        this.foundation_.scrollIntoView(index);
+        this.foundation.scrollIntoView(index);
     };
     /**
      * Returns all the tab elements in a nice clean array
      */
     MDCTabBar.prototype.getTabElements_ = function () {
-        return [].slice.call(this.root_.querySelectorAll(strings.TAB_SELECTOR));
+        return [].slice.call(this.root.querySelectorAll(strings.TAB_SELECTOR));
     };
     /**
      * Instantiates tab components on all child tab elements
@@ -15774,7 +18027,7 @@ var MDCTabBar = /** @class */function (_super) {
      * Instantiates tab scroller component on the child tab scroller element
      */
     MDCTabBar.prototype.instantiateTabScroller_ = function (tabScrollerFactory) {
-        var tabScrollerElement = this.root_.querySelector(strings.TAB_SCROLLER_SELECTOR);
+        var tabScrollerElement = this.root.querySelector(strings.TAB_SCROLLER_SELECTOR);
         if (tabScrollerElement) {
             return tabScrollerFactory(tabScrollerElement);
         }
@@ -15929,7 +18182,7 @@ KEYCODE_MAP.set(constants_1.numbers.SPACE_KEYCODE, constants_1.strings.SPACE_KEY
 var MDCTabBarFoundation = /** @class */function (_super) {
     __extends(MDCTabBarFoundation, _super);
     function MDCTabBarFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCTabBarFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCTabBarFoundation.defaultAdapter), adapter)) || this;
         _this.useAutomaticActivation_ = false;
         return _this;
     }
@@ -16016,18 +18269,18 @@ var MDCTabBarFoundation = /** @class */function (_super) {
         this.useAutomaticActivation_ = useAutomaticActivation;
     };
     MDCTabBarFoundation.prototype.activateTab = function (index) {
-        var previousActiveIndex = this.adapter_.getPreviousActiveTabIndex();
+        var previousActiveIndex = this.adapter.getPreviousActiveTabIndex();
         if (!this.indexIsInRange_(index) || index === previousActiveIndex) {
             return;
         }
         var previousClientRect;
         if (previousActiveIndex !== -1) {
-            this.adapter_.deactivateTabAtIndex(previousActiveIndex);
-            previousClientRect = this.adapter_.getTabIndicatorClientRectAtIndex(previousActiveIndex);
+            this.adapter.deactivateTabAtIndex(previousActiveIndex);
+            previousClientRect = this.adapter.getTabIndicatorClientRectAtIndex(previousActiveIndex);
         }
-        this.adapter_.activateTabAtIndex(index, previousClientRect);
+        this.adapter.activateTabAtIndex(index, previousClientRect);
         this.scrollIntoView(index);
-        this.adapter_.notifyTabActivated(index);
+        this.adapter.notifyTabActivated(index);
     };
     MDCTabBarFoundation.prototype.handleKeyDown = function (evt) {
         // Get the key from the event
@@ -16044,16 +18297,16 @@ var MDCTabBarFoundation = /** @class */function (_super) {
             if (this.isActivationKey_(key)) {
                 return;
             }
-            var index = this.determineTargetFromKey_(this.adapter_.getPreviousActiveTabIndex(), key);
-            this.adapter_.setActiveTab(index);
+            var index = this.determineTargetFromKey_(this.adapter.getPreviousActiveTabIndex(), key);
+            this.adapter.setActiveTab(index);
             this.scrollIntoView(index);
         } else {
-            var focusedTabIndex = this.adapter_.getFocusedTabIndex();
+            var focusedTabIndex = this.adapter.getFocusedTabIndex();
             if (this.isActivationKey_(key)) {
-                this.adapter_.setActiveTab(focusedTabIndex);
+                this.adapter.setActiveTab(focusedTabIndex);
             } else {
                 var index = this.determineTargetFromKey_(focusedTabIndex, key);
-                this.adapter_.focusTabAtIndex(index);
+                this.adapter.focusTabAtIndex(index);
                 this.scrollIntoView(index);
             }
         }
@@ -16062,7 +18315,7 @@ var MDCTabBarFoundation = /** @class */function (_super) {
      * Handles the MDCTab:interacted event
      */
     MDCTabBarFoundation.prototype.handleTabInteraction = function (evt) {
-        this.adapter_.setActiveTab(this.adapter_.getIndexOfTabById(evt.detail.tabId));
+        this.adapter.setActiveTab(this.adapter.getIndexOfTabById(evt.detail.tabId));
     };
     /**
      * Scrolls the tab at the given index into view
@@ -16075,12 +18328,12 @@ var MDCTabBarFoundation = /** @class */function (_super) {
         }
         // Always scroll to 0 if scrolling to the 0th index
         if (index === 0) {
-            return this.adapter_.scrollTo(0);
+            return this.adapter.scrollTo(0);
         }
         // Always scroll to the max value if scrolling to the Nth index
         // MDCTabScroller.scrollTo() will never scroll past the max possible value
-        if (index === this.adapter_.getTabListLength() - 1) {
-            return this.adapter_.scrollTo(this.adapter_.getScrollContentWidth());
+        if (index === this.adapter.getTabListLength() - 1) {
+            return this.adapter.scrollTo(this.adapter.getScrollContentWidth());
         }
         if (this.isRTL_()) {
             return this.scrollIntoViewRTL_(index);
@@ -16094,7 +18347,7 @@ var MDCTabBarFoundation = /** @class */function (_super) {
      */
     MDCTabBarFoundation.prototype.determineTargetFromKey_ = function (origin, key) {
         var isRTL = this.isRTL_();
-        var maxIndex = this.adapter_.getTabListLength() - 1;
+        var maxIndex = this.adapter.getTabListLength() - 1;
         var shouldGoToEnd = key === constants_1.strings.END_KEY;
         var shouldDecrement = key === constants_1.strings.ARROW_LEFT_KEY && !isRTL || key === constants_1.strings.ARROW_RIGHT_KEY && isRTL;
         var shouldIncrement = key === constants_1.strings.ARROW_RIGHT_KEY && !isRTL || key === constants_1.strings.ARROW_LEFT_KEY && isRTL;
@@ -16123,7 +18376,7 @@ var MDCTabBarFoundation = /** @class */function (_super) {
      * @param barWidth The width of the Tab Bar
      */
     MDCTabBarFoundation.prototype.calculateScrollIncrement_ = function (index, nextIndex, scrollPosition, barWidth) {
-        var nextTabDimensions = this.adapter_.getTabDimensionsAtIndex(nextIndex);
+        var nextTabDimensions = this.adapter.getTabDimensionsAtIndex(nextIndex);
         var relativeContentLeft = nextTabDimensions.contentLeft - scrollPosition - barWidth;
         var relativeContentRight = nextTabDimensions.contentRight - scrollPosition;
         var leftIncrement = relativeContentRight - constants_1.numbers.EXTRA_SCROLL_AMOUNT;
@@ -16142,7 +18395,7 @@ var MDCTabBarFoundation = /** @class */function (_super) {
      * @param scrollContentWidth The width of the scroll content
      */
     MDCTabBarFoundation.prototype.calculateScrollIncrementRTL_ = function (index, nextIndex, scrollPosition, barWidth, scrollContentWidth) {
-        var nextTabDimensions = this.adapter_.getTabDimensionsAtIndex(nextIndex);
+        var nextTabDimensions = this.adapter.getTabDimensionsAtIndex(nextIndex);
         var relativeContentLeft = scrollContentWidth - nextTabDimensions.contentLeft - scrollPosition;
         var relativeContentRight = scrollContentWidth - nextTabDimensions.contentRight - scrollPosition - barWidth;
         var leftIncrement = relativeContentRight + constants_1.numbers.EXTRA_SCROLL_AMOUNT;
@@ -16237,44 +18490,44 @@ var MDCTabBarFoundation = /** @class */function (_super) {
      * @param index The index to test
      */
     MDCTabBarFoundation.prototype.indexIsInRange_ = function (index) {
-        return index >= 0 && index < this.adapter_.getTabListLength();
+        return index >= 0 && index < this.adapter.getTabListLength();
     };
     /**
      * Returns the view's RTL property
      */
     MDCTabBarFoundation.prototype.isRTL_ = function () {
-        return this.adapter_.isRTL();
+        return this.adapter.isRTL();
     };
     /**
      * Scrolls the tab at the given index into view for left-to-right user agents.
      * @param index The index of the tab to scroll into view
      */
     MDCTabBarFoundation.prototype.scrollIntoView_ = function (index) {
-        var scrollPosition = this.adapter_.getScrollPosition();
-        var barWidth = this.adapter_.getOffsetWidth();
-        var tabDimensions = this.adapter_.getTabDimensionsAtIndex(index);
+        var scrollPosition = this.adapter.getScrollPosition();
+        var barWidth = this.adapter.getOffsetWidth();
+        var tabDimensions = this.adapter.getTabDimensionsAtIndex(index);
         var nextIndex = this.findAdjacentTabIndexClosestToEdge_(index, tabDimensions, scrollPosition, barWidth);
         if (!this.indexIsInRange_(nextIndex)) {
             return;
         }
         var scrollIncrement = this.calculateScrollIncrement_(index, nextIndex, scrollPosition, barWidth);
-        this.adapter_.incrementScroll(scrollIncrement);
+        this.adapter.incrementScroll(scrollIncrement);
     };
     /**
      * Scrolls the tab at the given index into view in RTL
      * @param index The tab index to make visible
      */
     MDCTabBarFoundation.prototype.scrollIntoViewRTL_ = function (index) {
-        var scrollPosition = this.adapter_.getScrollPosition();
-        var barWidth = this.adapter_.getOffsetWidth();
-        var tabDimensions = this.adapter_.getTabDimensionsAtIndex(index);
-        var scrollWidth = this.adapter_.getScrollContentWidth();
+        var scrollPosition = this.adapter.getScrollPosition();
+        var barWidth = this.adapter.getOffsetWidth();
+        var tabDimensions = this.adapter.getTabDimensionsAtIndex(index);
+        var scrollWidth = this.adapter.getScrollContentWidth();
         var nextIndex = this.findAdjacentTabIndexClosestToEdgeRTL_(index, tabDimensions, scrollPosition, barWidth, scrollWidth);
         if (!this.indexIsInRange_(nextIndex)) {
             return;
         }
         var scrollIncrement = this.calculateScrollIncrementRTL_(index, nextIndex, scrollPosition, barWidth, scrollWidth);
-        this.adapter_.incrementScroll(scrollIncrement);
+        this.adapter.incrementScroll(scrollIncrement);
     };
     return MDCTabBarFoundation;
 }(foundation_1.MDCFoundation);
@@ -16393,10 +18646,10 @@ var MDCTabIndicator = /** @class */function (_super) {
         return new MDCTabIndicator(root);
     };
     MDCTabIndicator.prototype.initialize = function () {
-        this.content_ = this.root_.querySelector(foundation_1.MDCTabIndicatorFoundation.strings.CONTENT_SELECTOR);
+        this.content_ = this.root.querySelector(foundation_1.MDCTabIndicatorFoundation.strings.CONTENT_SELECTOR);
     };
     MDCTabIndicator.prototype.computeContentClientRect = function () {
-        return this.foundation_.computeContentClientRect();
+        return this.foundation.computeContentClientRect();
     };
     MDCTabIndicator.prototype.getDefaultFoundation = function () {
         var _this = this;
@@ -16405,10 +18658,10 @@ var MDCTabIndicator = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             computeContentClientRect: function computeContentClientRect() {
                 return _this.content_.getBoundingClientRect();
@@ -16418,17 +18671,17 @@ var MDCTabIndicator = /** @class */function (_super) {
             }
         };
         // tslint:enable:object-literal-sort-keys
-        if (this.root_.classList.contains(foundation_1.MDCTabIndicatorFoundation.cssClasses.FADE)) {
+        if (this.root.classList.contains(foundation_1.MDCTabIndicatorFoundation.cssClasses.FADE)) {
             return new fading_foundation_1.MDCFadingTabIndicatorFoundation(adapter);
         }
         // Default to the sliding indicator
         return new sliding_foundation_1.MDCSlidingTabIndicatorFoundation(adapter);
     };
     MDCTabIndicator.prototype.activate = function (previousIndicatorClientRect) {
-        this.foundation_.activate(previousIndicatorClientRect);
+        this.foundation.activate(previousIndicatorClientRect);
     };
     MDCTabIndicator.prototype.deactivate = function () {
-        this.foundation_.deactivate();
+        this.foundation.deactivate();
     };
     return MDCTabIndicator;
 }(component_1.MDCComponent);
@@ -16542,10 +18795,10 @@ var MDCFadingTabIndicatorFoundation = /** @class */function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     MDCFadingTabIndicatorFoundation.prototype.activate = function () {
-        this.adapter_.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
+        this.adapter.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
     };
     MDCFadingTabIndicatorFoundation.prototype.deactivate = function () {
-        this.adapter_.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
+        this.adapter.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
     };
     return MDCFadingTabIndicatorFoundation;
 }(foundation_1.MDCTabIndicatorFoundation);
@@ -16624,7 +18877,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-tab-ind
 var MDCTabIndicatorFoundation = /** @class */function (_super) {
     __extends(MDCTabIndicatorFoundation, _super);
     function MDCTabIndicatorFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCTabIndicatorFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCTabIndicatorFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCTabIndicatorFoundation, "cssClasses", {
         get: function get() {
@@ -16663,7 +18916,7 @@ var MDCTabIndicatorFoundation = /** @class */function (_super) {
         configurable: true
     });
     MDCTabIndicatorFoundation.prototype.computeContentClientRect = function () {
-        return this.adapter_.computeContentClientRect();
+        return this.adapter.computeContentClientRect();
     };
     return MDCTabIndicatorFoundation;
 }(foundation_1.MDCFoundation);
@@ -16782,7 +19035,7 @@ var MDCSlidingTabIndicatorFoundation = /** @class */function (_super) {
         // Early exit if no indicator is present to handle cases where an indicator
         // may be activated without a prior indicator state
         if (!previousIndicatorClientRect) {
-            this.adapter_.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
+            this.adapter.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
             return;
         }
         // This animation uses the FLIP approach. You can read more about it at the link below:
@@ -16791,16 +19044,16 @@ var MDCSlidingTabIndicatorFoundation = /** @class */function (_super) {
         var currentClientRect = this.computeContentClientRect();
         var widthDelta = previousIndicatorClientRect.width / currentClientRect.width;
         var xPosition = previousIndicatorClientRect.left - currentClientRect.left;
-        this.adapter_.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.NO_TRANSITION);
-        this.adapter_.setContentStyleProperty('transform', "translateX(" + xPosition + "px) scaleX(" + widthDelta + ")");
+        this.adapter.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.NO_TRANSITION);
+        this.adapter.setContentStyleProperty('transform', "translateX(" + xPosition + "px) scaleX(" + widthDelta + ")");
         // Force repaint before updating classes and transform to ensure the transform properly takes effect
         this.computeContentClientRect();
-        this.adapter_.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.NO_TRANSITION);
-        this.adapter_.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
-        this.adapter_.setContentStyleProperty('transform', '');
+        this.adapter.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.NO_TRANSITION);
+        this.adapter.addClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
+        this.adapter.setContentStyleProperty('transform', '');
     };
     MDCSlidingTabIndicatorFoundation.prototype.deactivate = function () {
-        this.adapter_.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
+        this.adapter.removeClass(foundation_1.MDCTabIndicatorFoundation.cssClasses.ACTIVE);
     };
     return MDCSlidingTabIndicatorFoundation;
 }(foundation_1.MDCTabIndicatorFoundation);
@@ -16884,16 +19137,16 @@ var MDCTabScroller = /** @class */function (_super) {
         return new MDCTabScroller(root);
     };
     MDCTabScroller.prototype.initialize = function () {
-        this.area_ = this.root_.querySelector(foundation_1.MDCTabScrollerFoundation.strings.AREA_SELECTOR);
-        this.content_ = this.root_.querySelector(foundation_1.MDCTabScrollerFoundation.strings.CONTENT_SELECTOR);
+        this.area_ = this.root.querySelector(foundation_1.MDCTabScrollerFoundation.strings.AREA_SELECTOR);
+        this.content_ = this.root.querySelector(foundation_1.MDCTabScrollerFoundation.strings.CONTENT_SELECTOR);
     };
     MDCTabScroller.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.handleInteraction_ = function () {
-            return _this.foundation_.handleInteraction();
+            return _this.foundation.handleInteraction();
         };
         this.handleTransitionEnd_ = function (evt) {
-            return _this.foundation_.handleTransitionEnd(evt);
+            return _this.foundation.handleTransitionEnd(evt);
         };
         this.area_.addEventListener('wheel', this.handleInteraction_, events_1.applyPassive());
         this.area_.addEventListener('touchstart', this.handleInteraction_, events_1.applyPassive());
@@ -16921,10 +19174,10 @@ var MDCTabScroller = /** @class */function (_super) {
                 return ponyfill_1.matches(evtTarget, selector);
             },
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             addScrollAreaClass: function addScrollAreaClass(className) {
                 return _this.area_.classList.add(className);
@@ -16967,7 +19220,7 @@ var MDCTabScroller = /** @class */function (_super) {
      * Returns the current visual scroll position
      */
     MDCTabScroller.prototype.getScrollPosition = function () {
-        return this.foundation_.getScrollPosition();
+        return this.foundation.getScrollPosition();
     };
     /**
      * Returns the width of the scroll content
@@ -16980,14 +19233,14 @@ var MDCTabScroller = /** @class */function (_super) {
      * @param scrollXIncrement The pixel value by which to increment the scroll value
      */
     MDCTabScroller.prototype.incrementScroll = function (scrollXIncrement) {
-        this.foundation_.incrementScroll(scrollXIncrement);
+        this.foundation.incrementScroll(scrollXIncrement);
     };
     /**
      * Scrolls to the given pixel position
      * @param scrollX The pixel value to scroll to
      */
     MDCTabScroller.prototype.scrollTo = function (scrollX) {
-        this.foundation_.scrollTo(scrollX);
+        this.foundation.scrollTo(scrollX);
     };
     return MDCTabScroller;
 }(component_1.MDCComponent);
@@ -17136,7 +19389,7 @@ var rtl_reverse_scroller_1 = __webpack_require__(/*! ./rtl-reverse-scroller */ "
 var MDCTabScrollerFoundation = /** @class */function (_super) {
     __extends(MDCTabScrollerFoundation, _super);
     function MDCTabScrollerFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCTabScrollerFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCTabScrollerFoundation.defaultAdapter), adapter)) || this;
         /**
          * Controls whether we should handle the transitionend and interaction events during the animation.
          */
@@ -17212,9 +19465,9 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
     MDCTabScrollerFoundation.prototype.init = function () {
         // Compute horizontal scrollbar height on scroller with overflow initially hidden, then update overflow to scroll
         // and immediately adjust bottom margin to avoid the scrollbar initially appearing before JS runs.
-        var horizontalScrollbarHeight = this.adapter_.computeHorizontalScrollbarHeight();
-        this.adapter_.setScrollAreaStyleProperty('margin-bottom', -horizontalScrollbarHeight + 'px');
-        this.adapter_.addScrollAreaClass(MDCTabScrollerFoundation.cssClasses.SCROLL_AREA_SCROLL);
+        var horizontalScrollbarHeight = this.adapter.computeHorizontalScrollbarHeight();
+        this.adapter.setScrollAreaStyleProperty('margin-bottom', -horizontalScrollbarHeight + 'px');
+        this.adapter.addScrollAreaClass(MDCTabScrollerFoundation.cssClasses.SCROLL_AREA_SCROLL);
     };
     /**
      * Computes the current visual scroll position
@@ -17224,7 +19477,7 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
             return this.computeCurrentScrollPositionRTL_();
         }
         var currentTranslateX = this.calculateCurrentTranslateX_();
-        var scrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var scrollLeft = this.adapter.getScrollAreaScrollLeft();
         return scrollLeft - currentTranslateX;
     };
     /**
@@ -17244,11 +19497,11 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
     MDCTabScrollerFoundation.prototype.handleTransitionEnd = function (evt) {
         // Early exit if we aren't animating or the event was triggered by a different element.
         var evtTarget = evt.target;
-        if (!this.isAnimating_ || !this.adapter_.eventTargetMatchesSelector(evtTarget, MDCTabScrollerFoundation.strings.CONTENT_SELECTOR)) {
+        if (!this.isAnimating_ || !this.adapter.eventTargetMatchesSelector(evtTarget, MDCTabScrollerFoundation.strings.CONTENT_SELECTOR)) {
             return;
         }
         this.isAnimating_ = false;
-        this.adapter_.removeClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
+        this.adapter.removeClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
     };
     /**
      * Increment the scroll value by the scrollXIncrement using animation.
@@ -17275,7 +19528,7 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
             return;
         }
         this.stopScrollAnimation_();
-        this.adapter_.setScrollAreaScrollLeft(operation.finalScrollPosition);
+        this.adapter.setScrollAreaScrollLeft(operation.finalScrollPosition);
     };
     /**
      * Scrolls to the given scrollX value
@@ -17299,7 +19552,7 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
      * @return translateX value from a CSS matrix transform function string.
      */
     MDCTabScrollerFoundation.prototype.calculateCurrentTranslateX_ = function () {
-        var transformValue = this.adapter_.getScrollContentStyleValue('transform');
+        var transformValue = this.adapter.getScrollContentStyleValue('transform');
         // Early exit if no transform is present
         if (transformValue === 'none') {
             return 0;
@@ -17337,8 +19590,8 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         return this.getRTLScroller().getScrollPositionRTL(translateX);
     };
     MDCTabScrollerFoundation.prototype.calculateScrollEdges_ = function () {
-        var contentWidth = this.adapter_.getScrollContentOffsetWidth();
-        var rootWidth = this.adapter_.getScrollAreaOffsetWidth();
+        var contentWidth = this.adapter.getScrollContentOffsetWidth();
+        var rootWidth = this.adapter.getScrollAreaOffsetWidth();
         return {
             left: 0,
             right: contentWidth - rootWidth
@@ -17396,13 +19649,13 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         this.stopScrollAnimation_();
         // This animation uses the FLIP approach.
         // Read more here: https://aerotwist.com/blog/flip-your-animations/
-        this.adapter_.setScrollAreaScrollLeft(animation.finalScrollPosition);
-        this.adapter_.setScrollContentStyleProperty('transform', "translateX(" + animation.scrollDelta + "px)");
+        this.adapter.setScrollAreaScrollLeft(animation.finalScrollPosition);
+        this.adapter.setScrollContentStyleProperty('transform', "translateX(" + animation.scrollDelta + "px)");
         // Force repaint
-        this.adapter_.computeScrollAreaClientRect();
+        this.adapter.computeScrollAreaClientRect();
         requestAnimationFrame(function () {
-            _this.adapter_.addClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
-            _this.adapter_.setScrollContentStyleProperty('transform', 'none');
+            _this.adapter.addClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
+            _this.adapter.setScrollContentStyleProperty('transform', 'none');
         });
         this.isAnimating_ = true;
     };
@@ -17412,16 +19665,16 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
     MDCTabScrollerFoundation.prototype.stopScrollAnimation_ = function () {
         this.isAnimating_ = false;
         var currentScrollPosition = this.getAnimatingScrollPosition_();
-        this.adapter_.removeClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
-        this.adapter_.setScrollContentStyleProperty('transform', 'translateX(0px)');
-        this.adapter_.setScrollAreaScrollLeft(currentScrollPosition);
+        this.adapter.removeClass(MDCTabScrollerFoundation.cssClasses.ANIMATING);
+        this.adapter.setScrollContentStyleProperty('transform', 'translateX(0px)');
+        this.adapter.setScrollAreaScrollLeft(currentScrollPosition);
     };
     /**
      * Gets the current scroll position during animation
      */
     MDCTabScrollerFoundation.prototype.getAnimatingScrollPosition_ = function () {
         var currentTranslateX = this.calculateCurrentTranslateX_();
-        var scrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var scrollLeft = this.adapter.getScrollAreaScrollLeft();
         if (this.isRTL_()) {
             return this.getRTLScroller().getAnimatingScrollPosition(scrollLeft, currentTranslateX);
         }
@@ -17449,32 +19702,32 @@ var MDCTabScrollerFoundation = /** @class */function (_super) {
         //
         // We use those principles below to determine which RTL scrollLeft
         // behavior is implemented in the current browser.
-        var initialScrollLeft = this.adapter_.getScrollAreaScrollLeft();
-        this.adapter_.setScrollAreaScrollLeft(initialScrollLeft - 1);
-        var newScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var initialScrollLeft = this.adapter.getScrollAreaScrollLeft();
+        this.adapter.setScrollAreaScrollLeft(initialScrollLeft - 1);
+        var newScrollLeft = this.adapter.getScrollAreaScrollLeft();
         // If the newScrollLeft value is negative,then we know that the browser has
         // implemented negative RTL scrolling, since all other implementations have
         // only positive values.
         if (newScrollLeft < 0) {
             // Undo the scrollLeft test check
-            this.adapter_.setScrollAreaScrollLeft(initialScrollLeft);
-            return new rtl_negative_scroller_1.MDCTabScrollerRTLNegative(this.adapter_);
+            this.adapter.setScrollAreaScrollLeft(initialScrollLeft);
+            return new rtl_negative_scroller_1.MDCTabScrollerRTLNegative(this.adapter);
         }
-        var rootClientRect = this.adapter_.computeScrollAreaClientRect();
-        var contentClientRect = this.adapter_.computeScrollContentClientRect();
+        var rootClientRect = this.adapter.computeScrollAreaClientRect();
+        var contentClientRect = this.adapter.computeScrollContentClientRect();
         var rightEdgeDelta = Math.round(contentClientRect.right - rootClientRect.right);
         // Undo the scrollLeft test check
-        this.adapter_.setScrollAreaScrollLeft(initialScrollLeft);
+        this.adapter.setScrollAreaScrollLeft(initialScrollLeft);
         // By calculating the clientRect of the root element and the clientRect of
         // the content element, we can determine how much the scroll value changed
         // when we performed the scrollLeft subtraction above.
         if (rightEdgeDelta === newScrollLeft) {
-            return new rtl_reverse_scroller_1.MDCTabScrollerRTLReverse(this.adapter_);
+            return new rtl_reverse_scroller_1.MDCTabScrollerRTLReverse(this.adapter);
         }
-        return new rtl_default_scroller_1.MDCTabScrollerRTLDefault(this.adapter_);
+        return new rtl_default_scroller_1.MDCTabScrollerRTLDefault(this.adapter);
     };
     MDCTabScrollerFoundation.prototype.isRTL_ = function () {
-        return this.adapter_.getScrollContentStyleValue('direction') === 'rtl';
+        return this.adapter.getScrollContentStyleValue('direction') === 'rtl';
     };
     return MDCTabScrollerFoundation;
 }(foundation_1.MDCFoundation);
@@ -17597,14 +19850,14 @@ var MDCTabScrollerRTLDefault = /** @class */function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     MDCTabScrollerRTLDefault.prototype.getScrollPositionRTL = function () {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var right = this.calculateScrollEdges_().right;
         // Scroll values on most browsers are ints instead of floats so we round
         return Math.round(right - currentScrollLeft);
     };
     MDCTabScrollerRTLDefault.prototype.scrollToRTL = function (scrollX) {
         var edges = this.calculateScrollEdges_();
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(edges.right - scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17612,7 +19865,7 @@ var MDCTabScrollerRTLDefault = /** @class */function (_super) {
         };
     };
     MDCTabScrollerRTLDefault.prototype.incrementScrollRTL = function (scrollX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(currentScrollLeft - scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17623,8 +19876,8 @@ var MDCTabScrollerRTLDefault = /** @class */function (_super) {
         return scrollX;
     };
     MDCTabScrollerRTLDefault.prototype.calculateScrollEdges_ = function () {
-        var contentWidth = this.adapter_.getScrollContentOffsetWidth();
-        var rootWidth = this.adapter_.getScrollAreaOffsetWidth();
+        var contentWidth = this.adapter.getScrollContentOffsetWidth();
+        var rootWidth = this.adapter.getScrollAreaOffsetWidth();
         return {
             left: 0,
             right: contentWidth - rootWidth
@@ -17701,11 +19954,11 @@ var MDCTabScrollerRTLNegative = /** @class */function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     MDCTabScrollerRTLNegative.prototype.getScrollPositionRTL = function (translateX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         return Math.round(translateX - currentScrollLeft);
     };
     MDCTabScrollerRTLNegative.prototype.scrollToRTL = function (scrollX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(-scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17713,7 +19966,7 @@ var MDCTabScrollerRTLNegative = /** @class */function (_super) {
         };
     };
     MDCTabScrollerRTLNegative.prototype.incrementScrollRTL = function (scrollX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(currentScrollLeft - scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17724,8 +19977,8 @@ var MDCTabScrollerRTLNegative = /** @class */function (_super) {
         return scrollX - translateX;
     };
     MDCTabScrollerRTLNegative.prototype.calculateScrollEdges_ = function () {
-        var contentWidth = this.adapter_.getScrollContentOffsetWidth();
-        var rootWidth = this.adapter_.getScrollAreaOffsetWidth();
+        var contentWidth = this.adapter.getScrollContentOffsetWidth();
+        var rootWidth = this.adapter.getScrollAreaOffsetWidth();
         return {
             left: rootWidth - contentWidth,
             right: 0
@@ -17802,12 +20055,12 @@ var MDCTabScrollerRTLReverse = /** @class */function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     MDCTabScrollerRTLReverse.prototype.getScrollPositionRTL = function (translateX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         // Scroll values on most browsers are ints instead of floats so we round
         return Math.round(currentScrollLeft - translateX);
     };
     MDCTabScrollerRTLReverse.prototype.scrollToRTL = function (scrollX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17815,7 +20068,7 @@ var MDCTabScrollerRTLReverse = /** @class */function (_super) {
         };
     };
     MDCTabScrollerRTLReverse.prototype.incrementScrollRTL = function (scrollX) {
-        var currentScrollLeft = this.adapter_.getScrollAreaScrollLeft();
+        var currentScrollLeft = this.adapter.getScrollAreaScrollLeft();
         var clampedScrollLeft = this.clampScrollValue_(currentScrollLeft + scrollX);
         return {
             finalScrollPosition: clampedScrollLeft,
@@ -17826,8 +20079,8 @@ var MDCTabScrollerRTLReverse = /** @class */function (_super) {
         return scrollX + translateX;
     };
     MDCTabScrollerRTLReverse.prototype.calculateScrollEdges_ = function () {
-        var contentWidth = this.adapter_.getScrollContentOffsetWidth();
-        var rootWidth = this.adapter_.getScrollAreaOffsetWidth();
+        var contentWidth = this.adapter.getScrollContentOffsetWidth();
+        var rootWidth = this.adapter.getScrollAreaOffsetWidth();
         return {
             left: contentWidth - rootWidth,
             right: 0
@@ -17880,7 +20133,7 @@ exports.default = MDCTabScrollerRTLReverse;
 Object.defineProperty(exports, "__esModule", { value: true });
 var MDCTabScrollerRTL = /** @class */function () {
     function MDCTabScrollerRTL(adapter) {
-        this.adapter_ = adapter;
+        this.adapter = adapter;
     }
     return MDCTabScrollerRTL;
 }();
@@ -18041,9 +20294,9 @@ var MDCTab = /** @class */function (_super) {
                 return new component_3.MDCTabIndicator(el);
             };
         }
-        this.id = this.root_.id;
-        var rippleSurface = this.root_.querySelector(foundation_2.MDCTabFoundation.strings.RIPPLE_SELECTOR);
-        var rippleAdapter = __assign({}, component_2.MDCRipple.createAdapter(this), { addClass: function addClass(className) {
+        this.id = this.root.id;
+        var rippleSurface = this.root.querySelector(foundation_2.MDCTabFoundation.strings.RIPPLE_SELECTOR);
+        var rippleAdapter = __assign(__assign({}, component_2.MDCRipple.createAdapter(this)), { addClass: function addClass(className) {
                 return rippleSurface.classList.add(className);
             }, removeClass: function removeClass(className) {
                 return rippleSurface.classList.remove(className);
@@ -18051,15 +20304,15 @@ var MDCTab = /** @class */function (_super) {
                 return rippleSurface.style.setProperty(varName, value);
             } });
         var rippleFoundation = new foundation_1.MDCRippleFoundation(rippleAdapter);
-        this.ripple_ = rippleFactory(this.root_, rippleFoundation);
-        var tabIndicatorElement = this.root_.querySelector(foundation_2.MDCTabFoundation.strings.TAB_INDICATOR_SELECTOR);
+        this.ripple_ = rippleFactory(this.root, rippleFoundation);
+        var tabIndicatorElement = this.root.querySelector(foundation_2.MDCTabFoundation.strings.TAB_INDICATOR_SELECTOR);
         this.tabIndicator_ = tabIndicatorFactory(tabIndicatorElement);
-        this.content_ = this.root_.querySelector(foundation_2.MDCTabFoundation.strings.CONTENT_SELECTOR);
+        this.content_ = this.root.querySelector(foundation_2.MDCTabFoundation.strings.CONTENT_SELECTOR);
     };
     MDCTab.prototype.initialSyncWithDOM = function () {
         var _this = this;
         this.handleClick_ = function () {
-            return _this.foundation_.handleClick();
+            return _this.foundation.handleClick();
         };
         this.listen('click', this.handleClick_);
     };
@@ -18075,16 +20328,16 @@ var MDCTab = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             setAttr: function setAttr(attr, value) {
-                return _this.root_.setAttribute(attr, value);
+                return _this.root.setAttribute(attr, value);
             },
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             activateIndicator: function activateIndicator(previousIndicatorClientRect) {
                 return _this.tabIndicator_.activate(previousIndicatorClientRect);
@@ -18096,10 +20349,10 @@ var MDCTab = /** @class */function (_super) {
                 return _this.emit(foundation_2.MDCTabFoundation.strings.INTERACTED_EVENT, { tabId: _this.id }, true /* bubble */);
             },
             getOffsetLeft: function getOffsetLeft() {
-                return _this.root_.offsetLeft;
+                return _this.root.offsetLeft;
             },
             getOffsetWidth: function getOffsetWidth() {
-                return _this.root_.offsetWidth;
+                return _this.root.offsetWidth;
             },
             getContentOffsetLeft: function getContentOffsetLeft() {
                 return _this.content_.offsetLeft;
@@ -18108,7 +20361,7 @@ var MDCTab = /** @class */function (_super) {
                 return _this.content_.offsetWidth;
             },
             focus: function focus() {
-                return _this.root_.focus();
+                return _this.root.focus();
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -18119,14 +20372,14 @@ var MDCTab = /** @class */function (_super) {
          * Getter for the active state of the tab
          */
         get: function get() {
-            return this.foundation_.isActive();
+            return this.foundation.isActive();
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCTab.prototype, "focusOnActivate", {
         set: function set(focusOnActivate) {
-            this.foundation_.setFocusOnActivate(focusOnActivate);
+            this.foundation.setFocusOnActivate(focusOnActivate);
         },
         enumerable: true,
         configurable: true
@@ -18135,13 +20388,13 @@ var MDCTab = /** @class */function (_super) {
      * Activates the tab
      */
     MDCTab.prototype.activate = function (computeIndicatorClientRect) {
-        this.foundation_.activate(computeIndicatorClientRect);
+        this.foundation.activate(computeIndicatorClientRect);
     };
     /**
      * Deactivates the tab
      */
     MDCTab.prototype.deactivate = function () {
-        this.foundation_.deactivate();
+        this.foundation.deactivate();
     };
     /**
      * Returns the indicator's client rect
@@ -18150,13 +20403,13 @@ var MDCTab = /** @class */function (_super) {
         return this.tabIndicator_.computeContentClientRect();
     };
     MDCTab.prototype.computeDimensions = function () {
-        return this.foundation_.computeDimensions();
+        return this.foundation.computeDimensions();
     };
     /**
      * Focuses the tab
      */
     MDCTab.prototype.focus = function () {
-        this.root_.focus();
+        this.root.focus();
     };
     return MDCTab;
 }(component_1.MDCComponent);
@@ -18282,7 +20535,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-tab/con
 var MDCTabFoundation = /** @class */function (_super) {
     __extends(MDCTabFoundation, _super);
     function MDCTabFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCTabFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCTabFoundation.defaultAdapter), adapter)) || this;
         _this.focusOnActivate_ = true;
         return _this;
     }
@@ -18349,10 +20602,10 @@ var MDCTabFoundation = /** @class */function (_super) {
     MDCTabFoundation.prototype.handleClick = function () {
         // It's up to the parent component to keep track of the active Tab and
         // ensure we don't activate a Tab that's already active.
-        this.adapter_.notifyInteracted();
+        this.adapter.notifyInteracted();
     };
     MDCTabFoundation.prototype.isActive = function () {
-        return this.adapter_.hasClass(constants_1.cssClasses.ACTIVE);
+        return this.adapter.hasClass(constants_1.cssClasses.ACTIVE);
     };
     /**
      * Sets whether the tab should focus itself when activated
@@ -18364,12 +20617,12 @@ var MDCTabFoundation = /** @class */function (_super) {
      * Activates the Tab
      */
     MDCTabFoundation.prototype.activate = function (previousIndicatorClientRect) {
-        this.adapter_.addClass(constants_1.cssClasses.ACTIVE);
-        this.adapter_.setAttr(constants_1.strings.ARIA_SELECTED, 'true');
-        this.adapter_.setAttr(constants_1.strings.TABINDEX, '0');
-        this.adapter_.activateIndicator(previousIndicatorClientRect);
+        this.adapter.addClass(constants_1.cssClasses.ACTIVE);
+        this.adapter.setAttr(constants_1.strings.ARIA_SELECTED, 'true');
+        this.adapter.setAttr(constants_1.strings.TABINDEX, '0');
+        this.adapter.activateIndicator(previousIndicatorClientRect);
         if (this.focusOnActivate_) {
-            this.adapter_.focus();
+            this.adapter.focus();
         }
     };
     /**
@@ -18380,19 +20633,19 @@ var MDCTabFoundation = /** @class */function (_super) {
         if (!this.isActive()) {
             return;
         }
-        this.adapter_.removeClass(constants_1.cssClasses.ACTIVE);
-        this.adapter_.setAttr(constants_1.strings.ARIA_SELECTED, 'false');
-        this.adapter_.setAttr(constants_1.strings.TABINDEX, '-1');
-        this.adapter_.deactivateIndicator();
+        this.adapter.removeClass(constants_1.cssClasses.ACTIVE);
+        this.adapter.setAttr(constants_1.strings.ARIA_SELECTED, 'false');
+        this.adapter.setAttr(constants_1.strings.TABINDEX, '-1');
+        this.adapter.deactivateIndicator();
     };
     /**
      * Returns the dimensions of the Tab
      */
     MDCTabFoundation.prototype.computeDimensions = function () {
-        var rootWidth = this.adapter_.getOffsetWidth();
-        var rootLeft = this.adapter_.getOffsetLeft();
-        var contentWidth = this.adapter_.getContentOffsetWidth();
-        var contentLeft = this.adapter_.getContentOffsetLeft();
+        var rootWidth = this.adapter.getOffsetWidth();
+        var rootLeft = this.adapter.getOffsetLeft();
+        var contentWidth = this.adapter.getContentOffsetWidth();
+        var contentLeft = this.adapter.getContentOffsetLeft();
         return {
             contentLeft: rootLeft + contentLeft,
             contentRight: rootLeft + contentLeft + contentWidth,
@@ -18514,9 +20767,10 @@ var MDCTextFieldCharacterCounter = /** @class */function (_super) {
     MDCTextFieldCharacterCounter.attachTo = function (root) {
         return new MDCTextFieldCharacterCounter(root);
     };
-    Object.defineProperty(MDCTextFieldCharacterCounter.prototype, "foundation", {
+    Object.defineProperty(MDCTextFieldCharacterCounter.prototype, "foundationForTextField", {
+        // Provided for access by MDCTextField component
         get: function get() {
-            return this.foundation_;
+            return this.foundation;
         },
         enumerable: true,
         configurable: true
@@ -18527,7 +20781,7 @@ var MDCTextFieldCharacterCounter = /** @class */function (_super) {
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         var adapter = {
             setContent: function setContent(content) {
-                _this.root_.textContent = content;
+                _this.root.textContent = content;
             }
         };
         return new foundation_1.MDCTextFieldCharacterCounterFoundation(adapter);
@@ -18651,7 +20905,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-textfie
 var MDCTextFieldCharacterCounterFoundation = /** @class */function (_super) {
     __extends(MDCTextFieldCharacterCounterFoundation, _super);
     function MDCTextFieldCharacterCounterFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCTextFieldCharacterCounterFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCTextFieldCharacterCounterFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCTextFieldCharacterCounterFoundation, "cssClasses", {
         get: function get() {
@@ -18683,7 +20937,7 @@ var MDCTextFieldCharacterCounterFoundation = /** @class */function (_super) {
     });
     MDCTextFieldCharacterCounterFoundation.prototype.setCounterValue = function (currentLength, maxLength) {
         currentLength = Math.min(currentLength, maxLength);
-        this.adapter_.setContent(currentLength + " / " + maxLength);
+        this.adapter.setContent(currentLength + " / " + maxLength);
     };
     return MDCTextFieldCharacterCounterFoundation;
 }(foundation_1.MDCFoundation);
@@ -18870,33 +21124,36 @@ var MDCTextField = /** @class */function (_super) {
                 return new component_4.MDCNotchedOutline(el);
             };
         }
-        this.input_ = this.root_.querySelector(constants_1.strings.INPUT_SELECTOR);
-        var labelElement = this.root_.querySelector(constants_1.strings.LABEL_SELECTOR);
+        this.input_ = this.root.querySelector(constants_1.strings.INPUT_SELECTOR);
+        var labelElement = this.root.querySelector(constants_1.strings.LABEL_SELECTOR);
         this.label_ = labelElement ? labelFactory(labelElement) : null;
-        var lineRippleElement = this.root_.querySelector(constants_1.strings.LINE_RIPPLE_SELECTOR);
+        var lineRippleElement = this.root.querySelector(constants_1.strings.LINE_RIPPLE_SELECTOR);
         this.lineRipple_ = lineRippleElement ? lineRippleFactory(lineRippleElement) : null;
-        var outlineElement = this.root_.querySelector(constants_1.strings.OUTLINE_SELECTOR);
+        var outlineElement = this.root.querySelector(constants_1.strings.OUTLINE_SELECTOR);
         this.outline_ = outlineElement ? outlineFactory(outlineElement) : null;
         // Helper text
         var helperTextStrings = foundation_4.MDCTextFieldHelperTextFoundation.strings;
-        var nextElementSibling = this.root_.nextElementSibling;
+        var nextElementSibling = this.root.nextElementSibling;
         var hasHelperLine = nextElementSibling && nextElementSibling.classList.contains(constants_1.cssClasses.HELPER_LINE);
         var helperTextEl = hasHelperLine && nextElementSibling && nextElementSibling.querySelector(helperTextStrings.ROOT_SELECTOR);
         this.helperText_ = helperTextEl ? helperTextFactory(helperTextEl) : null;
         // Character counter
         var characterCounterStrings = foundation_2.MDCTextFieldCharacterCounterFoundation.strings;
-        var characterCounterEl = this.root_.querySelector(characterCounterStrings.ROOT_SELECTOR);
+        var characterCounterEl = this.root.querySelector(characterCounterStrings.ROOT_SELECTOR);
         // If character counter is not found in root element search in sibling element.
         if (!characterCounterEl && hasHelperLine && nextElementSibling) {
             characterCounterEl = nextElementSibling.querySelector(characterCounterStrings.ROOT_SELECTOR);
         }
         this.characterCounter_ = characterCounterEl ? characterCounterFactory(characterCounterEl) : null;
         // Leading icon
-        var leadingIconEl = this.root_.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
+        var leadingIconEl = this.root.querySelector(constants_1.strings.LEADING_ICON_SELECTOR);
         this.leadingIcon_ = leadingIconEl ? iconFactory(leadingIconEl) : null;
         // Trailing icon
-        var trailingIconEl = this.root_.querySelector(constants_1.strings.TRAILING_ICON_SELECTOR);
+        var trailingIconEl = this.root.querySelector(constants_1.strings.TRAILING_ICON_SELECTOR);
         this.trailingIcon_ = trailingIconEl ? iconFactory(trailingIconEl) : null;
+        // Prefix and Suffix
+        this.prefix_ = this.root.querySelector(constants_1.strings.PREFIX_SELECTOR);
+        this.suffix_ = this.root.querySelector(constants_1.strings.SUFFIX_SELECTOR);
         this.ripple = this.createRipple_(rippleFactory);
     };
     MDCTextField.prototype.destroy = function () {
@@ -18935,39 +21192,39 @@ var MDCTextField = /** @class */function (_super) {
     };
     Object.defineProperty(MDCTextField.prototype, "value", {
         get: function get() {
-            return this.foundation_.getValue();
+            return this.foundation.getValue();
         },
         /**
          * @param value The value to set on the input.
          */
         set: function set(value) {
-            this.foundation_.setValue(value);
+            this.foundation.setValue(value);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCTextField.prototype, "disabled", {
         get: function get() {
-            return this.foundation_.isDisabled();
+            return this.foundation.isDisabled();
         },
         /**
          * @param disabled Sets the Text Field disabled or enabled.
          */
         set: function set(disabled) {
-            this.foundation_.setDisabled(disabled);
+            this.foundation.setDisabled(disabled);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(MDCTextField.prototype, "valid", {
         get: function get() {
-            return this.foundation_.isValid();
+            return this.foundation.isValid();
         },
         /**
          * @param valid Sets the Text Field valid or invalid.
          */
         set: function set(valid) {
-            this.foundation_.setValid(valid);
+            this.foundation.setValid(valid);
         },
         enumerable: true,
         configurable: true
@@ -19073,7 +21330,7 @@ var MDCTextField = /** @class */function (_super) {
          * Sets the helper text element content.
          */
         set: function set(content) {
-            this.foundation_.setHelperTextContent(content);
+            this.foundation.setHelperTextContent(content);
         },
         enumerable: true,
         configurable: true
@@ -19083,7 +21340,7 @@ var MDCTextField = /** @class */function (_super) {
          * Sets the aria label of the leading icon.
          */
         set: function set(label) {
-            this.foundation_.setLeadingIconAriaLabel(label);
+            this.foundation.setLeadingIconAriaLabel(label);
         },
         enumerable: true,
         configurable: true
@@ -19093,7 +21350,7 @@ var MDCTextField = /** @class */function (_super) {
          * Sets the text content of the leading icon.
          */
         set: function set(content) {
-            this.foundation_.setLeadingIconContent(content);
+            this.foundation.setLeadingIconContent(content);
         },
         enumerable: true,
         configurable: true
@@ -19103,7 +21360,7 @@ var MDCTextField = /** @class */function (_super) {
          * Sets the aria label of the trailing icon.
          */
         set: function set(label) {
-            this.foundation_.setTrailingIconAriaLabel(label);
+            this.foundation.setTrailingIconAriaLabel(label);
         },
         enumerable: true,
         configurable: true
@@ -19113,7 +21370,7 @@ var MDCTextField = /** @class */function (_super) {
          * Sets the text content of the trailing icon.
          */
         set: function set(content) {
-            this.foundation_.setTrailingIconContent(content);
+            this.foundation.setTrailingIconContent(content);
         },
         enumerable: true,
         configurable: true
@@ -19124,7 +21381,43 @@ var MDCTextField = /** @class */function (_super) {
          * @param useNativeValidation Set this to false to ignore native input validation.
          */
         set: function set(useNativeValidation) {
-            this.foundation_.setUseNativeValidation(useNativeValidation);
+            this.foundation.setUseNativeValidation(useNativeValidation);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCTextField.prototype, "prefixText", {
+        /**
+         * Gets the text content of the prefix, or null if it does not exist.
+         */
+        get: function get() {
+            return this.prefix_ ? this.prefix_.textContent : null;
+        },
+        /**
+         * Sets the text content of the prefix, if it exists.
+         */
+        set: function set(prefixText) {
+            if (this.prefix_) {
+                this.prefix_.textContent = prefixText;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MDCTextField.prototype, "suffixText", {
+        /**
+         * Gets the text content of the suffix, or null if it does not exist.
+         */
+        get: function get() {
+            return this.suffix_ ? this.suffix_.textContent : null;
+        },
+        /**
+         * Sets the text content of the suffix, if it exists.
+         */
+        set: function set(suffixText) {
+            if (this.suffix_) {
+                this.suffix_.textContent = suffixText;
+            }
         },
         enumerable: true,
         configurable: true
@@ -19139,14 +21432,14 @@ var MDCTextField = /** @class */function (_super) {
      * Recomputes the outline SVG path for the outline element.
      */
     MDCTextField.prototype.layout = function () {
-        var openNotch = this.foundation_.shouldFloat;
-        this.foundation_.notchOutline(openNotch);
+        var openNotch = this.foundation.shouldFloat;
+        this.foundation.notchOutline(openNotch);
     };
     MDCTextField.prototype.getDefaultFoundation = function () {
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
-        var adapter = __assign({}, this.getRootAdapterMethods_(), this.getInputAdapterMethods_(), this.getLabelAdapterMethods_(), this.getLineRippleAdapterMethods_(), this.getOutlineAdapterMethods_());
+        var adapter = __assign(__assign(__assign(__assign(__assign({}, this.getRootAdapterMethods_()), this.getInputAdapterMethods_()), this.getLabelAdapterMethods_()), this.getLineRippleAdapterMethods_()), this.getOutlineAdapterMethods_());
         // tslint:enable:object-literal-sort-keys
         return new foundation_3.MDCTextFieldFoundation(adapter, this.getFoundationMap_());
     };
@@ -19155,13 +21448,13 @@ var MDCTextField = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         return {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             registerTextFieldInteractionHandler: function registerTextFieldInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -19223,6 +21516,9 @@ var MDCTextField = /** @class */function (_super) {
             },
             shakeLabel: function shakeLabel(shouldShake) {
                 return _this.label_ && _this.label_.shake(shouldShake);
+            },
+            setLabelRequired: function setLabelRequired(isRequired) {
+                return _this.label_ && _this.label_.setRequired(isRequired);
             }
         };
     };
@@ -19265,23 +21561,23 @@ var MDCTextField = /** @class */function (_super) {
      */
     MDCTextField.prototype.getFoundationMap_ = function () {
         return {
-            characterCounter: this.characterCounter_ ? this.characterCounter_.foundation : undefined,
-            helperText: this.helperText_ ? this.helperText_.foundation : undefined,
-            leadingIcon: this.leadingIcon_ ? this.leadingIcon_.foundation : undefined,
-            trailingIcon: this.trailingIcon_ ? this.trailingIcon_.foundation : undefined
+            characterCounter: this.characterCounter_ ? this.characterCounter_.foundationForTextField : undefined,
+            helperText: this.helperText_ ? this.helperText_.foundationForTextField : undefined,
+            leadingIcon: this.leadingIcon_ ? this.leadingIcon_.foundationForTextField : undefined,
+            trailingIcon: this.trailingIcon_ ? this.trailingIcon_.foundationForTextField : undefined
         };
     };
     MDCTextField.prototype.createRipple_ = function (rippleFactory) {
         var _this = this;
-        var isTextArea = this.root_.classList.contains(constants_1.cssClasses.TEXTAREA);
-        var isOutlined = this.root_.classList.contains(constants_1.cssClasses.OUTLINED);
+        var isTextArea = this.root.classList.contains(constants_1.cssClasses.TEXTAREA);
+        var isOutlined = this.root.classList.contains(constants_1.cssClasses.OUTLINED);
         if (isTextArea || isOutlined) {
             return null;
         }
         // DO NOT INLINE this variable. For backward compatibility, foundations take a Partial<MDCFooAdapter>.
         // To ensure we don't accidentally omit any methods, we need a separate, strongly typed adapter variable.
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
-        var adapter = __assign({}, component_5.MDCRipple.createAdapter(this), { isSurfaceActive: function isSurfaceActive() {
+        var adapter = __assign(__assign({}, component_5.MDCRipple.createAdapter(this)), { isSurfaceActive: function isSurfaceActive() {
                 return ponyfill.matches(_this.input_, ':active');
             }, registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.input_.addEventListener(evtType, handler, events_1.applyPassive());
@@ -19289,7 +21585,7 @@ var MDCTextField = /** @class */function (_super) {
                 return _this.input_.removeEventListener(evtType, handler, events_1.applyPassive());
             } });
         // tslint:enable:object-literal-sort-keys
-        return rippleFactory(this.root_, new foundation_1.MDCRippleFoundation(adapter));
+        return rippleFactory(this.root, new foundation_1.MDCRippleFoundation(adapter));
     };
     return MDCTextField;
 }(component_1.MDCComponent);
@@ -19337,16 +21633,18 @@ var strings = {
     LEADING_ICON_SELECTOR: '.mdc-text-field__icon--leading',
     LINE_RIPPLE_SELECTOR: '.mdc-line-ripple',
     OUTLINE_SELECTOR: '.mdc-notched-outline',
+    PREFIX_SELECTOR: '.mdc-text-field__affix--prefix',
+    SUFFIX_SELECTOR: '.mdc-text-field__affix--suffix',
     TRAILING_ICON_SELECTOR: '.mdc-text-field__icon--trailing'
 };
 exports.strings = strings;
 var cssClasses = {
-    DENSE: 'mdc-text-field--dense',
     DISABLED: 'mdc-text-field--disabled',
     FOCUSED: 'mdc-text-field--focused',
     FULLWIDTH: 'mdc-text-field--fullwidth',
     HELPER_LINE: 'mdc-text-field-helper-line',
     INVALID: 'mdc-text-field--invalid',
+    LABEL_FLOATING: 'mdc-text-field--label-floating',
     NO_LABEL: 'mdc-text-field--no-label',
     OUTLINED: 'mdc-text-field--outlined',
     ROOT: 'mdc-text-field',
@@ -19356,7 +21654,6 @@ var cssClasses = {
 };
 exports.cssClasses = cssClasses;
 var numbers = {
-    DENSE_LABEL_SCALE: 0.923,
     LABEL_SCALE: 0.75
 };
 exports.numbers = numbers;
@@ -19452,7 +21749,7 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
         if (foundationMap === void 0) {
             foundationMap = {};
         }
-        var _this = _super.call(this, __assign({}, MDCTextFieldFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCTextFieldFoundation.defaultAdapter), adapter)) || this;
         _this.isFocused_ = false;
         _this.receivedUserInput_ = false;
         _this.isValid_ = true;
@@ -19581,6 +21878,9 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
                 floatLabel: function floatLabel() {
                     return undefined;
                 },
+                setLabelRequired: function setLabelRequired() {
+                    return undefined;
+                },
                 hasLabel: function hasLabel() {
                     return false;
                 },
@@ -19604,42 +21904,46 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     });
     MDCTextFieldFoundation.prototype.init = function () {
         var _this = this;
-        if (this.adapter_.isFocused()) {
-            this.inputFocusHandler_();
-        } else if (this.adapter_.hasLabel() && this.shouldFloat) {
-            this.notchOutline(true);
-            this.adapter_.floatLabel(true);
+        if (this.adapter.hasLabel() && this.getNativeInput_().required) {
+            this.adapter.setLabelRequired(true);
         }
-        this.adapter_.registerInputInteractionHandler('focus', this.inputFocusHandler_);
-        this.adapter_.registerInputInteractionHandler('blur', this.inputBlurHandler_);
-        this.adapter_.registerInputInteractionHandler('input', this.inputInputHandler_);
+        if (this.adapter.isFocused()) {
+            this.inputFocusHandler_();
+        } else if (this.adapter.hasLabel() && this.shouldFloat) {
+            this.notchOutline(true);
+            this.adapter.floatLabel(true);
+            this.styleFloating_(true);
+        }
+        this.adapter.registerInputInteractionHandler('focus', this.inputFocusHandler_);
+        this.adapter.registerInputInteractionHandler('blur', this.inputBlurHandler_);
+        this.adapter.registerInputInteractionHandler('input', this.inputInputHandler_);
         POINTERDOWN_EVENTS.forEach(function (evtType) {
-            _this.adapter_.registerInputInteractionHandler(evtType, _this.setPointerXOffset_);
+            _this.adapter.registerInputInteractionHandler(evtType, _this.setPointerXOffset_);
         });
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.registerTextFieldInteractionHandler(evtType, _this.textFieldInteractionHandler_);
+            _this.adapter.registerTextFieldInteractionHandler(evtType, _this.textFieldInteractionHandler_);
         });
-        this.validationObserver_ = this.adapter_.registerValidationAttributeChangeHandler(this.validationAttributeChangeHandler_);
+        this.validationObserver_ = this.adapter.registerValidationAttributeChangeHandler(this.validationAttributeChangeHandler_);
         this.setCharacterCounter_(this.getValue().length);
     };
     MDCTextFieldFoundation.prototype.destroy = function () {
         var _this = this;
-        this.adapter_.deregisterInputInteractionHandler('focus', this.inputFocusHandler_);
-        this.adapter_.deregisterInputInteractionHandler('blur', this.inputBlurHandler_);
-        this.adapter_.deregisterInputInteractionHandler('input', this.inputInputHandler_);
+        this.adapter.deregisterInputInteractionHandler('focus', this.inputFocusHandler_);
+        this.adapter.deregisterInputInteractionHandler('blur', this.inputBlurHandler_);
+        this.adapter.deregisterInputInteractionHandler('input', this.inputInputHandler_);
         POINTERDOWN_EVENTS.forEach(function (evtType) {
-            _this.adapter_.deregisterInputInteractionHandler(evtType, _this.setPointerXOffset_);
+            _this.adapter.deregisterInputInteractionHandler(evtType, _this.setPointerXOffset_);
         });
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.deregisterTextFieldInteractionHandler(evtType, _this.textFieldInteractionHandler_);
+            _this.adapter.deregisterTextFieldInteractionHandler(evtType, _this.textFieldInteractionHandler_);
         });
-        this.adapter_.deregisterValidationAttributeChangeHandler(this.validationObserver_);
+        this.adapter.deregisterValidationAttributeChangeHandler(this.validationObserver_);
     };
     /**
      * Handles user interactions with the Text Field.
      */
     MDCTextFieldFoundation.prototype.handleTextFieldInteraction = function () {
-        var nativeInput = this.adapter_.getNativeInput();
+        var nativeInput = this.adapter.getNativeInput();
         if (nativeInput && nativeInput.disabled) {
             return;
         }
@@ -19653,6 +21957,7 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
         attributesList.some(function (attributeName) {
             if (constants_1.VALIDATION_ATTR_WHITELIST.indexOf(attributeName) > -1) {
                 _this.styleValidity_(true);
+                _this.adapter.setLabelRequired(_this.getNativeInput_().required);
                 return true;
             }
             return false;
@@ -19665,16 +21970,14 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
      * Opens/closes the notched outline.
      */
     MDCTextFieldFoundation.prototype.notchOutline = function (openNotch) {
-        if (!this.adapter_.hasOutline()) {
+        if (!this.adapter.hasOutline()) {
             return;
         }
         if (openNotch) {
-            var isDense = this.adapter_.hasClass(constants_1.cssClasses.DENSE);
-            var labelScale = isDense ? constants_1.numbers.DENSE_LABEL_SCALE : constants_1.numbers.LABEL_SCALE;
-            var labelWidth = this.adapter_.getLabelWidth() * labelScale;
-            this.adapter_.notchOutline(labelWidth);
+            var labelWidth = this.adapter.getLabelWidth() * constants_1.numbers.LABEL_SCALE;
+            this.adapter.notchOutline(labelWidth);
         } else {
-            this.adapter_.closeOutline();
+            this.adapter.closeOutline();
         }
     };
     /**
@@ -19683,11 +21986,12 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     MDCTextFieldFoundation.prototype.activateFocus = function () {
         this.isFocused_ = true;
         this.styleFocused_(this.isFocused_);
-        this.adapter_.activateLineRipple();
-        if (this.adapter_.hasLabel()) {
+        this.adapter.activateLineRipple();
+        if (this.adapter.hasLabel()) {
             this.notchOutline(this.shouldFloat);
-            this.adapter_.floatLabel(this.shouldFloat);
-            this.adapter_.shakeLabel(this.shouldShake);
+            this.adapter.floatLabel(this.shouldFloat);
+            this.styleFloating_(this.shouldFloat);
+            this.adapter.shakeLabel(this.shouldShake);
         }
         if (this.helperText_) {
             this.helperText_.showToScreenReader();
@@ -19698,11 +22002,14 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
      * animation will animate out from the user's click location.
      */
     MDCTextFieldFoundation.prototype.setTransformOrigin = function (evt) {
+        if (this.isDisabled() || this.adapter.hasOutline()) {
+            return;
+        }
         var touches = evt.touches;
         var targetEvent = touches ? touches[0] : evt;
         var targetClientRect = targetEvent.target.getBoundingClientRect();
         var normalizedX = targetEvent.clientX - targetClientRect.left;
-        this.adapter_.setLineRippleTransformOrigin(normalizedX);
+        this.adapter.setLineRippleTransformOrigin(normalizedX);
     };
     /**
      * Handles input change of text input and text area.
@@ -19725,14 +22032,15 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
      */
     MDCTextFieldFoundation.prototype.deactivateFocus = function () {
         this.isFocused_ = false;
-        this.adapter_.deactivateLineRipple();
+        this.adapter.deactivateLineRipple();
         var isValid = this.isValid();
         this.styleValidity_(isValid);
         this.styleFocused_(this.isFocused_);
-        if (this.adapter_.hasLabel()) {
+        if (this.adapter.hasLabel()) {
             this.notchOutline(this.shouldFloat);
-            this.adapter_.floatLabel(this.shouldFloat);
-            this.adapter_.shakeLabel(this.shouldShake);
+            this.adapter.floatLabel(this.shouldFloat);
+            this.styleFloating_(this.shouldFloat);
+            this.adapter.shakeLabel(this.shouldShake);
         }
         if (!this.shouldFloat) {
             this.receivedUserInput_ = false;
@@ -19752,10 +22060,11 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
         this.setCharacterCounter_(value.length);
         var isValid = this.isValid();
         this.styleValidity_(isValid);
-        if (this.adapter_.hasLabel()) {
+        if (this.adapter.hasLabel()) {
             this.notchOutline(this.shouldFloat);
-            this.adapter_.floatLabel(this.shouldFloat);
-            this.adapter_.shakeLabel(this.shouldShake);
+            this.adapter.floatLabel(this.shouldFloat);
+            this.styleFloating_(this.shouldFloat);
+            this.adapter.shakeLabel(this.shouldShake);
         }
     };
     /**
@@ -19771,8 +22080,8 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
         this.isValid_ = isValid;
         this.styleValidity_(isValid);
         var shouldShake = !isValid && !this.isFocused_ && !!this.getValue();
-        if (this.adapter_.hasLabel()) {
-            this.adapter_.shakeLabel(shouldShake);
+        if (this.adapter.hasLabel()) {
+            this.adapter.shakeLabel(shouldShake);
         }
     };
     /**
@@ -19864,9 +22173,9 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     MDCTextFieldFoundation.prototype.styleValidity_ = function (isValid) {
         var INVALID = MDCTextFieldFoundation.cssClasses.INVALID;
         if (isValid) {
-            this.adapter_.removeClass(INVALID);
+            this.adapter.removeClass(INVALID);
         } else {
-            this.adapter_.addClass(INVALID);
+            this.adapter.addClass(INVALID);
         }
         if (this.helperText_) {
             this.helperText_.setValidity(isValid);
@@ -19878,9 +22187,9 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
     MDCTextFieldFoundation.prototype.styleFocused_ = function (isFocused) {
         var FOCUSED = MDCTextFieldFoundation.cssClasses.FOCUSED;
         if (isFocused) {
-            this.adapter_.addClass(FOCUSED);
+            this.adapter.addClass(FOCUSED);
         } else {
-            this.adapter_.removeClass(FOCUSED);
+            this.adapter.removeClass(FOCUSED);
         }
     };
     /**
@@ -19891,10 +22200,10 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
             DISABLED = _a.DISABLED,
             INVALID = _a.INVALID;
         if (isDisabled) {
-            this.adapter_.addClass(DISABLED);
-            this.adapter_.removeClass(INVALID);
+            this.adapter.addClass(DISABLED);
+            this.adapter.removeClass(INVALID);
         } else {
-            this.adapter_.removeClass(DISABLED);
+            this.adapter.removeClass(DISABLED);
         }
         if (this.leadingIcon_) {
             this.leadingIcon_.setDisabled(isDisabled);
@@ -19904,16 +22213,28 @@ var MDCTextFieldFoundation = /** @class */function (_super) {
         }
     };
     /**
+     * Styles the component based on the label floating state.
+     */
+    MDCTextFieldFoundation.prototype.styleFloating_ = function (isFloating) {
+        var LABEL_FLOATING = MDCTextFieldFoundation.cssClasses.LABEL_FLOATING;
+        if (isFloating) {
+            this.adapter.addClass(LABEL_FLOATING);
+        } else {
+            this.adapter.removeClass(LABEL_FLOATING);
+        }
+    };
+    /**
      * @return The native text input element from the host environment, or an object with the same shape for unit tests.
      */
     MDCTextFieldFoundation.prototype.getNativeInput_ = function () {
-        // this.adapter_ may be undefined in foundation unit tests. This happens when testdouble is creating a mock object
+        // this.adapter may be undefined in foundation unit tests. This happens when testdouble is creating a mock object
         // and invokes the shouldShake/shouldFloat getters (which in turn call getValue(), which calls this method) before
         // init() has been called from the MDCTextField constructor. To work around that issue, we return a dummy object.
-        var nativeInput = this.adapter_ ? this.adapter_.getNativeInput() : null;
+        var nativeInput = this.adapter ? this.adapter.getNativeInput() : null;
         return nativeInput || {
             disabled: false,
             maxLength: -1,
+            required: false,
             type: 'input',
             validity: {
                 badInput: false,
@@ -19992,9 +22313,10 @@ var MDCTextFieldHelperText = /** @class */function (_super) {
     MDCTextFieldHelperText.attachTo = function (root) {
         return new MDCTextFieldHelperText(root);
     };
-    Object.defineProperty(MDCTextFieldHelperText.prototype, "foundation", {
+    Object.defineProperty(MDCTextFieldHelperText.prototype, "foundationForTextField", {
+        // Provided for access by MDCTextField component
         get: function get() {
-            return this.foundation_;
+            return this.foundation;
         },
         enumerable: true,
         configurable: true
@@ -20006,22 +22328,22 @@ var MDCTextFieldHelperText = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             setAttr: function setAttr(attr, value) {
-                return _this.root_.setAttribute(attr, value);
+                return _this.root.setAttribute(attr, value);
             },
             removeAttr: function removeAttr(attr) {
-                return _this.root_.removeAttribute(attr);
+                return _this.root.removeAttribute(attr);
             },
             setContent: function setContent(content) {
-                _this.root_.textContent = content;
+                _this.root.textContent = content;
             }
         };
         // tslint:enable:object-literal-sort-keys
@@ -20150,7 +22472,7 @@ var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-textfie
 var MDCTextFieldHelperTextFoundation = /** @class */function (_super) {
     __extends(MDCTextFieldHelperTextFoundation, _super);
     function MDCTextFieldHelperTextFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCTextFieldHelperTextFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCTextFieldHelperTextFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCTextFieldHelperTextFoundation, "cssClasses", {
         get: function get() {
@@ -20201,16 +22523,16 @@ var MDCTextFieldHelperTextFoundation = /** @class */function (_super) {
      * Sets the content of the helper text field.
      */
     MDCTextFieldHelperTextFoundation.prototype.setContent = function (content) {
-        this.adapter_.setContent(content);
+        this.adapter.setContent(content);
     };
     /**
      * @param isPersistent Sets the persistency of the helper text.
      */
     MDCTextFieldHelperTextFoundation.prototype.setPersistent = function (isPersistent) {
         if (isPersistent) {
-            this.adapter_.addClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
+            this.adapter.addClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
+            this.adapter.removeClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
         }
     };
     /**
@@ -20218,28 +22540,28 @@ var MDCTextFieldHelperTextFoundation = /** @class */function (_super) {
      */
     MDCTextFieldHelperTextFoundation.prototype.setValidation = function (isValidation) {
         if (isValidation) {
-            this.adapter_.addClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+            this.adapter.addClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
         } else {
-            this.adapter_.removeClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+            this.adapter.removeClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
         }
     };
     /**
      * Makes the helper text visible to the screen reader.
      */
     MDCTextFieldHelperTextFoundation.prototype.showToScreenReader = function () {
-        this.adapter_.removeAttr(constants_1.strings.ARIA_HIDDEN);
+        this.adapter.removeAttr(constants_1.strings.ARIA_HIDDEN);
     };
     /**
      * Sets the validity of the helper text based on the input validity.
      */
     MDCTextFieldHelperTextFoundation.prototype.setValidity = function (inputIsValid) {
-        var helperTextIsPersistent = this.adapter_.hasClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
-        var helperTextIsValidationMsg = this.adapter_.hasClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
+        var helperTextIsPersistent = this.adapter.hasClass(constants_1.cssClasses.HELPER_TEXT_PERSISTENT);
+        var helperTextIsValidationMsg = this.adapter.hasClass(constants_1.cssClasses.HELPER_TEXT_VALIDATION_MSG);
         var validationMsgNeedsDisplay = helperTextIsValidationMsg && !inputIsValid;
         if (validationMsgNeedsDisplay) {
-            this.adapter_.setAttr(constants_1.strings.ROLE, 'alert');
+            this.adapter.setAttr(constants_1.strings.ROLE, 'alert');
         } else {
-            this.adapter_.removeAttr(constants_1.strings.ROLE);
+            this.adapter.removeAttr(constants_1.strings.ROLE);
         }
         if (!helperTextIsPersistent && !validationMsgNeedsDisplay) {
             this.hide_();
@@ -20249,7 +22571,7 @@ var MDCTextFieldHelperTextFoundation = /** @class */function (_super) {
      * Hides the help text from screen readers.
      */
     MDCTextFieldHelperTextFoundation.prototype.hide_ = function () {
-        this.adapter_.setAttr(constants_1.strings.ARIA_HIDDEN, 'true');
+        this.adapter.setAttr(constants_1.strings.ARIA_HIDDEN, 'true');
     };
     return MDCTextFieldHelperTextFoundation;
 }(foundation_1.MDCFoundation);
@@ -20367,9 +22689,10 @@ var MDCTextFieldIcon = /** @class */function (_super) {
     MDCTextFieldIcon.attachTo = function (root) {
         return new MDCTextFieldIcon(root);
     };
-    Object.defineProperty(MDCTextFieldIcon.prototype, "foundation", {
+    Object.defineProperty(MDCTextFieldIcon.prototype, "foundationForTextField", {
+        // Provided for access by MDCTextField component
         get: function get() {
-            return this.foundation_;
+            return this.foundation;
         },
         enumerable: true,
         configurable: true
@@ -20381,16 +22704,16 @@ var MDCTextFieldIcon = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             getAttr: function getAttr(attr) {
-                return _this.root_.getAttribute(attr);
+                return _this.root.getAttribute(attr);
             },
             setAttr: function setAttr(attr, value) {
-                return _this.root_.setAttribute(attr, value);
+                return _this.root.setAttribute(attr, value);
             },
             removeAttr: function removeAttr(attr) {
-                return _this.root_.removeAttribute(attr);
+                return _this.root.removeAttribute(attr);
             },
             setContent: function setContent(content) {
-                _this.root_.textContent = content;
+                _this.root.textContent = content;
             },
             registerInteractionHandler: function registerInteractionHandler(evtType, handler) {
                 return _this.listen(evtType, handler);
@@ -20526,7 +22849,7 @@ var INTERACTION_EVENTS = ['click', 'keydown'];
 var MDCTextFieldIconFoundation = /** @class */function (_super) {
     __extends(MDCTextFieldIconFoundation, _super);
     function MDCTextFieldIconFoundation(adapter) {
-        var _this = _super.call(this, __assign({}, MDCTextFieldIconFoundation.defaultAdapter, adapter)) || this;
+        var _this = _super.call(this, __assign(__assign({}, MDCTextFieldIconFoundation.defaultAdapter), adapter)) || this;
         _this.savedTabIndex_ = null;
         _this.interactionHandler_ = function (evt) {
             return _this.handleInteraction(evt);
@@ -20583,15 +22906,15 @@ var MDCTextFieldIconFoundation = /** @class */function (_super) {
     });
     MDCTextFieldIconFoundation.prototype.init = function () {
         var _this = this;
-        this.savedTabIndex_ = this.adapter_.getAttr('tabindex');
+        this.savedTabIndex_ = this.adapter.getAttr('tabindex');
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.registerInteractionHandler(evtType, _this.interactionHandler_);
+            _this.adapter.registerInteractionHandler(evtType, _this.interactionHandler_);
         });
     };
     MDCTextFieldIconFoundation.prototype.destroy = function () {
         var _this = this;
         INTERACTION_EVENTS.forEach(function (evtType) {
-            _this.adapter_.deregisterInteractionHandler(evtType, _this.interactionHandler_);
+            _this.adapter.deregisterInteractionHandler(evtType, _this.interactionHandler_);
         });
     };
     MDCTextFieldIconFoundation.prototype.setDisabled = function (disabled) {
@@ -20599,25 +22922,25 @@ var MDCTextFieldIconFoundation = /** @class */function (_super) {
             return;
         }
         if (disabled) {
-            this.adapter_.setAttr('tabindex', '-1');
-            this.adapter_.removeAttr('role');
+            this.adapter.setAttr('tabindex', '-1');
+            this.adapter.removeAttr('role');
         } else {
-            this.adapter_.setAttr('tabindex', this.savedTabIndex_);
-            this.adapter_.setAttr('role', constants_1.strings.ICON_ROLE);
+            this.adapter.setAttr('tabindex', this.savedTabIndex_);
+            this.adapter.setAttr('role', constants_1.strings.ICON_ROLE);
         }
     };
     MDCTextFieldIconFoundation.prototype.setAriaLabel = function (label) {
-        this.adapter_.setAttr('aria-label', label);
+        this.adapter.setAttr('aria-label', label);
     };
     MDCTextFieldIconFoundation.prototype.setContent = function (content) {
-        this.adapter_.setContent(content);
+        this.adapter.setContent(content);
     };
     MDCTextFieldIconFoundation.prototype.handleInteraction = function (evt) {
         var isEnterKey = evt.key === 'Enter' || evt.keyCode === 13;
         if (evt.type === 'click' || isEnterKey) {
             evt.preventDefault(); // stop click from causing host label to focus
             // input
-            this.adapter_.notifyIconAction();
+            this.adapter.notifyIconAction();
         }
     };
     return MDCTextFieldIconFoundation;
@@ -20793,9 +23116,9 @@ var MDCTopAppBar = /** @class */function (_super) {
                 return component_2.MDCRipple.attachTo(el);
             };
         }
-        this.navIcon_ = this.root_.querySelector(constants_1.strings.NAVIGATION_ICON_SELECTOR);
+        this.navIcon_ = this.root.querySelector(constants_1.strings.NAVIGATION_ICON_SELECTOR);
         // Get all icons in the toolbar and instantiate the ripples
-        var icons = [].slice.call(this.root_.querySelectorAll(constants_1.strings.ACTION_ITEM_SELECTOR));
+        var icons = [].slice.call(this.root.querySelectorAll(constants_1.strings.ACTION_ITEM_SELECTOR));
         if (this.navIcon_) {
             icons.push(this.navIcon_);
         }
@@ -20807,15 +23130,15 @@ var MDCTopAppBar = /** @class */function (_super) {
         this.scrollTarget_ = window;
     };
     MDCTopAppBar.prototype.initialSyncWithDOM = function () {
-        this.handleNavigationClick_ = this.foundation_.handleNavigationClick.bind(this.foundation_);
-        this.handleWindowResize_ = this.foundation_.handleWindowResize.bind(this.foundation_);
-        this.handleTargetScroll_ = this.foundation_.handleTargetScroll.bind(this.foundation_);
+        this.handleNavigationClick_ = this.foundation.handleNavigationClick.bind(this.foundation);
+        this.handleWindowResize_ = this.foundation.handleWindowResize.bind(this.foundation);
+        this.handleTargetScroll_ = this.foundation.handleTargetScroll.bind(this.foundation);
         this.scrollTarget_.addEventListener('scroll', this.handleTargetScroll_);
         if (this.navIcon_) {
             this.navIcon_.addEventListener('click', this.handleNavigationClick_);
         }
-        var isFixed = this.root_.classList.contains(constants_1.cssClasses.FIXED_CLASS);
-        var isShort = this.root_.classList.contains(constants_1.cssClasses.SHORT_CLASS);
+        var isFixed = this.root.classList.contains(constants_1.cssClasses.FIXED_CLASS);
+        var isShort = this.root.classList.contains(constants_1.cssClasses.SHORT_CLASS);
         if (!isShort && !isFixed) {
             window.addEventListener('resize', this.handleWindowResize_);
         }
@@ -20828,8 +23151,8 @@ var MDCTopAppBar = /** @class */function (_super) {
         if (this.navIcon_) {
             this.navIcon_.removeEventListener('click', this.handleNavigationClick_);
         }
-        var isFixed = this.root_.classList.contains(constants_1.cssClasses.FIXED_CLASS);
-        var isShort = this.root_.classList.contains(constants_1.cssClasses.SHORT_CLASS);
+        var isFixed = this.root.classList.contains(constants_1.cssClasses.FIXED_CLASS);
+        var isShort = this.root.classList.contains(constants_1.cssClasses.SHORT_CLASS);
         if (!isShort && !isFixed) {
             window.removeEventListener('resize', this.handleWindowResize_);
         }
@@ -20840,7 +23163,7 @@ var MDCTopAppBar = /** @class */function (_super) {
         this.scrollTarget_.removeEventListener('scroll', this.handleTargetScroll_);
         this.scrollTarget_ = target;
         // Initialize scroll handler on the new scroll target
-        this.handleTargetScroll_ = this.foundation_.handleTargetScroll.bind(this.foundation_);
+        this.handleTargetScroll_ = this.foundation.handleTargetScroll.bind(this.foundation);
         this.scrollTarget_.addEventListener('scroll', this.handleTargetScroll_);
     };
     MDCTopAppBar.prototype.getDefaultFoundation = function () {
@@ -20850,19 +23173,19 @@ var MDCTopAppBar = /** @class */function (_super) {
         // tslint:disable:object-literal-sort-keys Methods should be in the same order as the adapter interface.
         var adapter = {
             hasClass: function hasClass(className) {
-                return _this.root_.classList.contains(className);
+                return _this.root.classList.contains(className);
             },
             addClass: function addClass(className) {
-                return _this.root_.classList.add(className);
+                return _this.root.classList.add(className);
             },
             removeClass: function removeClass(className) {
-                return _this.root_.classList.remove(className);
+                return _this.root.classList.remove(className);
             },
             setStyle: function setStyle(property, value) {
-                return _this.root_.style.setProperty(property, value);
+                return _this.root.style.setProperty(property, value);
             },
             getTopAppBarHeight: function getTopAppBarHeight() {
-                return _this.root_.clientHeight;
+                return _this.root.clientHeight;
             },
             notifyNavigationIconClicked: function notifyNavigationIconClicked() {
                 return _this.emit(constants_1.strings.NAVIGATION_EVENT, {});
@@ -20873,14 +23196,14 @@ var MDCTopAppBar = /** @class */function (_super) {
                 return win.pageYOffset !== undefined ? win.pageYOffset : el.scrollTop;
             },
             getTotalActionItems: function getTotalActionItems() {
-                return _this.root_.querySelectorAll(constants_1.strings.ACTION_ITEM_SELECTOR).length;
+                return _this.root.querySelectorAll(constants_1.strings.ACTION_ITEM_SELECTOR).length;
             }
         };
         // tslint:enable:object-literal-sort-keys
         var foundation;
-        if (this.root_.classList.contains(constants_1.cssClasses.SHORT_CLASS)) {
+        if (this.root.classList.contains(constants_1.cssClasses.SHORT_CLASS)) {
             foundation = new foundation_2.MDCShortTopAppBarFoundation(adapter);
-        } else if (this.root_.classList.contains(constants_1.cssClasses.FIXED_CLASS)) {
+        } else if (this.root.classList.contains(constants_1.cssClasses.FIXED_CLASS)) {
             foundation = new foundation_1.MDCFixedTopAppBarFoundation(adapter);
         } else {
             foundation = new foundation_3.MDCTopAppBarFoundation(adapter);
@@ -21019,15 +23342,15 @@ var MDCFixedTopAppBarFoundation = /** @class */function (_super) {
      * @override
      */
     MDCFixedTopAppBarFoundation.prototype.handleTargetScroll = function () {
-        var currentScroll = this.adapter_.getViewportScrollY();
+        var currentScroll = this.adapter.getViewportScrollY();
         if (currentScroll <= 0) {
             if (this.wasScrolled_) {
-                this.adapter_.removeClass(constants_1.cssClasses.FIXED_SCROLLED_CLASS);
+                this.adapter.removeClass(constants_1.cssClasses.FIXED_SCROLLED_CLASS);
                 this.wasScrolled_ = false;
             }
         } else {
             if (!this.wasScrolled_) {
-                this.adapter_.addClass(constants_1.cssClasses.FIXED_SCROLLED_CLASS);
+                this.adapter.addClass(constants_1.cssClasses.FIXED_SCROLLED_CLASS);
                 this.wasScrolled_ = true;
             }
         }
@@ -21110,7 +23433,7 @@ var MDCTopAppBarBaseFoundation = /** @class */function (_super) {
     __extends(MDCTopAppBarBaseFoundation, _super);
     /* istanbul ignore next: optional argument is not a branch statement */
     function MDCTopAppBarBaseFoundation(adapter) {
-        return _super.call(this, __assign({}, MDCTopAppBarBaseFoundation.defaultAdapter, adapter)) || this;
+        return _super.call(this, __assign(__assign({}, MDCTopAppBarBaseFoundation.defaultAdapter), adapter)) || this;
     }
     Object.defineProperty(MDCTopAppBarBaseFoundation, "strings", {
         get: function get() {
@@ -21175,7 +23498,7 @@ var MDCTopAppBarBaseFoundation = /** @class */function (_super) {
     /** Other variants of TopAppBar foundation overrides this method */
     MDCTopAppBarBaseFoundation.prototype.handleWindowResize = function () {}; // tslint:disable-line:no-empty
     MDCTopAppBarBaseFoundation.prototype.handleNavigationClick = function () {
-        this.adapter_.notifyNavigationIconClicked();
+        this.adapter.notifyNavigationIconClicked();
     };
     return MDCTopAppBarBaseFoundation;
 }(foundation_1.MDCFoundation);
@@ -21305,11 +23628,11 @@ var MDCShortTopAppBarFoundation = /** @class */function (_super) {
     });
     MDCShortTopAppBarFoundation.prototype.init = function () {
         _super.prototype.init.call(this);
-        if (this.adapter_.getTotalActionItems() > 0) {
-            this.adapter_.addClass(constants_1.cssClasses.SHORT_HAS_ACTION_ITEM_CLASS);
+        if (this.adapter.getTotalActionItems() > 0) {
+            this.adapter.addClass(constants_1.cssClasses.SHORT_HAS_ACTION_ITEM_CLASS);
         }
         // If initialized with SHORT_COLLAPSED_CLASS, the bar should always be collapsed
-        this.setAlwaysCollapsed(this.adapter_.hasClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS));
+        this.setAlwaysCollapsed(this.adapter.hasClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS));
     };
     /**
      * Set if the short top app bar should always be collapsed.
@@ -21339,7 +23662,7 @@ var MDCShortTopAppBarFoundation = /** @class */function (_super) {
         if (this.isAlwaysCollapsed_) {
             return;
         }
-        var currentScroll = this.adapter_.getViewportScrollY();
+        var currentScroll = this.adapter.getViewportScrollY();
         if (currentScroll <= 0) {
             if (this.isCollapsed_) {
                 this.uncollapse_();
@@ -21351,11 +23674,11 @@ var MDCShortTopAppBarFoundation = /** @class */function (_super) {
         }
     };
     MDCShortTopAppBarFoundation.prototype.uncollapse_ = function () {
-        this.adapter_.removeClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
+        this.adapter.removeClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
         this.isCollapsed_ = false;
     };
     MDCShortTopAppBarFoundation.prototype.collapse_ = function () {
-        this.adapter_.addClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
+        this.adapter.addClass(constants_1.cssClasses.SHORT_COLLAPSED_CLASS);
         this.isCollapsed_ = true;
     };
     return MDCShortTopAppBarFoundation;
@@ -21450,20 +23773,20 @@ var MDCTopAppBarFoundation = /** @class */function (_super) {
          * The timeout that's used to debounce toggling the isCurrentlyBeingResized_ variable after a resize
          */
         _this.resizeDebounceId_ = INITIAL_VALUE;
-        _this.lastScrollPosition_ = _this.adapter_.getViewportScrollY();
-        _this.topAppBarHeight_ = _this.adapter_.getTopAppBarHeight();
+        _this.lastScrollPosition_ = _this.adapter.getViewportScrollY();
+        _this.topAppBarHeight_ = _this.adapter.getTopAppBarHeight();
         return _this;
     }
     MDCTopAppBarFoundation.prototype.destroy = function () {
         _super.prototype.destroy.call(this);
-        this.adapter_.setStyle('top', '');
+        this.adapter.setStyle('top', '');
     };
     /**
      * Scroll handler for the default scroll behavior of the top app bar.
      * @override
      */
     MDCTopAppBarFoundation.prototype.handleTargetScroll = function () {
-        var currentScrollPosition = Math.max(this.adapter_.getViewportScrollY(), 0);
+        var currentScrollPosition = Math.max(this.adapter.getViewportScrollY(), 0);
         var diff = currentScrollPosition - this.lastScrollPosition_;
         this.lastScrollPosition_ = currentScrollPosition;
         // If the window is being resized the lastScrollPosition_ needs to be updated but the
@@ -21535,7 +23858,7 @@ var MDCTopAppBarFoundation = /** @class */function (_super) {
             if (Math.abs(offset) >= this.topAppBarHeight_) {
                 offset = -constants_1.numbers.MAX_TOP_APP_BAR_HEIGHT;
             }
-            this.adapter_.setStyle('top', offset + 'px');
+            this.adapter.setStyle('top', offset + 'px');
         }
     };
     /**
@@ -21543,7 +23866,7 @@ var MDCTopAppBarFoundation = /** @class */function (_super) {
      * top app bar height changes.
      */
     MDCTopAppBarFoundation.prototype.throttledResizeHandler_ = function () {
-        var currentHeight = this.adapter_.getTopAppBarHeight();
+        var currentHeight = this.adapter.getTopAppBarHeight();
         if (this.topAppBarHeight_ !== currentHeight) {
             this.wasDocked_ = false;
             // Since the top app bar has a different height depending on the screen width, this

@@ -81,7 +81,7 @@
       }
 
       .sideBar {
-        padding-left: 16px;
+       /* padding-left: 16px; */
         overflow-x: hidden;
         overflow-y: auto;
         background-color: rgba(240, 240, 240, 0.90);

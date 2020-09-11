@@ -4,6 +4,7 @@
 //   ../../@material/base/index
 //   ../../@material/checkbox/index
 //   ../../@material/chips/index
+//   ../../@material/circular-progress/index
 //   ../../@material/data-table/index
 //   ../../@material/dialog/index
 //   ../../@material/dom/index
@@ -57,6 +58,7 @@ declare module 'material-components-web' {
     import * as base from '@material/base/index';
     import * as checkbox from '@material/checkbox/index';
     import * as chips from '@material/chips/index';
+    import * as circularProgress from '@material/circular-progress/index';
     import * as dataTable from '@material/data-table/index';
     import * as dialog from '@material/dialog/index';
     import * as dom from '@material/dom/index';
@@ -82,6 +84,6 @@ declare module 'material-components-web' {
     import * as tab from '@material/tab/index';
     import * as textField from '@material/textfield/index';
     import * as topAppBar from '@material/top-app-bar/index';
-    export { autoInit, base, checkbox, chips, dataTable, dialog, dom, drawer, floatingLabel, formField, iconButton, lineRipple, linearProgress, list, menu, menuSurface, notchedOutline, radio, ripple, select, slider, snackbar, switchControl, tab, tabBar, tabIndicator, tabScroller, textField, topAppBar, };
+    export { autoInit, base, checkbox, chips, circularProgress, dataTable, dialog, dom, drawer, floatingLabel, formField, iconButton, lineRipple, linearProgress, list, menu, menuSurface, notchedOutline, radio, ripple, select, slider, snackbar, switchControl, tab, tabBar, tabIndicator, tabScroller, textField, topAppBar, };
 }
 

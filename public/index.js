@@ -4,8 +4,7 @@ loadjs([
     '/lib/ui/noty/noty.css',
     '/lib/ui/noty/themes/mint.css',
     '/lib/ui/noty/noty.js',
-    '/lib/ui/nprogress/nprogress.css',
-    '/lib/ui/nprogress/nprogress.js',
+    '/lib/ui/spinjs/spin.css'
 ],'sys', {
     async: false
 });
@@ -16,6 +15,7 @@ loadjs([
     '/lib/he.js',
     '/lib/locale/polyglot.min.js',
     '/lib/hashids.min.js',
+    '/lib/page-query.js'
 ],'forall', {
     async: false
 });
@@ -58,9 +58,6 @@ loadjs(['/lib/gundb/gun.min.js',
 
 
 loadjs.ready(['sys', 'fun', 'forall'], function() {
-    document.addEventListener('DOMContentLoaded', function(){
-        NProgress.start();
-    })
     }).ready('gundb', function() {
         import('/core/app.js')
             .then((module) => {
