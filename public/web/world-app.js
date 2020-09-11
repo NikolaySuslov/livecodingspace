@@ -156,7 +156,8 @@ class WorldApp {
                                                             //document.querySelector('#proxyName').value = res;
                                                         } else {
                                                             _app.helpers.getUserAlias(proxyID).then(res => {
-                                                                document.querySelector('#proxyName').value = res;
+                                                                this._proxyNameField.value = res;
+                                                                //document.querySelector('#proxyName').value = res;
                                                             })
                                                         }
                                                     }

@@ -10,6 +10,7 @@ import { Helpers } from '/core/helpers.js';
 import { VWF } from '/core/vwf.js';
 import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/ui/widgets.js';
+import {Spinner} from '/lib/ui/spinjs/spin.js';
 
 import { createAdapter } from '/lib/fun/@most/adapter/dist/index.mjs';
 import *  as mostSubject from '/lib/fun/@most/subject/dist/index.all.js';
@@ -29,8 +30,9 @@ class App {
     M.scheduler = mostScheduler;
     M.prelude = mostPrelude;
     M.e = mostDomEvent;
+    
     ///
-
+    this.setupLoadScreen();
     window._noty = new Noty;
     this.helpers = new Helpers;
     this.log = this.helpers.log;
@@ -61,10 +63,13 @@ class App {
         this.setPageRoutes();
       });
 
+
+
   }
 
   setPageRoutes() {
     //client routes
+    page('*', this.HandleQuery);
     page('/', this.HandleIndex);
     page('/setup', this.HandleSetupIndex);
     page('/debug', this.HandleDebugIndex);
@@ -73,10 +78,11 @@ class App {
     page('/worlds', this.HandleIndex);
     page('/:user/worlds', this.HandleUserWorlds);
     page('/:user/:type/:name/edit/:file', this.HandleFileEdit);
-    page('/:user/:space', this.HandleParsableRequestGenID);
+    page('/:user/:space', this.HandleParsableRequestWithID);
+    page('/:user/:space/index.vwf', this.HandleParsableRequestWithID);
     page('/:user/:space/about', this.HandleWorldAbout);
-    page('/:user/:space/:id', this.HandleParsableRequestWithID);
-    page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
+    //page('/:user/:space/:id', this.HandleParsableRequestWithID);
+    //page('/:user/:space/index.vwf/:id', this.HandleParsableRequestWithID);
     page('/:user/:space/load/:savename', this.HandleParsableLoadRequest);
     page('/:user/:space/:id/load/:savename', this.HandleParsableRequestWithID);
     page('/:user/:space/index.vwf/:id/load/:savename', this.HandleParsableRequestWithID);
@@ -192,6 +198,36 @@ class App {
 
     if (lcsappConfig)
       localStorage.setItem('lcs_app', lcsappConfig);
+
+  }
+
+  setupLoadScreen(){
+
+    let opts = {
+      lines: 13,
+      length: 5,
+      width: 14,
+      radius: 42,
+      scale: 1,
+      corners: 1,
+      color: '#CCC',
+      opacity: 0.25,
+      rotate: 0,
+      direction: 1,
+      speed: 1,
+      trail: 60,
+      fps: 20,
+      zIndex: 2e9,
+      className: 'spinner',
+      top: '50%',
+      left: '50%',
+      shadow: false,
+      hwaccel: false,
+      position: 'absolute',
+     }
+
+    let el = document.getElementById('loadscreen');
+    this.spinner = new Spinner(opts).spin(el);
 
   }
 
@@ -453,11 +489,12 @@ class App {
 
   HandleDebugIndex() {
 
-    window._app.hideProgressBar();
+
     //window._app.hideUIControl();
 
     _app.generalIndex().then(r=>{
 
+    _app.hideProgressBar();   
     let el = document.createElement("div");
     el.setAttribute("id", "appGUI");
     document.body.appendChild(el);
@@ -1215,6 +1252,7 @@ class App {
       '/lib/ui/treeview/treeview.min.js',
       '/lib/ui/mdc/dist/material-components-web.min.css',
       '/lib/ui/mdc/dist/material-components-web.min.js',
+      '/lib/ui/mdc-fonts.css',
       '/lib/ui/mdc.css',
       '/lib/ui/ace/ace.js',
       '/lib/ui/drag-drop.js',
@@ -1239,6 +1277,13 @@ class App {
     return p
   }
 
+  ////////HANDLERS//////
+
+  HandleQuery(ctx, next) {
+    ctx.query = qs.parse(location.search.slice(1));
+    next();
+  }
+
   HandleIndex() {
 
     console.log("INDEX");
@@ -1249,7 +1294,7 @@ class App {
     _app.generalIndex().then(res=>{
       if (!_app.indexApp) {
         _app.indexApp = new IndexApp('index');
-        window._app.hideProgressBar();
+        _app.hideProgressBar();
       }
     })
 
@@ -1257,7 +1302,15 @@ class App {
 
   HandleNoPage() {
 
-    console.log("no such page")
+    console.log("no such page");
+    _app.hideProgressBar();
+
+    let t404 = `
+    <h1>404 no page...</h1>
+    `; 
+    let el = document.getElementById("loadscreen");
+    el.innerHTML = t404;
+
   }
 
   //handle parcable requests
@@ -1333,6 +1386,11 @@ class App {
 
   }
 
+  generateInstanceID(){
+
+    window.location.pathname = pathname + '/' + app.helpers.GenerateInstanceID()
+
+  }
 
   HandleParsableRequestWithID(ctx) {
 
@@ -1340,9 +1398,29 @@ class App {
     console.log(ctx.params);
     var pathname = ctx.pathname;
     let user = ctx.params.user;
-    let genID = ctx.params.id;
     let space = ctx.params.space;
     let savename = ctx.params.savename;
+    //let genID = ctx.params.id;
+
+    let query = ctx.query;
+    var genID = undefined;
+
+    if(Object.keys(query).length > 0){
+      if(query.k){
+        genID = query.k
+      } 
+    }
+
+     if (!genID){
+       genID = app.helpers.GenerateInstanceID();
+       let urlAddon = '?k=' + genID;
+       let state = {
+         path: ctx.pathname + urlAddon
+       }
+
+       window.history.replaceState(state, space, window.location.href + urlAddon);
+     }
+  
 
     if (pathname[pathname.length - 1] == '/') {
       pathname = pathname.slice(0, -1)
@@ -1486,11 +1564,13 @@ class App {
         '/lib/ui/treeview/treeview.min.js',
         '/lib/ui/mdc/dist/material-components-web.min.css',
         '/lib/ui/mdc/dist/material-components-web.min.js',
+        '/lib/ui/mdc-fonts.css',
         '/lib/ui/mdc.css',
         '/lib/ui/ace/ace.js',
         '/lib/ui/screenfull/screenfull.min.js',
         '/lib/ui/drag-drop.js',
         '/lib/buffer5.6.0.min.js',
+        '/lib/ui/qrcode.min.js',
         '/drivers/view/editor/draggabilly/draggabilly.pkgd.js',
         '/drivers/view/editor/colorpicker/colorpicker.min.js',
         '/drivers/view/editor/colorpicker/themes.css',
@@ -1760,34 +1840,18 @@ class App {
 
 
   hideProgressBar() {
+    let el = document.getElementById('loadscreen');
+    if(el){
+      el.getElementsByClassName('spinner')[0].remove();
+      //window._spinner.stop(false);
+    }
 
-    NProgress.done();
-    NProgress.remove();
-    //TODO:
-
-    // var progressbar = document.getElementById("load-progressbar");
-    // if (progressbar) {
-    //   progressbar.classList.remove("visible");
-    //   progressbar.classList.remove("mdc-linear-progress--indeterminate");
-
-    //   progressbar.classList.add("not-visible");
-    //   progressbar.classList.add("mdc-linear-progress--closed");
-
-    // }
 
   }
 
   showProgressBar() {
-
-    //TODO:
-    // let progressbar = document.getElementById("load-progressbar");
-    // if (progressbar) {
-    //   progressbar.classList.remove("not-visible");
-    //   progressbar.classList.remove("mdc-linear-progress--closed");
-
-    //   progressbar.classList.add("visible");
-    //   progressbar.classList.add("mdc-linear-progress--indeterminate");
-    // }
+    let el = document.getElementById('loadscreen');
+    _app.spinner.spin(el);
 
   }
 

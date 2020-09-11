@@ -455,7 +455,7 @@ class IndexApp {
                 if (m[1].loadInfo.save_name) {
                     link = "/" + m[1].user + "/" + worldName + "/" + instanceID + '/load/' + m[1].loadInfo.save_name;
                 } else {
-                    link = "/" + m[1].user + "/" + worldName + "/" + instanceID; //m[0];
+                    link = "/" + m[1].user + "/" + worldName + "?k=" + instanceID; //m[0];
                 }
 
                 return {
@@ -479,7 +479,7 @@ class IndexApp {
                                             // href: window.location.protocol + "//" + window.location.host + "/" + m[1].user + m[0],
                                             onclick: function (e) {
                                                 self.checkForManualSettings();
-                                                window.location.pathname = link
+                                                window.location.href = window.location.origin + link
 
                                                 //self.refresh();
                                             }

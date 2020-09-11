@@ -3087,23 +3087,7 @@ class VWF {
 
                                 // Dismiss the loading spinner
                                 if (childID === self.application()) {
-
-                                    NProgress.done();
-                                    NProgress.remove();
-
-                                    //TODO: "LOADING SPINNER"
-
-                                    // var progressbar = document.getElementById("load-progressbar");
-                                    // if (progressbar) {
-                                    //     //document.querySelector('body').removeChild(progressbar);
-                                    //     progressbar.classList.remove("visible");
-                                    //     progressbar.classList.add("not-visible");
-                                    //     progressbar.classList.add("mdc-linear-progress--closed");
-
-                                    // }
-                                    
-                                    // var spinner = document.getElementById( "vwf-loading-spinner" );
-                                    // spinner && spinner.classList.remove( "pace-active" );
+                                    _app.hideProgressBar();
                                 }
 
                                 series_callback_async(err, undefined);
