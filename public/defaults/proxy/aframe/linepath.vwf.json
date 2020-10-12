@@ -4,6 +4,10 @@
   "properties": {
     "color": null,
     "path": null,
-    "width": null
+    "width": null,
+    "taper": null,
+    "transparent": null,
+    "opacity": null
+
   }
 }

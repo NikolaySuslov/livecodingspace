@@ -52,9 +52,9 @@ this.translateTo = function(translation, duration){
 this.rotateBy = function(rotation, duration, frame) {
     let rotationValue = this.translationFromValue(rotation);
     let deltaQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
-       (THREE.Math.degToRad(rotationValue[0])),
-       (THREE.Math.degToRad(rotationValue[1])),
-       (THREE.Math.degToRad(rotationValue[2])), 'XYZ'
+       (THREE.Math.degToRad(rotationValue.x)),
+       (THREE.Math.degToRad(rotationValue.y)),
+       (THREE.Math.degToRad(rotationValue.z)), 'XYZ'
      ));
      this.quaterniateBy( deltaQuaternion, duration, frame ); //@ sourceURL=node3.animation.rotateBy.vwf
 }
@@ -62,9 +62,9 @@ this.rotateBy = function(rotation, duration, frame) {
 this.rotateTo = function(rotation, duration){
     let rotationValue = this.translationFromValue(rotation);
     let stopQuaternion = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
-        (THREE.Math.degToRad(rotationValue[0])),
-        (THREE.Math.degToRad(rotationValue[1])),
-        (THREE.Math.degToRad(rotationValue[2])), 'XYZ'
+        (THREE.Math.degToRad(rotationValue.x)),
+        (THREE.Math.degToRad(rotationValue.y)),
+        (THREE.Math.degToRad(rotationValue.z)), 'XYZ'
       ));
     this.quaterniateTo( stopQuaternion, duration ); //@ sourceURL=node3.animation.rotateTo.vwf
 }
@@ -72,9 +72,9 @@ this.rotateTo = function(rotation, duration){
 this.quaterniateBy = function(quaternion, duration, frame) {
 
       this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
-          (THREE.Math.degToRad(this.rotation[0])),
-          (THREE.Math.degToRad(this.rotation[1])),
-          (THREE.Math.degToRad(this.rotation[2])), 'XYZ'
+          (THREE.Math.degToRad(this.rotation.x)),
+          (THREE.Math.degToRad(this.rotation.y)),
+          (THREE.Math.degToRad(this.rotation.z)), 'XYZ'
         ));
       var deltaQuaternion = (new THREE.Quaternion).copy(quaternion);
       if ( ! frame || frame == "rotated" ) {
@@ -110,9 +110,9 @@ this.quaterniateBy = function(quaternion, duration, frame) {
     this.quaterniateTo = function(quaternion, duration) {
 
       this.startQuaternionSIM = (new THREE.Quaternion()).setFromEuler(new THREE.Euler(
-        (THREE.Math.degToRad(this.rotation[0])),
-        (THREE.Math.degToRad(this.rotation[1])),
-        (THREE.Math.degToRad(this.rotation[2])), 'XYZ'
+        (THREE.Math.degToRad(this.rotation.x)),
+        (THREE.Math.degToRad(this.rotation.y)),
+        (THREE.Math.degToRad(this.rotation.z)), 'XYZ'
       ));
     this.stopQuaternionSIM = (new THREE.Quaternion).copy(quaternion);
     if(duration > 0) {

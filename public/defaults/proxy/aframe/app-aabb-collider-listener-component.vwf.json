@@ -1,5 +1,7 @@
 {
     "extends": "proxy/aframe/aentityComponent.vwf",
     "type": "component",
-    "properties": {}
+    "properties": {
+        "dynamic": false
+    }
 }

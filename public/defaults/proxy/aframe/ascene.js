@@ -30,9 +30,11 @@ this.clientWatch = function () {
                         let idToDelete = node.id.slice(7);
                         let nodes = self.children.filter(el=>
                             (el.id.includes(idToDelete) && 
-                            (   el.id.includes('avatar') ||
-                                el.id.includes('xrcontroller') ||
-                                el.id.includes('gearvr')))
+                            (   el.id.includes('avatar-') ||
+                                el.id.includes('xrcontroller-') ||
+                                el.id.includes('mouse-') ||
+                                el.id.includes('gearvr-'))) 
+                               
                             );
 
                         nodes.forEach(el => {
@@ -70,7 +72,7 @@ this.sphereProto = function () {
         "properties": {
             "displayName": "sphere",
             "radius": 1,
-            "class": "intersectable"
+            "class": "clickable"
         },
         children: {
             "material": {
@@ -423,28 +425,13 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
     var self = this;
 
 
-    var position = "0 0 0";
-
     var nodeName = this.GUID();
-
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
-    }
 
     let modelNode = {
         "extends": "proxy/aframe/aobjmodel.vwf",
         "properties": {
             "src": '#' + objSrc,
-            "mtl": '#' + mtlSrc,
-            "position": position
+            "mtl": '#' + mtlSrc
         },
         children:{
             "interpolation":
@@ -463,7 +450,8 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
     }
 
     self.children.create(nodeName, modelNode, function( child ) {
-        if (avatar) child.lookAt(self.children[avatar].worldPosition())
+        //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+        if (avatar) child.placeInFrontOf(avatar, -2)
        });
 
 }
@@ -510,18 +498,6 @@ this.createModel = function (modelType, modelSrc, avatar) {
     this.children.create(tagName, tagNode, function( child ) {
 
         let nodeName = modelType + '-MODEL-'+self.GUID();
-        var position = "0 0 0";
-        if (avatar) {
-            
-            let myAvatar = self.children[avatar];
-            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-        
-            if (cursorNode) {
-                 position = cursorNode.worldPosition();
-                //console.log(position);
-            }
-    
-        }
        
         const protos = {
             DAE: "proxy/aframe/acolladamodel.vwf",
@@ -535,8 +511,7 @@ this.createModel = function (modelType, modelSrc, avatar) {
         let modelNode = {
             "extends": extendsName[1],
             "properties": {
-                "src": '#' + child.itemID,
-                "position": position
+                "src": '#' + child.itemID
             },
             children:{
                 "interpolation":
@@ -551,7 +526,8 @@ this.createModel = function (modelType, modelSrc, avatar) {
         }
 
         self.children.create(nodeName, modelNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition())
+            //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+            if (avatar) child.placeInFrontOf(avatar, -2)
            });
 
        });
@@ -607,26 +583,12 @@ this.createDrawNode = function(node, name, color, width, pos) {
 
 this.createPrimitive = function (type, params, name, node, avatar) {
 
-    var position = "0 0 0";
-
     var displayName = name;
 
     let nodeName = this.GUID();
     // if (!nodeName) {
     //     nodeName = this.GUID();
     // }
-
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
-    }
 
     var newNode = {};
 
@@ -645,11 +607,11 @@ this.createPrimitive = function (type, params, name, node, avatar) {
             break;
 
         case "light":
-            newNode = this.lightProto(params);
+            newNode = this.lightProto(params.type);
             break;
             
         case "text":
-            newNode = this.textProto(params);
+            newNode = this.textProto(params.text);
             break;
 
         case "cylinder":
@@ -668,12 +630,13 @@ this.createPrimitive = function (type, params, name, node, avatar) {
     var self = this;
 
     if (newNode) {
-        newNode.properties.position = position;
+
         if (displayName) {
             newNode.properties.displayName = displayName;
         }
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            if (avatar) child.placeInFrontOf(avatar, -2)
+            //child.lookAt(self.children[avatar].worldPosition());
             
             if (type == "text"){
                 child.properties.font = "/drivers/model/aframe/fonts/custom-msdf.json"
@@ -685,34 +648,33 @@ this.createPrimitive = function (type, params, name, node, avatar) {
 
 this.createMirror = function (name, node, avatar) {
 
-    var position = "0 0 0";
-
     var nodeName = name;
     if (!nodeName) {
         nodeName = this.GUID();
     }
 
-    if (avatar) {
+    // if (avatar) {
 
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
+    //     let myAvatar = this.children[avatar];
+    //     let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
 
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
+    //     if (cursorNode) {
+    //         position = cursorNode.worldPosition();
+    //         //console.log(position);
+    //     }
 
-    }
+    // }
 
     var newNode = this.mirrorProto();
     newNode.properties.displayName = "mirror";
 
+
     var self = this;
 
     if (newNode) {
-        newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            if (avatar) child.placeInFrontOf(avatar, -2)
+            //if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });
     }
 
@@ -720,24 +682,13 @@ this.createMirror = function (name, node, avatar) {
 
 this.createCamera = function (name, node, avatar) {
 
-    var position = "0 0 0";
+
 
     var nodeName = name;
     if (!nodeName) {
         nodeName = this.GUID();
     }
 
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
-    }
 
     var newNode = this.cameraProto();
     newNode.properties.displayName = "camera";
@@ -745,9 +696,9 @@ this.createCamera = function (name, node, avatar) {
     var self = this;
 
     if (newNode) {
-        newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            if (avatar) child.placeInFrontOf(avatar, -2)
+            //if (avatar) child.lookAt(self.children[avatar].worldPosition());
           });
     }
 
@@ -762,17 +713,6 @@ this.createCameraWithOffset = function (name, node, avatar) {
         nodeName = this.GUID();
     }
 
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
-    }
 
     var newNode = this.cameraProtoWithOffset();
     newNode.properties.displayName = "cameraWithOffset";
@@ -782,7 +722,8 @@ this.createCameraWithOffset = function (name, node, avatar) {
     if (newNode) {
         newNode.properties.position = position;
         this.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            //if (avatar) child.lookAt(self.children[avatar].worldPosition());
+            if (avatar) child.placeInFrontOf(avatar, -2)
           });
     }
 
@@ -793,23 +734,10 @@ this.createImage = function (imgSrc, name, node, avatar) {
 
     var self = this;
 
-    var position = "0 0 0";
 
     var nodeName = name;
     if (!nodeName) {
         nodeName = this.GUID();
-    }
-
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
     }
 
     let tagName = 'IMG-ASSET-'+ this.GUID();
@@ -826,23 +754,11 @@ this.createImage = function (imgSrc, name, node, avatar) {
 
         var nodeName = 'IMAGE-'+self.GUID();
 
-        var position = "0 0 0";
-        if (avatar) {
-            
-            let myAvatar = self.children[avatar];
-            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-        
-            if (cursorNode) {
-                 position = cursorNode.worldPosition();
-                //console.log(position);
-            }
-    
-        }
  
         let newNode = self.planeProto();
         newNode.properties.displayName = "image";
         newNode.children.material.properties.src = '#' + child.itemID;
-        newNode.properties.position = position;
+        //newNode.properties.position = position;
         newNode.properties.scale = [0.003, 0.003, 0.003];
         
         if(child.width && child.height){
@@ -851,7 +767,8 @@ this.createImage = function (imgSrc, name, node, avatar) {
             newNode.properties.height = child.height;
 
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                if (avatar) child.placeInFrontOf(avatar, -2)
                });
     
         } else {
@@ -867,7 +784,8 @@ this.createImage = function (imgSrc, name, node, avatar) {
         newNode.properties.height = child.height;
     
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                if (avatar) child.placeInFrontOf(avatar, -2)
                });
     
             }
@@ -886,23 +804,10 @@ this.createVideo = function (vidSrc, name, node, avatar) {
 
     var self = this;
 
-    var position = "0 0 0";
 
     var nodeName = name;
     if (!nodeName) {
         nodeName = this.GUID();
-    }
-
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
     }
 
     let tagName = 'VIDEO-ASSET-'+ this.GUID();
@@ -918,23 +823,12 @@ this.createVideo = function (vidSrc, name, node, avatar) {
 
 
         let nodeName = 'VIDEO-'+self.GUID();
-        var position = "0 0 0";
-        if (avatar) {
-            
-            let myAvatar = self.children[avatar];
-            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-        
-            if (cursorNode) {
-                 position = cursorNode.worldPosition();
-                //console.log(position);
-            }
-    
-        }
+
  
         let newNode = self.planeProto();
         newNode.properties.displayName = "video";
         newNode.children.material.properties.src = '#' + child.itemID;
-        newNode.properties.position = position;
+        //newNode.properties.position = position;
         // newNode.properties.width = 3;
         // newNode.properties.height = 1.75;
         newNode.properties.scale = [0.003, 0.003, 0.003];
@@ -945,7 +839,8 @@ this.createVideo = function (vidSrc, name, node, avatar) {
             newNode.properties.height = child.videoHeight;
 
             self.children.create(nodeName, newNode, function( child ) {
-                if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                if (avatar) child.placeInFrontOf(avatar, -2)
                });
 
         } else {
@@ -959,7 +854,8 @@ this.createVideo = function (vidSrc, name, node, avatar) {
                 newNode.properties.height = child.videoHeight;
 
                 self.children.create(nodeName, newNode, function( child ) {
-                    if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                    //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+                    if (avatar) child.placeInFrontOf(avatar, -2)
                    });
 
             }
@@ -975,24 +871,12 @@ this.createAudio = function (itemSrc, name, node, avatar) {
 
     var self = this;
 
-    var position = "0 0 0";
 
     var nodeName = name;
     if (!nodeName) {
         nodeName = this.GUID();
     }
 
-    if (avatar) {
-
-        let myAvatar = this.children[avatar];
-        let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-
-        if (cursorNode) {
-            position = cursorNode.worldPosition();
-            //console.log(position);
-        }
-
-    }
 
     let tagName = 'AUDIO-ASSET-'+ this.GUID();
     let tagNode = {
@@ -1014,22 +898,10 @@ this.createAudio = function (itemSrc, name, node, avatar) {
     //    console.log(itemAssetNode);
 
         let nodeName = 'AUDIO-'+self.GUID();
-        var position = "0 0 0";
-        if (avatar) {
-            
-            let myAvatar = self.children[avatar];
-            let cursorNode = myAvatar.avatarNode.myHead.myCursor.vis;
-        
-            if (cursorNode) {
-                 position = cursorNode.worldPosition();
-                //console.log(position);
-            }
-    
-        }
  
         let newNode = self.cubeProto();
         newNode.properties.displayName = "audio";
-        newNode.properties.position = position;
+       // newNode.properties.position = position;
         newNode.properties.width = 0.3;
         newNode.properties.height = 0.3;
         newNode.properties.depth= 0.3;
@@ -1050,7 +922,8 @@ this.createAudio = function (itemSrc, name, node, avatar) {
         };
 
         self.children.create(nodeName, newNode, function( child ) {
-            if (avatar) child.lookAt(self.children[avatar].worldPosition())
+            //if (avatar) child.lookAt(self.children[avatar].worldPosition())
+            if (avatar) child.placeInFrontOf(avatar, -2)
            });
 
        // }
@@ -1209,23 +1082,29 @@ this.getAllChildsByName = function (name) {
 }
 
 this.getDefaultXRCostume = function(){
+
+    let myColor = "white";
     
     let defaultXRCostume = {
-        "extends": "proxy/aframe/abox.vwf",
+        "extends": "proxy/aframe/aentity.vwf",
         "properties": {
             displayName: "defaultXRCostume",
             "position": "0 0 0",
-            "height": 0.01,
-            "width": 0.01,
-            "depth": 1
+            "avatarColor": myColor
+            // "height": 0.01,
+            // "width": 0.01,
+            // "depth": 1
         },
         "methods":{
             triggerdown:{
-                body:'\/\/do on trigger down \n this.pointer.material.color = "red"',
+                body:'\/\/do on trigger down \n this.cursorVisual.color = "red"',
                 type: "application/javascript"
             },
             triggerup:{
-                body:'\/\/do on trigger up \n this.pointer.material.color = "green"',
+                body:`
+                //do on trigger up
+                this.cursorVisual.color = this.cursorVisual.avatarColor;
+                `,
                 type: "application/javascript"
             },
             onMove:{
@@ -1234,31 +1113,40 @@ this.getDefaultXRCostume = function(){
             }
         },
         children: {
-            "material": {
-                "extends": "proxy/aframe/aMaterialComponent.vwf",
-                "type": "component",
-                "properties":{
-                    "color": "white"
+            "cursorVisual": {
+                "extends": "proxy/objects/cursorVisual.vwf",
+                "type": "",
+                "properties": {
+                    "color": myColor,
+                    "position": "0 0 0"
                 }
             },
-            "pointer": {
-                "extends": "proxy/aframe/abox.vwf",
+            "aabb-collider": {
+                "extends": "proxy/aframe/aabb-collider-component.vwf",
+                "type": "component",
                 "properties": {
-                    "position": "0 0 -0.7",
-                    "height": 0.1,
-                    "width": 0.1,
-                    "depth": 0.1
-                },
-                children: {
-                    "material": {
-                        "extends": "proxy/aframe/aMaterialComponent.vwf",
-                        "type": "component",
-                        "properties":{
-                            "color": "green"
-                        }
+                    debug: false,
+                    interval: 10,
+                    objects: ".hit"
+                }
+            },
+           "myRayCaster": {
+            "extends": "proxy/aframe/aentity.vwf",
+            "properties": {},
+            "children": {
+                "raycaster": {
+                    "extends": "proxy/aframe/raycasterComponent.vwf",
+                    "type": "component",
+                    "properties": {
+                        recursive: false,
+                        interval: 100,
+                        far: 20,
+                        objects: ".intersectable",
+                        showLine: false
                     }
                 }
             }
+        }
         }
     
     }

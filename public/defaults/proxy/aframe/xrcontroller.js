@@ -17,14 +17,16 @@ this.modelDef = {
     }
 }
 
-this.createController = function (modelSrc) {
+this.createController = function (pos, modelSrc) {
 
     let self = this;
+
+    let position = pos ? pos : [0, 0, 0]
 
     var newNode = {
         "extends": "proxy/aframe/aentity.vwf",
         "properties": {
-            "position": [0, 0, -0.1]
+            "position": position
         },
         children: {}
     }
@@ -154,7 +156,10 @@ this.setControllerNode = function(modelSrc){
         def.properties.visible = true;
         def.properties.displayName = 'controller';
         this.xrnode.children.create('controller', def, function( child ) {
-            console.log('Restore controller costume: ', child)
+            console.log('Restore controller costume: ', child);
+            if(child.cursorVisual){
+                child.cursorVisual.createVisual();
+            }
            });
     } else {
 
@@ -167,9 +172,23 @@ this.setControllerNode = function(modelSrc){
         }
 
         this.xrnode.children.create('controller', controllerDef, function( child ) {
-            console.log('New controller costume: ', child)
+            console.log('New controller costume: ', child);
+            child.cursorVisual.createVisual();
            });
     
     }
 
+}
+
+this.showHandSelection = function (point) { 
+
+    let end = this.xrnode.controller.cursorVisual.worldToLocal(point);
+    //this.xrnode.controller.line.end = end;
+    this.xrnode.controller.cursorVisual.end = end;
+
+}
+
+this.resetHandSelection = function () { 
+    //this.xrnode.controller.line.end = "0 0 -3";
+    this.xrnode.controller.cursorVisual.end = "0 0 -0.2";
 }

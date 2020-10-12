@@ -61,8 +61,14 @@ class Utility {
 
                 // Convert typed arrays to regular arrays.
 
+                if(object instanceof THREE.Vector2 || object instanceof THREE.Vector3 || object instanceof THREE.Vector4){
+                    return AFRAME.utils.coordinates.stringify(object)
+                } else {
                 return isArraylike( object ) ?
                     Array.prototype.slice.call( object ) : object;
+                }
+
+                
 
             },
 

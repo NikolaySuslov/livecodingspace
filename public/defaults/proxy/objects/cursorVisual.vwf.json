@@ -1,0 +1,34 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {
+        "start": null,
+        "end": {
+            "set": "this.end_set(value)",
+            "get": "return this.end_get()"
+        },
+        "color": {
+            "set": "this.color_set(value)",
+            "get": "return this.color_get()"
+        },
+        "width": 0.05,
+        "avatarColor": "white"
+    },
+    "methods": {
+        "createVisual": {},
+        "end_get": {},
+        "end_set": {
+            "parameters": [
+                "value"
+            ]
+        },
+        "color_get": {},
+        "color_set": {
+            "parameters": [
+                "value"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "cursorVisual.js"
+    }
+}

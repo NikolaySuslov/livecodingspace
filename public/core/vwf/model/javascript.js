@@ -443,6 +443,8 @@ class VWFJavaScript extends Fabric {
             var node = this.nodes[nodeID];
             var child = this.nodes[childID];
 
+            this.hookUpAPIs(child);
+
             var scriptText =
                 "this.hasOwnProperty( 'initialize' ) && " +
                 "( typeof this.initialize === 'function' || this.initialize instanceof Function ) && " +
@@ -654,7 +656,7 @@ if ( ! node ) return;  // TODO: patch until full-graph sync is working; drivers 
 
             var node = this.nodes[nodeID];
 
-           //if ( ! node ) return; 
+           if ( ! node ) return; 
 
             var getter = node.private.getters && node.private.getters[propertyName];
 
@@ -979,6 +981,38 @@ node.hasOwnProperty( eventName ) ||  // TODO: recalculate as properties, methods
 
             return undefined;
         },
+
+        hookUpAPIs: function(node)
+        {
+            let self = this;
+            let id = node.id;
+            if(id == vwf.application())
+            {
+                node.findNode = function(displayName,node)
+                {
+            
+                  if(displayName) displayName = displayName;
+                  if(!node)
+                  node = this;
+                  
+                  if(node && node.properties && node.properties.displayName == displayName)
+                    return node;
+                  var ret = null;  
+                  for(var i =0; i <  node.children.length; i++)
+                  {
+                      ret = this.findNode(displayName,node.children[i]);
+                      if(ret) return ret;
+                  }
+                  return ret;
+                }
+                node.findNodeByID = function(id)
+                {
+                  if(!id) return null;
+                  return self.nodes[id];
+                }
+            }
+        }
+
 
     } );
 

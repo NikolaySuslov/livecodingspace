@@ -64,8 +64,8 @@ this.findWorldAvatarCostume = function () {
 this.updateYPositionForXR = function(height){
 
     if(this.avatarNode) {
-            let position = goog.vec.Vec3.clone(this.avatarNode.position);
-            this.avatarNode.position = [position[0], height, position[2]]
+            let position = this.avatarNode.position.clone();
+            this.avatarNode.position = [position.x, height, position.z]
     }
 
 }
@@ -92,7 +92,19 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         },
         "methods": {
             "randomize":{
-                "body":"let myColor = this.getRandomColor(); \n this.myName.color = myColor; \n this.myBody.material.color = myColor; \n this.myHead.visual.material.color = myColor; \n this.myHead.myCursor.vis.material.color = myColor; \n this.myHead.myCursor.line.color = myColor;"
+                "body":`
+                let myColor = this.getRandomColor();
+                this.myName.color = myColor;
+                this.myBody.material.color = myColor;
+                this.myHead.visual.material.color = myColor;
+                //this.myHead.myCursor.vis.material.color = myColor;
+                //this.myHead.myCursor.line.color = myColor;
+
+                let cursorEl = this.getScene()['mouse-' + this.parent.id.slice(7)];
+                cursorEl.xrnode.controller.cursorVisual.avatarColor = myColor;
+                cursorEl.xrnode.controller.cursorVisual.color = myColor;
+                `
+
             }
         },
         children: {
@@ -138,99 +150,107 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                         //"id": 'camera-' + this.id,
                         "extends": "proxy/aframe/acamera.vwf",
                         "properties": {
-                            "position": [0, 0, -0.7],
+                            "position": [0, 0, -0.7], //userHeight
                             "look-controls-enabled": false,
                             "wasd-controls-enabled": false,
                             "user-height": 0
                         }
                     },
-                    "myCursor":
-                    {
-                        //"id": 'myCursor-' + this.id,
-                        "extends": "proxy/aframe/aentity.vwf",
-                        "properties": {},
-                        "children": {
-                            "vis": {
-                                "extends": "proxy/aframe/abox.vwf",
-                                "properties": {
-                                    "position": [0, 0, -3],
-                                    "height": 0.05,
-                                    "width": 0.05,
-                                    "depth": 0.01,
-                                    "visible": true
-                                },
-                                "children": {
-                                    "material": {
-                                        "extends": "proxy/aframe/aMaterialComponent.vwf",
-                                        "type": "component",
-                                        "properties":{
-                                            "color": myColor
-                                        }
-                                    },
-                                    "aabb-collider": {
-                                        "extends": "proxy/aframe/aabb-collider-component.vwf",
-                                        "type": "component",
-                                        "properties": {
-                                            debug: false,
-                                            interval: 10,
-                                            objects: ".hit"
-                                        }
-                                    }
-                                }
+                    // "myCursor":
+                    // {
+                    //     //"id": 'myCursor-' + this.id,
+                    //     "extends": "proxy/aframe/aentity.vwf",
+                    //     "properties": {},
+                    //     "children": {
+                    //         "vis": {
+                    //             "extends": "proxy/aframe/abox.vwf",
+                    //             "properties": {
+                    //                 "position": [0, 0, -3],
+                    //                 "height": 0.05,
+                    //                 "width": 0.05,
+                    //                 "depth": 0.01,
+                    //                 "visible": true
+                    //             },
+                    //             "children": {
+                    //                 "material": {
+                    //                     "extends": "proxy/aframe/aMaterialComponent.vwf",
+                    //                     "type": "component",
+                    //                     "properties":{
+                    //                         "color": myColor
+                    //                     }
+                    //                 },
+                    //                 "aabb-collider": {
+                    //                     "extends": "proxy/aframe/aabb-collider-component.vwf",
+                    //                     "type": "component",
+                    //                     "properties": {
+                    //                         debug: false,
+                    //                         interval: 10,
+                    //                         objects: ".hit"
+                    //                     }
+                    //                 }
+                    //             }
                                 
-                            },
-                            "line": {
-                                "extends": "proxy/aframe/lineComponent.vwf",
-                                "type": "component",
-                                "properties": {
-                                    "start": "0 0 -1",
-                                    "end": "0 0 -3",
-                                    "color": myColor
-                                }
-                            },
-                            // "realCursor":{
-                            //     "extends": "proxy/aframe/acursor.vwf",
-                            //     "properties": {
-                            //         visible: false
-                            //     },
-                            //     "children": {
-                            //         "raycaster": {
-                            //             "extends": "proxy/aframe/raycasterComponent.vwf",
-                            //             "type": "component",
-                            //             "properties": {
-                            //                 //recursive: false,
-                            //                 //interval: 1000,
-                            //                 far: 100,
-                            //                 //objects: ".intersectable"
-                            //             }
-                            //         }
-                            //     }
-                            // },
-                           "myRayCaster": {
-                            "extends": "proxy/aframe/aentity.vwf",
-                            "properties": {},
-                            "children": {
-                                "raycaster": {
-                                    "extends": "proxy/aframe/raycasterComponent.vwf",
-                                    "type": "component",
-                                    "properties": {
-                                        recursive: false,
-                                        interval: 100,
-                                        far: 3,
-                                        objects: ".intersectable"
-                                    }
-                                }
-                            }
-                        },
-                        //     "raycaster-listener": {
-                        //         "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
-                        //         "type": "component"
-                        //     }
+                    //         },
+                    //         "line": {
+                    //             "extends": "proxy/aframe/lineComponent.vwf",
+                    //             "type": "component",
+                    //             "properties": {
+                    //                 "start": "0 0 -1",
+                    //                 "end": "0 0 -3",
+                    //                 "color": myColor
+                    //             }
+                    //         },
+                    //         // "realCursor":{
+                    //         //     "extends": "proxy/aframe/acursor.vwf",
+                    //         //     "properties": {
+                    //         //         visible: false
+                    //         //     },
+                    //         //     "children": {
+                    //         //         "raycaster": {
+                    //         //             "extends": "proxy/aframe/raycasterComponent.vwf",
+                    //         //             "type": "component",
+                    //         //             "properties": {
+                    //         //                 //recursive: false,
+                    //         //                 //interval: 1000,
+                    //         //                 far: 100,
+                    //         //                 //objects: ".intersectable"
+                    //         //             }
+                    //         //         }
+                    //         //     }
+                    //         // },
+                    //        "myRayCaster": {
+                    //         "extends": "proxy/aframe/aentity.vwf",
+                    //         "properties": {},
+                    //         "children": {
+                    //             "raycaster": {
+                    //                 "extends": "proxy/aframe/raycasterComponent.vwf",
+                    //                 "type": "component",
+                    //                 "properties": {
+                    //                     recursive: false,
+                    //                     interval: 100,
+                    //                     far: 3,
+                    //                     objects: ".intersectable"
+                    //                 }
+                    //             }
+                    //         }
+                    //     },
+                    //     //     "raycaster-listener": {
+                    //     //         "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                    //     //         "type": "component"
+                    //     //     }
                            
-                        }
-                    }
+                    //     }
+                    // }
+
                 }
             },
+        //     "myHand":{
+        //         "id": "hand-" + this.id, 
+        //         "extends": "proxy/aframe/xrcontroller.vwf",
+        //         "properties": {
+        //             "position": [0, 1.2, -0.3]
+        //         }
+        // },
             "myName": {
                 "extends": "proxy/aframe/atext.vwf",
                 "properties": {
@@ -277,7 +297,7 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
         newNode.children.myBody = myBodyDef;
 
         newNode.children.myHead.children.visual.properties.visible = false;
-       newNode.children.myHead.children.myCursor.properties.visible = true;
+       //newNode.children.myHead.children.myCursor.properties.visible = true;
 
     }
 
@@ -309,6 +329,8 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
           child.randomize();
         }
 
+        //child.myHand.createController();
+
     });
 
     // this.localUrl = '';
@@ -325,20 +347,44 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
 
 }
 
+
+this.moveHand = function (rotation) { 
+
+    this.avatarNode.myHand.rotation = rotation;
+    this.moveHead(rotation);
+}
+
+this.moveHead = function (rotation) { 
+
+    let newRotation = this.globalToLocalRotation(rotation);
+    this.avatarNode.myHead.rotation = newRotation;
+   //let euler = new THREE.Euler().setFromVector3(rotation); 
+       //let euler = new THREE.Euler().setFromVector3(rotation); 
+    //    let q = this.localQuaternion().inverse().multiply(rotation); //new THREE.Quaternion().setFromEuler(euler)
+    //     let localEuler = new THREE.Euler().setFromQuaternion(q, 'YXZ');
+    //     this.avatarNode.myHead.rotation = [
+    //         THREE.Math.radToDeg(localEuler.x),
+    //         THREE.Math.radToDeg(localEuler.y),
+    //         THREE.Math.radToDeg(localEuler.z)
+    //     ];
+
+}
+
+
 this.updateAvatarRotation = function (rotation) { 
     
-    let myRot = goog.vec.Vec3.clone(this.rotation);
-    let myHeadRot = goog.vec.Vec3.clone(this.avatarNode.myHead.rotation);
-    this.rotation = [myRot[0], rotation.y, myRot[2]];
-    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot[1], rotation.z];
+    let myRot = this.rotation.clone();
+    let myHeadRot = this.avatarNode.myHead.rotation.clone();
+    this.rotation = [myRot.x, rotation.y, myRot.z];
+    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
 }
 
 this.followAvatarControl = function (position, rotation) {
 
-    let myRot = goog.vec.Vec3.clone(this.rotation);
-    let myHeadRot = goog.vec.Vec3.clone(this.avatarNode.myHead.rotation);
-    this.rotation = [myRot[0], rotation.y, myRot[2]];
-    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot[1], rotation.z];
+    let myRot = this.rotation.clone();
+    let myHeadRot = this.avatarNode.myHead.rotation.clone();
+    this.rotation = [myRot.x, rotation.y, myRot.z];
+    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
 
 }
 
@@ -414,14 +460,14 @@ this.createAvatarFromGLTF = function(modelSrc){
         this.avatarNode.children.create("myBody", myBodyDef);
 
         this.avatarNode.myHead.visual.properties.visible = false;
-        this.avatarNode.myHead.myCursor.properties.visible = true;
+        //this.avatarNode.myHead.myCursor.properties.visible = true;
 
        }
 
 }
 
 this.showHideCursor = function(bool){
-    this.avatarNode.myHead.myCursor.properties.visible = bool;
+    //this.avatarNode.myHead.myCursor.properties.visible = bool;
 }
 
 this.showHideAvatar = function(bool){

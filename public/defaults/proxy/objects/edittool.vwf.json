@@ -1,0 +1,13 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "type": "edittool",
+    "properties": {
+
+    },
+    "methods": {
+        "createVisual":{}
+    },
+    "scripts": {
+        "source": "edittool.js"
+    }
+}

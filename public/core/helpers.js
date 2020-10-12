@@ -320,7 +320,7 @@ class Helpers {
         let nodeDef = this.getNodeDef(worldID);
 
         const rm = L.lazy(rec =>
-            L.ifElse(R.is(String), L.when(x => x.includes('avatar-') || x.includes('xcontroller-') || x.includes('gearvr-')), [L.keys, rec], L.optional)
+            L.ifElse(R.is(String), L.when(x => x.includes('avatar-') || x.includes('xcontroller-') || x.includes('gearvr-') || x.includes('mouse-')), [L.keys, rec], L.optional)
         )
 
         let fixedDef = L.remove(['children', L.props(rm)], nodeDef)
@@ -369,8 +369,16 @@ class Helpers {
         };
 
         var transitTransformation = function (object) {
+
+            if(object instanceof THREE.Vector2 || object instanceof THREE.Vector3 || object instanceof THREE.Vector4){
+                return AFRAME.utils.coordinates.stringify(object)
+            } else {
+           
             return objectIsTypedArray(object) ?
                 Array.prototype.slice.call(object) : object;
+            }
+
+
         };
 
 
@@ -527,7 +535,7 @@ class Helpers {
     }
 
     get appPath (){
-        return JSON.parse(localStorage.getItem('lcs_app')).path.public_path
+        return JSON.parse(localStorage.getItem('lcs_app')).path.public_path.slice(1)
     } 
     
     get appName() {

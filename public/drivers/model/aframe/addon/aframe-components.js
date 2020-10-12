@@ -15,6 +15,75 @@ AFRAME.registerComponent('avatar', {
 })
        
 
+AFRAME.registerComponent('desktop-controls', {
+    init: function () {
+        this.mouseMoveEvent();
+    },
+    mouseMoveEvent(){
+    let self = this;
+    this.avatar = document.querySelector('#avatarControl'); 
+    this.cursor =  document.querySelector ('#mouse-' + vwf_view.kernel.moniker());
+    this.domElement = this.el.sceneEl.renderer.domElement;
+
+    this.raycaster = new THREE.Raycaster();
+    this.mouse = new THREE.Vector3();
+    this.handDirection = new THREE.Vector3();
+
+    // this.plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 5); //this.plane = new THREE.Plane();
+    // var helper = new THREE.PlaneHelper( this.plane, 1, 0xffff00 );
+    // this.el.sceneEl.object3D.add( helper );
+    
+    //helper
+    // this.arrayHelper = new THREE.ArrowHelper( this.raycaster.ray.direction, this.raycaster.ray.origin, 100, Math.random() * 0xffffff );
+    // this.el.sceneEl.object3D.add(this.arrayHelper);
+
+    let controllerID = 'mouse-' + vwf_view.kernel.moniker();
+
+    this.domElement.addEventListener('mousedown', function (e) {
+        if (e.button == 1) {
+            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+          }
+            
+    });
+
+    this.domElement.addEventListener('mouseup', function (e) {
+        if (e.button == 1) {
+            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+        }
+    });
+
+
+      const onDocumentMouseMove = (event) => {
+
+        event.preventDefault();
+
+         if(this.camera){
+
+            let rect = this.domElement.getBoundingClientRect();
+        
+            this.mouse.x = ( ( event.clientX - rect.left ) / rect.width ) * 2 - 1;
+            this.mouse.y = - ( ( event.clientY - rect.top ) / rect.height ) * 2 + 1;
+    
+            this.raycaster.setFromCamera( this.mouse, this.camera );
+            this.handDirection.copy(this.raycaster.ray.direction);
+            this.el.object3D.lookAt(this.handDirection.negate());
+            
+         }
+            
+    }
+       
+        this.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+    },
+    tick: function () {  
+        if(!this.camera){
+            this.camera = document.querySelector('#avatarControl').getObject3D('camera');
+        }
+    }
+
+
+
+})
 
 AFRAME.registerComponent('scene-utils', {
 
@@ -22,6 +91,9 @@ AFRAME.registerComponent('scene-utils', {
     init: function () {
         this.mirrors = {};
         this.interpolationComponents = {};
+
+        this.checkRenderer();
+        //document.querySelector('a-scene').renderer.capabilities
 
         //this.setCameraControl();
         const sceneEnterVR = (e) => {
@@ -93,6 +165,87 @@ AFRAME.registerComponent('scene-utils', {
 
     },
 
+    checkRenderer: function(){
+
+        if(this.el.sceneEl.renderer){
+            //FIX For Safari WebGL1 renderer context
+            let webgl2 = this.el.sceneEl.renderer.capabilities.isWebGL2;
+            if(!webgl2){
+                
+                AFRAME.registerShader('msdf1', {
+                    schema: {
+                      alphaTest: {type: 'number', is: 'uniform', default: 0.5},
+                      color: {type: 'color', is: 'uniform', default: 'white'},
+                      map: {type: 'map', is: 'uniform'},
+                      negate: {type: 'boolean', is: 'uniform', default: true},
+                      opacity: {type: 'number', is: 'uniform', default: 1.0}
+                    },
+                  
+                    raw: true,
+                  
+                    vertexShader: [
+                        'attribute vec2 uv;',
+                        'attribute vec3 position;',
+                        'uniform mat4 projectionMatrix;',
+                        'uniform mat4 modelViewMatrix;',
+                        'varying vec2 vUV;',
+                        'void main(void) {',
+                        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+                        '  vUV = uv;',
+                        '}'
+                      ].join('\n'),
+                    
+                      fragmentShader: [
+                        '#ifdef GL_OES_standard_derivatives',
+                        '#extension GL_OES_standard_derivatives: enable',
+                        '#endif',
+                    
+                        'precision highp float;',
+                        'uniform bool negate;',
+                        'uniform float alphaTest;',
+                        'uniform float opacity;',
+                        'uniform sampler2D map;',
+                        'uniform vec3 color;',
+                        'varying vec2 vUV;',
+                    
+                        'float median(float r, float g, float b) {',
+                        '  return max(min(r, g), min(max(r, g), b));',
+                        '}',
+                    
+                        // FIXME: Experimentally determined constants.
+                        '#define BIG_ENOUGH 0.001',
+                        '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+                    
+                        'void main() {',
+                        '  vec3 sampleColor = texture2D(map, vUV).rgb;',
+                        '  if (negate) { sampleColor = 1.0 - sampleColor; }',
+                    
+                        '  float sigDist = median(sampleColor.r, sampleColor.g, sampleColor.b) - 0.5;',
+                        '  float alpha = clamp(sigDist / fwidth(sigDist) + 0.5, 0.0, 1.0);',
+                        '  float dscale = 0.353505;',
+                        '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
+                        '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+                    
+                        // When texel is too small, blend raw alpha value rather than supersampling.
+                        // FIXME: Experimentally determined constant.
+                        '  // Do modified alpha test.',
+                        '  if (isBigEnough > BIG_ENOUGH) {',
+                        '    float ratio = BIG_ENOUGH / isBigEnough;',
+                        '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+                        '  }',
+                    
+                        '  // Do modified alpha test.',
+                        '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+                        '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
+                        '}'
+                      ].join('\n')
+                  });
+
+            }
+            
+        }
+    },
+
     update: function () {
 
     },
@@ -122,7 +275,10 @@ AFRAME.registerComponent('scene-utils', {
 AFRAME.registerComponent('linepath', {
     schema: {
         color: { default: '#000' },
+        transparent: { default: false },
+        opacity: {default: 1 },
         width: { default: 0.01 },
+        taper: { default: false },
         path: {
             default: [
                 { x: -0.5, y: 0, z: 0 },
@@ -142,24 +298,43 @@ AFRAME.registerComponent('linepath', {
     },
 
     update: function () {
+
+       //TODO: parse array too
+
         var material = new MeshLineMaterial({
             color: new THREE.Color(this.data.color), //this.data.color
-            lineWidth: this.data.width
+            lineWidth: this.data.width,
+            transparent: this.data.transparent,
+            opacity: this.data.opacity
         });
 
-        var geometry = new THREE.Geometry();
-        this.data.path.forEach(function (vec3) {
-            geometry.vertices.push(
+        let points = [];
+
+         this.data.path.forEach(function (vec3) {
+           points.push(
                 new THREE.Vector3(vec3.x, vec3.y, vec3.z)
             );
         });
 
+        // var geometry = new THREE.Geometry();
+        // this.data.path.forEach(function (vec3) {
+        //     geometry.vertices.push(
+        //         new THREE.Vector3(vec3.x, vec3.y, vec3.z)
+        //     );
+        // });
+
         let line = new MeshLine();
-        line.setGeometry(geometry);
+        if(this.data.taper){
+            line.setPoints(points, p => 1 - p); //p => 2 + Math.sin(50 * p) 
+        } else {
+            line.setPoints(points);
+        }
+        
+        //line.setGeometry(geometry);
 
         //new THREE.Line(geometry, material)
 
-        this.el.setObject3D('mesh', new THREE.Mesh(line.geometry, material));
+        this.el.setObject3D('mesh', new THREE.Mesh(line, material)); //new THREE.Mesh(line.geometry, material)
     },
 
     remove: function () {
@@ -252,14 +427,46 @@ AFRAME.registerComponent('gizmo', {
 
 AFRAME.registerComponent('cursor-listener', {
     init: function () {
+
+        let self = this;
+
         this.el.addEventListener('click', function (evt) {
             console.log('I was clicked at: ', evt.detail.intersection.point);
-            let cursorID = 'cursor-avatar-' + vwf_view.kernel.moniker();
+            //let cursorID = 'cursor-avatar-' + vwf_view.kernel.moniker();
             if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
-                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent", [vwf_view.kernel.moniker()])
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "clickEvent", [evt.detail.intersection.point]);
             }
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
         });
+
+        this.el.addEventListener('mousedown', function (evt) {
+            console.log('mousedown at: ', evt.detail.intersection.point);
+            if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
+
+                let point = evt.detail.intersection.point;
+                // let locPoint = new THREE.Vector3();
+                // locPoint.copy(evt.detail.intersection.point);
+                // self.el.object3D.parent.worldToLocal(locPoint);
+                // let point = AFRAME.utils.coordinates.stringify(locPoint);
+                vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "showHandSelection", [point]);
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mousedownEvent", [point]);
+            }
+
+        })
+
+        this.el.addEventListener('mouseup', function (evt) {
+            let intersection =  evt.detail.intersection;
+            if(intersection)
+            {
+                console.log('mouseup at: ', evt.detail.intersection.point);
+                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mouseupEvent", [evt.detail.intersection.point]);
+            } else {
+                console.log('mouseup');
+            }
+            vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "resetHandSelection", []);
+             
+        })
+
     }
 });
 
