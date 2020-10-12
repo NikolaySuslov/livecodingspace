@@ -221,6 +221,10 @@ class VWFObject extends Fabric{
         // -- gettingProperties --------------------------------------------------------------------
 
         gettingProperties: function( nodeID, properties ) {
+            var object = this.objects[nodeID];
+
+            if ( ! object ) return;  
+
             return this.objects[nodeID].properties;
         },
 
@@ -248,6 +252,10 @@ class VWFObject extends Fabric{
         // -- gettingProperty ----------------------------------------------------------------------
 
         gettingProperty: function( nodeID, propertyName, propertyValue ) {
+            var object = this.objects[nodeID];
+
+            if ( ! object ) return;  
+
             return this.objects[nodeID].properties[propertyName];
         },
 
@@ -387,6 +395,11 @@ class VWFObject extends Fabric{
         // -- behaviors ----------------------------------------------------------------------------
 
         behaviors: function( nodeID ) {  // TODO: not for global anchor node 0
+
+            var object = this.objects[nodeID];
+
+            if ( ! object ) return;  
+
             var behaviors = this.objects[nodeID].behaviors;
             if ( behaviors ) {
                 return behaviors.map( function( behavior ) {

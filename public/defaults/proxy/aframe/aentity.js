@@ -46,21 +46,21 @@ this.showCloseGizmo = function () {
 // Parse a parameter as a translation specification.
 this.translationFromValue = function (propertyValue) {
 
-    var value = goog.vec.Vec3.create();
+    var value = new THREE.Vector3();//goog.vec.Vec3.create();
 
     if (propertyValue.hasOwnProperty('x')) {
-        value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y, propertyValue.z)
+        value = value.set(propertyValue.x, propertyValue.y, propertyValue.z)
     }
-    else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array) {
-        value = goog.vec.Vec3.createFromArray(propertyValue);
+    else if (Array.isArray(propertyValue)) {
+        value = value.fromArray(propertyValue);
     }
     else if (typeof propertyValue === 'string') {
 
         let val = propertyValue.includes(',') ? AFRAME.utils.coordinates.parse(propertyValue.split(',').join(' ')) : AFRAME.utils.coordinates.parse(propertyValue);
-        value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+        value = value.set(val.x, val.y, val.z)
 
     } else if (propertyValue.hasOwnProperty('0')) {
-        value = goog.vec.Vec3.createFromValues(propertyValue[0], propertyValue[1], propertyValue[2])
+        value = value.set(propertyValue[0], propertyValue[1], propertyValue[2])
     }
 
     return value
@@ -113,7 +113,15 @@ this.hitendEventMethod = function () {
     //clearIntersect method
 }
 
-this.clickEventMethod = function () {
+this.clickEventMethod = function (value) {
+    //clickEventMethod
+}
+
+this.mousedownEventMethod = function (value) {
+    //clickEventMethod
+}
+
+this.mouseupEventMethod = function (value) {
     //clickEventMethod
 }
 
@@ -223,41 +231,96 @@ this.randomize = function () {
 
 }
 
-this.position_set = function (value) {
-    var position = this.translationFromValue(value); // parse incoming value
-    if (!position || !this.position) {
-        this.position = goog.vec.Vec3.create();
-    } else if (!goog.vec.Vec3.equals(this.position || goog.vec.Vec3.create(), position)) {
-        this.position = position;
-        this.positionChanged(position);
+// this.position_set = function (value) {
+//     var position = this.translationFromValue(value); // parse incoming value
+//     if (!position || !this.position) {
+//         this.position = new THREE.Vector3();
+//     } else if (!this.position.equals(position)){ //!goog.vec.Vec3.equals(this.position || goog.vec.Vec3.create(), position)) {
+//         this.position = position;
+//         this.positionChanged(position);
+//     }
+// }
+// this.position_get = function () {
+//     return this.position || new THREE.Vector3();
+// }
+
+// this.rotation_set = function (value) {
+//     var rotation = this.translationFromValue(value); // parse incoming value
+//     if (!rotation || !this.rotation) {
+//         this.rotation = new THREE.Vector3();
+//     } else if (!this.rotation.equals(rotation)){ //!goog.vec.Vec3.equals(this.rotation || goog.vec.Vec3.create(), rotation)) {
+//         this.rotation = rotation;
+//         this.rotationChanged(rotation);
+//     }
+// }
+// this.rotation_get = function () {
+//     return this.rotation || new THREE.Vector3();
+// }
+
+// this.scale_set = function (value) {
+//   var scale = this.translationFromValue( value ); // parse incoming value
+//   if(!scale || !this.scale){
+//     this.scale = new THREE.Vector3();
+//   } else if (!this.scale.equals(scale)){ //! goog.vec.Vec3.equals( this.scale || goog.vec.Vec3.create(), scale ) ) {
+//     this.scale = scale;
+//     this.scaleChanged( scale);
+//   }  
+// }
+// this.scale_get = function () {
+//   return this.scale || new THREE.Vector3();
+// }
+
+this.createEditTool = function() {
+
+    var self = this;
+    //let scene = this.getScene();
+
+    if(!this.editTool){
+    let nodeName = 'editTool';
+
+    let node = {
+        "extends": "proxy/objects/edittool.vwf",
+        "properties": {}
     }
-}
-this.position_get = function () {
-    return this.position || goog.vec.Vec3.create();
+
+    this.children.create(nodeName, node, function( child ) {
+        child.createVisual();
+    })
 }
 
-this.rotation_set = function (value) {
-    var rotation = this.translationFromValue(value); // parse incoming value
-    if (!rotation || !this.rotation) {
-        this.rotation = goog.vec.Vec3.create();
-    } else if (!goog.vec.Vec3.equals(this.rotation || goog.vec.Vec3.create(), rotation)) {
-        this.rotation = rotation;
-        this.rotationChanged(rotation);
-    }
-}
-this.rotation_get = function () {
-    return this.rotation || goog.vec.Vec3.create();
 }
 
-this.scale_set = function (value) {
-  var scale = this.translationFromValue( value ); // parse incoming value
-  if(!scale || !this.scale){
-    this.scale = goog.vec.Vec3.create();
-  } else if ( ! goog.vec.Vec3.equals( this.scale || goog.vec.Vec3.create(), scale ) ) {
-    this.scale = scale;
-    this.scaleChanged( scale);
-  }  
-}
-this.scale_get = function () {
-  return this.scale || goog.vec.Vec3.create();
+
+this.globalToLocalRotation = function(aQ, order){
+
+    let ord = order ? order: 'XYZ';
+    let q = this.localQuaternion().inverse().multiply(aQ); //new THREE.Quaternion().setFromEuler(euler)
+    let localEuler = new THREE.Euler().setFromQuaternion(q, ord);
+    return [
+        THREE.Math.radToDeg(localEuler.x),
+        THREE.Math.radToDeg(localEuler.y),
+        THREE.Math.radToDeg(localEuler.z)
+    ]
+}  
+
+this.placeInFrontOf =  function(nodeID, dist) {
+    // fixed distance from camera to the object
+    let node = this.getScene().findNodeByID(nodeID);
+    
+    let cwd = node.worldDirection(); //new THREE.Vector3();
+    cwd.multiplyScalar(dist);
+    cwd.add(node.position);
+    
+    let nodeQ = node.localQuaternion();
+
+    let localEuler = new THREE.Euler().setFromQuaternion(nodeQ, 'XYZ');
+    let rotation = [
+        THREE.Math.radToDeg(localEuler.x),
+        THREE.Math.radToDeg(localEuler.y),
+        THREE.Math.radToDeg(localEuler.z)
+    ];
+
+    this.position = cwd;
+    this.rotation = rotation;
+
 }

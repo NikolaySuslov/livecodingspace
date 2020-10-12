@@ -63858,7 +63858,6 @@ TextGeometry.prototype.computeBoundingSphere = function () {
   if (this.boundingSphere === null) {
     this.boundingSphere = new THREE.Sphere()
   }
-
      //LIVECODING.SPACE changes!!! FIX - move to LCS codebase  
   if(this.attributes.position) { 
   var positions = this.attributes.position.array
@@ -63876,7 +63875,6 @@ TextGeometry.prototype.computeBoundingSphere = function () {
   }
 }
 }
-
 TextGeometry.prototype.computeBoundingBox = function () {
   if (this.boundingBox === null) {
     this.boundingBox = new THREE.Box3()
@@ -69272,6 +69270,7 @@ module.exports.Component = registerComponent('cursor', {
     var xrSession = this.el.sceneEl.xrSession;
     var self = this;
     if (!xrSession) { return; }
+    if (this.data.rayOrigin === 'mouse') { return; }
     WEBXR_EVENTS.DOWN.forEach(function (downEvent) {
       xrSession.addEventListener(downEvent, self.onCursorDown);
     });
@@ -70536,6 +70535,10 @@ var BONE_MAPPING = [
   'pinky_null'
 ];
 
+var PINCH_START_DISTANCE = 0.015;
+var PINCH_END_DISTANCE = 0.03;
+var PINCH_POSITION_INTERPOLATION = 0.5;
+
 /**
  * Controls for hand tracking
  */
@@ -70710,22 +70713,22 @@ module.exports.Component = registerComponent('hand-tracking-controls', {
 
       var distance = indexTipPosition.distanceTo(thumbTipPosition);
 
-      if (distance < 0.01 && this.isPinched === false) {
+      if (distance < PINCH_START_DISTANCE && this.isPinched === false) {
         this.isPinched = true;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchstarted', this.pinchEventDetail);
       }
 
-      if (distance > 0.03 && this.isPinched === true) {
+      if (distance > PINCH_END_DISTANCE && this.isPinched === true) {
         this.isPinched = false;
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchended', this.pinchEventDetail);
       }
 
       if (this.isPinched) {
-        this.pinchEventDetail.position.copy(indexTipPose.transform.position);
+        this.pinchEventDetail.position.copy(indexTipPosition).lerp(thumbTipPosition, PINCH_POSITION_INTERPOLATION);
         this.pinchEventDetail.position.y += 1.5;
         this.el.emit('pinchmoved', this.pinchEventDetail);
       }
@@ -75473,7 +75476,9 @@ module.exports.Component = registerComponent('text', {
     // Infer shader if using a stock font (or from `-msdf` filename convention).
     shaderName = data.shader;
     if (MSDF_FONTS.indexOf(data.font) !== -1 || data.font.indexOf('-msdf.') >= 0) {
-      shaderName = 'msdf';
+      //LiveCoding.space FIX
+      let webgl2 = document.querySelector('a-scene').renderer.capabilities.isWebGL2;
+      shaderName = webgl2 ? 'msdf' : 'msdf1'
     } else if (data.font in FONTS && MSDF_FONTS.indexOf(data.font) === -1) {
       shaderName = 'sdf';
     }
@@ -83526,7 +83531,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.0.4 (Date 2020-09-09, Commit #dbacbdbf)');
+console.log('A-Frame Version: 1.0.4 (Date 2020-10-08, Commit #2d7bee0d)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
@@ -85298,6 +85303,7 @@ var utils = _dereq_('../utils');
 module.exports.System = registerSystem('tracked-controls-webxr', {
   init: function () {
     this.controllers = [];
+    this.oldControllers = [];
     this.oldControllersLength = 0;
     this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
     this.updateReferenceSpace = this.updateReferenceSpace.bind(this);
@@ -85312,6 +85318,7 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
   updateReferenceSpace: function () {
     var self = this;
     var xrSession = this.el.xrSession;
+
     if (!xrSession) {
       this.referenceSpace = undefined;
       this.controllers = [];
@@ -85334,7 +85341,8 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
 
   updateControllerList: function () {
     var xrSession = this.el.xrSession;
-    var oldControllers;
+    var oldControllers = this.oldControllers;
+    var i;
     if (!xrSession) {
       if (this.oldControllersLength === 0) { return; }
       // Broadcast that we now have zero controllers connected if there is
@@ -85344,17 +85352,25 @@ module.exports.System = registerSystem('tracked-controls-webxr', {
       this.el.emit('controllersupdated', undefined, false);
       return;
     }
-    oldControllers = this.controllers;
+
     this.controllers = xrSession.inputSources;
     if (this.oldControllersLength === this.controllers.length) {
       var equal = true;
-      for (var i = 0; i < this.controllers.length; ++i) {
-        if (this.controllers[i] === oldControllers[i]) { continue; }
+      for (i = 0; i < this.controllers.length; ++i) {
+        if (this.controllers[i] === oldControllers[i] &&
+            this.controllers[i].gamepad === oldControllers[i].gamepad) { continue; }
         equal = false;
         break;
       }
       if (equal) { return; }
     }
+
+    // Store reference to current controllers
+    oldControllers.length = 0;
+    for (i = 0; i < this.controllers.length; i++) {
+      oldControllers.push(this.controllers[i]);
+    }
+
     this.oldControllersLength = this.controllers.length;
     this.el.emit('controllersupdated', undefined, false);
   }

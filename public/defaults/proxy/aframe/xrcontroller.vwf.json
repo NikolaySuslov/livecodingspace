@@ -6,6 +6,12 @@
         "initialize": {},
         "updateController": {},
         "createSimpleController": {},
+        "showHandSelection":{
+            "parameters": [
+                "point"
+            ]
+        },
+        "resetHandSelection":{},
         "createControllerFromGLTF": {
             "parameters": [
                 "modelSrc"
@@ -13,6 +19,7 @@
         },
         "createController": {
             "parameters": [
+                "pos",
                 "modelSrc"
             ]
         },

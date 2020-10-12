@@ -1,14 +1,12 @@
-//"use strict";
 /*
 The MIT License (MIT)
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 
-Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
 */
 
 // VWF & A-Frame model driver
 
-import {Fabric} from '/core/vwf/fabric.js';
+import { Fabric } from '/core/vwf/fabric.js';
 
 class AFrameModel extends Fabric {
 
@@ -98,44 +96,44 @@ class AFrameModel extends Fabric {
                         if (propertyValue.hasOwnProperty('x')) {
                             aframeObject.setAttribute(propertyName, propertyValue)
                         } else
-                        if (Array.isArray(propertyValue)) {
-                            aframeObject.setAttribute(propertyName, {
-                                x: propertyValue[0],
-                                y: propertyValue[1],
-                                z: propertyValue[2]
-                            })
-                        } else if (typeof propertyValue === 'string') {
+                            if (Array.isArray(propertyValue)) {
+                                aframeObject.setAttribute(propertyName, {
+                                    x: propertyValue[0],
+                                    y: propertyValue[1],
+                                    z: propertyValue[2]
+                                })
+                            } else if (typeof propertyValue === 'string') {
 
-                            propertyValue.includes(',') ? aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue.split(',').join(' '))) : aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                                propertyValue.includes(',') ? aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue.split(',').join(' '))) : aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
 
-                            //aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
-                        } else if (propertyValue.hasOwnProperty('0')) {
-                            aframeObject.setAttribute(propertyName, {
-                                x: propertyValue[0],
-                                y: propertyValue[1],
-                                z: propertyValue[2]
-                            })
-                        }
+                                //aframeObject.setAttribute(propertyName, AFRAME.utils.coordinates.parse(propertyValue))
+                            } else if (propertyValue.hasOwnProperty('0')) {
+                                aframeObject.setAttribute(propertyName, {
+                                    x: propertyValue[0],
+                                    y: propertyValue[1],
+                                    z: propertyValue[2]
+                                })
+                            }
 
                     },
                     setFromValue: function (propertyValue) {
 
-                        var value = goog.vec.Vec3.create();
+                        var value = new THREE.Vector3(); //goog.vec.Vec3.create();
                         if (propertyValue.hasOwnProperty('x')) {
-                            value = goog.vec.Vec3.createFromValues(propertyValue.x, propertyValue.y, propertyValue.z)
+                            value = value.set(propertyValue.x, propertyValue.y, propertyValue.z)
                         } else if (Array.isArray(propertyValue) || propertyValue instanceof Float32Array) {
-                            value = goog.vec.Vec3.createFromArray(propertyValue);
+                            value = value.fromArray(propertyValue);
                         } else if (typeof propertyValue === 'string') {
 
                             let val = propertyValue.includes(',') ? AFRAME.utils.coordinates.parse(propertyValue.split(',').join(' ')) : AFRAME.utils.coordinates.parse(propertyValue);
-                            value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
+                            value = value.set(val.x, val.y, val.z)
 
                             // let val = AFRAME.utils.coordinates.parse(propertyValue);
                             // value = goog.vec.Vec3.createFromValues(val.x, val.y, val.z)
 
 
                         } else if (propertyValue.hasOwnProperty('0')) {
-                            value = goog.vec.Vec3.createFromValues(propertyValue[0], propertyValue[1], propertyValue[2])
+                            value = value.set(propertyValue[0], propertyValue[1], propertyValue[2])
                         }
 
                         return value
@@ -152,20 +150,20 @@ class AFrameModel extends Fabric {
 
                             if (propertyName == 'position') {
                                 let pos = (new THREE.Vector3()).copy(node.aframeObj.object3D.position);
-                                node.transform.position = goog.vec.Vec3.createFromValues(pos.x, pos.y, pos.z);
+                                node.transform.position = new THREE.Vector3(pos.x, pos.y, pos.z);
                                 node.transform.storedPositionDirty = false;
                             }
 
                             if (propertyName == 'rotation') {
                                 // let rot = (new THREE.Vector3()).copy(node.aframeObj.object3D.rotation);
                                 let rot = node.aframeObj.getAttribute('rotation');
-                                node.transform.rotation = goog.vec.Vec3.createFromValues(rot.x, rot.y, rot.z);
+                                node.transform.rotation = new THREE.Vector3(rot.x, rot.y, rot.z);
                                 node.transform.storedRotationDirty = false;
                             }
 
                             if (propertyName == 'scale') {
                                 let scale = (new THREE.Vector3()).copy(node.aframeObj.object3D.scale);
-                                node.transform.scale = goog.vec.Vec3.createFromValues(scale.x, scale.y, scale.z);
+                                node.transform.scale = new THREE.Vector3(scale.x, scale.y, scale.z);
                                 node.transform.storedScaleDirty = false;
                             }
 
@@ -224,7 +222,9 @@ class AFrameModel extends Fabric {
                             //TODO: move from veiw here
                             //document.body.appendChild(aframeObj);
 
-                        } else if (this.isAFrameClass(protos, "proxy/aframe/a-asset-item.vwf")) {
+                        }
+
+                        if (this.isAFrameClass(protos, "proxy/aframe/a-asset-item.vwf")) {
 
                             let assets = document.querySelector('a-assets');
                             if (assets) {
@@ -276,7 +276,9 @@ class AFrameModel extends Fabric {
                                 assets.appendChild(aframeObj);
                             }
 
-                        } else if (this.isAFrameClass(protos, "proxy/aframe/asky.vwf")) {
+
+                        }
+                        else if (this.isAFrameClass(protos, "proxy/aframe/asky.vwf")) {
                             aframeObj = document.createElement('a-sky');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/a-arjs-anchor.vwf")) {
                             aframeObj = document.createElement('a-anchor');
@@ -289,13 +291,31 @@ class AFrameModel extends Fabric {
                             aframeObj = document.createElement('a-sun-sky');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/abox.vwf")) {
                             aframeObj = document.createElement('a-box');
+                            aframeObj.setAttribute('geometry', {
+                                primitive: 'box'
+                            });
+                        } else if (this.isAFrameClass(protos, "proxy/aframe/asphere.vwf")) {
+                            aframeObj = document.createElement('a-sphere');
+                            aframeObj.setAttribute('geometry', {
+                                primitive: 'sphere'
+                            });
                         } else if (this.isAFrameClass(protos, "proxy/aframe/aplane.vwf")) {
                             aframeObj = document.createElement('a-plane');
+                            aframeObj.setAttribute('geometry', {
+                                primitive: 'plane'
+                            });
                         } else if (this.isAFrameClass(protos, "proxy/aframe/acylinder.vwf")) {
                             aframeObj = document.createElement('a-cylinder');
+                            aframeObj.setAttribute('geometry', {
+                                primitive: 'cylinder'
+                            });
                         } else if (this.isAFrameClass(protos, "proxy/aframe/acone.vwf")) {
                             aframeObj = document.createElement('a-cone');
-                        } else if (this.isAFrameClass(protos, "proxy/aframe/atext.vwf")) {
+                            aframeObj.setAttribute('geometry', {
+                                primitive: 'cone'
+                            });
+                        }
+                        else if (this.isAFrameClass(protos, "proxy/aframe/atext.vwf")) {
                             aframeObj = document.createElement('a-text');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/acolladamodel.vwf")) {
                             aframeObj = document.createElement('a-collada-model');
@@ -303,14 +323,14 @@ class AFrameModel extends Fabric {
                             aframeObj = document.createElement('a-obj-model');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/agltfmodel.vwf")) {
                             aframeObj = document.createElement('a-gltf-model');
-                        } else if (this.isAFrameClass(protos, "proxy/aframe/asphere.vwf")) {
-                            aframeObj = document.createElement('a-sphere');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/aanimation.vwf")) {
                             aframeObj = document.createElement('a-animation');
                         } else if (this.isAFrameClass(protos, "proxy/aframe/acamera.vwf")) {
                             aframeObj = document.createElement('a-camera');
                             aframeObj.setAttribute('camera', 'active', false);
-                        } else if (this.isAFrameClass(protos, "proxy/aframe/aentity.vwf")) {
+                        }
+
+                        else if (this.isAFrameClass(protos, "proxy/aframe/aentity.vwf")) {
                             aframeObj = document.createElement('a-entity');
                         }
 
@@ -329,65 +349,8 @@ class AFrameModel extends Fabric {
 
                 this.state.kernel = this.kernel.kernel.kernel;
 
-                this.aframeDef = {
-                    'A-BOX': [
-                        'depth', 'height', 'segments-depth',
-                        'segments-height', 'segments-width',
-                        'width'
-                    ],
-
-                    'A-SPHERE': [
-                        'phi-length', 'phi-start', 'radius',
-                        'segments-depth',
-                        'segments-height', 'segments-width',
-                        'theta-length', 'theta-start'
-                    ],
-
-                    'A-CYLINDER': [
-                        'height', 'radius',
-                        'open-ended', 'radius-bottom', 'radius-top',
-                        'segments-height', 'segments-radial',
-                        'theta-length', 'theta-start'
-                    ],
-
-                    'A-CONE': [
-                        'height',
-                        'open-ended', 'radius-bottom', 'radius-top',
-                        'segments-height', 'segments-radial',
-                        'theta-length', 'theta-start'
-                    ],
-
-                    'A-PLANE': [
-                        'height', 'segments-height', 'segments-width', 'width'
-                    ],
-
-                    'A-TEXT': [
-                        'align', 'alpha-test', 'anchor',
-                        'baseline', 'color', 'font',
-                        'font-image', 'height',
-                        'letter-spacing', 'line-height',
-                        'opacity', 'shader',
-                        'side', 'tab-size',
-                        'transparent', 'value',
-                        'white-space', 'width',
-                        'wrap-count', 'wrap-pixels',
-                        'z-offset', 'negate'
-                    ],
-
-                    'A-SKY': [
-                        'phi-length', 'phi-start', 'radius', 'segments-height',
-                        'segments-width',
-                        'theta-length', 'theta-start',
-                    ],
-
-                    'A-LIGHT': [
-                        'angle', 'color', 'decay', 'distance',
-                        'ground-color', 'intensity', 'penumbra',
-                        'type', 'target'
-                    ]
-                }
-
-
+                this.aframePrimitives = ["a-box", "a-circle", "a-cone", "a-cylinder", "a-dodecahedron", "a-icosahedron", "a-octahedron", "a-plane", "a-ring", "a-sphere", "a-tetrahedron", "a-torus", "a-torus-knot", "a-triangle", "a-text",
+                    "a-light", "a-sky"] //Object.keys(AFRAME.primitives.primitives);
 
             },
 
@@ -396,7 +359,7 @@ class AFrameModel extends Fabric {
             // -- creatingNode -------------------------------------------------------------------------
 
             creatingNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
-                childSource, childType, childIndex, childName, callback /* ( ready ) */ ) {
+                childSource, childType, childIndex, childName, callback /* ( ready ) */) {
 
                 // If the parent nodeID is 0, this node is attached directly to the root and is therefore either 
                 // the scene or a prototype.  In either of those cases, save the uri of the new node
@@ -520,7 +483,7 @@ class AFrameModel extends Fabric {
                         var worldQuat = new THREE.Quaternion();
                         node.aframeObj.object3D.getWorldQuaternion(worldQuat);
 
-                        let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'YXZ');
+                        let angle = (new THREE.Euler()).setFromQuaternion(worldQuat, 'XYZ');
                         let rotation = (new THREE.Vector3(THREE.Math.radToDeg(angle.x),
                             THREE.Math.radToDeg(angle.y), THREE.Math.radToDeg(angle.z)));
                         return rotation
@@ -535,6 +498,55 @@ class AFrameModel extends Fabric {
                         return position
 
                     }
+
+                    if (methodName == 'boundingBox') {
+
+                        let bbox = new THREE.Box3().setFromObject(node.aframeObj.object3D);
+                        return bbox;
+                    }
+
+                    if (methodName == 'localQuaternion') {
+                        return node.aframeObj.object3D.quaternion.clone()
+                    }
+
+                    if (methodName == 'worldQuaternion') {
+
+                        let worldQuaternion = new THREE.Quaternion();
+                        node.aframeObj.object3D.getWorldQuaternion(worldQuaternion);
+                        return worldQuaternion
+                    }
+
+                    if (methodName == 'worldScale') {
+
+                        let worldScale = new THREE.Vector3();
+                        node.aframeObj.object3D.getWorldScale(worldScale);
+                        return worldScale
+
+                    }
+
+                    if (methodName == 'worldDirection') {
+
+                        let worldDirection = new THREE.Vector3();
+                        node.aframeObj.object3D.getWorldDirection(worldDirection);
+                        return worldDirection
+
+                    }
+
+                    if (methodName == 'localToWorld') {
+
+                        let target = this.state.setFromValue(methodParameters[0] || []);
+                        let worldPoint = node.aframeObj.object3D.localToWorld(target);
+                        return worldPoint
+
+                    }
+
+                    if (methodName == 'worldToLocal') {
+                        let target = this.state.setFromValue(methodParameters[0] || []);
+                        let localPoint = node.aframeObj.object3D.worldToLocal(target);
+                        return localPoint
+
+                    }
+                    //.worldToLocal
 
                 }
 
@@ -619,10 +631,10 @@ class AFrameModel extends Fabric {
                             case "position":
 
                                 if (!node.transform)
-                                node.transform = {};
+                                    node.transform = {};
 
                                 var position = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
-                                node.transform.position = goog.vec.Vec3.clone(position);
+                                node.transform.position = position.clone();
                                 //value = propertyValue;
                                 node.transform.storedPositionDirty = true;
                                 //setTransformsDirty( threeObject );
@@ -632,10 +644,10 @@ class AFrameModel extends Fabric {
                             case "rotation":
 
                                 if (!node.transform)
-                                node.transform = {};
+                                    node.transform = {};
 
                                 var rotation = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
-                                node.transform.rotation = goog.vec.Vec3.clone(rotation);
+                                node.transform.rotation = rotation.clone();
                                 //value = propertyValue;
                                 node.transform.storedRotationDirty = true;
 
@@ -645,10 +657,10 @@ class AFrameModel extends Fabric {
                             case "scale":
 
                                 if (!node.transform)
-                                node.transform = {};
+                                    node.transform = {};
 
                                 var scale = this.state.setFromValue(propertyValue || []); //goog.vec.Vec3.createFromArray( propertyValue || [] );
-                                node.transform.scale = goog.vec.Vec3.clone(scale);
+                                node.transform.scale = scale.clone();
                                 //value = propertyValue;
                                 node.transform.storedScaleDirty = true;
                                 //setTransformsDirty( threeObject );
@@ -699,24 +711,24 @@ class AFrameModel extends Fabric {
                                 aframeObject.setAttribute('visible', propertyValue);
                                 break;
 
-                                //  case "clickable":   
-                                //          console.log("set clickable!");
-                                //          value = propertyValue;
-                                //      break;
+                            //  case "clickable":   
+                            //          console.log("set clickable!");
+                            //          value = propertyValue;
+                            //      break;
 
-                                // case "clickable":
-                                //     if (propertyValue) {
-                                //         aframeObject.addEventListener('click', function (evt) {
-                                //              console.log("click!");
-                                //             vwf_view.kernel.fireEvent(node.ID, "clickEvent",evt.detail.cursorEl.id);
-                                //         });
-                                //     }
-                                //     break;
+                            // case "clickable":
+                            //     if (propertyValue) {
+                            //         aframeObject.addEventListener('click', function (evt) {
+                            //              console.log("click!");
+                            //             vwf_view.kernel.fireEvent(node.ID, "clickEvent",evt.detail.cursorEl.id);
+                            //         });
+                            //     }
+                            //     break;
 
 
-                                // case "look-controls-enabled":
-                                //     aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
-                                //     break;
+                            // case "look-controls-enabled":
+                            //     aframeObject.setAttribute('look-controls', 'enabled', propertyValue);
+                            //     break;
                             case "wasd-controls":
                                 aframeObject.setAttribute('wasd-controls', 'enabled', propertyValue);
                                 break;
@@ -760,13 +772,13 @@ class AFrameModel extends Fabric {
                                 aframeObject.setAttribute('src', propertyValue);
                                 break;
 
-                                // case "width":
-                                //     aframeObject.width = propertyValue;
-                                // break;
+                            // case "width":
+                            //     aframeObject.width = propertyValue;
+                            // break;
 
-                                // case "height":
-                                //     aframeObject.height = propertyValue;
-                                // break;
+                            // case "height":
+                            //     aframeObject.height = propertyValue;
+                            // break;
 
                             default:
                                 value = undefined;
@@ -812,32 +824,6 @@ class AFrameModel extends Fabric {
                         }
                     }
 
-                    if (value === undefined && aframeObject.nodeName == "A-SKY") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-SKY'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-TEXT") {
-                        value = propertyValue;
-
-                        //.filter(el=>el !== 'font')
-                        self.aframeDef['A-TEXT'].forEach(element => {
-
-
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-
-                        })
-
-                        // if(propertyName == 'font'){
-                        //     console.log('Loading font...', element);
-                        // }
-
-                    }
 
                     if (value === undefined && aframeObject.nodeName == "A-SCENE") {
                         value = propertyValue;
@@ -856,9 +842,9 @@ class AFrameModel extends Fabric {
                                 });
                                 break;
 
-                                // case "fog":
-                                //     aframeObject.setAttribute('fog', propertyValue);
-                                //     break;
+                            // case "fog":
+                            //     aframeObject.setAttribute('fog', propertyValue);
+                            //     break;
                             case "assets":
                                 _self_.initAssets(propertyValue)
                                 break;
@@ -870,40 +856,6 @@ class AFrameModel extends Fabric {
                         }
                     }
 
-
-                    if (value === undefined && aframeObject.nodeName == "A-BOX") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-BOX'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-LIGHT") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-LIGHT'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-
-                        switch (propertyName) {
-                            case "castShadow":
-                                aframeObject.setAttribute('light', 'castShadow', propertyValue);
-                                break;
-
-                            case "shadowCameraVisible":
-                                aframeObject.setAttribute('light', 'shadowCameraVisible', propertyValue);
-                                break;
-
-                            default:
-                                value = undefined;
-                                break;
-
-                        }
-
-                    }
 
                     if (value === undefined && aframeObject.nodeName == "A-GLTF-MODEL") {
                         value = propertyValue;
@@ -956,43 +908,40 @@ class AFrameModel extends Fabric {
                         }
                     }
 
-                    if (value === undefined && aframeObject.nodeName == "A-PLANE") {
-                        value = propertyValue;
+                    //A-Frame geometries & primitives
+                    if (value === undefined && self.aframePrimitives.includes(aframeObject.nodeName.toLowerCase())) {
 
-                        self.aframeDef['A-PLANE'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
+                        value = propertyValue;
+                        //let geometry = aframeObject.nodeName.toLowerCase().slice(2);
+                        //AFRAME.geometries[geometry].schema;
+                        let mappings = AFRAME.primitives.primitives[aframeObject.nodeName.toLowerCase()].prototype.mappings;
+                        let el = Object.keys(mappings).includes(propertyName);
+                        if (el) {
+                            aframeObject.setAttribute(propertyName, propertyValue);
+                        } else {
+                            value = undefined
+                        }
+
+
+                        if (value === undefined && aframeObject.nodeName == "A-LIGHT") {
+                            value = propertyValue;
+
+                            switch (propertyName) {
+                                case "castShadow":
+                                    aframeObject.setAttribute('light', 'castShadow', propertyValue);
+                                    break;
+
+                                case "shadowCameraVisible":
+                                    aframeObject.setAttribute('light', 'shadowCameraVisible', propertyValue);
+                                    break;
+
+                                default:
+                                    value = undefined;
+                                    break;
+                            }
+                        }
 
                     }
-
-                    if (value === undefined && aframeObject.nodeName == "A-SPHERE") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-SPHERE'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-CYLINDER") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-CYLINDER'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-CONE") {
-                        value = propertyValue;
-
-                        self.aframeDef['A-CONE'].forEach(element => {
-                            element == propertyName ? aframeObject.setAttribute(element, propertyValue) :
-                                value = undefined;
-                        })
-                    }
-
 
                     if (value === undefined && aframeObject.nodeName == "A-ANIMATION") {
                         value = propertyValue;
@@ -1050,9 +999,9 @@ class AFrameModel extends Fabric {
                                 aframeObject.setAttribute('wasd-controls-enabled', propertyValue);
                                 break;
 
-                                // case "active":
-                                //     aframeObject.setAttribute('camera', 'active', propertyValue);
-                                //        break;
+                            // case "active":
+                            //     aframeObject.setAttribute('camera', 'active', propertyValue);
+                            //        break;
 
                             default:
                                 value = undefined;
@@ -1067,9 +1016,9 @@ class AFrameModel extends Fabric {
                                 aframeObject.setAttribute('material', 'sunPosition', propertyValue);
                                 break;
 
-                                // case "active":
-                                //     aframeObject.setAttribute('camera', 'active', propertyValue);
-                                //        break;
+                            // case "active":
+                            //     aframeObject.setAttribute('camera', 'active', propertyValue);
+                            //        break;
 
                             default:
                                 value = undefined;
@@ -1127,7 +1076,7 @@ class AFrameModel extends Fabric {
                     var aframeObject = node.aframeObj;
 
                     if (this.state.isNodeDefinition(node.prototypes)) {
-                        switch (propertyName) {}
+                        switch (propertyName) { }
                     }
 
 
@@ -1147,7 +1096,7 @@ class AFrameModel extends Fabric {
                                         this.state.updateStoredTransformFor(node, 'position');
                                     }
 
-                                    value = goog.vec.Vec3.clone(node.transform.position);
+                                    value = node.transform.position.clone();
                                     //value =  node.transform.position;
                                 }
                                 break;
@@ -1160,7 +1109,7 @@ class AFrameModel extends Fabric {
                                         this.state.updateStoredTransformFor(node, 'rotation');
                                     }
 
-                                    value = goog.vec.Vec3.clone(node.transform.rotation);
+                                    value = node.transform.rotation.clone();
 
                                     // var rot = aframeObject.getAttribute('rotation');
                                     // if (rot !== undefined) {
@@ -1179,7 +1128,7 @@ class AFrameModel extends Fabric {
                                         this.state.updateStoredTransformFor(node, 'scale');
                                     }
 
-                                    value = goog.vec.Vec3.clone(node.transform.scale);
+                                    value = node.transform.scale.clone();
                                     // var scale = aframeObject.getAttribute('scale');
                                     // if (scale !== undefined) {
                                     //     value = scale//AFRAME.utils.coordinates.stringify(scale);
@@ -1198,18 +1147,18 @@ class AFrameModel extends Fabric {
                                 //aframeObject.getAttribute('class');
                                 break;
 
-                                // case "look-controls-enabled":
-                                //     var look = aframeObject.getAttribute('look-controls-enabled');
-                                //     if (look !== null && look !== undefined) {
-                                //         value = aframeObject.getAttribute('look-controls').enabled;
-                                //     }
-                                //     break;
-                                // case "wasd-controls":
-                                //     var wasd = aframeObject.getAttribute('wasd-controls');
-                                //     if (wasd !== null && wasd !== undefined) {
-                                //         value = aframeObject.getAttribute('wasd-controls').enabled;
-                                //     }
-                                //     break;
+                            // case "look-controls-enabled":
+                            //     var look = aframeObject.getAttribute('look-controls-enabled');
+                            //     if (look !== null && look !== undefined) {
+                            //         value = aframeObject.getAttribute('look-controls').enabled;
+                            //     }
+                            //     break;
+                            // case "wasd-controls":
+                            //     var wasd = aframeObject.getAttribute('wasd-controls');
+                            //     if (wasd !== null && wasd !== undefined) {
+                            //         value = aframeObject.getAttribute('wasd-controls').enabled;
+                            //     }
+                            //     break;
 
                             case "ownedBy":
                                 value = aframeObject.getAttribute('ownedby');
@@ -1324,91 +1273,35 @@ class AFrameModel extends Fabric {
                         }
                     }
 
-                    if (value === undefined && aframeObject.nodeName == "A-SKY") {
+                    //A-Frame geometries & primitives
+                    if (value === undefined && self.aframePrimitives.includes(aframeObject.nodeName.toLowerCase())) {
 
-                        self.aframeDef['A-SKY'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
+                        // let geometry = aframeObject.nodeName.toLowerCase().slice(2);
+                        // let schema = AFRAME.geometries[geometry].schema;
+                        let mappings = AFRAME.primitives.primitives[aframeObject.nodeName.toLowerCase()].prototype.mappings;
+                        let el = Object.keys(mappings).includes(propertyName);
+
+                        value = el ? aframeObject.getAttribute(propertyName) : undefined;
+                        // if(el && !value){
+                        //     let attr = mappings[propertyName].split('.');
+                        //     value = aframeObject.getAttribute(attr[0],attr[1])
+                        // }
+
+                        //Light specific
+                        if (value === undefined && aframeObject.nodeName == "A-LIGHT") {
+                            switch (propertyName) {
+                                case "castShadow":
+                                    value = aframeObject.getAttribute('light').castShadow;
+                                    break;
+
+                                case "shadowCameraVisible":
+                                    value = aframeObject.getAttribute('light').shadowCameraVisible;
+                                    break;
+
                             }
-                        })
-
-                    }
-
-
-
-                    if (value === undefined && aframeObject.nodeName == "A-LIGHT") {
-
-                        self.aframeDef['A-LIGHT'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-
-                        switch (propertyName) {
-                            case "castShadow":
-                                value = aframeObject.getAttribute('light').castShadow;
-                                break;
-
-                            case "shadowCameraVisible":
-                                value = aframeObject.getAttribute('light').shadowCameraVisible;
-                                break;
-
                         }
 
-                    }
 
-                    if (value === undefined && aframeObject.nodeName == "A-BOX") {
-
-                        self.aframeDef['A-BOX'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-PLANE") {
-
-                        self.aframeDef['A-PLANE'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-SPHERE") {
-
-                        self.aframeDef['A-SPHERE'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-CYLINDER") {
-
-                        self.aframeDef['A-CYLINDER'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-CONE") {
-
-                        self.aframeDef['A-CONE'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
-                    }
-
-                    if (value === undefined && aframeObject.nodeName == "A-TEXT") {
-
-                        self.aframeDef['A-TEXT'].forEach(element => {
-                            if (element == propertyName) {
-                                value = aframeObject.getAttribute(element);
-                            }
-                        })
                     }
 
 

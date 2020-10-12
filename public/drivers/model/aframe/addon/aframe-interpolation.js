@@ -102,7 +102,7 @@ AFRAME.registerComponent('interpolation', {
   vecCmp: function (a, b, delta) {
 
     // let distance = a.distanceTo(b);
-    let distance = goog.vec.Vec3.distance(a, b);
+    let distance = a.distanceTo(b);
     if (distance > delta) {
       return false;
     }
@@ -122,8 +122,8 @@ AFRAME.registerComponent('interpolation', {
     var now = this.node.interpolate.position.selfTick;
 
     if (now && this.node.needPositionRestore) {
-      let pos = goog.vec.Vec3.clone(now);
-      this.el.object3D.position.set(pos[0], pos[1], pos[2]);
+      let pos = now.clone();
+      this.el.object3D.position.copy(pos);
       this.node.needPositionRestore = false;
     }
 
@@ -148,8 +148,8 @@ AFRAME.registerComponent('interpolation', {
     var now = this.node.interpolate.scale.selfTick;
 
     if (now && this.node.needScaleRestore) {
-      let pos = goog.vec.Vec3.clone(now);
-      this.el.object3D.scale.set(pos[0], pos[1], pos[2]);
+      let pos = now.clone();
+      this.el.object3D.scale.copy(pos);
       this.node.needScaleRestore = false;
     }
 
@@ -228,10 +228,9 @@ AFRAME.registerComponent('interpolation', {
 
       if (!comp) {
 
-        var interp = goog.vec.Vec3.lerp(
+        var interp = new THREE.Vector3().lerpVectors(
           last, now,
-          step || 0,
-          goog.vec.Vec3.create()
+          step || 0
         );
 
         this.setPosition(interp);
@@ -251,10 +250,9 @@ AFRAME.registerComponent('interpolation', {
 
       if (!comp) {
 
-        var interp = goog.vec.Vec3.lerp(
+        var interp = new THREE.Vector3().lerpVectors(
           last, now,
-          step || 0,
-          goog.vec.Vec3.create()
+          step || 0
         );
 
         this.setScale(interp);
@@ -264,8 +262,8 @@ AFRAME.registerComponent('interpolation', {
   },
 
   setPosition: function (interp) {
-    let vec = goog.vec.Vec3.clone(interp);
-    this.el.object3D.position.set(vec[0], vec[1], vec[2]);
+    let vec = interp.clone();
+    this.el.object3D.position.copy(vec);
   },
 
   setRotation: function (interp) {
@@ -274,8 +272,8 @@ AFRAME.registerComponent('interpolation', {
   },
 
   setScale: function (interp) {
-    let vec = goog.vec.Vec3.clone(interp);
-    this.el.object3D.scale.set(vec[0], vec[1], vec[2]);
+    let vec = interp.clone();
+    this.el.object3D.scale.copy(vec);
   },
 
 
