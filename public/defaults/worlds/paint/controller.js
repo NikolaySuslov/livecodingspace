@@ -17,7 +17,7 @@ this.onMove = function(){
         let pen = scene.drawBox.children[this.penName];
         let pos = this.pointer.worldPosition();
         let path = pen.linepath.path.slice();
-        path.push(pos);
+        path.push({x:pos.x, y:pos.y, z:pos.z});
         pen.linepath.path = path;
     }
     

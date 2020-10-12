@@ -6,18 +6,9 @@
     "proxy/animation/animationNode.vwf"
   ],
   "properties": {
-    "position": {
-      "set": "this.position_set(value)",
-      "get": "return this.position_get()"
-    },
-    "rotation": {
-      "set": "this.rotation_set(value)",
-      "get": "return this.rotation_get()"
-    },
-    "scale": {
-      "set": "this.scale_set(value)",
-      "get": "return this.scale_get()"
-    },
+    "position": null,
+    "rotation": null,
+    "scale": null,
     "clickable": null,
     "displayName": null,
     "visible": null,
@@ -39,33 +30,43 @@
     "clearIntersectEvent": {},
     "hitstartEvent": {},
     "hitendEvent": {},
-    "clickEvent": {}
-  },
-  "methods": {
-    "position_get":{},
-    "position_set": {
+    "clickEvent": {
       "parameters": [
         "value"
       ]
     },
-      "rotation_get":{},
-      "rotation_set": {
-        "parameters": [
-          "value"
-        ]
-      },
-      "scale_get":{},
-      "scale_set": {
-        "parameters": [
-          "value"
-        ]
-      },
+    "mousedownEvent": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "mouseupEvent": {
+      "parameters": [
+        "value"
+      ]
+    }
+  },
+  "methods": {
     "getRandomColor": {},
     "intersectEventMethod": {},
     "clearIntersectEventMethod": {},
     "hitstartEventMethod": {},
     "hitendEventMethod": {},
-    "clickEventMethod": {},
+    "clickEventMethod": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "mousedownEventMethod": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "mouseupEventMethod": {
+      "parameters": [
+        "value"
+      ]
+    },
     "sendOSC": {
       "parameters": [
         "msg"
@@ -82,11 +83,33 @@
         "nodeID"
       ]
     },
+    "placeInFrontOf":{
+      "parameters": [
+        "nodeID",
+        "distance"
+      ]
+    },
     "worldRotation": {},
     "worldPosition": {},
-    "translationFromValue": {
+    "worldScale": {},
+    "worldDirection": {},
+    "worldQuaternion": {},
+    "localQuaternion": {},
+    "boundingBox": {},
+    "globalToLocalRotation":{
       "parameters": [
-        "propertyValue"
+        "value",
+        "order"
+      ]
+    },
+    "worldToLocal": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "localToWorld": {
+      "parameters": [
+        "value"
       ]
     },
     "getChildByName": {
@@ -122,7 +145,13 @@
     "step": {},
     "do": {},
     "randomize": {},
-    "nodeDef": {}
+    "nodeDef": {},
+    "createEditTool": {},
+    "translationFromValue":{
+      "parameters": [
+        "value"
+      ]
+    }
   },
   "scripts": {
     "source": "aentity.js"

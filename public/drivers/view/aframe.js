@@ -1,9 +1,6 @@
-//"use strict";
 /*
 The MIT License (MIT)
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-
-Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 */
 
 // VWF & A-Frame view driver
@@ -78,7 +75,8 @@ class AFrameView extends Fabric {
                 this.sixDoFMobile = AFRAME.utils.device.checkHeadsetConnected() && navigator.userAgent.includes('Quest');
                 this.sixDoFDesktop = !AFRAME.utils.device.isMobile() && !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
     
-    
+                this.isDesktop = !this.threeDoFMobile && !this.sixDoFMobile && !this.sixDoFDesktop && !_app.config.d3DoF && !_app.config.d6DoF;
+                //!AFRAME.utils.device.isMobile() && 
             },
     
             createdNode: function (nodeID, childID, childExtendsID, childImplementsIDs,
@@ -108,33 +106,41 @@ class AFrameView extends Fabric {
                             if (self.threeDoFMobile || _app.config.d3DoF ) {
     
                                 console.log("CREATE GEARVR HERE!!");
-                                this.xrType = 'mobileVR';
+                                //this.xrType = 'mobileVR';
                                 let nodeName = 'gearvr-' + self.kernel.moniker();
                                 _self_.createGearVRControls();
-                                _self_.createGearVRController.call(self, childID, nodeName);
+                                _self_.createXR.call(self, childID, nodeName, {});
+                                //_self_.createGearVRController.call(self, childID, nodeName);
                             }
                         
     
                            // if (!AFRAME.utils.device.isMobileVR()) {
-                                if (self.sixDoFMobile || self.sixDoFDesktop || _app.config.d6DoF  ) {
+                                else if (self.sixDoFMobile || self.sixDoFDesktop || _app.config.d6DoF  ) {
                                     console.log("CREATE XRController RIGHT HERE!!");
                                     let nodeRight = 'xrcontroller-right-' + self.kernel.moniker();
                                     _self_.createXRControls('right');
-                                    _self_.createXR.call(this, childID, nodeRight);
+                                    _self_.createXR.call(this, childID, nodeRight, {});
     
                                 
                            // if (!AFRAME.utils.device.isMobileVR()) {
                             console.log("CREATE XRController LEFT HERE!!");
                                     let nodeLeft = 'xrcontroller-left-' + self.kernel.moniker();
                                     _self_.createXRControls('left');
-                                    _self_.createXR.call(this, childID, nodeLeft);
+                                    _self_.createXR.call(this, childID, nodeLeft, {});
                                 }
+
+                                else if (this.isDesktop){
+                                    let nodeName = 'mouse-' + self.kernel.moniker();
+                                    _self_.createDesktopControls();
+                                    _self_.createXR.call(this, childID, nodeName, {position: [0, 0, -0.8]});
+                                }
+
+
+
                            // }
-                        
-    
-                         // console.log(res);
-                         _self_.createAvatar.call(self, childID);                  
-                         _self_.postLoadAction.call(self, childID);
+                        // console.log(res);
+                        _self_.createAvatar.call(self, childID);    
+                           _self_.postLoadAction.call(self, childID);
     
                     }).then(res=>{
                         //document.body.appendChild(scene);
@@ -383,7 +389,40 @@ class AFrameView extends Fabric {
     
                  var avatarName = 'avatar-' + self.kernel.moniker();
     
-    
+                 if (eventName == "clickEvent" ||
+                    eventName == 'mousedownEvent' ||
+                    eventName == 'mouseupEvent'){
+
+                        let methodName = eventName +'Method';
+                        self.kernel.callMethod(nodeID, methodName, eventParameters);
+
+                        if (eventName == "clickEvent"){
+
+                            let mode = vwf.getProperty(avatarName, 'selectMode');
+                            if (mode) {
+                                console.log("allow to click!!!")
+                                vwf_view.kernel.setProperty(avatarName, 'selectMode', false);
+        
+                                let editorDriver = vwf.views["/drivers/view/editor"];
+                                if (editorDriver) {
+                                    let selectSwitch = document.querySelector('#selectNodeSwitch');
+                                    // const selectSwitchComp = new mdc.iconButton.MDCIconButtonToggle(selectSwitch); //new mdc.select.MDCIconToggle
+                                    selectSwitch._comp.on = false;
+        
+                                    let currentNodeDIV = document.querySelector('#currentNode');
+                                    if (currentNodeDIV) currentNodeDIV._setNode(nodeID);
+        
+        
+                                }
+                            }
+
+                        }
+
+
+                    }
+
+
+
                 let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect']; //'intersect', 
     
                 let hitEvent = intersectEvents.filter(el=> el == eventName.slice(0,-5))[0]; //slice Event word
@@ -395,45 +434,31 @@ class AFrameView extends Fabric {
                     // If the transform property was initially updated by this view....
                     if (clientThatSatProperty == me) {
                             let methodName = eventName +'Method';
-                            vwf.callMethod(nodeID, methodName, [])
+                            self.kernel.callMethod(nodeID, methodName, eventParameters);
+
                     }
     
                 }
         
     
     
-                if (eventName == "clickEvent") {
+                // if (eventName == "clickEvent") {
     
-                    if (self.kernel.moniker() == eventParameters[0]) {
+                //     if (self.kernel.moniker() == eventParameters[0]) {
     
-                        let avatar = self.nodes[avatarName];
-                        let mode = vwf.getProperty(avatarName, 'selectMode');
-    
-    
-                        vwf_view.kernel.callMethod(nodeID, "clickEventMethod", [])
-    
-                        if (mode) {
-                            console.log("allow to click!!!")
-                            vwf_view.kernel.setProperty(avatarName, 'selectMode', false);
-    
-                            let editorDriver = vwf.views["/drivers/view/editor"];
-                            if (editorDriver) {
-                                let selectSwitch = document.querySelector('#selectNodeSwitch');
-                                // const selectSwitchComp = new mdc.iconButton.MDCIconButtonToggle(selectSwitch); //new mdc.select.MDCIconToggle
-                                selectSwitch._comp.on = false;
-    
-                                let currentNodeDIV = document.querySelector('#currentNode');
-                                if (currentNodeDIV) currentNodeDIV._setNode(nodeID);
+                //         let avatar = self.nodes[avatarName];
+                //         let mode = vwf.getProperty(avatarName, 'selectMode');
     
     
-                            }
-                        }
+                //         vwf_view.kernel.callMethod(nodeID, "clickEventMethod", [])
+    
+
     
     
-                    }
+                //     }
     
     
-                }
+                // }
             },
     
             ticked: function (vwfTime) {
@@ -452,7 +477,9 @@ class AFrameView extends Fabric {
                     }
                 }
     
-                
+                if (this.isDesktop){
+                    _self_.updateDesktopController('mouse-', '#mouse');
+                }
         
                     
                 
@@ -507,7 +534,6 @@ class AFrameView extends Fabric {
                 // if (methodName == "createGooglePoly") {
                 // }
     
-    
             }
         });
     }
@@ -555,21 +581,21 @@ class AFrameView extends Fabric {
             let prop = self.state.setFromValue(propertyValue);
 
             if (propertyName == 'position') {
-                let pos = goog.vec.Vec3.clone(prop);
-                node.aframeObj.object3D.position.set(pos[0], pos[1], pos[2]);
+                let pos = prop.clone();
+                node.aframeObj.object3D.position.copy(pos);
             } else if (propertyName == 'rotation') {
-                let rot = goog.vec.Vec3.clone(prop);
+                let rot = prop.clone();
 
                 node.aframeObj.object3D.rotation.set(
-                    THREE.Math.degToRad(rot[0]),
-                    THREE.Math.degToRad(rot[1]),
-                    THREE.Math.degToRad(rot[2])
+                    THREE.Math.degToRad(rot.x),
+                    THREE.Math.degToRad(rot.y),
+                    THREE.Math.degToRad(rot.z)
                 )
                 //node.aframeObj.object3D.rotation.set(rot[0], rot[1], rot[2]);
             } else if (propertyName == 'scale') {
-                let scale = goog.vec.Vec3.clone(prop);
-                node.aframeObj.object3D.scale.set(scale[0], scale[1], scale[2]);
-            }
+                let scale = prop.clone();
+                node.aframeObj.object3D.scale.copy(scale);
+            } 
 
         }
     }
@@ -658,6 +684,75 @@ class AFrameView extends Fabric {
         }
 
     }
+
+    updateDesktopController(aName, aSelector) {
+        let self = this.instance;
+         //let avatarName = 'avatar-' + self.kernel.moniker();
+ 
+         let delta = 0.001
+        
+         let avatarID = 'avatar-' + self.kernel.moniker();
+         let avatarName = aName + self.kernel.moniker();
+         var node = self.state.nodes[avatarName];
+         if (!node) return;
+         if (!node.aframeObj) return;
+ 
+         //let elA = document.querySelector('#avatarControlParent');
+         let elA = document.querySelector('#avatarControl');
+         let el = document.querySelector(aSelector);
+         if (el && elA) {
+ 
+            //  let positionC = el.object3D.position.clone();
+            //  let positionA = elA.object3D.position.clone();
+            //  let position = positionC.add(positionA);
+
+            let position = elA.object3D.position;
+            //new THREE.Vector3(elA.object3D.position.x, elA.object3D.position.y-0.05, elA.object3D.position.z);
+
+            //let position = elA.object3D.position;
+
+            // let mouse = el.components["desktop-controls"]._mouse;
+            // self.kernel.callMethod(avatarName, "trackMouse",[mouse]);
+            let rotation = (AFRAME.utils.device.isMobile() && self.isDesktop) ? elA.getAttribute('rotation') : el.getAttribute('rotation');
+
+             //let rotation =  el.getAttribute('rotation'); //this.getWorldRotation(el, 'YXZ');
+
+
+             let lastRotation = self.nodes[avatarName].selfTickRotation;
+             let lastPosition = self.nodes[avatarName].selfTickPosition ? self.nodes[avatarName].selfTickPosition: new THREE.Vector3(0, 0, 0);
+ 
+             // let currentPosition = node.aframeObj.getAttribute('position');
+             //let currentRotation = node.aframeObj.getAttribute('rotation');
+ 
+             if (position && lastPosition) {
+                 let distance = lastPosition.distanceTo(position);
+ 
+                 if (distance > delta)
+                 {
+                    // console.log("position not equal");
+                    self.kernel.setProperty(avatarName, "position", position);
+                     self.kernel.callMethod(avatarName, "moveVRController",[]);
+                 }
+             }
+ 
+             if (rotation && lastRotation) {
+                 let distance = this.compareCoordinates(rotation, lastRotation, delta)
+ 
+                 if (distance)
+                 {
+                     //console.log("rotation not equal");
+                     self.kernel.setProperty(avatarName, "rotation", rotation);
+                     self.kernel.callMethod(avatarName, "moveVRController",[]);
+
+                     self.kernel.callMethod(avatarID, "moveHead", [el.object3D.quaternion]);
+                 }
+             }
+ 
+            self.nodes[avatarName].selfTickPosition = position.clone();
+             self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
+ 
+         }
+     }
 
 
    updateHandControllerVR(aName, aSelector) {
@@ -786,12 +881,7 @@ class AFrameView extends Fabric {
 
 
 
-        if (self.d3DoF || _app.config.d3DoF) {
-            //avatarEl.setAttribute('gearvr-controls', {}); 
-            avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
-            //avatarEl.setAttribute("gamepad-controls", {});
-            //avatarEl.setAttribute('position', '0 0 0');
-        }
+       
 
         //avatarEl.setAttribute('position', '0 1.6 0');
 
@@ -802,12 +892,27 @@ class AFrameView extends Fabric {
         controlEl.setAttribute('look-controls', { pointerLockEnabled: false});
         controlEl.setAttribute('look-controls', 'enabled', true );
 
+        controlEl.setAttribute('camera', 'near', 0.1 );
+
         //controlEl.setAttribute('gamepad-controls', {'controller': 0});
 
-        if (AFRAME.utils.device.isMobile()) {
+        let cursorEl = document.createElement('a-cursor');
+        cursorEl.setAttribute('id', 'cursor-' + avatarName);
+        cursorEl.setAttribute('raycaster', {});
+        cursorEl.setAttribute('raycaster', 'objects', '.clickable');
+        cursorEl.setAttribute('raycaster', 'showLine', false);
+
+        if (self.d3DoF || _app.config.d3DoF) {
+            //avatarEl.setAttribute('gearvr-controls', {}); 
+            avatarEl.setAttribute('movement-controls', {});//{'controls': 'gamepad'});
+            //avatarEl.setAttribute("gamepad-controls", {});
+            //avatarEl.setAttribute('position', '0 0 0');
+        }
+
+        else if (AFRAME.utils.device.isMobile()) {
             //self.state.showMobileJoystick()
 
-            controlEl.setAttribute('look-controls', 'enabled', true );
+            //controlEl.setAttribute('look-controls', 'enabled', true );
             controlEl.setAttribute("virtual-gamepad-controls", {});
             controlEl.addEventListener("move", this.setJoystickMoveInput.bind(this));
         }
@@ -818,11 +923,11 @@ class AFrameView extends Fabric {
         //controlEl.setAttribute('gearvr-controls',{});
 
 
-        let cursorEl = document.createElement('a-cursor');
-        cursorEl.setAttribute('id', 'cursor-' + avatarName);
-        cursorEl.setAttribute('raycaster', {});
-        cursorEl.setAttribute('raycaster', 'objects', '.clickable');
-        cursorEl.setAttribute('raycaster', 'showLine', false);
+       
+
+        else if (self.isDesktop){
+            cursorEl.setAttribute('cursor', {rayOrigin: 'mouse'});
+        }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});
         // cursorEl.setAttribute('raycaster', 'showLine', true);
@@ -855,7 +960,7 @@ class AFrameView extends Fabric {
 
     }
 
-    createXR(nodeID, nodeName) {
+    createXR(nodeID, nodeName, props) {
         let self = this;
         var newNode = {
             "id": nodeName,
@@ -868,7 +973,7 @@ class AFrameView extends Fabric {
         if (!self.state.nodes[nodeName]) {
 
             vwf_view.kernel.createChild(nodeID, nodeName, newNode);
-            vwf_view.kernel.callMethod(nodeName, "createController", []);
+            vwf_view.kernel.callMethod(nodeName, "createController", [props.position]);
             //"/../assets/controller/wmrvr.gltf"
         }
     }
@@ -1007,6 +1112,23 @@ class AFrameView extends Fabric {
         el.setAttribute('gearvrcontrol', {});
         avatarControl.appendChild(el);
 
+    }
+
+    createDesktopControls() {
+
+        let self = this.instance;
+        let avatarControl = document.querySelector('#avatarControlParent');
+
+        let el = document.createElement('a-entity');
+        el.setAttribute('id', 'mouse');
+        // el.setAttribute('geometry', {
+        //     primitive: 'box', width: 0.2, height: 0.2, depth: 1
+        // });
+        // el.setAttribute('position', {
+        //     x: 0, y: 0, z: -1
+        // });
+        el.setAttribute('desktop-controls', {});
+        avatarControl.appendChild(el);
     }
 
     createXRControls(hand) {

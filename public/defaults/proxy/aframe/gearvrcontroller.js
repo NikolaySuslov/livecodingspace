@@ -129,8 +129,8 @@ this.createController = function (modelSrc) {
 this.updateVRControl = function(position, rotation){
 
     
-    this.position = goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
-    this.rotation = goog.vec.Vec3.createFromValues(rotation.x, rotation.y, rotation.z);
+    this.position = position.clone();//goog.vec.Vec3.createFromValues(position.x, position.y, position.z);
+    this.rotation = rotation.clone(); goog.vec.Vec3.createFromValues(rotation.x, rotation.y, rotation.z);
 
     // this.position = position;
     // this.rotation = rotation;

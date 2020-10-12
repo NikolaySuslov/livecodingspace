@@ -53,6 +53,16 @@
                 "rotation"
             ]
         },
+        "moveHand": {
+            "parameters": [
+                "rotation"
+            ]
+        },
+        "moveHead": {
+            "parameters": [
+                "rotation"
+            ]
+        },
         "setSmallVideoHead": {},
         "setBigVideoHead": {},
         "setVideoTexture": {

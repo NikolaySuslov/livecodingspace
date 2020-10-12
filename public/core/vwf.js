@@ -3730,6 +3730,8 @@ class VWF {
 
             if (propertyValue === undefined && !ignorePrototype) {
 
+                if(this.behaviors(nodeID)){
+                    
                 this.behaviors(nodeID).reverse().concat(this.prototype(nodeID)).
                 some(function (prototypeID, prototypeIndex, prototypeArray) {
 
@@ -3744,6 +3746,7 @@ class VWF {
                 }, this);
 
             }
+        }
 
             // Call gotProperty() on each view.
 

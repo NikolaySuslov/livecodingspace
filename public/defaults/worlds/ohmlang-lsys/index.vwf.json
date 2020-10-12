@@ -12,6 +12,12 @@
 		"testTurtle": {
 			"body": "    this.turtle.goForward(1);\n    this.turtle.goForward(1);\n    this.turtle.turn(45);\n    this.turtle.goForward(1);\n    this.turtle.goForward(1);\n    this.turtle.turn(45);\n    this.turtle.goForward(1);\n",
 			"type": "application/javascript"
+		},
+		"createTurtle":{
+			"type": "application/javascript",
+			"parameters":["name", "node", "avatarID"],
+			"body": "this.children.create(name, node, function(child){ \n child.placeInFrontOf(avatarID, -3) })\n"
+			
 		}
 	},
 	"children": {
@@ -139,7 +145,7 @@
 					"parameters": [
 						"step"
 					],
-					"body": "    let pos = this.drawNode.position;\n    var x0 = pos[0];\n    var y0 = pos[1];\n    var xx = Math.sin(this.angleInRadians);\n    var yy = Math.cos(this.angleInRadians);\n    let startPosition = {x: pos[0], y: pos[1], z:pos[2]};\n    let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos[2]};\n    var drawPath = this.drawNode.linepath.path.slice();\n    drawPath.push(startPosition);\n    drawPath.push(endPosition);\n    this.drawNode.linepath.path = drawPath;\n    this.drawNode.position = [endPosition.x, endPosition.y, endPosition.z];\n",
+					"body": "    let pos = this.drawNode.position;\n    var x0 = pos.x;\n    var y0 = pos.y;\n    var xx = Math.sin(this.angleInRadians);\n    var yy = Math.cos(this.angleInRadians);\n    let startPosition = {x: pos.x, y: pos.y, z:pos.z};\n    let endPosition = {x: x0 + step * xx, y: y0 + step * yy, z: pos.z};\n    var drawPath = this.drawNode.linepath.path.slice();\n    drawPath.push(startPosition);\n    drawPath.push(endPosition);\n    this.drawNode.linepath.path = drawPath;\n    this.drawNode.position = [endPosition.x, endPosition.y, endPosition.z];\n",
 					"type": "application/javascript"
 				},
 				"setTurtleParams": {

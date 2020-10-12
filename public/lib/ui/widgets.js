@@ -1086,53 +1086,53 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 ]
               }
 
-            let luminaryGlobalHB = {
-                $cell: true,
-                $components: [
-                  {
-                    $type: "p",
-                    class: "mdc-typography--headline5",
-                    $text: "Use Global Heartbeat"
-                  },
-                  {
-                    $type: 'p'
-                  },
-                  _app.widgets.switch({
-                    'id': 'forceLuminary',
-                    'init': function () {
-                      this._switch = new mdc.switchControl.MDCSwitch(this);
-                      let config = localStorage.getItem('lcs_config');
-                      this._switch.checked = JSON.parse(config).luminaryGlobalHB;
+            // let luminaryGlobalHB = {
+            //     $cell: true,
+            //     $components: [
+            //       {
+            //         $type: "p",
+            //         class: "mdc-typography--headline5",
+            //         $text: "Use Global Heartbeat"
+            //       },
+            //       {
+            //         $type: 'p'
+            //       },
+            //       _app.widgets.switch({
+            //         'id': 'forceLuminary',
+            //         'init': function () {
+            //           this._switch = new mdc.switchControl.MDCSwitch(this);
+            //           let config = localStorage.getItem('lcs_config');
+            //           this._switch.checked = JSON.parse(config).luminaryGlobalHB;
                       
-                     // this._replaceSwitch = this._switch;
+            //          // this._replaceSwitch = this._switch;
                       
-                    },
-                    'onchange': function (e) {
+            //         },
+            //         'onchange': function (e) {
     
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminaryGlobalHB = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.luminaryGlobalHB = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                            }
-                        }
-                    }
-                  }
-                  ),
-                  {
-                    $type: 'label',
-                    for: 'input-forceLuminary',
-                    $text: 'On / Off'
-                  }
+            //             if (this._switch) {
+            //                 let chkAttr = this._switch.checked;//this.getAttribute('checked');
+            //                 if (chkAttr) {
+            //                     let config = JSON.parse(localStorage.getItem('lcs_config'));
+            //                     config.luminaryGlobalHB = true;
+            //                     localStorage.setItem('lcs_config', JSON.stringify(config));
+            //                     //this._switch.checked = false;
+            //                 } else {
+            //                     let config = JSON.parse(localStorage.getItem('lcs_config'));
+            //                     config.luminaryGlobalHB = false;
+            //                     localStorage.setItem('lcs_config', JSON.stringify(config));
+            //                 }
+            //             }
+            //         }
+            //       }
+            //       ),
+            //       {
+            //         $type: 'label',
+            //         for: 'input-forceLuminary',
+            //         $text: 'On / Off'
+            //       }
     
-                ]
-              }
+            //     ]
+            //   }
 
 
               let luminaryFeature = {
@@ -1217,9 +1217,9 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                     if (config.luminaryPath) {
                         this._lpath = config.luminaryPath
                     }
-                    if (config.luminaryGlobalHBPath) {
-                        this._hbpath = config.luminaryGlobalHBPath
-                    }
+                    // if (config.luminaryGlobalHBPath) {
+                    //     this._hbpath = config.luminaryGlobalHBPath
+                    // }
                     // if (config.debug) {
                     //     this._debug = config.debug
                     // }
@@ -1356,32 +1356,32 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                         }),
                                     ]
                                 },
-                                {
-                                    $type: "div",
-                                    class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                    $components: [
-                                        {
-                                            $type: "span",
-                                            class: "mdc-typography--headline5",
-                                            $text: "Global Heartbeat Path: "
-                                        },
-                                        window._app.widgets.inputTextFieldOutlined({
-                                            "id": 'hbpathInput',
-                                            "label": "Global Heartbeat Path",
-                                            "value": this._hbpath,
-                                            "type": "text",
-                                            "init": function() {
-                                                this._hbpathField = new mdc.textField.MDCTextField(this);
-                                            },
-                                            "style": 'width: 400px;'
-                                        }),
-                                    ]
-                                },
-                               { 
-                                $type: "div",
-                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [luminaryGlobalHB ]
-                               },
+                                // {
+                                //     $type: "div",
+                                //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                //     $components: [
+                                //         {
+                                //             $type: "span",
+                                //             class: "mdc-typography--headline5",
+                                //             $text: "Global Heartbeat Path: "
+                                //         },
+                                //         window._app.widgets.inputTextFieldOutlined({
+                                //             "id": 'hbpathInput',
+                                //             "label": "Global Heartbeat Path",
+                                //             "value": this._hbpath,
+                                //             "type": "text",
+                                //             "init": function() {
+                                //                 this._hbpathField = new mdc.textField.MDCTextField(this);
+                                //             },
+                                //             "style": 'width: 400px;'
+                                //         }),
+                                //     ]
+                                // },
+                            //    { 
+                            //     $type: "div",
+                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                            //     $components: [luminaryGlobalHB ]
+                            //    },
                                { 
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
@@ -1412,7 +1412,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                                     config.reflector = this._refHostField.value;
                                                     config.dbhost = this._dbHostField.value;
                                                     config.luminaryPath = this._lpathField.value;
-                                                    config.luminaryGlobalHBPath = this._hbpathField.value;
+                                                    //config.luminaryGlobalHBPath = this._hbpathField.value;
         
                                                     localStorage.setItem('lcs_config', JSON.stringify(config));
                                                     window.location.reload(true);

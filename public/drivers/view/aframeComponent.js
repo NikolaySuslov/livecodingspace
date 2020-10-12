@@ -1,9 +1,6 @@
-//"use strict";
 /*
 The MIT License (MIT)
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
-
-Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 */
 
 // VWF & A-Frame components view driver
@@ -55,30 +52,30 @@ class AFrameComponentView extends Fabric {
                 }
             
                 this.getPosition = function (id) {
-                    let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.position);
-                    let pos = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
-                    return pos;
+                    // let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.position);
+                    // let pos = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+                    return self.state.nodes[id].aframeObj.el.object3D.position.clone();
                 }
             
                this.getScale = function (id) {
-                    let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.scale);
-                    let data = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
-                    return data;
+                    // let p = (new THREE.Vector3()).copy(self.state.nodes[id].aframeObj.el.object3D.scale);
+                    // let data = goog.vec.Vec3.createFromValues(p.x, p.y, p.z)
+                    return self.state.nodes[id].aframeObj.el.object3D.scale.clone();
                 }
     
-                this.resetInterpolation = function (nodeID, propertyName) {
+                // this.resetInterpolation = function (nodeID, propertyName) {
     
-                    if (propertyName == 'position') {
-                        self.nodes[nodeID].interpolate.position.lastTick = getPosition(nodeID);
-                        self.nodes[nodeID].interpolate.position.selfTick = goog.vec.Vec3.clone(self.nodes[nodeID].interpolate.position.lastTick);
-                    }
+                //     if (propertyName == 'position') {
+                //         self.nodes[nodeID].interpolate.position.lastTick = getPosition(nodeID);
+                //         self.nodes[nodeID].interpolate.position.selfTick = goog.vec.Vec3.clone(self.nodes[nodeID].interpolate.position.lastTick);
+                //     }
     
-                    if (propertyName == 'rotation') {
-                        self.nodes[nodeID].interpolate.rotation.lastTick = getRotation(nodeID);
-                        self.nodes[nodeID].interpolate.rotation.selfTick = self.nodes[nodeID].interpolate.rotation.lastTick;
-                    }
+                //     if (propertyName == 'rotation') {
+                //         self.nodes[nodeID].interpolate.rotation.lastTick = getRotation(nodeID);
+                //         self.nodes[nodeID].interpolate.rotation.selfTick = self.nodes[nodeID].interpolate.rotation.lastTick;
+                //     }
     
-                }
+                // }
     
             },
     

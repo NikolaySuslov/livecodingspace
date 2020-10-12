@@ -1,7 +1,6 @@
-//"use strict";
 /*
 The MIT License (MIT)
-Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 
 Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
 */
@@ -560,7 +559,6 @@ class LCSEditor extends Fabric {
                     return newname + count;
                 }
     
-                
                 function make3DPrimitiveList() {
                     let nodeNames = ['Plane', 'Cube', 'Sphere', 'Cylinder', 'Cone', 'Text'];
                     return nodeNames.map(el => {
@@ -573,7 +571,7 @@ class LCSEditor extends Fabric {
                                 let avatarID = 'avatar-' + vwf.moniker_;
                                 //let cubeName = self.GUID();
                                 let displayName = getUniqueDisplayName.call(self, el.toLowerCase());
-                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), null, displayName, null, avatarID])
+                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", [el.toLowerCase(), {}, displayName, null, avatarID])
                             }
                         })
                     })
@@ -591,7 +589,7 @@ class LCSEditor extends Fabric {
                                 let avatarID = 'avatar-' + vwf.moniker_;
                                 //let cubeName = self.GUID();
                                 let displayName = getUniqueDisplayName.call(self, el.toLowerCase());
-                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", el.toLowerCase(), displayName, null, avatarID])
+                                vwf_view.kernel.callMethod(vwf.application(), "createPrimitive", ["light", {type: el.toLowerCase()}, displayName, null, avatarID])
                             }
                         })
                     })
@@ -716,14 +714,16 @@ class LCSEditor extends Fabric {
                                                 "label": "Hide cursor",
                                                 "onclick": function (e) {
                                                     //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
-                                                    let avatarID = 'avatar-' + self.kernel.moniker();
-                                                    let cursorID = vwf.find(avatarID, "./avatarNode/myHead/myCursor")[0];
-                                                    //let cursorID = 'myCursor-' + avatarID;
+                                                    let cursorID = 'mouse-' + self.kernel.moniker();
+
+                                                    //let avatarID = 'avatar-' + self.kernel.moniker();
+                                                   // let cursorID = vwf.find(avatarID, "./avatarNode/myHead/myCursor")[0];
+
                                                     let controlEl = document.querySelector("[id='" + cursorID + "']");
                                                     let vis = controlEl.getAttribute('visible');
                                                     this.$text = vis ? 'Show cursor' : 'Hide cursor';
-    
-                                                    vwf_view.kernel.callMethod(avatarID, "showHideCursor", [!vis]);
+                                                    vwf_view.kernel.setProperty(cursorID, "visible", !vis);    
+                                                    //vwf_view.kernel.callMethod(avatarID, "showHideCursor", [!vis]);
                                                     //controlEl.setAttribute('visible', !vis);
                                                 }
                                             }),
@@ -1325,9 +1325,10 @@ class LCSEditor extends Fabric {
                         $init: function () {
     
                             let prop = m[1].prop;
-    
+                            let property = vwf.getProperty(this._currentNode, prop.name, []);
+
                             if (prop.value == undefined && this._currentNode !== undefined) {
-                                prop.value = JSON.stringify(LCSEditor.utility.transform(vwf.getProperty(this._currentNode, prop.name, []), LCSEditor.utility.transforms.transit));
+                                prop.value = JSON.stringify(LCSEditor.utility.transform(property, LCSEditor.utility.transforms.transit));
                             }
                             this._prop = prop
                         },
@@ -2063,7 +2064,9 @@ class LCSEditor extends Fabric {
                                                         //this._switch.checked = true;
                                                     }
     
+                                                    //vwf_view.kernel.callMethod(nodeID, "createEditTool");
                                                     vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+                                                    
                                                 }
                                             }
                                         }
@@ -4525,11 +4528,11 @@ class LCSEditor extends Fabric {
             rawValue: propertyValue,
             value: undefined,
             getValue: function () {
-                var propertyValue;
+                var propertyVal;
                 if (this.value == undefined) {
                     try {
-                        propertyValue = LCSEditor.utility.transform(this.rawValue, LCSEditor.utility.transforms.transit);
-                        this.value = JSON.stringify(propertyValue);
+                        propertyVal = LCSEditor.utility.transform(this.rawValue, LCSEditor.utility.transforms.transit);
+                        this.value = JSON.stringify(propertyVal);
                     } catch (e) {
                         this.logger.warnx("createdProperty", nodeID, this.propertyName, this.rawValue,
                             "stringify error:", e.message);
@@ -4687,19 +4690,3 @@ class LCSEditor extends Fabric {
 LCSEditor.utility = new Utility();
 
 export { LCSEditor as default}
-
-  
-
-// define([
-//     "module",
-//     "vwf/view/lib/colorpicker/colorpicker.min"
-// ], function (module, colorpicker) {
-
-//     var self;
-//     const view = vwf.viewModule;
-//     const utility = vwf.utility;
-
-//     return view.load(module, 
-        
-
-// });
