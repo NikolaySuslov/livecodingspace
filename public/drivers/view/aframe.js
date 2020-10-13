@@ -76,6 +76,7 @@ class AFrameView extends Fabric {
                 this.sixDoFDesktop = !AFRAME.utils.device.isMobile() && !AFRAME.utils.device.isMobileVR() && AFRAME.utils.device.checkHeadsetConnected();
     
                 this.isDesktop = !this.threeDoFMobile && !this.sixDoFMobile && !this.sixDoFDesktop && !_app.config.d3DoF && !_app.config.d6DoF;
+                this.isMobile = AFRAME.utils.device.isMobile() && !AFRAME.utils.device.isMobileVR()
                 //!AFRAME.utils.device.isMobile() && 
             },
     
@@ -675,7 +676,12 @@ class AFrameView extends Fabric {
                 let distance = Math.abs(rotation.y - lastRotation.y);
                 if ( distance > delta) {
                     //console.log("rotation not equal")
+                   if (self.isDesktop) {
+                    self.kernel.callMethod(avatarName, "updateAvatarBodyRotation", [rotation]);
+                   } else {
                     self.kernel.callMethod(avatarName, "updateAvatarRotation", [rotation]);
+                   }
+                    
                 }
             }
             self.nodes[avatarName].selfTickRotation = Object.assign({}, rotation);
@@ -713,8 +719,19 @@ class AFrameView extends Fabric {
 
             // let mouse = el.components["desktop-controls"]._mouse;
             // self.kernel.callMethod(avatarName, "trackMouse",[mouse]);
-            let rotation = (AFRAME.utils.device.isMobile() && self.isDesktop) ? elA.getAttribute('rotation') : el.getAttribute('rotation');
+            var rotation = el.getAttribute('rotation');
+            var headRotation = el.object3D.quaternion;
 
+            if (self.isMobile) {
+                var headWorldQuat = new THREE.Quaternion();
+                elA.object3D.getWorldQuaternion(headWorldQuat);
+
+                rotation = this.getWorldRotation(elA, 'XYZ');
+                headRotation = headWorldQuat;
+            }
+            
+            //let rotation = el.getAttribute('rotation');
+            //((AFRAME.utils.device.isMobile() && !AFRAME.utils.device.isMobileVR()) || self.isDesktop) ? elA.getAttribute('rotation') : el.getAttribute('rotation');
              //let rotation =  el.getAttribute('rotation'); //this.getWorldRotation(el, 'YXZ');
 
 
@@ -744,7 +761,7 @@ class AFrameView extends Fabric {
                      self.kernel.setProperty(avatarName, "rotation", rotation);
                      self.kernel.callMethod(avatarName, "moveVRController",[]);
 
-                     self.kernel.callMethod(avatarID, "moveHead", [el.object3D.quaternion]);
+                     self.kernel.callMethod(avatarID, "moveHead", [headRotation]);
                  }
              }
  
