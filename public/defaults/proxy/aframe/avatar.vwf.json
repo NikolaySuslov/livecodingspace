@@ -42,9 +42,8 @@
                 "height"
             ]
         },
-        "followAvatarControl": {
+        "updateAvatarBodyRotation":{
             "parameters": [
-                "position",
                 "rotation"
             ]
         },

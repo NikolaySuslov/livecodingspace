@@ -370,6 +370,12 @@ this.moveHead = function (rotation) {
 
 }
 
+this.updateAvatarBodyRotation = function (rotation) { 
+    
+    let myRot = this.rotation.clone();
+    this.rotation = [myRot.x, rotation.y, myRot.z];
+}
+
 
 this.updateAvatarRotation = function (rotation) { 
     
@@ -379,14 +385,7 @@ this.updateAvatarRotation = function (rotation) {
     this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
 }
 
-this.followAvatarControl = function (position, rotation) {
 
-    let myRot = this.rotation.clone();
-    let myHeadRot = this.avatarNode.myHead.rotation.clone();
-    this.rotation = [myRot.x, rotation.y, myRot.z];
-    this.avatarNode.myHead.rotation = [rotation.x, myHeadRot.y, rotation.z];
-
-}
 
 this.setUserAvatar = function(aName){
 
