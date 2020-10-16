@@ -96,9 +96,10 @@ this.sendOSC = function (msg) {
 // }
 
 
-this.intersectEventMethod = function () {
+this.intersectEventMethod = function (point) {
     //intersect method
 }
+
 
 this.clearIntersectEventMethod = function () {
     //clearIntersect method

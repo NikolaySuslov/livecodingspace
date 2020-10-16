@@ -184,7 +184,8 @@
           "type": "application/javascript"
         },
         "intersectEventMethod": {
-          "body": "    this.material.opacity = 0.7\n",
+          "parameters": ["point"],
+          "body": "    this.material.opacity = 0.7; \n console.log(point) \n",
           "type": "application/javascript"
         },
         "clearIntersectEventMethod": {
