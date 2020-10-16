@@ -39,7 +39,20 @@ this.createController = function (pos, modelSrc) {
         }
     }
 
-
+    let myRayCaster = {
+                "extends": "proxy/aframe/raycasterComponent.vwf",
+                "type": "component",
+                "properties": {
+                    recursive: false,
+                    interval: 0,
+                    far: 10,
+                    objects: ".intersectable",
+                    showLine: false
+                }
+            }
+        
+    
+    this.children.create( "raycaster", myRayCaster );        
     this.children.create( "interpolation", interpolation );
     this.children.create("xrnode", newNode, function(child){
         if(child) {

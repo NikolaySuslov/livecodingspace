@@ -1129,24 +1129,8 @@ this.getDefaultXRCostume = function(){
                     interval: 10,
                     objects: ".hit"
                 }
-            },
-           "myRayCaster": {
-            "extends": "proxy/aframe/aentity.vwf",
-            "properties": {},
-            "children": {
-                "raycaster": {
-                    "extends": "proxy/aframe/raycasterComponent.vwf",
-                    "type": "component",
-                    "properties": {
-                        recursive: false,
-                        interval: 100,
-                        far: 20,
-                        objects: ".intersectable",
-                        showLine: false
-                    }
-                }
             }
-        }
+         
         }
     
     }
