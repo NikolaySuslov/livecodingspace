@@ -70,6 +70,10 @@ this.moveVRController = function(){
     if(controller){
         controller.onMove();
     }
+
+    // let point = this.raycaster.getIntersectionPoint();
+    // console.log('POINT: ', point);
+
 }
 
 this.updateVRControl = function(position, rotation){
