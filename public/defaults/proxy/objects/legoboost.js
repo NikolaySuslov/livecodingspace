@@ -7,7 +7,7 @@ this.initialize = function () {
 
 this.createVisual = function () {
 
-    let motorNode = function (position, rotation) {
+    let motorNode = function (motorName, position, rotation) {
 
         let rot = rotation ? rotation : [0, 0, 0];
 
@@ -35,8 +35,8 @@ this.createVisual = function () {
                     "extends": "proxy/aframe/abox.vwf",
                     "properties": {
                         "height": 0.4,
-                        "width": 0.05,
-                        "depth": 0.4
+                        "width": 0.4,
+                        "depth": 0.05
                     },
                     "children": {
                         "material": {
@@ -44,6 +44,18 @@ this.createVisual = function () {
                             "type": "component",
                             "properties": {
                                 "color": "orange"
+                            }
+                        },
+                        "label":{
+                            "extends": "proxy/aframe/atext.vwf",
+                            "properties": {
+                                "displayName": motorName,
+                                "color": "black",
+                                "value": motorName,
+                                "side": "double",
+                                "position": [-0.02,0,0.07],
+                                "rotation": [0,0,0],
+                                "scale":[0.5,0.5,0.5]
                             }
                         }
                     }
@@ -71,9 +83,10 @@ this.createVisual = function () {
 
                 }
             },
-            "motorA": motorNode([0.3, 0, 0]),
-            "motorB": motorNode([-0.3, 0, 0]),
-            "motorC": motorNode([0, 0, 0.3], [0, 90, 0])
+            "motorA": motorNode('A', [0.3, 0, 0], [0, 90, 0]),
+            "motorB": motorNode('B', [-0.3, 0, 0], [0, -90, 0]),
+            "motorC": motorNode('C', [0, 0, 0.3], [0, 0, 0]),
+            "motorD": motorNode('D', [0, 0, -0.3], [0, 180, 0])
         }
     }
 

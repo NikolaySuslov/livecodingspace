@@ -101,8 +101,11 @@ this.createAvatarBody = function (nodeDef, modelSrc) {
                 //this.myHead.myCursor.line.color = myColor;
 
                 let cursorEl = this.getScene()['mouse-' + this.parent.id.slice(7)];
-                cursorEl.xrnode.controller.cursorVisual.avatarColor = myColor;
-                cursorEl.xrnode.controller.cursorVisual.color = myColor;
+                if(cursorEl){
+                    cursorEl.xrnode.controller.cursorVisual.avatarColor = myColor;
+                    cursorEl.xrnode.controller.cursorVisual.color = myColor;
+                }
+                
                 `
 
             }

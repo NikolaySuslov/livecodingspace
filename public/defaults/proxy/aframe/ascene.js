@@ -1,9 +1,17 @@
 this.initialize = function () {
-    this.future(3).clientWatch();
+
+    if(Object.getPrototypeOf(this).id.includes('ascene.vwf')){
+        console.log("Initialize of Scene...", this.id);
+        this.future(3).clientWatch();
+    } else {
+        console.log("Initialize proto Scene..", this.id);
+    }
+   
     //this.createDefaultXRCostume();
 };
 
 this.clientWatch = function () {
+
     var self = this;
 
     if (this.children.length !== 0) {
@@ -1090,25 +1098,76 @@ this.getDefaultXRCostume = function(){
         "properties": {
             displayName: "defaultXRCostume",
             "position": "0 0 0",
-            "avatarColor": myColor
+            "avatarColor": myColor,
+            "mousedown_state": false,
+            "triggerdown_state": false
             // "height": 0.01,
             // "width": 0.01,
             // "depth": 1
         },
         "methods":{
-            triggerdown:{
-                body:'\/\/do on trigger down \n this.cursorVisual.color = "red"',
+            mousedownAction:{
+                body:`
+                this.mousedown_state = true;
+                    if(elID){
+                        //let node = this.findNodeByID(elID);
+                        vwf.callMethod(elID, "mousedownAction",[])
+                    }
+                `,
+                parameters:["point", "elID"],
                 type: "application/javascript"
             },
-            triggerup:{
+            mouseupAction:{
+                body:`
+                    if(elID){
+                        //let node = this.findNodeByID(elID);
+                        vwf.callMethod(elID, "mouseupAction",[])
+                    }
+                this.mousedown_state = false;
+                `,
+                parameters:["point", "elID"],
+                type: "application/javascript"
+            },
+            triggerdownAction:{
+                body:`
+                //do on trigger down
+                this.triggerdown_state = true;
+                this.cursorVisual.color = "red";
+
+                if(elID){
+                    //let node = this.findNodeByID(elID);
+                    let pointData = AFRAME.utils.coordinates.parse(point);
+                    vwf.callMethod(elID, "triggerdownAction",[pointData])
+                }
+                `,
+                parameters:["point", "elID"],
+                type: "application/javascript"
+            },
+            triggerupAction:{
                 body:`
                 //do on trigger up
                 this.cursorVisual.color = this.cursorVisual.avatarColor;
+                if(elID){
+                    //let node = this.findNodeByID(elID);
+                    let pointData = AFRAME.utils.coordinates.parse(point);
+                    vwf.callMethod(elID, "triggerupAction",[pointData])
+                }
+                this.triggerdown_state = false;
                 `,
+                parameters:["point", "elID"],
                 type: "application/javascript"
             },
             onMove:{
-                body:'\/\/do on move \n ',
+                body:`
+                 if(this.mousedown_state || this.triggerdown_state){
+                    if(idata){
+                        //console.log('Move POINT: ', idata.point, + ' on ' + idata.elID);
+                        let point = AFRAME.utils.coordinates.parse(idata.point);
+                        vwf.callMethod(idata.elID, "moveAction",[point])
+                    }
+                }
+                `,
+                parameters:["idata"],
                 type: "application/javascript"
             }
         },

@@ -1,0 +1,16 @@
+{
+    "extends": "proxy/aframe/aplane.vwf",
+    "properties": {
+        "target": null,
+        "hoverColor": {
+            "set": "this.hoverColor = value",
+            "get": "return this.baseColor"
+            }
+    },
+    "methods": {
+        "init": {}
+    },
+    "scripts": {
+        "source": "button.js"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Rubik app",
+            "imgUrl": "/defaults/worlds/rubik/webimg.jpg",
+            "text": "Rubik"
+        },
+        "ru": {
+            "title": "Rubik",
+            "imgUrl": "/defaults/worlds/rubik/webimg.jpg",
+            "text": "Rubik"
+        }
+    }
+}

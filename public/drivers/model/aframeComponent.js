@@ -1126,6 +1126,18 @@ class AFrameComponentModel extends Fabric {
                     let aframeObject = node.aframeObj;
                     let parentNodeAF = aframeObject.el;
 
+                    if(methodName == "getIntersectedElement") {
+
+                        let comp = parentNodeAF.components['raycaster'];
+                        if (comp.intersectedEls.length>0){
+                            //console.log(comp.intersectedEls);
+                        
+                        let intersecedObjID = comp.intersectedEls[0].id
+                        return intersecedObjID
+                        }
+                        return undefined
+                    }
+
                     if(methodName == "getIntersectionPoint") {
                         //let nodes = vwf.models["/drivers/model/aframe"].model.state.nodes;
                         let comp = parentNodeAF.components['raycaster'];
@@ -1134,9 +1146,10 @@ class AFrameComponentModel extends Fabric {
                             //console.log(comp.intersectedEls);
                         
                         let intersecedObj = comp.intersectedEls[0]; //objID ? nodes[objID] : nodes[comp.intersectedEls[0].id];
+                        //comp.checkIntersections();
                         let intersection = comp.getIntersection(intersecedObj);
                         if(intersection)
-                            return intersection.point
+                            return {id: intersecedObj.id, point: intersection.point}
 
                         }
                         return undefined

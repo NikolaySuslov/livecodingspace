@@ -295,7 +295,7 @@ this.createEditTool = function() {
 this.globalToLocalRotation = function(aQ, order){
 
     let ord = order ? order: 'XYZ';
-    let q = this.localQuaternion().inverse().multiply(aQ); //new THREE.Quaternion().setFromEuler(euler)
+    let q = this.localQuaternion().invert().multiply(aQ); //new THREE.Quaternion().setFromEuler(euler)
     let localEuler = new THREE.Euler().setFromQuaternion(q, ord);
     return [
         THREE.Math.radToDeg(localEuler.x),
@@ -324,4 +324,22 @@ this.placeInFrontOf =  function(nodeID, dist) {
     this.position = cwd;
     this.rotation = rotation;
 
+}
+
+
+this.doButtonTriggerdownAction = function(button){
+    //do button action
+    console.log('TriggerdownAction form: ', button)
+}
+
+this.triggerdownAction = function(){
+}
+
+this.triggerupAction = function(){
+}
+
+this.mousedownAction = function(){
+}
+
+this.mouseupAction = function(){  
 }

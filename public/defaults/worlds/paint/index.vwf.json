@@ -143,8 +143,10 @@
         "penName": "drawNode"
       },
       "methods": {
-        "triggerdown": {},
-        "triggerup": {},
+        "triggerdownAction": {},
+        "triggerupAction": {},
+        "mousedownAction": {},
+        "mouseupAction": {},
         "onMove": {}
       },
       "scripts":{

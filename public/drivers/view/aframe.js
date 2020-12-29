@@ -534,6 +534,41 @@ class AFrameView extends Fabric {
     
                 // if (methodName == "createGooglePoly") {
                 // }
+
+                if (methodName == "createLocalRaycaster") {
+
+                    //var clientThatSatProperty = self.kernel.client();
+                    var me = self.kernel.moniker();
+    
+                    // If the transform property was initially updated by this view....
+                    if (nodeID.includes(me)) {
+                        console.log('Creating raycaster for ME: ', nodeID);
+                        let xrcontroller = document.querySelector('#'+nodeID);
+
+                        xrcontroller.setAttribute('raycaster', {
+                            objects: '.intersectable',
+                            showLine: false,
+                            far: 100,
+                            recursive: false,
+                            interval: 10});
+
+                            // xrcontroller.addEventListener('raycaster-intersection', function (evt) {
+                            //     let int = evt.detail.intersections[0];
+                            //     let idata = {
+                            //         point: int.point,
+                            //         elID: int.object.el.id
+                            //     }
+                            //     console.log(idata)
+                            // })
+                        
+                            // xrcontroller.addEventListener('raycaster-intersection-cleared', function (evt) {
+                            // })
+                    }
+
+                   
+
+
+                }
     
             }
         });
@@ -706,6 +741,7 @@ class AFrameView extends Fabric {
          //let elA = document.querySelector('#avatarControlParent');
          let elA = document.querySelector('#avatarControl');
          let el = document.querySelector(aSelector);
+         let xrController = document.querySelector('#' + avatarName);
          if (el && elA) {
  
             //  let positionC = el.object3D.position.clone();
@@ -747,8 +783,12 @@ class AFrameView extends Fabric {
                  if (distance > delta)
                  {
                     // console.log("position not equal");
+
+                    let idata = el.components["desktop-controls"].intersectionData;
+                    //if(idata) console.log('Point to: ', idata.point, ' intersect ', idata.elID);
+
                     self.kernel.setProperty(avatarName, "position", position);
-                     self.kernel.callMethod(avatarName, "moveVRController",[]);
+                     self.kernel.callMethod(avatarName, "moveVRController",[idata]);
                  }
              }
  
@@ -758,8 +798,13 @@ class AFrameView extends Fabric {
                  if (distance)
                  {
                      //console.log("rotation not equal");
+
+
+                    let idata =  el.components["desktop-controls"].intersectionData;
+                    //if(idata) console.log('Point to: ', idata.point, ' intersect ', idata.elID);
+
                      self.kernel.setProperty(avatarName, "rotation", rotation);
-                     self.kernel.callMethod(avatarName, "moveVRController",[]);
+                     self.kernel.callMethod(avatarName, "moveVRController",[idata]);
 
                      self.kernel.callMethod(avatarID, "moveHead", [headRotation]);
                  }
@@ -1145,6 +1190,7 @@ class AFrameView extends Fabric {
         //     x: 0, y: 0, z: -1
         // });
         el.setAttribute('desktop-controls', {});
+       // el.setAttribute('raycaster', {objects: ".intersectable", far: 1000, showLine: true});
         avatarControl.appendChild(el);
     }
 

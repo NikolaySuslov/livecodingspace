@@ -546,6 +546,16 @@ class AFrameModel extends Fabric {
                         return localPoint
 
                     }
+                    if (methodName == 'applyMatrix') {
+                        let fromNode = this.state.nodes[methodParameters[0]];
+                        let matrix = fromNode.aframeObj.object3D.matrix;
+                        node.aframeObj.object3D.applyMatrix(matrix);
+                    }
+
+                    if (methodName == 'getMatrix') {
+                        node.aframeObj.object3D.updateMatrix( true );
+                        return node.aframeObj.object3D.matrix
+                    }
                     //.worldToLocal
 
                 }
