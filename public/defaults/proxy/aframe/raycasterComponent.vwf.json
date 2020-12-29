@@ -11,5 +11,13 @@
     "recursive": null,
     "showLine": null,
     "useWorldCoordinates": null
+  },
+  "methods":{
+    "getIntersectionPoint":{
+      "parameters": [
+        "nodeID"
+    ]
+    },
+    "getIntersectedElement":{}
   }
 }

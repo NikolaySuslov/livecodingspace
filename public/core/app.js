@@ -1464,6 +1464,15 @@ class App {
       if (fileConf) {
         let config = JSON.parse(fileConf);
         vwfApp.conf = config
+      } else {
+        vwfApp.conf = 
+          {
+            "info":{
+              "title": "LCS Application"
+            },
+            "model": {},
+            "view": {}
+          }
       }
 
       let infoFile = val['info_json'];
@@ -1502,6 +1511,11 @@ class App {
       //Load vwf_view Document
       let dbPath = _app.helpers.appName + '_js';
       vwfApp.doc = res[0][dbPath];
+
+      //Load user model Document
+      // let modelDBPath = 'modelDriver_js';
+      // vwfApp.modelDoc = res[0][modelDBPath];
+
       //Load libs for selected config drivers
       let libs = app.getLibsForConfig(vwfApp.conf);
       if(libs.length !== 0)

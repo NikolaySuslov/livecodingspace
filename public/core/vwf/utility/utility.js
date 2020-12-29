@@ -61,11 +61,12 @@ class Utility {
 
                 // Convert typed arrays to regular arrays.
 
-                if(object instanceof THREE.Vector2 || object instanceof THREE.Vector3 || object instanceof THREE.Vector4){
+                if ((window.THREE === !undefined) &&
+                    (object instanceof THREE.Vector2 || object instanceof THREE.Vector3 || object instanceof THREE.Vector4)) {
                     return AFRAME.utils.coordinates.stringify(object)
                 } else {
-                return isArraylike( object ) ?
-                    Array.prototype.slice.call( object ) : object;
+                    return isArraylike(object) ?
+                        Array.prototype.slice.call(object) : object;
                 }
 
                 
@@ -233,7 +234,12 @@ class Utility {
             // https://github.com/eriwen/javascript-stacktrace sniffs the browser type from the
             // exception this way.
 
-            if ( error.arguments && error.stack ) { // Chrome
+            if ( error instanceof ReferenceError) {
+
+                return "\n  " + error.stack;
+                
+            }
+            else if ( error.arguments && error.stack ) { // Chrome
 
                 return "\n  " + error.stack;
 

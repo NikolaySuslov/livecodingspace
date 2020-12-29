@@ -39,7 +39,24 @@ this.createController = function (pos, modelSrc) {
         }
     }
 
+    // let myRayCaster = {
+    //             "extends": "proxy/aframe/raycasterComponent.vwf",
+    //             "type": "component",
+    //             "properties": {
+    //                 recursive: false,
+    //                 interval: 0,
+    //                 far: 10,
+    //                 objects: ".intersectable",
+    //                 showLine: false
+    //             }
+    //         }
+        
+    
+    // this.children.create( "raycaster", myRayCaster );
 
+    this.createLocalRaycaster();
+
+    
     this.children.create( "interpolation", interpolation );
     this.children.create("xrnode", newNode, function(child){
         if(child) {
@@ -51,12 +68,16 @@ this.createController = function (pos, modelSrc) {
 
 }
 
-this.moveVRController = function(){
+this.moveVRController = function(idata){
 
     let controller = this.xrnode.controller;
     if(controller){
-        controller.onMove();
+        controller.onMove(idata);
     }
+
+    // let point = this.raycaster.getIntersectionPoint();
+    // console.log('POINT: ', point);
+
 }
 
 this.updateVRControl = function(position, rotation){
@@ -95,19 +116,49 @@ this.initialize = function() {
    // this.future(0).update();
 }
 
-this.triggerdown = function() {
+this.mousedown = function(point, elID) {
     let controller = this.xrnode.controller;
     if(controller){
-        controller.triggerdown();
+        this.showHandSelection(point);
+        controller.mousedownAction(point, elID);
     }
     //this.xrnode.controller.pointer.material.color = 'red'
  }
 
- this.triggerup = function() {
+ this.mouseup = function(point, elID) {
     let controller = this.xrnode.controller;
     if(controller){
-        controller.triggerup();
+        this.resetHandSelection();
+        controller.mouseupAction(point, elID);
     }
+    //this.xrnode.controller.pointer.material.color = 'green'
+ }
+
+//  this.triggerup = function() {
+//     let controller = this.xrnode.controller;
+//     if(controller){
+//         controller.triggerup();
+//     }
+//     //this.xrnode.controller.pointer.material.color = 'green'
+//  }
+
+this.triggerdown = function(point, elID) {
+    let controller = this.xrnode.controller;
+
+    if(controller){
+        this.showHandSelection(point);
+        controller.triggerdownAction(point, elID);
+    }
+    //this.xrnode.controller.pointer.material.color = 'red'
+ }
+
+ this.triggerup = function(point, elID) {
+    let controller = this.xrnode.controller;
+    if(controller){
+        this.resetHandSelection();
+        controller.triggerupAction(point, elID);
+    }
+    
     //this.xrnode.controller.pointer.material.color = 'green'
  }
 
@@ -182,13 +233,23 @@ this.setControllerNode = function(modelSrc){
 
 this.showHandSelection = function (point) { 
 
+    //let data = this.raycaster.getIntersectionPoint();
+    if(point){  
     let end = this.xrnode.controller.cursorVisual.worldToLocal(point);
     //this.xrnode.controller.line.end = end;
     this.xrnode.controller.cursorVisual.end = end;
-
+}
 }
 
 this.resetHandSelection = function () { 
     //this.xrnode.controller.line.end = "0 0 -3";
-    this.xrnode.controller.cursorVisual.end = "0 0 -0.2";
-}
+    if(this.xrnode.controller.cursorVisual){
+        this.xrnode.controller.cursorVisual.end = "0 0 -0.2"
+
+    }
+    }
+
+
+this.createLocalRaycaster = function () {
+    //only on view
+ }

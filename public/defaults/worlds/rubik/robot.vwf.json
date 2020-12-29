@@ -1,0 +1,19 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {
+        "cubeID": null
+    },
+    "methods": {
+        "initialize":{},
+        "initRobot":{},
+        "getCube":{},
+        "rotateFace":{
+            "parameters":[
+                "faceID"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "robot.js"
+    }
+}

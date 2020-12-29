@@ -1,0 +1,33 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {
+        "cubeletID": null,
+        "cubeNodeID": null,
+        "cubeID": null,
+        "size": null,
+        "address": null
+    },
+    "methods": {
+        "initialize":{},
+        "initCubeletFaces":{},
+        "getCube":{},
+        "rotateCubelet":{
+            "parameters":[
+                "rotation", "speed", "cubeCallback"
+            ]
+        },
+        "cubeletOnStopRotation":{
+            "parameters":[
+                "cubelet", "cubeCallback"
+            ]
+        },
+        "setNodeID":{
+            "parameters":[
+                "cubeletID"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "cubeletModel.js"
+    }
+}

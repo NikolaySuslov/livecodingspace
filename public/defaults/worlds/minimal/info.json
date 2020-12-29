@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "Minimal app",
+            "imgUrl": "/defaults/worlds/minimal/webimg.jpg",
+            "text": "Minimal app example"
+        },
+        "ru": {
+            "title": "Minimal app",
+            "imgUrl": "/defaults/worlds/minimal/webimg.jpg",
+            "text": "Minimal app example"
+        }
+    }
+}

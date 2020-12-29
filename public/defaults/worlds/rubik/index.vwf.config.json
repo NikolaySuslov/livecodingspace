@@ -1,0 +1,18 @@
+{
+    "info":{
+      "title": "Rubik App"
+    },
+    "model": {
+      "/drivers/model/aframe": {},
+      "/drivers/model/aframeComponent": null,
+      "/drivers/model/rubik/rubik": null,
+      "/drivers/model/lego-boost": null
+    },
+    "view": {
+      "/drivers/view/aframe": null,
+      "/drivers/view/aframeComponent": null,
+      "/drivers/view/editor": null,
+      "/drivers/view/lego-boost": null,
+      "/drivers/view/webrtc": null
+    }
+  }

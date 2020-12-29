@@ -164,7 +164,8 @@ this.animationFrame_get = function () {
 }
 
 //methods
-this.animationPlay = function (startTime, stopTime) {
+this.animationPlay = function (startTime, stopTime, cb) {
+
     if (!isNaN(stopTime)) {
         this.animationStopTime = stopTime;
     }
@@ -172,6 +173,7 @@ this.animationPlay = function (startTime, stopTime) {
         this.animationStartTime = startTime;
     }
     this.animationPlaying = true;
+    this.animationStoppedCallback = cb;
 }
 
 this.animationPause = function () {
@@ -293,3 +295,15 @@ this.initialize = function () {
     }
 
 } //@ sourceURL=http://vwf.example.com/animation.vwf/scripts~initialize
+
+this.animationStopped = function(){
+    //console.log("Animation stopped");
+
+    if(this.animationStoppedCallback){
+        let data = this.animationStoppedCallback.split(':');
+        let args = data ? JSON.parse(data[1]) : [];
+        vwf.callMethod(this.id, data[0], args);
+    }
+    this.animationStoppedCallback = null;
+    
+}

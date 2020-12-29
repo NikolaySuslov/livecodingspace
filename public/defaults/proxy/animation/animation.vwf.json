@@ -17,6 +17,7 @@
       "set": "this.animationPlaying_set(value)",
       "get": "return this.animationPlaying_get()"
     },
+    "animationStoppedCallback": null,
     "animationTimeUpdated": null,
     "animationStartSIM": null,
     "animationPauseSIM": null,
@@ -53,7 +54,8 @@
     "animationPlay": {
       "parameters": [
         "startTime",
-        "stopTime"
+        "stopTime",
+        "cb"
       ]
     },
     "animationPause": {},

@@ -347,6 +347,13 @@ class VWFJavaScript extends Fabric {
                 }
             } );
 
+            Object.defineProperty( node, "randomHash", { // "this" is node
+                value: function() {
+                    let random = self.kernel.random( this.id )
+                    return Crypto.MD5(JSON.stringify(random)).toString().substring(0, 16)
+                }
+            } );
+
             // Define the "time", "client", and "moniker" properties.
 
             Object.defineProperty( node, "time", {  // TODO: only define on shared "node" prototype?
@@ -1308,8 +1315,10 @@ future.hasOwnProperty( eventName ) ||  // TODO: calculate so that properties tak
             // On read, return a function that calls `kernel.callMethod` when invoked.
 
             get: function() {  // `this` is the container
-                var node = this.node || this;  // the node via node.methods.node, or just node
+                
                 return function( /* parameter1, parameter2, ... */ ) {  // `this` is the container
+                    let node = this.node || this;  // the node via node.methods.node, or just node
+
                     var argumentsKernel =  VWFJavaScript.parametersKernelFromJS.call( self, arguments );
                     var resultKernel = self.kernel.callMethod( node.id, methodName, argumentsKernel,
                         node.private.when, node.private.callback );
@@ -1320,7 +1329,7 @@ future.hasOwnProperty( eventName ) ||  // TODO: calculate so that properties tak
             // On write, update the method body. `unsettable` methods don't accept writes.
 
             set: unsettable ? undefined : function( value ) {  // `this` is the container
-                var node = this.node || this;  // the node via node.methods.node, or just node
+                let node = this.node || this;  // the node via node.methods.node, or just node
                 self.kernel.setMethod( node.id, methodName,
                     VWFJavaScript.handlerFromFunction( value, vwf.configuration[ "preserve-script-closures" ] ) );
             },

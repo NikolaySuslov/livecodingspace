@@ -1,0 +1,73 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {
+        "cubeID": {
+            "set": "this.cubeID_set(value)",
+            "get": "return this.cubeID_get()"
+        },
+        "robotID": null,
+        "withRobot": false,
+        "editCube": false,
+        "twistQueue": [],
+        "twistQueueHistory": [],
+        "actions":null
+    },
+    "methods": {
+        "initialize": {},
+        "cubeID_set": {
+            "parameters": [
+                "value"
+            ]
+        },
+        "cubeID_get": {},
+        "initializeCubelets": {},
+        "rotateFront": {},
+        "addGUI": {},
+        "inspect":{},
+        "getCubeModel": {},
+        "getCubelets": {},
+        "getCubeModelID": {},
+        "getCubelet": {
+            "parameters": [
+                "value"
+            ]
+        },
+        "do": {
+            "parameters": [
+                "value"
+            ]
+        },
+        "twistAction": {
+            "parameters": [
+                "value"
+            ]
+        },
+        "setCubeletID": {
+            "parameters": [
+                "cubeletID",
+                "nodeID"
+            ]
+        },
+        "cubeletsRemap": {
+            "parameters": [
+                "cubeletID", "cubeCallback"
+            ]
+        },
+        "twistLoop":{},
+        "isCubeTweening":{},
+        "progressQueue":{},
+        "undo":{},
+        "getRobot":{},
+        "doButtonTriggerdownAction":{
+            "parameters": [
+                "buttonID"
+            ]
+        },
+        "editRubik":{
+            
+        }
+    },
+    "scripts": {
+        "source": "cubeModel.js"
+    }
+}

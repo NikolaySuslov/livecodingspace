@@ -2,10 +2,7 @@ this.createVisual = function () {
 
     let parent = this.parent;
 
-    let p1 = [
-        { x: 0, y: 0, z: 0 },
-        { x: 0, y: 0, z: -0.2}
-    ]
+    let p1 = [{"x":0,"y":0,"z":-0.1},{"x":0,"y":0,"z":-0.2}]
 
     let visNode = {
         "extends": "proxy/aframe/aentity.vwf",
@@ -14,10 +11,11 @@ this.createVisual = function () {
             "cone":{
                 "extends": "proxy/aframe/acone.vwf",
                 "properties":{
-                    "height": 0.4,
+                    "height": 0.2,
                     "radius-bottom": 0.01,
                     "radius-top": 0.001,
-                    "rotation": [-90, 0, 0]
+                    "rotation": [-90, 0, 0],
+                    "position": [0, 0, -0.1]
                 },
                 "children": {
                     "material": {
@@ -40,7 +38,7 @@ this.createVisual = function () {
                         "properties": {
                             "color": this.color,
                             "path": p1,
-                            "width": this.width,
+                            "width": 0.08, //this.width
                             "taper": true,
                             "transparent": true,
                             "opacity": 0.6
@@ -67,8 +65,10 @@ this.end_get = function () {
 this.color_set = function (value) {
     //this.avatarColor = value;
     this.color = value;
+    if(this.visualNode){
     this.visualNode.p1.linepath.color = value;
     this.visualNode.cone.material.color = value;
+    }
 }
 
 this.color_get = function () {

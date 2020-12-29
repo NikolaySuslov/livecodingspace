@@ -36,7 +36,7 @@ Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/li
             this.label = undefined
             this.context = undefined
     
-            this.level = this.WARN
+            this.level = { name: "warn", number: this.WARN };//this.WARN
     
 
         }

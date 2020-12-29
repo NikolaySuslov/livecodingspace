@@ -48,7 +48,11 @@
   },
   "methods": {
     "getRandomColor": {},
-    "intersectEventMethod": {},
+    "intersectEventMethod": {
+      "parameters": [
+        "point"
+      ]
+    },
     "clearIntersectEventMethod": {},
     "hitstartEventMethod": {},
     "hitendEventMethod": {},
@@ -89,6 +93,12 @@
         "distance"
       ]
     },
+    "applyMatrix":{
+      "parameters": [
+        "value"
+      ]
+    },
+    "getMatrix": {},
     "worldRotation": {},
     "worldPosition": {},
     "worldScale": {},
@@ -151,7 +161,16 @@
       "parameters": [
         "value"
       ]
-    }
+    },
+    "doButtonTriggerdownAction":{
+      "parameters": [
+        "value"
+      ]
+    },
+    "triggerdownAction":{},
+    "triggerupAction":{},
+    "mousedownAction":{},
+    "mouseupAction":{}
   },
   "scripts": {
     "source": "aentity.js"
