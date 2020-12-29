@@ -5114,8 +5114,17 @@ class VWF {
                 //    });
 
             } else {
-                let worldName = dbName.split('/')[1];
-                let fileName = dbName.split('/')[2] + '_json';
+                var worldName = dbName.split('/')[1];
+                var fileName = dbName.split('/')[2];
+                 //+ '_json';
+
+                if(!fileName) {
+                    worldName = self.helpers.appPath
+                    fileName = dbName + '_json';
+                    } else {
+                    fileName = fileName + '_json';
+                    }
+
                 let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
 
                 let nodeProm = new Promise(res => dbNode.once(res))
@@ -5182,8 +5191,7 @@ class VWF {
 
 
 
-            let worldName = dbName.split('/')[1];
-
+            var worldName = dbName.split('/')[1];
             //let userDB = _LCSDB.user(_LCS_WORLD_USER.pub);  
 
 
@@ -5204,7 +5212,15 @@ class VWF {
                 // });
 
             } else {
-                let fileName = dbName.split('/')[2]; //dbName.replace(worldName + '/', "");
+                var fileName = dbName.split('/')[2]; //dbName.replace(worldName + '/', "");
+
+                if(!fileName) {
+                    worldName = self.helpers.appPath
+                    fileName = dbName;
+                    } else {
+                    fileName = fileName;
+                    }
+
 
                 let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
                 let nodeProm = new Promise(res => dbNode.once(res))

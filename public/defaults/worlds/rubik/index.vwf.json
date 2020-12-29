@@ -1,0 +1,173 @@
+{
+  "extends": "proxy/aframe/ascene.vwf",
+  "properties":{
+    "sampleCube": false,
+    "currentCube": null,
+    "currentCommand": null
+  },
+  "methods":{
+    "initialize":{},
+    "createRubik":{
+      "parameters":[
+        "id",
+        "robot"
+      ]
+    },
+    "doOnRubik":{
+      "parameters":[
+        "command"
+      ]
+    }
+  },
+  "children": {
+    "floorTexture": {
+    "extends": "proxy/aframe/a-asset-image-item.vwf",
+    "properties": {
+        "itemID": "bg2",
+        "itemSrc": "/defaults/assets/checker.jpg"
+    }
+  },
+  "skyTexture": {
+    "extends": "proxy/aframe/a-asset-image-item.vwf",
+    "properties": {
+        "itemID": "sky",
+        "itemSrc": "/defaults/assets/skyes/sky3.jpg"
+    }
+  },
+  "screen": {
+    "extends": "proxy/aframe/aplane.vwf",
+    "properties": {
+      "height": "7",
+      "width": "9",
+      "rotation": [
+        10,
+       -16,
+        2
+      ],
+      "position":[10,5.5,-12]
+    },
+    "children": {
+      "material": {
+        "extends": "proxy/aframe/aMaterialComponent.vwf",
+        "properties": {
+          "wireframe": false,
+          "src": "#",
+          "color": "black"
+        }
+      }
+    }
+  },  
+  "screen2": {
+    "extends": "proxy/aframe/aplane.vwf",
+    "properties": {
+      "height": "8",
+      "width": "10",
+      "rotation": [
+        10,
+       -16,
+        2
+      ],
+      "position":[10,5.5,-12.01]
+    },
+    "children": {
+      "material": {
+        "extends": "proxy/aframe/aMaterialComponent.vwf",
+        "properties": {
+          "wireframe": false,
+          "color": "#b56e3f"
+        }
+      }
+    }
+  },
+    "groundPlane": {
+      "extends": "proxy/aframe/aplane.vwf",
+      "properties": {
+        "height": "50",
+        "width": "50",
+        "rotation": [
+          -90,
+          0,
+          0
+        ]
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "wireframe": false,
+            "src": "#bg2",
+            "repeat": "10 10"
+          }
+        }
+      }
+    },
+    "myLight": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "ambient",
+        "color": "#dddddd"
+      }
+    },
+    "myLight2": {
+      "extends": "proxy/aframe/alight.vwf",
+      "properties": {
+        "type": "directional",
+        "color": "#FFF",
+        "intensity": 0.6,
+        "position": [0,10,3]
+      }
+    },
+    "sky": {
+      "extends": "proxy/aframe/asky.vwf",
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#ECECEC",
+            "src": "#sky",
+            "fog": false,
+            "side": "back"
+          }
+        }
+      }
+    },
+    "spaceText": {
+      "extends": "proxy/aframe/atext.vwf",
+      "properties": {
+        "value": "Rubik's Cube app",
+        "color": "white",
+        "position": [-4,5.5,-7],
+        "scale": [3,3,3]
+      }
+    },
+    "box": {
+      "extends": "proxy/aframe/abox.vwf",
+      "properties": {
+        "position": [
+          0,
+          0,
+          -3
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "depth": "3",
+        "height": "0.2",
+        "width": "3"
+      },
+      "children": {
+        "material": {
+          "extends": "proxy/aframe/aMaterialComponent.vwf",
+          "properties": {
+            "color": "#0c2913"
+          }
+        }
+      }
+    }
+  },
+  "scripts":{
+    "source": "rubik.js"
+  }
+}

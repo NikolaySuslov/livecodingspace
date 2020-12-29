@@ -1471,7 +1471,7 @@ class LCSEditor extends Fabric {
                             'min': sliderProps[m.name].min,
                             'max': sliderProps[m.name].max,
                             'step': sliderProps[m.name].step ? sliderProps[m.name].step : 0.1,
-                            'value': currenValue,
+                            'value': parseInt(currenValue),
                             'init': function () {
     
     
@@ -4029,6 +4029,7 @@ class LCSEditor extends Fabric {
                     implementsIDs: childImplementsIDs,
                     source: childSource,
                     name: childName,
+                    liveBindings: {}
                 };
     
                 if (parent) {

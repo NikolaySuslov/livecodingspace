@@ -115,6 +115,9 @@ AFRAME.registerComponent('interpolation', {
     this.restorePositionTransforms();
     this.restoreRotationTransforms();
     this.restoreScaleTransforms();
+
+    this.el.object3D.updateMatrixWorld( true );
+
   },
 
   restorePositionTransforms: function () {

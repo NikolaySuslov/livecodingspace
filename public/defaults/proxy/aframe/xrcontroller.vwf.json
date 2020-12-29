@@ -29,8 +29,30 @@
                 "rotation"
             ]
         },
-        "triggerdown": {},
-        "triggerup": {},
+        "triggerdown": {
+            "parameters": [
+                "point",
+                "elID"
+            ]
+        },
+        "triggerup": {
+            "parameters": [
+                "point",
+                "elID"
+            ]
+        },
+        "mousedown": {
+            "parameters": [
+                "point",
+                "elID"
+            ]
+        },
+        "mouseup": {
+            "parameters": [
+                "point",
+                "elID"
+            ]
+        },
         "checkDefaultXRCostume":{},
         "setControllerNode":
         {
@@ -39,7 +61,12 @@
             ]
         },
         "saveToScene":{},
-        "moveVRController":{}
+        "moveVRController":{
+            "parameters": [
+                "idata"
+            ]
+        },
+        "createLocalRaycaster":{}
     },
     "scripts": {
         "source": "xrcontroller.js"

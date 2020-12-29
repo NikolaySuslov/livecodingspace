@@ -1,0 +1,18 @@
+{
+  "extends": "proxy/node.vwf",
+  "properties": {
+    "timeCount": 0,
+    "clicks": 0,
+    "randomNumber": null
+  },
+  "methods":{
+    "initialize": {},
+    "run": {},
+    "incClicks": {},
+    "decClicks": {},
+    "getRandom": {}
+  },
+  "scripts":{
+    "source": "minimal.js"
+  }
+}

@@ -59,7 +59,7 @@ class VWFDocument extends Fabric {
                 childSource, childType, childURI, childName);
             }
             
-            this.userView = new res.default;
+            this.doc = new res.default;
             callback(true);
           })
         } else {
@@ -68,7 +68,6 @@ class VWFDocument extends Fabric {
           }, 0);
 
         }
-
         }
 
       },

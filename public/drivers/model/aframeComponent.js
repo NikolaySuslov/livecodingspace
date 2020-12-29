@@ -1113,6 +1113,51 @@ class AFrameComponentModel extends Fabric {
                     return value;
 
                 },
+                // -- callingMethod ------------------------------------------------------------------------
+
+            callingMethod: function (nodeID, methodName, methodParameters) {
+
+                let self = this;
+                var node = this.state.nodes[nodeID];
+
+                if (!node) return;
+
+                if (node && node.aframeObj) {
+                    let aframeObject = node.aframeObj;
+                    let parentNodeAF = aframeObject.el;
+
+                    if(methodName == "getIntersectedElement") {
+
+                        let comp = parentNodeAF.components['raycaster'];
+                        if (comp.intersectedEls.length>0){
+                            //console.log(comp.intersectedEls);
+                        
+                        let intersecedObjID = comp.intersectedEls[0].id
+                        return intersecedObjID
+                        }
+                        return undefined
+                    }
+
+                    if(methodName == "getIntersectionPoint") {
+                        //let nodes = vwf.models["/drivers/model/aframe"].model.state.nodes;
+                        let comp = parentNodeAF.components['raycaster'];
+                        let objID = methodParameters[0];
+                        if (comp.intersectedEls.length>0){
+                            //console.log(comp.intersectedEls);
+                        
+                        let intersecedObj = comp.intersectedEls[0]; //objID ? nodes[objID] : nodes[comp.intersectedEls[0].id];
+                        //comp.checkIntersections();
+                        let intersection = comp.getIntersection(intersecedObj);
+                        if(intersection)
+                            return {id: intersecedObj.id, point: intersection.point}
+
+                        }
+                        return undefined
+
+                    }
+                }
+            },
+
 
                 // -- gettingProperty ----------------------------------------------------------------------
 

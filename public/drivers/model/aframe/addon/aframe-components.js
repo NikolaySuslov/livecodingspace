@@ -40,15 +40,53 @@ AFRAME.registerComponent('desktop-controls', {
     let controllerID = 'mouse-' + vwf_view.kernel.moniker();
 
     this.domElement.addEventListener('mousedown', function (e) {
-        if (e.button == 1) {
-            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
-          }
+        
+        if(!this.xrcontroller){
+            this.xrcontroller = document.querySelector('#'+ controllerID);
+        }
+
+        if(this.xrcontroller) {
+
+            let intersection = this.xrcontroller.components.raycaster.intersections[0];
+            let point = intersection ? intersection.point : null;
+            let elID = intersection ? intersection.object.el.id : null;
+            if(point) console.log('Point to: ', point);
+    
+            if (e.button == 1) {
+                vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID]);
+              }
+    
+              if (e.button == 0) {
+                vwf_view.kernel.callMethod(controllerID, "mousedown", [point, elID]);
+              }  
+
+        }
+ 
             
     });
 
     this.domElement.addEventListener('mouseup', function (e) {
+
+        if(!this.xrcontroller){
+            this.xrcontroller = document.querySelector('#'+ controllerID);
+        }
+
+        if(this.xrcontroller) {
+
+            let intersection = this.xrcontroller.components.raycaster.intersections[0];
+            let point = intersection ? intersection.point : null;
+            let elID = intersection ? intersection.object.el.id : null;
+            if(point) console.log('Point to: ', point);
+    
+
+
         if (e.button == 1) {
-            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID]);
+        }
+        if (e.button == 0) {
+            vwf_view.kernel.callMethod(controllerID, "mouseup", [point, elID]);
+          }   
+
         }
     });
 
@@ -67,6 +105,29 @@ AFRAME.registerComponent('desktop-controls', {
             this.raycaster.setFromCamera( this.mouse, this.camera );
             this.handDirection.copy(this.raycaster.ray.direction);
             this.el.object3D.lookAt(this.handDirection.negate());
+
+            if(!self.xrcontroller){
+                self.xrcontroller = document.querySelector('#'+ controllerID);
+            }
+
+            if(self.xrcontroller){
+                let intersection = this.xrcontroller.components.raycaster.intersections[0];
+                let point = intersection ? intersection.point : null;
+                let elID = intersection ? intersection.object.el.id : null;
+                if(point) {
+                //console.log('Point to: ', point, ' intersect ', elID);
+                self.intersectionData = {
+                    point: point,
+                    elID: elID
+                } 
+            }
+            else {
+                self.intersectionData = null;
+                
+            }
+
+
+            }
             
          }
             
@@ -439,33 +500,36 @@ AFRAME.registerComponent('cursor-listener', {
             //vwf_view.kernel.fireEvent(evt.detail.target.id, "clickEvent")
         });
 
-        this.el.addEventListener('mousedown', function (evt) {
-            console.log('mousedown at: ', evt.detail.intersection.point);
-            if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
+        // this.el.addEventListener('mousedown', function (evt) {
+        //     console.log('mousedown at: ', evt.detail.intersection.point);
+        //     if (evt.detail.cursorEl.id.includes(vwf_view.kernel.moniker())) {
 
-                let point = evt.detail.intersection.point;
-                // let locPoint = new THREE.Vector3();
-                // locPoint.copy(evt.detail.intersection.point);
-                // self.el.object3D.parent.worldToLocal(locPoint);
-                // let point = AFRAME.utils.coordinates.stringify(locPoint);
-                vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "showHandSelection", [point]);
-                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mousedownEvent", [point]);
-            }
+        //         let point = evt.detail.intersection.point;
+        //         // let locPoint = new THREE.Vector3();
+        //         // locPoint.copy(evt.detail.intersection.point);
+        //         // self.el.object3D.parent.worldToLocal(locPoint);
+        //         // let point = AFRAME.utils.coordinates.stringify(locPoint);
+        //         //vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "showHandSelection", [point]);
+        //         vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mousedownEvent", [point]);
+                
 
-        })
+        //     }
 
-        this.el.addEventListener('mouseup', function (evt) {
-            let intersection =  evt.detail.intersection;
-            if(intersection)
-            {
-                console.log('mouseup at: ', evt.detail.intersection.point);
-                vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mouseupEvent", [evt.detail.intersection.point]);
-            } else {
-                console.log('mouseup');
-            }
-            vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "resetHandSelection", []);
+        // })
+
+        // this.el.addEventListener('mouseup', function (evt) {
+        //     let intersection =  evt.detail.intersection;
+        //     if(intersection)
+        //     {
+        //         console.log('mouseup at: ', evt.detail.intersection.point);
+        //         vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mouseupEvent", [evt.detail.intersection.point]);
+        //     } else {
+        //         console.log('mouseup');
+        //         //vwf_view.kernel.fireEvent(evt.detail.intersection.object.el.id, "mouseupEvent", []);
+        //     }
+        //     //vwf_view.kernel.callMethod('mouse-'+vwf_view.kernel.moniker(), "resetHandSelection", []);
              
-        })
+        // })
 
     }
 });
@@ -509,8 +573,10 @@ AFRAME.registerComponent('raycaster-listener', {
                 if (self.intersected) {
 
                 } else {
-                    console.log('I was intersected at: ', evt.target);//evt.detail.getIntersection().point);
-                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent");
+                    let point = evt.detail.getIntersection(evt.target).point;
+                    //console.log('I was intersected at: ', evt.target, ' point: ', point);//evt.detail.getIntersection().point);
+                    vwf_view.kernel.fireEvent(evt.target.id, "intersectEvent", [point]);
+                    //vwf.callMethod(evt.target.id, "intersectEventMethod", [point]);
                 }
 
                 self.casters[evt.target.id] = evt.target;
@@ -527,9 +593,10 @@ AFRAME.registerComponent('raycaster-listener', {
 
             } else {
                 if (self.intersected) {
-                    console.log('Clear intersection');
+                    //console.log('Clear intersection');
                     if (Object.entries(self.casters).length == 1 && (self.casters[evt.target.id] !== undefined)) {
                         vwf_view.kernel.fireEvent(evt.target.id, "clearIntersectEvent")
+                        //vwf.callMethod(evt.target.id, "clearIntersectEventMethod", [])
                     }
                     delete self.casters[evt.target.id]
                 } else { }
@@ -731,11 +798,22 @@ AFRAME.registerComponent('gearvrcontrol', {
         var controllerID = 'gearvr-' + vwf_view.kernel.moniker();
 
         this.el.addEventListener('triggerdown', function (event) {
-            vwf_view.kernel.callMethod(controllerID, "triggerdown", []);
+
+            if(!self.xrcontroller){
+                self.xrcontroller = document.querySelector('#'+ self.controllerID);
+            }
+    
+    
+            let intersection = self.xrcontroller.components.raycaster.intersections[0];
+            let point = intersection ? intersection.point : null;
+            let elID = intersection ? intersection.object.el.id : null;
+            if(point) console.log('Point to: ', point);
+
+            vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID]);
         });
 
         this.el.addEventListener('triggerup', function (event) {
-            vwf_view.kernel.callMethod(controllerID, "triggerup", []);
+            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID]);
         });
 
          //X-buttorn Pressed 
@@ -784,11 +862,33 @@ AFRAME.registerComponent('xrcontroller', {
         this.controllerID = 'xrcontroller-' + this.hand + '-' + vwf_view.kernel.moniker();
 
         this.el.addEventListener('triggerdown', function (event) { //pointdown 'triggerdown'
-            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", []);
+
+        if(!self.xrcontroller){
+            self.xrcontroller = document.querySelector('#'+ self.controllerID);
+        }
+
+
+        let intersection = self.xrcontroller.components.raycaster.intersections[0];
+        let point = intersection ? intersection.point : null;
+        let elID = intersection ? intersection.object.el.id : null;
+        if(point) console.log('Point to: ', point);
+
+            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", [point, elID]);
             //this.emit('teleportstart');
         });
         this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
-            vwf_view.kernel.callMethod(self.controllerID, "triggerup", []);
+
+        if(!self.xrcontroller){
+            self.xrcontroller = document.querySelector('#'+ self.controllerID);
+        }
+
+
+        let intersection = self.xrcontroller.components.raycaster.intersections[0];
+        let point = intersection ? intersection.point : null;
+        let elID = intersection ? intersection.object.el.id : null;
+        if(point) console.log('Point to: ', point);
+
+            vwf_view.kernel.callMethod(self.controllerID, "triggerup", [point, elID]);
             //this.emit('teleportend');
         });
 

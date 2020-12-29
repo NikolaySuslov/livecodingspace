@@ -184,7 +184,8 @@
           "type": "application/javascript"
         },
         "intersectEventMethod": {
-          "body": "    this.material.opacity = 0.7\n",
+          "parameters": ["point"],
+          "body": "    this.material.opacity = 0.7; \n console.log(point) \n",
           "type": "application/javascript"
         },
         "clearIntersectEventMethod": {
@@ -259,16 +260,6 @@
             }
           },
           "children": {
-            "raycaster": {
-              "extends": "proxy/aframe/raycasterComponent.vwf",
-              "type": "component",
-              "properties": {
-                "recursive": false,
-                "interval": 10,
-                "far": 2,
-                "objects": ".intersectable"
-              }
-            },
             "material": {
               "extends": "proxy/aframe/aMaterialComponent.vwf",
               "properties": {

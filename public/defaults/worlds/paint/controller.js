@@ -1,4 +1,4 @@
-this.triggerdown = function(){
+this.triggerdownAction = function(){
     let scene = this.getScene();
     this.pointer.material.color = "white";
     this.penDown = true;
@@ -6,7 +6,7 @@ this.triggerdown = function(){
     scene.createDrawNode(scene.drawBox, this.penName, "#f9f9f9", 0.007, "0 0 0");
 }
 
-this.triggerup = function(){
+this.triggerupAction = function(){
     this.pointer.material.color = "green";
     this.penDown = false;
 }
@@ -20,6 +20,14 @@ this.onMove = function(){
         path.push({x:pos.x, y:pos.y, z:pos.z});
         pen.linepath.path = path;
     }
+    
+}
+
+this.mouseupAction = function(){
+
+}
+
+this.mousedownAction = function(){
     
 }
 

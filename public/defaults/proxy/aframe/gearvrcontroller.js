@@ -41,22 +41,22 @@ this.simpleDef = {
                         objects: ".gearvrhit"
                     }
                 },
-                "myRayCaster": {
-                    "extends": "proxy/aframe/aentity.vwf",
-                    "properties": {},
-                    "children": {
-                        "raycaster": {
-                            "extends": "proxy/aframe/raycasterComponent.vwf",
-                            "type": "component",
-                            "properties": {
-                                recursive: false,
-                                interval: 10,
-                                far: 0.5,
-                                objects: ".gearvrcontroller"
-                            }
-                        }
-                    }
-                }
+                // "myRayCaster": {
+                //     "extends": "proxy/aframe/aentity.vwf",
+                //     "properties": {},
+                //     "children": {
+                //         "raycaster": {
+                //             "extends": "proxy/aframe/raycasterComponent.vwf",
+                //             "type": "component",
+                //             "properties": {
+                //                 recursive: false,
+                //                 interval: 10,
+                //                 far: 0.5,
+                //                 objects: ".gearvrcontroller"
+                //             }
+                //         }
+                //     }
+                // }
                 // "rotationText": {
                 //     "extends": "proxy/aframe/atext.vwf",
                 //     "properties":{
