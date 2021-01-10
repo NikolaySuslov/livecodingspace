@@ -51267,23 +51267,21 @@ TextGeometry.prototype.computeBoundingSphere = function () {
   if (this.boundingSphere === null) {
     this.boundingSphere = new THREE.Sphere()
   }
-     //LIVECODING.SPACE changes!!! FIX - move to LCS codebase  
-	 if(this.attributes.position) { 
-		var positions = this.attributes.position.array
-		var itemSize = this.attributes.position.itemSize
-		if (!positions || !itemSize || positions.length < 2) {
-		  this.boundingSphere.radius = 0
-		  this.boundingSphere.center.set(0, 0, 0)
-		  return
-		}
-		utils.computeSphere(positions, this.boundingSphere)
-		if (isNaN(this.boundingSphere.radius)) {
-		  console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
-			'Computed radius is NaN. The ' +
-			'"position" attribute is likely to have NaN values.')
-		}
-	  }
-	  }
+
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
+    this.boundingSphere.radius = 0
+    this.boundingSphere.center.set(0, 0, 0)
+    return
+  }
+  utils.computeSphere(positions, this.boundingSphere)
+  if (isNaN(this.boundingSphere.radius)) {
+    console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
+      'Computed radius is NaN. The ' +
+      '"position" attribute is likely to have NaN values.')
+  }
+}
 
 TextGeometry.prototype.computeBoundingBox = function () {
   if (this.boundingBox === null) {
@@ -62753,6 +62751,9 @@ module.exports.Component = registerComponent('vr-mode-ui', {
         uiElement.parentNode.removeChild(uiElement);
       }
     });
+    this.enterVREl = undefined;
+    this.enterAREl = undefined;
+    this.orientationModalEl = undefined;
   },
 
   updateEnterInterfaces: function () {
@@ -63298,14 +63299,11 @@ module.exports.Component = registerComponent('text', {
     this.shaderData = {};
     this.geometry = createTextGeometry();
     this.createOrUpdateMaterial();
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   update: function (oldData) {
     var data = this.data;
     var font = this.currentFont;
-
     if (textures[data.font]) {
       this.texture = textures[data.font];
     } else {
@@ -63341,9 +63339,7 @@ module.exports.Component = registerComponent('text', {
     this.material = null;
     this.texture.dispose();
     this.texture = null;
-    if (this.shaderObject) {
-      delete this.shaderObject;
-    }
+    if (this.shaderObject) { delete this.shaderObject; }
   },
 
   /**
@@ -63360,9 +63356,7 @@ module.exports.Component = registerComponent('text', {
     // Infer shader if using a stock font (or from `-msdf` filename convention).
     shaderName = data.shader;
     if (MSDF_FONTS.indexOf(data.font) !== -1 || data.font.indexOf('-msdf.') >= 0) {
-      //LiveCoding.space FIX
-      let webgl2 = document.querySelector('a-scene').renderer.capabilities.isWebGL2;
-      shaderName = webgl2 ? 'msdf' : 'msdf1'
+      shaderName = 'msdf';
     } else if (data.font in FONTS && MSDF_FONTS.indexOf(data.font) === -1) {
       shaderName = 'sdf';
     }
@@ -63410,7 +63404,7 @@ module.exports.Component = registerComponent('text', {
     if (!data.font) { warn('No font specified. Using the default font.'); }
 
     // Make invisible during font swap.
-    this.mesh.visible = false;
+    if (this.mesh) { this.mesh.visible = false; }
 
     // Look up font URL to use, and perform cached load.
     fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
@@ -63426,14 +63420,7 @@ module.exports.Component = registerComponent('text', {
       if (!fontWidthFactors[fontSrc]) {
         font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
       }
-
-      // Update geometry given font metrics.
-      self.updateGeometry(geometry, font);
-
-      // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout();
-
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.getFontImageSrc();
       cache.get(fontImgSrc, function () {
@@ -63445,6 +63432,11 @@ module.exports.Component = registerComponent('text', {
         texture.needsUpdate = true;
         textures[data.font] = texture;
         self.texture = texture;
+        self.initMesh();
+        self.currentFont = font;
+        // Update geometry given font metrics.
+        self.updateGeometry(geometry, font);
+        self.updateLayout();
         self.mesh.visible = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
@@ -63455,6 +63447,12 @@ module.exports.Component = registerComponent('text', {
       error(err.message);
       error(err.stack);
     });
+  },
+
+  initMesh: function () {
+    if (this.mesh) { return; }
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   getFontImageSrc: function () {
@@ -63488,7 +63486,7 @@ module.exports.Component = registerComponent('text', {
     var x;
     var y;
 
-    if (!geometry.layout) { return; }
+    if (!mesh || !geometry.layout) { return; }
 
     // Determine width to use (defined width, geometry's width, or default width).
     geometryComponent = el.getAttribute('geometry');
@@ -71411,7 +71409,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 1.1.0 (Date 2020-12-09, Commit #41079d2a)');
+console.log('A-Frame Version: 1.1.0 (Date 2020-12-30, Commit #579473b8)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
