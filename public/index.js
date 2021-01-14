@@ -11,7 +11,7 @@ loadjs([
 
 loadjs([
     '/index.css',
-    '/lib/socket.io.js',
+    '/lib/socket.io.min.js',
     '/lib/he.js',
     '/lib/locale/polyglot.min.js',
     '/lib/hashids.min.js',
