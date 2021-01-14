@@ -180,7 +180,7 @@ class Luminary {
         } else if (message.action == "getState") {
 
             let state = message.result; //JSON.stringify(message.result);
-            let toClient = message.parameters[0];
+            let toClient = message.parameters[2];
 
             let newMsg =
                 JSON.stringify({
@@ -478,7 +478,7 @@ class Luminary {
                 respond: true,
                 time: 'tick',
                 explicit: masterID,
-                parameters: [self.clientID]
+                parameters: [null, null, self.clientID]
             })
 
 

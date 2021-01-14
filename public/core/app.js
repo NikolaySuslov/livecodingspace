@@ -76,6 +76,7 @@ class App {
     page('/settings', this.HandleSettingsIndex);
     page('/profile', this.HandleUserIndex);
     page('/worlds', this.HandleIndex);
+    page('/:user', this.HandleUserWorlds);
     page('/:user/worlds', this.HandleUserWorlds);
     page('/:user/:type/:name/edit/:file', this.HandleFileEdit);
     page('/:user/:space', this.HandleParsableRequestWithID);
