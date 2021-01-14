@@ -579,7 +579,7 @@ THREE.TransformControls = function ( camera, domElement ) {
 		if ( pointer.button !== 0 ) return;
 
 		let viewDriver = vwf.views["/drivers/view/aframeComponent"];
-			viewDriver.interpolateView = true;
+		
 		if ( this.dragging && ( this.axis !== null ) ) {
 
 			mouseUpEvent.mode = this.mode;
@@ -589,6 +589,8 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 		this.dragging = false;
 		this.axis = null;
+
+		viewDriver.interpolateView = true;
 
 	};
 

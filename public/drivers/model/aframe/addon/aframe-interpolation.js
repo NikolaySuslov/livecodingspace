@@ -62,8 +62,11 @@ AFRAME.registerComponent('interpolation', {
       let interNode = Object.entries(this.driver.state.nodes).find(el =>
         el[1].parentID == this.el.id && el[1].extendsID == "proxy/aframe/interpolation-component.vwf"
       );
-      this.node = this.driver.nodes[interNode[0]];
-      this.nodeState = interNode[1];
+      if(interNode) {
+        this.node = this.driver.nodes[interNode[0]];
+        this.nodeState = interNode[1];
+      }
+      
     }
 
     if (this.enabled && this.node && this.node.interpolate && this.driver.interpolateView) {
