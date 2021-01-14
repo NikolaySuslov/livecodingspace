@@ -364,10 +364,11 @@ class AFrameView extends Fabric {
                 if (!(node)) {
                     return;
                 }
+
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
     
                 if (eventName == "changingTransformFromView") {
-                    var clientThatSatProperty = self.kernel.client();
-                    var me = self.kernel.moniker();
     
                     // If the transform property was initially updated by this view....
                     if (clientThatSatProperty == me) {
@@ -394,6 +395,8 @@ class AFrameView extends Fabric {
                     eventName == 'mousedownEvent' ||
                     eventName == 'mouseupEvent'){
 
+                        if (clientThatSatProperty == me) {
+
                         let methodName = eventName +'Method';
                         self.kernel.callMethod(nodeID, methodName, eventParameters);
 
@@ -419,7 +422,7 @@ class AFrameView extends Fabric {
 
                         }
 
-
+                    }
                     }
 
 
@@ -429,8 +432,6 @@ class AFrameView extends Fabric {
                 let hitEvent = intersectEvents.filter(el=> el == eventName.slice(0,-5))[0]; //slice Event word
                 if (hitEvent)
                 {
-                    var clientThatSatProperty = self.kernel.client();
-                    var me = self.kernel.moniker();
     
                     // If the transform property was initially updated by this view....
                     if (clientThatSatProperty == me) {
