@@ -995,9 +995,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                       this._switch.checked = JSON.parse(config).webrtc;
                       
                      // this._replaceSwitch = this._switch;
-                      
-                    },
-                    'onchange': function (e) {
+                     this.addEventListener('change',
+                     function (e) {
     
                         if (this._switch) {
                             let chkAttr = this._switch.checked;//this.getAttribute('checked');
@@ -1013,6 +1012,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             }
                         }
                     }
+                     
+                     )
+                      
+                    },
+                    'onchange': ""
                   }
                   ),
                   {
@@ -1043,11 +1047,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                       this._switch = new mdc.switchControl.MDCSwitch(this);
                       let config = localStorage.getItem('lcs_config');
                       this._switch.checked = JSON.parse(config).streamMsg;
-                      
-                     // this._replaceSwitch = this._switch;
-                      
-                    },
-                    'onchange': function (e) {
+                      this.addEventListener('change',
+                      function (e) {
     
                         if (this._switch) {
                             let chkAttr = this._switch.checked;//this.getAttribute('checked');
@@ -1063,6 +1064,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             }
                         }
                     }
+                      )
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': ""
                   }
                   ),
                   {
@@ -1091,11 +1097,8 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                       this._switch = new mdc.switchControl.MDCSwitch(this);
                       let config = localStorage.getItem('lcs_config');
                       this._switch.checked = JSON.parse(config).multisocket;
-                      
-                     // this._replaceSwitch = this._switch;
-                      
-                    },
-                    'onchange': function (e) {
+                      this.addEventListener('change',
+                      function (e) {
     
                         if (this._switch) {
                             let chkAttr = this._switch.checked;//this.getAttribute('checked');
@@ -1111,6 +1114,11 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             }
                         }
                     }
+                      )
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': ""
                   }
                   ),
                   {
@@ -1190,26 +1198,29 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                             this._switch.checked = JSON.parse(config).luminary;
     
                             // this._replaceSwitch = this._switch;
+                            this.addEventListener('change',
+                            function (e) {
     
-                        },
-                        'onchange': function (e) {
-    
-                            if (this._switch) {
-                                let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                                if (chkAttr) {
-                                    let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                    config.luminary = true;
-                                    localStorage.setItem('lcs_config', JSON.stringify(config));
-                                    window.location.reload(true);
-                                    //this._switch.checked = false;
-                                } else {
-                                    let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                    config.luminary = false;
-                                    localStorage.setItem('lcs_config', JSON.stringify(config));
-                                    window.location.reload(true);
+                                if (this._switch) {
+                                    let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                                    if (chkAttr) {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.luminary = true;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                        window.location.reload(true);
+                                        //this._switch.checked = false;
+                                    } else {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.luminary = false;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                        window.location.reload(true);
+                                    }
                                 }
                             }
-                        }
+                            )
+    
+                        },
+                        'onchange': ""
                     }
                     ),
                     {
@@ -1649,4 +1660,3 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
       }
 
    export { Widgets }
-
