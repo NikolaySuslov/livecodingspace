@@ -437,7 +437,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                         class: "mdc-slider__input",
                         'value': obj.value,
                         'type': "range",
-                        'data-step': obj.step,
+                        'step': obj.step,
                         'min': obj.min,
                         'max': obj.max,
                         'aria-label': obj.label

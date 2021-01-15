@@ -69,7 +69,7 @@ AFRAME.registerComponent('interpolation', {
       
     }
 
-    if (this.enabled && this.node && this.node.interpolate && this.driver.interpolateView) {
+    if (this.enabled && this.node && this.node.interpolate && this.driver.interpolateView && this.node.viewEdit) {
       this.setInterpolatedTransforms(timepassed);
 
       // this.restoreTransforms();

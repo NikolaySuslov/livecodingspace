@@ -99,7 +99,8 @@ class AFrameComponentView extends Fabric {
                         id: childID,
                         extends: childExtendsID,
                         entityID: this.state.nodes[childID].parentID,
-                        liveBindings: {}
+                        liveBindings: {},
+                        viewEdit: true
                     };
     
                     let entityID = this.state.nodes[childID].parentID;
