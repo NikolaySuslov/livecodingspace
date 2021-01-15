@@ -329,23 +329,48 @@ this.doButtonTriggerdownAction = function(buttonID){
 
 this.editRubik = function(){
 
-    if(!this.gizmo && this.editCube){
+    let clientThatCallThis = vwf.client();
+    let me = vwf.moniker();
+    if(clientThatCallThis == me) {
+        console.log('EDIT CUBE!!');
 
-        let gizmoNode =
-    {
-        "extends": "proxy/aframe/gizmoComponent.vwf",
-        "type": "component",
-        "properties":
-        {
-            "mode": "rotate"
+        let viewNode = document.querySelector("[id='" + this.id + "']");
+        let gizmo = viewNode.getAttribute('gizmo');
+        if(!gizmo && this.editCube){
+            viewNode.setAttribute('gizmo', {mode: "rotate"});
+            let inter = viewNode.getAttribute('interpolation');
+            if (inter) {
+                viewNode.components.interpolation.node.viewEdit = true;
+            }
+        }
+
+        if(gizmo && !this.editCube){
+            viewNode.removeAttribute('gizmo');
+            let inter = viewNode.getAttribute('interpolation');
+            if (inter) {
+                viewNode.components.interpolation.node.viewEdit = false;
+            }
+
         }
     }
-    this.children.create("gizmo", gizmoNode);
-} 
 
-    if(this.gizmo && !this.editCube){
-        this.children.delete(this.gizmo)
-    }
+//     if(!this.gizmo && this.editCube){
+
+//         let gizmoNode =
+//     {
+//         "extends": "proxy/aframe/gizmoComponent.vwf",
+//         "type": "component",
+//         "properties":
+//         {
+//             "mode": "rotate"
+//         }
+//     }
+//     this.children.create("gizmo", gizmoNode);
+// } 
+
+//     if(this.gizmo && !this.editCube){
+//         this.children.delete(this.gizmo)
+//     }
 
 
 }

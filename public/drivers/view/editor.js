@@ -2090,7 +2090,7 @@ class LCSEditor extends Fabric {
                                                                         if (inter) {
                                                                             // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
                                                                             //viewDriver.interpolateView = false;
-                                                                            viewNode.components.interpolation.node.viewEdit = false;
+                                                                            viewNode.components.interpolation.node.viewEdit = true;
 
 
                                                                         }
@@ -2104,7 +2104,7 @@ class LCSEditor extends Fabric {
                                                                         if (inter) {
                                                                             // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
                                                                             // viewDriver.interpolateView = true;
-                                                                            viewNode.components.interpolation.node.viewEdit = true;
+                                                                            viewNode.components.interpolation.node.viewEdit = false;
 
                                                                         }
                                                                     }
