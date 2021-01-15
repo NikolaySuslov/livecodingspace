@@ -1463,28 +1463,36 @@ class LCSEditor extends Fabric {
                     }
                     if (sliderPropNames.includes(m.name)) {
     
-                        let currenValue = JSON.parse(m.getValue());
+                        let currentValue = parseInt(JSON.parse(m.getValue()));
     
+                        let max = (currentValue > sliderProps[m.name].max) ? currentValue + 10 : sliderProps[m.name].max;
+
                         var sliderComponent = self.widgets.sliderContinuous({
                             'id': 'prop-slider-' + m.name,
                             'label': 'Slider',
                             'min': sliderProps[m.name].min,
-                            'max': sliderProps[m.name].max,
+                            'max': max,
                             'step': sliderProps[m.name].step ? sliderProps[m.name].step : 0.1,
-                            'value': parseInt(currenValue),
+                            'value': currentValue, //parseInt(currenValue),
                             'init': function () {
-    
-    
-                                const myEl = this;
+                                
+                                const myEl = document.querySelector('#prop-slider-' + m.name);//this;
+                                if(myEl){
+                                myEl.children[0].setAttribute("value", currentValue);
+
                                 var continuousSlider = new mdc.slider.MDCSlider(myEl);
+                            
                                 this._comp = continuousSlider;
                                 continuousSlider.listen('MDCSlider:input', function (e) {
                                     // console.log(continuousSlider.value)
                                     let myEl = e.currentTarget;
                                     // let prop = myEl._prop.body;
                                     //document.querySelector('#propAceEditor').env.editor.setValue(prop);
-                                    self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+                                    let value = continuousSlider.getValue();
+                                    self.kernel.setProperty(myEl._currentNode, m.name, value);
                                     //continuousValue.textContent = continuousSlider.value;
+
+                               
     
                                 });
                                 continuousSlider.listen('MDCSlider:change', function (e) {
@@ -1492,12 +1500,17 @@ class LCSEditor extends Fabric {
                                     let myEl = e.currentTarget;
                                     // let prop = myEl._prop.body;
                                     //document.querySelector('#propAceEditor').env.editor.setValue(prop);
-                                    self.kernel.setProperty(myEl._currentNode, m.name, continuousSlider.value);
+                                    let value = continuousSlider.getValue();
+                                    self.kernel.setProperty(myEl._currentNode, m.name, value);
     
                                     //continuousCommittedValue.textContent = continuousSlider.value;
                                 })
+
+                            }
+
                             }
                         })
+                        //sliderComponent._initMDC();
     
                     } else {
                         sliderComponent = {}
@@ -2047,28 +2060,58 @@ class LCSEditor extends Fabric {
                                         self.widgets.switch({
                                             'id': 'editnode',
                                             'init': function () {
-                                                vwf_view.kernel.getProperty(this._currentNode, 'edit');
-                                                this._switch = new mdc.switchControl.MDCSwitch(this);
-                                                this._switch.checked = false;
-                                            },
-                                            'onchange': function (e) {
+                                                //vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                                                //let nodeID = document.querySelector('#currentNode')._currentNode;
+                                                let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                let gizmo = viewNode.getAttribute('gizmo')
+
+                                                const myEl = document.querySelector('#editnode');//this;
+                                                if(myEl){
+                                                var editorSwitch = new mdc.switchControl.MDCSwitch(this);
+                                                editorSwitch.checked = gizmo ? true : false;
+                                                myEl.addEventListener('change', 
+                                                
+                                                function (e) {
+                                                   
+                                                    //let gizmo = viewNode.getAttribute('gizmo')
     
-                                                var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                if (this._switch) {
-                                                    let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                                                    if (chkAttr) {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', true);
-                                                        //this._switch.checked = false;
-                                                    } else {
-                                                        self.kernel.setProperty(this._currentNode, 'edit', false);
-                                                        //this._switch.checked = true;
+                                                    //let nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    if (editorSwitch) {
+                                                        let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                        let chkAttr = editorSwitch.checked;//this.getAttribute('checked');
+                                                        if (chkAttr) {
+                                                            //self.kernel.setProperty(this._currentNode, 'edit', true);
+                                                            viewNode.setAttribute('gizmo',{});
+                                                            let inter = viewNode.getAttribute('interpolation');
+                                                            if(inter){
+                                                                let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+                                                                viewDriver.interpolateView = false;
+                                                            }
+                                                            //editorSwitch.checked = false;
+                                                            
+                                                        } else {
+                                                            //self.kernel.setProperty(this._currentNode, 'edit', false);
+                                                            //editorSwitch.checked = true;
+                                                            viewNode.removeAttribute('gizmo');
+                                                            let inter = viewNode.getAttribute('interpolation');
+                                                            if(inter){
+                                                                let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+                                                                viewDriver.interpolateView = true;
+                                                                
+                                                            }
+                                                        }
+        
+                                                        //vwf_view.kernel.callMethod(nodeID, "createEditTool");
+                                                        //vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+                                                        
                                                     }
-    
-                                                    //vwf_view.kernel.callMethod(nodeID, "createEditTool");
-                                                    vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
-                                                    
                                                 }
-                                            }
+                                                
+                                                );
+                                                //this._switch.checked = gizmo ? true : false;
+                                                }
+                                            },
+                                            'onchange': ""
                                         }
                                         )
                                     ]
@@ -2082,7 +2125,10 @@ class LCSEditor extends Fabric {
                                             imgSrc: "/drivers/view/editor/images/ui/icons/translate.png",
                                             styleClass: "editButton",
                                             onclickfunc: function (e) {
-                                                vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
+                                                let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                let gizmo = viewNode.getAttribute('gizmo');
+                                                gizmo ? viewNode.setAttribute('gizmo', {mode: 'translate'}): null;
+                                               // vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
                                             }
                                         })
                                     ]
@@ -2096,7 +2142,10 @@ class LCSEditor extends Fabric {
                                             imgSrc: "/drivers/view/editor/images/ui/icons/rotate.png",
                                             styleClass: "editButton",
                                             onclickfunc: function (e) {
-                                                vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
+                                                let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                let gizmo = viewNode.getAttribute('gizmo');
+                                                gizmo ? viewNode.setAttribute('gizmo', {mode: 'rotate'}): null;
+                                                //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
                                             }
                                         })
                                     ]
@@ -2110,7 +2159,10 @@ class LCSEditor extends Fabric {
                                             imgSrc: "/drivers/view/editor/images/ui/icons/scale.png",
                                             styleClass: "editButton",
                                             onclickfunc: function (e) {
-                                                vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
+                                                let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                let gizmo = viewNode.getAttribute('gizmo');
+                                                gizmo ? viewNode.setAttribute('gizmo', {mode: 'scale'}): null;
+                                                //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
                                             }
                                         })
                                     ]

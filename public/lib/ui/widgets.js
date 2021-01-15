@@ -420,61 +420,95 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
         }
 
         sliderContinuous(obj) {
+
+          
+        
             return {
                 $cell: true,
                 $type: "div",
-                class: "mdc-slider",
-                role: "slider",
-                tabindex: 0,
                 'id': obj.id,
-                'aria-valuemin': obj.min,
-                'aria-valuemax': obj.max,
-                'aria-label': obj.label,
-                'aria-valuenow': obj.value,
-                'data-step': obj.step,
+                class: "mdc-slider",
+                //tabindex: 0,
                 $init: obj.init,
                 $components: [
                     {
                         $cell: true,
-                        $type: "div",
-                        class: "mdc-slider__track-container",
-                        $components: [
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-slider__track",
-                                
-                            }
-                        ]
+                        $type: "input",
+                        class: "mdc-slider__input",
+                        'value': obj.value,
+                        'type': "range",
+                        'data-step': obj.step,
+                        'min': obj.min,
+                        'max': obj.max,
+                        'aria-label': obj.label
                     },
                     {
-                        $cell: true,
+                       // $cell: true,
                         $type: "div",
-                        class: "mdc-slider__thumb-container",
+                        class: "mdc-slider__track",
+                        $components: [
+                           {
+                            //$cell: true,
+                            $type: "div",
+                            class: "mdc-slider__track--active",
+                            $components: [
+                               { 
+                                //$cell: true,
+                                $type: "div",
+                                class: "mdc-slider__track--active_fill"
+                            }
+                            ]
+                           },
+                           {
+                            //$cell: true,
+                            $type: "div",
+                            class: "mdc-slider__track--inactive"
+                           }
+                        ]
+                        
+                    },
+                    {
+                        //$cell: true,
+                        $type: "div",
+                        class: "mdc-slider__thumb",
                         $components: [
                             {
-                                $cell: true,
-                                $type: "svg",
-                                class: "mdc-slider__thumb",
-                                width: 21,
-                                height: 21,
-                                $components: [
-                                    {
-                                        $cell: true,
-                                        $type: "circle",
-                                        cx: 10.5,
-                                        cy: 10.5,
-                                        r: 7.875
-                                    }
-                                ]
-                            },
-                            {
-                                $cell: true,
-                                $type: "div",
-                                class: "mdc-slider__focus-ring"
-                            }
+                        //$cell: true,
+                        $type: "div",
+                        class: "mdc-slider__thumb-knob"}
                         ]
+                       
                     }
+        
+                  
+                    // {
+                    //     $cell: true,
+                    //     $type: "div",
+                    //     class: "mdc-slider__thumb-container",
+                    //     $components: [
+                    //         {
+                    //             $cell: true,
+                    //             $type: "svg",
+                    //             class: "mdc-slider__thumb",
+                    //             width: 21,
+                    //             height: 21,
+                    //             $components: [
+                    //                 {
+                    //                     $cell: true,
+                    //                     $type: "circle",
+                    //                     cx: 10.5,
+                    //                     cy: 10.5,
+                    //                     r: 7.875
+                    //                 }
+                    //             ]
+                    //         },
+                    //         {
+                    //             $cell: true,
+                    //             $type: "div",
+                    //             class: "mdc-slider__focus-ring"
+                    //         }
+                    //     ]
+                    // }
                 ]
             }
         }
@@ -652,6 +686,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 class: "mdc-switch",
                 _switch: null,
                 id: obj.id,
+                //change: obj.onchange,
                 $init: obj.init, 
                 //function(){
                 //     new mdc.switchControl.MDCSwitch(this);
@@ -671,12 +706,13 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                 $components:[
                                     {
                                         $type: "input",
-                                        type: "checkbox",
+                                        "type": "checkbox",
                                         class: "mdc-switch__native-control",
                                         id: 'input-' + obj.id,
                                         //$init: obj.init,
                                         //id: "basic-switch",
-                                        onchange: obj.onchange,
+                                        
+                                        "aria-checked": false,
                                         role: "switch"
                                     }
                                 ]

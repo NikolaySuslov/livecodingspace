@@ -1248,7 +1248,7 @@ class App {
   async loadIndexLibs() {
 
     return loadjs([
-      '/lib/ui/cell.js',
+      '/lib/ui/cell.min.js',
       '/lib/ui/treeview/treeview.min.css',
       '/lib/ui/treeview/treeview.min.js',
       '/lib/ui/mdc/dist/material-components-web.min.css',
@@ -1553,7 +1553,7 @@ class App {
 
     const confLibsDefaults = {
       '/drivers/model/aframe':[
-          '/drivers/model/aframe/aframe-master.js',
+          '/drivers/model/aframe/aframe-master.min.js',
           '/drivers/model/aframe/addon/SkyShader.js',
           '/drivers/model/aframe/addon/BVHLoader.js',
           '/drivers/model/aframe/addon/TransformControls.js',
@@ -1574,7 +1574,7 @@ class App {
         '/drivers/view/webrtc/adapter-latest.js'
       ],
       '/drivers/view/editor': [
-        '/lib/ui/cell.js',
+        '/lib/ui/cell.min.js',
         '/lib/ui/treeview/treeview.min.css',
         '/lib/ui/treeview/treeview.min.js',
         '/lib/ui/mdc/dist/material-components-web.min.css',
