@@ -245,6 +245,10 @@ class App {
       recall, 1000)
   }
 
+  get streamMsg(){
+    return this.config.streamMsg
+  }
+
   set streamMsg(value){
     this.config.streamMsg = value
   }
