@@ -648,6 +648,49 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
             }
         }
 
+       
+        gridListItemWithIco(obj) {
+            return {
+                $type: "div",
+                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip " + obj.styleClass,
+                $components:[
+                    {
+                        class: "tooltiptext",
+                        $type: "span",
+                        $text: obj.title
+                    },
+                    // {
+
+                    //     $type: "button",
+                    //     class: "mdc-button",
+                    //     onclick: obj.onclickfunc,
+                    //     $components:[
+                    //         {
+                               
+                    //             $type: "i",
+                    //             class: "material-icons mdc-button__icon",
+                    //             $text: obj.imgSrc
+                    //         }
+                    //     ]
+                    // }
+                    {
+                        $type: "div",
+                        style: "background-color: transparent;",
+                        $components:[
+                            {
+                                $type: "i",
+                                class: "material-icons mdc-list-item__graphic",
+                                'aria-hidden': "true",
+                                $text: obj.imgSrc,
+                                onclick: obj.onclickfunc
+                            }
+
+                        ]
+                    }
+                ]
+            }
+        }
+
         gridListItem(obj) {
             return {
                 $type: "div",
@@ -972,6 +1015,72 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
 
             }
 
+            streamMsgConfig() {
+
+            return {
+
+                $cell: true,
+                _streamMsgConfig: null,
+                $components: [
+                  {
+                    $type: "p",
+                    class: "mdc-typography--headline5",
+                    $text: "Use Stream of Messages"
+                  },
+                  {
+                    $type: 'p'
+                  },
+                  _app.widgets.switch({
+                    'id': 'streamMsgConfig',
+                    'init': function () {
+                      this._switch = new mdc.switchControl.MDCSwitch(this);
+                      let config = localStorage.getItem('lcs_config');
+                      this._switch.checked = JSON.parse(config).streamMsg;
+                      this.addEventListener('change',
+                      function (e) {
+    
+                        if (this._switch) {
+                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                            if (chkAttr) {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.streamMsg = true;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //update _app
+                                if(_app){
+                                    _app.streamMsg = config.streamMsg;
+                                }
+
+                                //this._switch.checked = false;
+                            } else {
+                                let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                config.streamMsg = false;
+                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                                //update _app
+                                if(_app){
+                                    _app.streamMsg = config.streamMsg;
+                                }
+                            }
+                        }
+                    }
+                      )
+                     // this._replaceSwitch = this._switch;
+                      
+                    },
+                    'onchange': ""
+                  }
+                  ),
+                  {
+                    $type: 'label',
+                    for: 'input-streamMsgConfig',
+                    $text: 'On / Off'
+                  }
+    
+                ]
+            }  
+            
+        }
+
+
         reflectorGUI() {
 
             let self = this;
@@ -1028,57 +1137,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                 ]
               }
 
-            let streamMsgConfig = {
-
-                $cell: true,
-                _streamMsgConfig: null,
-                $components: [
-                  {
-                    $type: "p",
-                    class: "mdc-typography--headline5",
-                    $text: "Use Stream of Messages"
-                  },
-                  {
-                    $type: 'p'
-                  },
-                  _app.widgets.switch({
-                    'id': 'streamMsgConfig',
-                    'init': function () {
-                      this._switch = new mdc.switchControl.MDCSwitch(this);
-                      let config = localStorage.getItem('lcs_config');
-                      this._switch.checked = JSON.parse(config).streamMsg;
-                      this.addEventListener('change',
-                      function (e) {
-    
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.streamMsg = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.streamMsg = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                            }
-                        }
-                    }
-                      )
-                     // this._replaceSwitch = this._switch;
-                      
-                    },
-                    'onchange': ""
-                  }
-                  ),
-                  {
-                    $type: 'label',
-                    for: 'input-streamMsgConfig',
-                    $text: 'On / Off'
-                  }
-    
-                ]
-            }  
+            
 
             let multiSocket = {
                 $cell: true,
@@ -1437,7 +1496,7 @@ Copyright (c) 2014-2018 Nikolai Suslov and the Krestianstvo.org project contribu
                                { 
                                 $type: "div",
                                 class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                $components: [streamMsgConfig ]
+                                $components: [self.streamMsgConfig() ]
                                },
                             //    { 
                             //     $type: "div",

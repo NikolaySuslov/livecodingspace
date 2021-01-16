@@ -308,6 +308,17 @@ class LCSEditor extends Fabric {
                                         }
 
                                     }),
+                                    self.widgets.gridListItemWithIco({
+                                        imgSrc: "schedule",
+                                        title: 'Clock',
+                                        imgSize: '30px',
+                                        styleClass: "",
+                                        onclickfunc: function () {
+                                            let avatarID = 'avatar-' + vwf.moniker_;
+                                            vwf_view.kernel.callMethod(vwf.application(), "createClock", [null, avatarID])
+                                        }
+
+                                    })
 
 
                                 ]
@@ -874,6 +885,94 @@ class LCSEditor extends Fabric {
                                                         //document.querySelector('#' + 'viewSettings').style.visibility = 'hidden';
                                                     }
                                                 })
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                        $components: [
+                                            {
+                                                $type: "h2",
+                                                class: "",
+                                                $text: 'App settings' 
+                                            },
+                                            self.widgets.streamMsgConfig(),
+                                            {
+                                                $type: "h3",
+                                                class: "",
+                                                $text: 'Delay' 
+                                            },
+                                            {
+                                                class: "mdc-text-field prop-mdc-text-field",
+    
+                                                $type: "div",
+                                                $components: [
+                                                    self.widgets.inputTextFieldStandart({
+                                                        "id": "input-delay",
+                                                        "label": "Delay",
+                                                        "value": vwf.virtualTime.streamDelay,
+                                                        "change": function (e) {
+                                                            //set property
+    
+                                                            let value = this.value;
+                                                            vwf.virtualTime.streamDelay = value;
+
+                                                            let slider = document.querySelector('#slider-delay');
+                                                            slider._comp.setValue(value);
+
+                                                        }
+                                                    })
+    
+                                                ]
+    
+                                            },
+                                            self.widgets.sliderContinuous({
+                                                'id': 'slider-delay',
+                                                'label': 'Slider',
+                                                'min': 0,
+                                                'max': 1000,
+                                                'step': 1,
+                                                'value': vwf.virtualTime.streamDelay, //parseInt(currenValue),
+                                                'init': function () {
+                
+                                                    const myEl = document.querySelector('#slider-delay');//this;
+                                                    if (myEl) {
+                                                        myEl.children[0].setAttribute("value", vwf.virtualTime.streamDelay);
+                                                        let input = document.querySelector('#input-delay');
+                                                        input.value = vwf.virtualTime.streamDelay;
+                
+                                                        var continuousSlider = new mdc.slider.MDCSlider(myEl);
+                
+                                                        this._comp = continuousSlider;
+
+
+                                                        continuousSlider.listen('MDCSlider:input', function (e) {
+
+                                                            let myEl = e.currentTarget;
+    
+                                                            let value = continuousSlider.getValue();
+                                                            vwf.virtualTime.streamDelay = value;
+
+                                                            let input = document.querySelector('#input-delay');
+                                                            input.value = value;
+                                                        });
+                                                        continuousSlider.listen('MDCSlider:change', function (e) {
+                                                            //console.log(continuousSlider.value);
+                                                            let myEl = e.currentTarget;
+
+                                                            let value = continuousSlider.getValue();
+                                                            vwf.virtualTime.streamDelay = value;
+                
+                                                           let input = document.querySelector('#input-delay');
+                                                            input.value = value;
+
+                                                        })
+                
+                                                    }
+                
+                                                }
+                                            })
+                                            
                                         ]
                                     }
                                 ]
@@ -1514,7 +1613,6 @@ class LCSEditor extends Fabric {
 
                                 }
                             })
-                            //sliderComponent._initMDC();
 
                         } else {
                             sliderComponent = {}

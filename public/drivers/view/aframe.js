@@ -989,7 +989,12 @@ class AFrameView extends Fabric {
        
 
         else if (self.isDesktop){
-            cursorEl.setAttribute('cursor', {rayOrigin: 'mouse'});
+            cursorEl.setAttribute('cursor',
+             {
+                rayOrigin: 'mouse'
+            });
+            cursorEl.setAttribute('visible', false);
+             
         }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});

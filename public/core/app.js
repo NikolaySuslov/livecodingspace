@@ -245,6 +245,9 @@ class App {
       recall, 1000)
   }
 
+  set streamMsg(value){
+    this.config.streamMsg = value
+  }
 
   get isLuminary() {
 

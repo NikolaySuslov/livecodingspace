@@ -464,6 +464,28 @@ this.createModelObj = function (mtlSrc, objSrc, name, avatar) {
 
 }
 
+this.createClock = function (parentName, avatar) {
+    var self = this;
+    let nodeName = 'clock-' + this.smallRandomId();
+
+    let node = {
+        "extends": "proxy/objects/clock.vwf",
+        "properties": {
+            "displayName": nodeName
+        }
+    }
+
+    let rootNode = parentName ? this.getChildByName(parentName) : this;
+    rootNode.children.create(nodeName, node, function( child ) {
+        if (avatar) child.placeInFrontOf(avatar, -2);
+        child.init();
+        child.run();
+       
+
+    })
+
+
+}
 
 this.createLegoBoost = function (boostID, parentName) {
     var self = this;
