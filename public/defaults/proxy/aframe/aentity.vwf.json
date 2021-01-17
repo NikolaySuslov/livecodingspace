@@ -150,6 +150,11 @@
         "obj"
       ]
     },
+    "createChild": {
+      "parameters": [
+        "id","nodeDef"
+      ]
+    },
     "changeVisual": {},
     "resetVisual": {},
     "step": {},

@@ -894,17 +894,17 @@ class LCSEditor extends Fabric {
                                             {
                                                 $type: "h2",
                                                 class: "",
-                                                $text: 'App settings' 
+                                                $text: 'App settings'
                                             },
                                             self.widgets.streamMsgConfig(),
                                             {
                                                 $type: "h3",
                                                 class: "",
-                                                $text: 'Delay' 
+                                                $text: 'Delay'
                                             },
                                             {
                                                 class: "mdc-text-field prop-mdc-text-field",
-    
+
                                                 $type: "div",
                                                 $components: [
                                                     self.widgets.inputTextFieldStandart({
@@ -913,7 +913,7 @@ class LCSEditor extends Fabric {
                                                         "value": vwf.virtualTime.streamDelay,
                                                         "change": function (e) {
                                                             //set property
-    
+
                                                             let value = this.value;
                                                             vwf.virtualTime.streamDelay = value;
 
@@ -922,9 +922,9 @@ class LCSEditor extends Fabric {
 
                                                         }
                                                     })
-    
+
                                                 ]
-    
+
                                             },
                                             self.widgets.sliderContinuous({
                                                 'id': 'slider-delay',
@@ -934,22 +934,22 @@ class LCSEditor extends Fabric {
                                                 'step': 1,
                                                 'value': vwf.virtualTime.streamDelay, //parseInt(currenValue),
                                                 'init': function () {
-                
+
                                                     const myEl = document.querySelector('#slider-delay');//this;
                                                     if (myEl) {
                                                         myEl.children[0].setAttribute("value", vwf.virtualTime.streamDelay);
                                                         let input = document.querySelector('#input-delay');
                                                         input.value = vwf.virtualTime.streamDelay;
-                
+
                                                         var continuousSlider = new mdc.slider.MDCSlider(myEl);
-                
+
                                                         this._comp = continuousSlider;
 
 
                                                         continuousSlider.listen('MDCSlider:input', function (e) {
 
                                                             let myEl = e.currentTarget;
-    
+
                                                             let value = continuousSlider.getValue();
                                                             vwf.virtualTime.streamDelay = value;
 
@@ -962,17 +962,17 @@ class LCSEditor extends Fabric {
 
                                                             let value = continuousSlider.getValue();
                                                             vwf.virtualTime.streamDelay = value;
-                
-                                                           let input = document.querySelector('#input-delay');
+
+                                                            let input = document.querySelector('#input-delay');
                                                             input.value = value;
 
                                                         })
-                
+
                                                     }
-                
+
                                                 }
                                             })
-                                            
+
                                         ]
                                     }
                                 ]
@@ -1990,6 +1990,40 @@ class LCSEditor extends Fabric {
                         ]
                     }
 
+                   function  pasteToScene (){
+                        let nodeID = document.querySelector('#currentNode')._currentNode;
+                        if (nodeID !== vwf.application() || !self.copyBuffer){
+                            return {}
+                        }
+
+                        return  {
+                            $type: "div",
+                            $components: [
+                                self.widgets.floatActionButton({
+                                    label: "content_paste",
+                                    styleClass: "mdc-fab--mini",
+                                    onclickfunc: function () {
+                                        let nodeID = document.querySelector('#currentNode')._currentNode;
+                                        if (self.copyBuffer) {
+                                            let newNodeID = self.helpers.GUID();
+                                            let newName = self.helpers.randId();
+                                            let nodeDef = self.copyBuffer;
+                                            nodeDef.id = newNodeID;
+                                            vwf_view.kernel.callMethod(nodeID, "createChild", [newName, nodeDef]);
+                                            self.copyBuffer = null;
+                                        }
+
+
+
+                                    }
+                                })
+                            ]
+                        }
+
+
+                    }
+
+
                     let audioGUI = {
                         $type: "div",
                         class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
@@ -2274,18 +2308,117 @@ class LCSEditor extends Fabric {
                                     },
                                     {
                                         $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                        $components: []
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
                                         $components: [
-                                            // self.widgets.floatActionButton({
-                                            //     label: "content_copy",
-                                            //     styleClass: "mdc-fab--mini"
+                                            {
+                                                class: "tooltiptext",
+                                                $type: "span",
+                                                $text: "Dublicate"
+                                            },
+                                            self.widgets.floatActionButton({
+                                                label: "content_copy",
+                                                styleClass: "mdc-fab--mini",
+                                                onclickfunc: function () {
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
+                                                    let newName = self.helpers.randId();
+                                                    let newNodeID = self.helpers.GUID();
+                                                    nodeDef.id = newNodeID;
+                                                    let node = self.nodes[nodeID];
+                                                    vwf_view.kernel.callMethod(node.parentID, "createChild", [newName, nodeDef]);
 
-                                            // }),
-                                            // {
-                                            //     $type: "span",
-                                            //     $text: " "
+                                                }
+                                            })
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
+                                        $components: [
+                                            {
+                                                class: "tooltiptext",
+                                                $type: "span",
+                                                $text: "Copy"
+                                            },
+                                            self.widgets.floatActionButton({
+                                                label: "file_copy",
+                                                styleClass: "mdc-fab--mini",
+                                                onclickfunc: function () {
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
+                                                    self.copyBuffer = nodeDef
+                                                }
+                                            })
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
+                                        $components: [
+                                            {
+                                                class: "tooltiptext",
+                                                $type: "span",
+                                                $text: "Cut"
+                                            },
+                                            self.widgets.floatActionButton({
+                                                label: "content_cut",
+                                                styleClass: "mdc-fab--mini",
+                                                onclickfunc: function () {
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
+                                                    self.copyBuffer = nodeDef;
+                                                    vwf_view.kernel.deleteNode(nodeID);
 
-                                            // },
+                                                }
+                                            })
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
+                                        $components: [
+                                            {
+                                                class: "tooltiptext",
+                                                $type: "span",
+                                                $text: "Paste"
+                                            },
+                                            self.widgets.floatActionButton({
+                                                label: "content_paste",
+                                                styleClass: "mdc-fab--mini",
+                                                onclickfunc: function () {
+                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                    if (self.copyBuffer) {
+                                                        let newNodeID = self.helpers.GUID();
+                                                        let newName = self.helpers.randId();
+                                                        let nodeDef = self.copyBuffer;
+                                                        nodeDef.properties.position = [0, 0, 0];
+                                                        nodeDef.properties.rotation = [0, 0, 0];
+                                                        nodeDef.properties.scale = [1, 1, 1];
+                                                        nodeDef.id = newNodeID;
+                                                        vwf_view.kernel.callMethod(nodeID, "createChild", [newName, nodeDef]);
+                                                        self.copyBuffer = null;
+                                                    }
+
+
+
+                                                }
+                                            })
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
+                                        $components: [
+                                            {
+                                                class: "tooltiptext",
+                                                $type: "span",
+                                                $text: "Delete"
+                                            },
                                             self.widgets.floatActionButton({
                                                 label: "delete_forever",
                                                 styleClass: "mdc-fab--mini",
@@ -2299,21 +2432,13 @@ class LCSEditor extends Fabric {
                                                 }
                                             }),
 
-                                            // self.widgets.floatActionButton({
-                                            //     label: "person",
-                                            //     styleClass: "mdc-fab--mini",
-                                            //     onclickfunc: function () {
-                                            //         var nodeID = document.querySelector('#currentNode')._currentNode;
-                                            //         let node = self.nodes[nodeID];
-                                            //         //vwf_view.kernel.deleteChild(node.parentID, node.name);
-
-                                            //         let me = self.kernel.moniker();
-                                            //         vwf_view.kernel.setProperty(nodeID, 'ownedBy', me);
-                                            //     }
-                                            // }),
-
+                                        ]
+                                    },
+                                    {
+                                        $type: "div",
+                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                        $components: [
                                             saveGUI
-
                                         ]
                                     },
                                 ]
@@ -2382,6 +2507,9 @@ class LCSEditor extends Fabric {
                             //this.$text = this._currentNode;
 
                             let node = self.nodes[this._currentNode];
+
+                            if (!node) return
+
                             let nodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, node.extendsID);
 
                             var viewerProps = {};
@@ -2582,6 +2710,7 @@ class LCSEditor extends Fabric {
                                                     class: "mdc-list-item__text mdc-typography--headline6"
                                                     //<h1 class="mdc-typography--display4">Big header</h1>
                                                 },
+                                               
                                                 self.widgets.icontoggle({
                                                     'styleClass': "", //mdc-top-app-bar__action-item
                                                     'id': "selectNodeSwitch",
@@ -2615,7 +2744,9 @@ class LCSEditor extends Fabric {
                                                 })
 
                                             ]
-                                        }, listDivider,
+                                        },
+                                        pasteToScene(),
+                                        listDivider,
                                         {
                                             // $cell: true,
                                             // $type: "ul",
@@ -2732,28 +2863,6 @@ class LCSEditor extends Fabric {
                             ]
                         }
 
-                    }
-
-                    let numberSliderComponent = {
-                        $cell: true,
-                        $type: "div",
-                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-4",
-                        $init: function () {
-
-                        },
-                        $components: [
-                            {
-
-                                $type: "div",
-                                style: "padding: 0 16px;",
-                                $components: [
-                                    {}
-                                ]
-                            }
-
-
-
-                        ]
                     }
 
                     let colorPickerComponent = {
@@ -4384,9 +4493,28 @@ class LCSEditor extends Fabric {
                     }
                 },
 
-                //calledMethod: function( nodeID, methodName, methodParameters, methodValue ) {
+                calledMethod: function (nodeID, methodName, methodParameters, methodValue) {
 
-                //},
+                    let self = this;
+                    var node = this.nodes[nodeID];
+                    if (!node) return
+
+                    let clientThatCallThis = vwf.client();
+                    let me = vwf.moniker();
+
+                    if (methodName == "createChild") {
+
+                        if (clientThatCallThis == me) {
+                            let nodeCell = document.querySelector('#currentNode')
+                            if (nodeCell)
+                                nodeCell._setNode(methodParameters[1].id);
+                        }
+
+                    }
+
+
+
+                },
 
                 createdEvent: function (nodeID, eventName, eventParameters) {
                     var node = this.nodes[nodeID];

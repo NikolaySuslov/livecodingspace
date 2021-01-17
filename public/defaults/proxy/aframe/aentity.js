@@ -343,3 +343,15 @@ this.mousedownAction = function(){
 
 this.mouseupAction = function(){  
 }
+
+this.createChild = function(id,nodeDef){
+    let self = this;
+    this.children.create(id, nodeDef, function(child){
+
+        if(child.stepping){
+            child.step();
+        }
+
+    })
+
+}
