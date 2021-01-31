@@ -2,7 +2,7 @@
   "extends": "proxy/aframe/aentityComponent.vwf",
   "type": "component",
   "properties": {
-    "autoplay": null,
+    "autoplay": false,
     "distanceModel": null,
     "loop": null,
     "maxDistance": null,

@@ -1,0 +1,15 @@
+{
+    "info": {
+        "en":{
+            "title": "Music App",
+            "imgUrl": "/defaults/worlds/tone/webimg.jpg",
+            "text": "Example app with Tone JS"
+        },
+        "ru":{
+            "title": "Music App",
+            "imgUrl": "/defaults/worlds/tone/webimg.jpg",
+            "text": "Example app with Tone JS"
+        }
+       
+    }
+}

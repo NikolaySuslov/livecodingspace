@@ -77,11 +77,11 @@
     "calcText": {
       "extends": "proxy/aframe/atext.vwf",
       "properties": {
-        "value": {
-          "set": "this.value = value; this.calcMe()",
-          "get": "return this.value",
+        "expr": {
+          "set": "this.expr = value; this.calcMe()",
           "value": "1 * pi"
         },
+        "value": "",
         "color": "#b74217",
         "position": [
           -1,
@@ -97,7 +97,7 @@
       },
       "methods": {
         "calcMe": {
-          "body": "    let match = this.calcLang.grammar.match(this.value);\n    if (match.succeeded()){\n      if (typeof this.calcLang.semantics === 'function'){\n    let result = this.calcLang.semantics(match).interpret(); \n if (this.parent.calcResult && (typeof this.parent.calcResult.value == 'string')) {\n this.parent.calcResult.value = result \n} \n   }}\n    //this.future( 0.1 ).calcMe();\n",
+          "body": " this.value = this.expr; let match = this.calcLang.grammar.match(this.value);\n    if (match.succeeded()){\n      if (typeof this.calcLang.semantics === 'function'){\n    let result = this.calcLang.semantics(match).interpret(); \n if (this.parent.calcResult && (typeof this.parent.calcResult.value == 'string')) {\n this.parent.calcResult.value = result \n} \n   }}\n    //this.future( 0.1 ).calcMe();\n",
           "type": "application/javascript"
         }
       },
@@ -131,7 +131,8 @@
           "extends": "proxy/aframe/aMaterialComponent.vwf",
           "properties": {
             "color": "#ECECEC",
-            "side": "back"
+            "side": "back",
+            "shader": "flat"
           }
         }
       }

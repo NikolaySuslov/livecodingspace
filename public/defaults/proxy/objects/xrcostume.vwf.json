@@ -1,0 +1,58 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {
+        "displayName": "defaultXRCostume",
+        "position": "0 0 0",
+        "avatarColor": "white",
+        "mousedown_state": false,
+        "triggerdown_state": false
+    },
+    "methods": {
+        "mousedownAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "mouseupAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "triggerdownAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "triggerupAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "onMove": {
+            "parameters": [
+                "idata"
+            ]
+        }
+    },
+    "children": {
+        "cursorVisual": {
+            "extends": "proxy/objects/cursorVisual.vwf",
+            "type": "",
+            "properties": {
+                "color": "white",
+                "position": "0 0 0"
+            }
+        }
+    },
+    "scripts": {
+        "source": "/proxy/objects/xrcostume.js"
+    }
+}

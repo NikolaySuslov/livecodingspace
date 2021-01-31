@@ -1,0 +1,58 @@
+{
+    "properties":{
+        "lockZ": false
+
+    },
+    "methods": {
+        "mousedownAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "mouseupAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "triggerdownAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "triggerupAction": {
+            "parameters": [
+                "point",
+                "elID",
+                "controllerID"
+            ]
+        },
+        "moveAction": {
+            "parameters": [
+                "controllerID",
+                "point"
+            ]
+        },
+        "doButtonTriggerupAction": {
+            "parameters": [
+                "buttonID",
+                "controllerID"
+            ]
+        },
+        "doButtonTriggerdownAction": {
+            "parameters": [
+                "buttonID",
+                "controllerID",
+                "point"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "drag.js"
+    }
+}

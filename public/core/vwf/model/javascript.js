@@ -94,7 +94,28 @@ class VWFJavaScript extends Fabric {
             // Create the node. Its prototype is the most recently-attached behavior, or the
             // specific prototype if no behaviors are attached.
 
-            var node = this.nodes[childID] = Object.create( prototype );
+            const handler = {
+                get: function( obj, prop, receiver ) {
+
+                    if (prop in obj || prop == 'node') {
+                        return Reflect.get(obj, prop, receiver);
+                    } 
+                    else {
+                        let ch = Reflect.get(obj, 'children', receiver);
+                        if(ch){
+                            let child = Object.values(ch).filter(el=>el['displayName'] == prop)[0];
+                            if (child){
+                                //console.log('TRAp children', child);
+                                return child
+                            }
+                        }
+                    }
+            
+                  return undefined
+                }
+              }
+
+            var node = this.nodes[childID] = new Proxy(Object.create( prototype ), handler);
 
             if ( childID === VWFJavaScript.kutility.protoNodeURI ) {
                 this.protoNode = node;
@@ -106,6 +127,21 @@ class VWFJavaScript extends Fabric {
 
             Object.defineProperty( node, "id", {
                 value: childID,
+                enumerable: true,
+            } );
+
+            Object.defineProperty( node, "protoID", {
+                get: function() {
+                    return self.kernel.prototype( this.id );
+                },
+                enumerable: true,
+            } );
+
+            Object.defineProperty( node, "proto", {
+                get: function() {
+                    let protoID = self.kernel.prototype( this.id )
+                    return self.nodes[ protoID ];
+                },
                 enumerable: true,
             } );
 
@@ -525,6 +561,9 @@ node.hasOwnProperty( childName ) ||  // TODO: recalculate as properties, methods
         deletingNode: function( nodeID ) {
 
             var child = this.nodes[nodeID];
+            if(!child)
+                return
+                
             var node = child.parent;
 
             if ( node ) {

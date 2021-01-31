@@ -1,0 +1,14 @@
+{
+    "extends": "proxy/tonejs/polySynth.vwf",
+    "properties": {
+        "attackNoise":null,
+        "dampening":null,
+        "release":null,
+        "resonance":null,
+        "volume":null
+    },
+    "methods":{},
+    "scripts": {
+      "source": "pluckSynth.js"
+    }
+  }

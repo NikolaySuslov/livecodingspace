@@ -256,6 +256,7 @@ class AFrameModel extends Fabric {
                                 aframeObj = document.createElement('audio');
                                 aframeObj.setAttribute('id', "item-" + _self_.helpers.GUID());
                                 aframeObj.setAttribute('src', "");
+                                //aframeObj.setAttribute('response-type', "arraybuffer");
                                 aframeObj.setAttribute('crossorigin', "anonymous");
                                 assets.appendChild(aframeObj);
                             }

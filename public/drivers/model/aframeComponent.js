@@ -259,6 +259,12 @@ class AFrameComponentModel extends Fabric {
                             return found;
                         },
 
+                        checkAttribute: function(aframeObj){
+                            if(aframeObj.el.getAttribute(aframeObj.compName)){
+                                aframeObj.el.removeAttribute(aframeObj.compName);
+                            }
+                        },
+
                         setAFrameObject: function (node, config) {
                             var protos = node.prototypes;
                             var aframeObj = {};
@@ -267,7 +273,6 @@ class AFrameComponentModel extends Fabric {
                             aframeObj.id = node.parentID;
                             // aframeObj.el = sceneEl.children[node.parentID];
                             aframeObj.el = Array.from(sceneEl.querySelectorAll('*')).filter(item => { return item.id == aframeObj.id })[0];
-
 
                             if (this.isComponentClass(protos, "proxy/aframe/lineComponent.vwf")) {
                                 // aframeObj.id = node.parentID;
@@ -279,6 +284,7 @@ class AFrameComponentModel extends Fabric {
                                     aframeObj.compName = "line";
                                 }
                                 //aframeObj.el.setAttribute(node.type, {});
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -288,6 +294,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "gizmo";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -303,6 +310,7 @@ class AFrameComponentModel extends Fabric {
                                 aframeObj.el = document.querySelector('a-scene');
 
                                 aframeObj.compName = "fog";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute('fog', {});
 
                             }
@@ -312,6 +320,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "raycaster";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -322,6 +331,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "shadow";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -330,7 +340,20 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "aabb-collider";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
+
+                                aframeObj.el.addEventListener('hitstart', function (evt) {
+                                    let elms = evt.detail.intersectedEls;
+                                    let el  = elms ? 
+                                        elms.map(m=> {return m.id})
+                                        : null;
+                                    vwf_view.kernel.fireEvent(evt.target.id, "fromhitstartEvent", [el]);
+                                })
+                        
+                                aframeObj.el.addEventListener('hitend', function (evt) {
+                                    vwf_view.kernel.fireEvent(evt.target.id, "fromhitendEvent", [null]);
+                                })
 
                             }
 
@@ -338,6 +361,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "mirror";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -346,6 +370,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "viewoffset";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -364,14 +389,25 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "linepath";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
 
                             if (this.isComponentClass(protos, "proxy/aframe/aMaterialComponent.vwf")) {
 
+                             
+                                
+                               
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "material";
+
+                                // let name = aframeObj.compName = "material";
+                                // if(aframeObj.el.getAttribute(name)){
+                                //     aframeObj.el.removeAttribute(name);
+                                // }
+
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -380,6 +416,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "sound";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -389,6 +426,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "interpolation";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -398,6 +436,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "animation-mixer";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -407,6 +446,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "envmap";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -417,6 +457,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "avatarbvh";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -427,6 +468,7 @@ class AFrameComponentModel extends Fabric {
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "sun";
                                 aframeObj.el.setAttribute('id', "sun");
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -436,6 +478,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "skyshader";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -445,6 +488,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "raycaster-listener";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -454,6 +498,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "aabb-collider-listener";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
                                   
                             }
@@ -463,6 +508,7 @@ class AFrameComponentModel extends Fabric {
 
                                 // aframeObj.el.setAttribute(node.type, {});
                                 aframeObj.compName = "cursor-listener";
+                                this.checkAttribute(aframeObj);
                                 aframeObj.el.setAttribute(aframeObj.compName, {});
 
                             }
@@ -570,13 +616,13 @@ class AFrameComponentModel extends Fabric {
                 // -- initializingNode -------------------------------------------------------------------------
 
                 //   initializingNode: function( nodeID, childID, childExtendsID, childImplementsIDs,
-                //     childSource, childType, childIndex, childName ) {
+                //     childSource, childType, childIndex, childName ) { 
 
                 // },
 
                 // -- deletingNode -------------------------------------------------------------------------
 
-                deletingNode: function (nodeID) {
+                deletingNode: function (nodeID, replaceFlag) {
 
                     if (this.state.nodes[nodeID] !== undefined) {
 
@@ -584,7 +630,9 @@ class AFrameComponentModel extends Fabric {
 
                         if (node.aframeObj.compName !== undefined) {
                             // removes and destroys object
-                            node.aframeObj.el.removeAttribute(node.aframeObj.compName);
+                            if(!replaceFlag)
+                                node.aframeObj.el.removeAttribute(node.aframeObj.compName);
+                                
                             node.aframeObj = undefined;
                         }
 
@@ -733,7 +781,7 @@ class AFrameComponentModel extends Fabric {
 
                                 if(propertyName == "dynamic"){
                                     if(propertyValue){
-                                        parentNodeAF.setAttribute('data-aabb-collider-dynamic', "");
+                                        parentNodeAF.setAttribute('data-aabb-collider-dynamic', propertyValue);
                                     } else {
                                         let attr = parentNodeAF.getAttribute('data-aabb-collider-dynamic');
                                         if(attr !== undefined)
@@ -1366,7 +1414,12 @@ class AFrameComponentModel extends Fabric {
 
                             switch (propertyName) {
                                 case "src":
-                                    value = value !== "" ? ('#' + value.getAttribute('id')) : value;
+                                    if (typeof value == "string" && value !== ""){
+                                        value = value
+                                    } else {
+                                        value = (value) ? ('#' + value.getAttribute('id')) : value;
+                                    }
+                                    
                                     break;
 
                             }

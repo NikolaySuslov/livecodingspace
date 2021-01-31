@@ -334,7 +334,8 @@
           "properties": {
             "src": "#sky",
             "side": "back",
-            "fog": false
+            "fog": false,
+            "shader": "flat"
           }
         }
       }

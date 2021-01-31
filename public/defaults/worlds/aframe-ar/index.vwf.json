@@ -124,7 +124,7 @@
           },
           "methods": {
             "run": {
-              "body": "    var time = this.time;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    this.rotation = [rot[0], rot[1]+2, rot[2]];\n    this.future( 0.05 ).run();\n",
+              "body": "    var time = this.time;\n    let rot = this.rotation; //AFRAME.utils.coordinates.parse(this.rotation);\n    this.rotation = [rot.x, rot.y+2, rot.z];\n    this.future( 0.05 ).run();\n",
               "type": "application/javascript"
             }
           },

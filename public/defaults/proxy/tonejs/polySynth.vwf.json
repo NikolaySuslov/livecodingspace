@@ -1,0 +1,25 @@
+{
+  "extends": "proxy/tonejs/node.vwf",
+  "properties": {},
+  "methods":{
+    "triggerAttackRelease":{
+      "parameters": [
+        "note", "duration", "time", "velocity"
+      ]
+    },
+    "triggerAttack":{
+      "parameters": [
+        "note",
+        "velocity"
+      ]
+    },
+    "triggerRelease":{
+      "parameters": [
+        "note"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "polySynth.js"
+  }
+}

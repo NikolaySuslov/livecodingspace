@@ -1,0 +1,31 @@
+{
+    "extends": "proxy/tonejs/polySynth.vwf",
+    "properties": {
+        "detune": null,
+        "portamento": null,
+        "volume": null,
+
+        "octaves": null,
+        "pitchDecay": null,
+        "onsilence": null,
+
+        "harmonicity":null,
+        "modulationType":null,
+        "partialCount":null,
+        "partials":null,
+        "phase":null,
+        "type":null,
+
+        "attack":null,
+        "attackCurve":null,
+        "decay":null,
+        "decayCurve":null,
+        "release":null,
+        "releaseCurve":null,
+        "sustain":null
+    },
+    "methods":{},
+    "scripts": {
+      "source": "membraneSynth.js"
+    }
+  }

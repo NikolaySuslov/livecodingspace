@@ -114,6 +114,15 @@ this.hitendEventMethod = function () {
     //clearIntersect method
 }
 
+this.fromhitstartEventMethod = function (value) {
+    //intersect method
+}
+
+
+this.fromhitendEventMethod = function (value) {
+    //clearIntersect method
+}
+
 this.clickEventMethod = function (value) {
     //clickEventMethod
 }
@@ -327,7 +336,7 @@ this.placeInFrontOf =  function(nodeID, dist) {
 }
 
 
-this.doButtonTriggerdownAction = function(button){
+this.doButtonTriggerdownAction = function(button, controllerID, point){
     //do button action
     console.log('TriggerdownAction form: ', button)
 }
@@ -342,4 +351,44 @@ this.mousedownAction = function(){
 }
 
 this.mouseupAction = function(){  
+}
+
+this.createChild = function(id,nodeDef){
+    let self = this;
+    this.children.create(id, nodeDef, function(child){
+
+        if(child.stepping){
+            child.step();
+        }
+
+    })
+
+}
+
+this.createChildComponent = function(name,nodeDef){
+    let self = this;
+
+    if(this[name]){
+        this.children.delete(this[name])
+    }
+
+    let dn = nodeDef.properties.displayName;
+        if(this[dn]){
+            this.children.delete(this[dn])
+        }
+    
+   
+
+    this.children.create(name, nodeDef, function(child){})
+
+}
+
+this.positionChanged = function(){
+    
+}
+
+this.setPosition = function(value){
+    this.position = value;
+    this.positionChanged();
+
 }

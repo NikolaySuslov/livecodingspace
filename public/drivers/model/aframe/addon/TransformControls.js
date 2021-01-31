@@ -271,8 +271,8 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 			if ( planeIntersect ) {
 
-				let viewDriver = vwf.views["/drivers/view/aframeComponent"];
-				viewDriver.interpolateView = false;
+				// let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+				//viewDriver.interpolateView = false;
 
 				event.preventDefault();
 				event.stopPropagation();
@@ -578,8 +578,8 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 		if ( pointer.button !== 0 ) return;
 
-		let viewDriver = vwf.views["/drivers/view/aframeComponent"];
-			viewDriver.interpolateView = true;
+		// let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+		
 		if ( this.dragging && ( this.axis !== null ) ) {
 
 			mouseUpEvent.mode = this.mode;
@@ -589,6 +589,8 @@ THREE.TransformControls = function ( camera, domElement ) {
 
 		this.dragging = false;
 		this.axis = null;
+
+		//viewDriver.interpolateView = true;
 
 	};
 
