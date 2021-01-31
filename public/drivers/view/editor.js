@@ -42,6 +42,7 @@ class LCSEditor extends Fabric {
                     this.widgets = _self_.widgets; //widgets;
                     this.lang = _LangManager.language;
                     this.helpers = _self_.helpers;
+                    this.tippy = tippy;
 
                     this.nodes = {};
                     this.scenes = {};
@@ -1564,18 +1565,37 @@ class LCSEditor extends Fabric {
                                 step: 10
                             }
                         }
+
                         if (Object.keys(sliderProps).includes(m.name)) {
 
-                            let currentValue = parseInt(JSON.parse(m.getValue()));
+
+                        let node = self.nodes[document.querySelector('#currentNode')._currentNode];
+                        
+                        let propGUI = node.children.filter(el=>{
+                           return el.name == "propGUI"
+                        })[0]
+
+                        let propMax = propGUI && (propGUI.properties[m.name + '_max']) ? 
+                        (propGUI.properties[m.name + '_max']).rawValue : null; 
+
+                        let propMin = propGUI && (propGUI.properties[m.name + '_min']) ? 
+                        (propGUI.properties[m.name + '_min']).rawValue : null; 
+
+                        let propStep = propGUI && (propGUI.properties[m.name + '_step']) ? 
+                        (propGUI.properties[m.name + '_min']).rawValue : null; 
+
+
+                            let currentValue = JSON.parse(m.getValue()) //parseInt(JSON.parse(m.getValue()));
 
                             let max = (currentValue > sliderProps[m.name].max) ? currentValue + 10 : sliderProps[m.name].max;
+                            let step = sliderProps[m.name].step ? sliderProps[m.name].step : 0.1;
 
                             var sliderComponent = self.widgets.sliderContinuous({
                                 'id': 'prop-slider-' + m.name,
                                 'label': 'Slider',
-                                'min': sliderProps[m.name].min,
-                                'max': max,
-                                'step': sliderProps[m.name].step ? sliderProps[m.name].step : 0.1,
+                                'min': propMin ? propMin : sliderProps[m.name].min,
+                                'max': propMax ? propMax : max,
+                                'step': propStep ? propStep : step,
                                 'value': currentValue, //parseInt(currenValue),
                                 'init': function () {
 
@@ -1990,160 +2010,364 @@ class LCSEditor extends Fabric {
                         ]
                     }
 
-                   function  pasteToScene (){
+                    function gizmoEdit() {
                         let nodeID = document.querySelector('#currentNode')._currentNode;
-                        if (nodeID !== vwf.application() || !self.copyBuffer){
-                            return {}
-                        }
 
-                        return  {
-                            $type: "div",
-                            $components: [
-                                self.widgets.floatActionButton({
-                                    label: "content_paste",
-                                    styleClass: "mdc-fab--mini",
-                                    onclickfunc: function () {
-                                        let nodeID = document.querySelector('#currentNode')._currentNode;
-                                        if (self.copyBuffer) {
-                                            let newNodeID = self.helpers.GUID();
-                                            let newName = self.helpers.randId();
-                                            let nodeDef = self.copyBuffer;
-                                            nodeDef.id = newNodeID;
-                                            vwf_view.kernel.callMethod(nodeID, "createChild", [newName, nodeDef]);
-                                            self.copyBuffer = null;
-                                        }
+                        let node = self.nodes[nodeID];
+                        let nodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, node.extendsID);
+
+                        let aframe = vwf.models["/drivers/model/aframe"];
+                        if (nodeID !== self.kernel.application() &&
+                            nodeProtos.includes("proxy/aframe/aentity.vwf") &&
+                            aframe && aframe.model.state.nodes[nodeID]) {
 
 
+                            return {
 
+                                $type: "div",
+                                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                                $components: [
+                                    {
+
+                                        $type: "div",
+                                        class: "mdc-layout-grid__inner",
+                                        $components: [
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    {
+
+
+                                                        $type: "span",
+                                                        $text: "Edit: ",
+
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                                $components: [
+                                                    self.widgets.switch({
+                                                        'id': 'editnode',
+                                                        'init': function () {
+                                                            //vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                                                            //let nodeID = document.querySelector('#currentNode')._currentNode;
+                                                            let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                            let gizmo = viewNode.getAttribute('gizmo')
+
+                                                            const myEl = document.querySelector('#editnode');//this;
+                                                            if (myEl) {
+                                                                var editorSwitch = new mdc.switchControl.MDCSwitch(this);
+                                                                editorSwitch.checked = gizmo ? true : false;
+                                                                myEl.addEventListener('change',
+
+                                                                    function (e) {
+
+                                                                        //let gizmo = viewNode.getAttribute('gizmo')
+
+                                                                        //let nodeID = document.querySelector('#currentNode')._currentNode;
+                                                                        if (editorSwitch) {
+                                                                            let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                                            let chkAttr = editorSwitch.checked;//this.getAttribute('checked');
+                                                                            if (chkAttr) {
+                                                                                //self.kernel.setProperty(this._currentNode, 'edit', true);
+                                                                                viewNode.setAttribute('gizmo', {});
+                                                                                let inter = viewNode.getAttribute('interpolation');
+                                                                                if (inter) {
+                                                                                    // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+                                                                                    //viewDriver.interpolateView = false;
+                                                                                    viewNode.components.interpolation.node.viewEdit = true;
+
+
+                                                                                }
+
+
+                                                                            } else {
+                                                                                //self.kernel.setProperty(this._currentNode, 'edit', false);
+
+                                                                                viewNode.removeAttribute('gizmo');
+                                                                                let inter = viewNode.getAttribute('interpolation');
+                                                                                if (inter) {
+                                                                                    // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
+                                                                                    // viewDriver.interpolateView = true;
+                                                                                    viewNode.components.interpolation.node.viewEdit = false;
+
+                                                                                }
+                                                                            }
+
+                                                                            //vwf_view.kernel.callMethod(nodeID, "createEditTool");
+                                                                            //vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+
+                                                                        }
+                                                                    }
+
+                                                                );
+
+                                                            }
+                                                        }
+                                                    }
+                                                    )
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+
+                                                    self.widgets.imageButton({
+                                                        imgSrc: "/drivers/view/editor/images/ui/icons/translate.png",
+                                                        styleClass: "editButton",
+                                                        onclickfunc: function (e) {
+                                                            let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                            let gizmo = viewNode.getAttribute('gizmo');
+                                                            gizmo ? viewNode.setAttribute('gizmo', { mode: 'translate' }) : null;
+                                                            // vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
+                                                        }
+                                                    })
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+
+                                                    self.widgets.imageButton({
+                                                        imgSrc: "/drivers/view/editor/images/ui/icons/rotate.png",
+                                                        styleClass: "editButton",
+                                                        onclickfunc: function (e) {
+                                                            let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                            let gizmo = viewNode.getAttribute('gizmo');
+                                                            gizmo ? viewNode.setAttribute('gizmo', { mode: 'rotate' }) : null;
+                                                            //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
+                                                        }
+                                                    })
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+
+                                                    self.widgets.imageButton({
+                                                        imgSrc: "/drivers/view/editor/images/ui/icons/scale.png",
+                                                        styleClass: "editButton",
+                                                        onclickfunc: function (e) {
+                                                            let viewNode = document.querySelector("[id='" + this._currentNode + "']");
+                                                            let gizmo = viewNode.getAttribute('gizmo');
+                                                            gizmo ? viewNode.setAttribute('gizmo', { mode: 'scale' }) : null;
+                                                            //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
+                                                        }
+                                                    })
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
+                                                $components: []
+                                            }
+                                        ]
                                     }
-                                })
-                            ]
+
+                                ]
+                            }
+
+                        } else {
+                            return {}
                         }
 
 
                     }
 
+                    function pasteGUI() {
+                        let nodeID = document.querySelector('#currentNode')._currentNode;
 
-                    let audioGUI = {
-                        $type: "div",
-                        class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
-                        $components: [
-                            {
+                        if (self.copyBuffer == null) return {}
 
-                                $type: "div",
-                                class: "mdc-layout-grid__inner",
-                                $components: [
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
-                                            {
+                        let node = self.nodes[nodeID];
+                        let nodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, node.extendsID);
 
+                        let nodeDef = self.copyBuffer;
+                        let newNodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, nodeDef.extends);
 
-                                                $type: "span",
-                                                $text: "Sound: "
-
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
-                                            self.widgets.icontoggle({
-                                                'id': "soundStopStartSwitch",
-                                                'label': 'play',
-                                                'on': JSON.stringify({ "content": "pause", "label": "stop" }),
-                                                'off': JSON.stringify({ "content": "play_arrow", "label": "play" }),
-                                                'state': false,
-                                                'init': function () {
-                                                    var nodeID = this._currentNode;
-
-                                                    this._comp = new mdc.iconButtonToggle.MDCIconButtonToggle(this);
-
-                                                    this.setAttribute('id', "soundStopStartSwitch-" + nodeID);
-                                                    let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
-                                                    //mdc.iconToggle.MDCIconToggle.attachTo(this);
-                                                    this._comp.on = isPlaying;
+                        if (nodeProtos.includes("proxy/aframe/componentNode.vwf") ||
+                            (nodeID == self.kernel.application() && newNodeProtos.includes("proxy/aframe/componentNode.vwf"))
+                        ) return {}
 
 
-                                                    this.addEventListener('MDCIconButtonToggle:change', (e) => {
+                        return self.widgets.floatActionButton({
+                            label: "content_paste",
+                            styleClass: "mdc-fab--mini",
+                            id: "pasteButton",
+                            tooltip: "Paste",
+                            onclickfunc: function () {
+                                //let nodeID = document.querySelector('#currentNode')._currentNode;
+                                //let node = self.nodes[nodeID];
+                                if (self.copyBuffer) {
+                                    let newNodeID = self.helpers.GUID();
+                                    let newName = self.helpers.randId();
 
-                                                        // let avatarID = 'avatar-'+ vwf.moniker_;
-                                                        // let avatarNode = self.nodes['avatar-'+ vwf.moniker_];
-                                                        // let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
+                                    if (newNodeProtos.includes('proxy/aframe/componentNode.vwf') || newNodeProtos.includes('proxy/ohm/node.vwf')) {
 
-                                                        var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                        let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
+                                        vwf_view.kernel.callMethod(nodeID, "createChildComponent", [newName, nodeDef]);
 
-                                                        if (isPlaying) {
 
-                                                            console.log("stop");
-                                                            vwf_view.kernel.callMethod(nodeID, "pauseSound");
+                                    } else {
 
-                                                        } else {
+                                        if (nodeID !== self.kernel.application()) {
+                                            nodeDef.properties.position = [0, 0, 0];
+                                            nodeDef.properties.rotation = [0, 0, 0];
+                                            nodeDef.properties.scale = [1, 1, 1];
+                                        }
 
-                                                            console.log("play")
-                                                            vwf_view.kernel.callMethod(nodeID, "playSound");
-                                                        }
-
-                                                    });
-
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
-                                            {
-                                                $type: "div",
-                                                style: "padding: 12px",
-                                                $components: [
-                                                    self.widgets.iconButton({
-                                                        'label': 'stop',
-                                                        onclickfunc: function () {
-                                                            var nodeID = this._currentNode;
-                                                            vwf_view.kernel.callMethod(nodeID, "stopSound");
-                                                        }
-
-                                                    })
-                                                ]
-                                            }
-                                        ]
+                                        nodeDef.id = newNodeID;
+                                        vwf_view.kernel.callMethod(nodeID, "createChild", [newName, nodeDef]);
                                     }
 
 
-                                    // {
-                                    //     $type: "div",
-                                    //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
-                                    //     $components: [
-                                    //         widgets.switch({
-                                    //         'id': 'editnode', 
-                                    //         'init': function(){
-                                    //             vwf_view.kernel.getProperty(this._currentNode, 'edit');
-                                    //         },
-                                    //         'onchange': function(e){
+                                    //self.copyBuffer = null;
+                                }
 
-                                    //             var nodeID = document.querySelector('#currentNode')._currentNode;
-                                    //             let chkAttr = this.getAttribute('checked');
-                                    //             if (chkAttr == "") {
-                                    //                 self.kernel.setProperty(this._currentNode, 'edit', false);
 
-                                    //             } else {
-                                    //                 self.kernel.setProperty(this._currentNode, 'edit', true);
-                                    //             }
 
-                                    //             vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
-                                    //         }
-                                    //     }
-                                    //     )
-                                    //     ]
-                                    // }
+                            }
+                        })
+
+                    }
+
+
+                    function audioGUI() {
+                        let nodeID = document.querySelector('#currentNode')._currentNode;
+                        let node = self.nodes[nodeID];
+                        let nodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, node.extendsID);
+                        if (nodeID !== self.kernel.application() && nodeProtos.includes('proxy/aframe/a-sound-component.vwf')) {
+                            return {
+                                $type: "div",
+                                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
+                                $components: [
+                                    {
+
+                                        $type: "div",
+                                        class: "mdc-layout-grid__inner",
+                                        $components: [
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    {
+
+
+                                                        $type: "span",
+                                                        $text: "Sound: "
+
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    self.widgets.icontoggle({
+                                                        'id': "soundStopStartSwitch",
+                                                        'label': 'play',
+                                                        'on': JSON.stringify({ "content": "pause", "label": "stop" }),
+                                                        'off': JSON.stringify({ "content": "play_arrow", "label": "play" }),
+                                                        'state': false,
+                                                        'init': function () {
+                                                            var nodeID = this._currentNode;
+
+                                                            this._comp = mdc.iconButton.MDCIconButtonToggle.attachTo(this);
+
+                                                            this.setAttribute('id', "soundStopStartSwitch-" + nodeID);
+                                                            let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
+                                                            //mdc.iconToggle.MDCIconToggle.attachTo(this);
+                                                            this._comp.on = isPlaying;
+
+
+                                                            this.addEventListener('MDCIconButtonToggle:change', (e) => {
+
+                                                                // let avatarID = 'avatar-'+ vwf.moniker_;
+                                                                // let avatarNode = self.nodes['avatar-'+ vwf.moniker_];
+                                                                // let mode = JSON.parse(avatarNode.properties.selectMode.getValue());
+
+                                                                var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                                let isPlaying = vwf.getProperty(nodeID, 'isPlaying');
+
+                                                                if (isPlaying) {
+
+                                                                    console.log("stop");
+                                                                    vwf_view.kernel.callMethod(nodeID, "pauseSound");
+
+                                                                } else {
+
+                                                                    console.log("play")
+                                                                    vwf_view.kernel.callMethod(nodeID, "playSound");
+                                                                }
+
+                                                            });
+
+                                                        }
+                                                    })
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    {
+                                                        $type: "div",
+                                                        style: "padding: 12px",
+                                                        $components: [
+                                                            self.widgets.iconButton({
+                                                                'label': 'stop',
+                                                                "styleClass": "mdc-button--outlined",
+                                                                "onclick": function () {
+                                                                    let nodeID = this._currentNode;
+                                                                    vwf_view.kernel.callMethod(nodeID, "stopSound");
+                                                                }
+
+                                                            })
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+
+
+                                            // {
+                                            //     $type: "div",
+                                            //     class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
+                                            //     $components: [
+                                            //         widgets.switch({
+                                            //         'id': 'editnode', 
+                                            //         'init': function(){
+                                            //             vwf_view.kernel.getProperty(this._currentNode, 'edit');
+                                            //         },
+                                            //         'onchange': function(e){
+
+                                            //             var nodeID = document.querySelector('#currentNode')._currentNode;
+                                            //             let chkAttr = this.getAttribute('checked');
+                                            //             if (chkAttr == "") {
+                                            //                 self.kernel.setProperty(this._currentNode, 'edit', false);
+
+                                            //             } else {
+                                            //                 self.kernel.setProperty(this._currentNode, 'edit', true);
+                                            //             }
+
+                                            //             vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
+                                            //         }
+                                            //     }
+                                            //     )
+                                            //     ]
+                                            // }
+                                        ]
+                                    }
                                 ]
                             }
-                        ]
+                        } else {
+                            return {}
+                        }
+
                     }
 
                     var saveGUI = {};
@@ -2166,286 +2390,149 @@ class LCSEditor extends Fabric {
                         })
                     }
 
-                    let gizmoEdit = {
+                    function copyGUI() {
+                        let nodeID = document.querySelector('#currentNode')._currentNode;
+                        let node = self.nodes[nodeID];
+                        let nodeProtos = LCSEditor.getPrototypes.call(self, self.kernel, node.extendsID);
 
-                        $type: "div",
-                        class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
-                        $components: [
-                            {
+                        if (nodeID && nodeID !== self.kernel.application()) {
+
+                            var dublicate = {}
+                            if (!nodeProtos.includes("proxy/aframe/componentNode.vwf")) {
+                                dublicate = self.widgets.floatActionButton({
+                                    label: "content_copy",
+                                    styleClass: "mdc-fab--mini",
+                                    id: "dublicateButton",
+                                    tooltip: "Dublicate",
+                                    onclickfunc: function () {
+                                        //var nodeID = document.querySelector('#currentNode')._currentNode;
+                                        let nodeDef = self.helpers.getNodeDef(nodeID);
+                                        let newName = self.helpers.randId();
+                                        let newNodeID = self.helpers.GUID();
+                                        nodeDef.id = newNodeID;
+                                        //let node = self.nodes[nodeID];
+                                        vwf_view.kernel.callMethod(node.parentID, "createChild", [newName, nodeDef]);
+
+                                    }
+                                })
+                            }
+
+                            return {
 
                                 $type: "div",
-                                class: "mdc-layout-grid__inner",
+                                class: "propGrid mdc-layout-grid max-width mdc-layout-grid--align-left",
                                 $components: [
                                     {
+
                                         $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                        class: "mdc-layout-grid__inner",
                                         $components: [
+
                                             {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    dublicate
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+                                                    // self.widgets.tooltip({
+                                                    //     id:"copy-",
+                                                    //     text:"Copy"
+                                                    // }),
+                                                    self.widgets.floatActionButton({
+                                                        label: "file_copy",
+                                                        styleClass: "mdc-fab--mini",
+                                                        id: "copyButton",
+                                                        tooltip: "Copy",
+                                                        onclickfunc: function () {
+                                                            //var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                            let nodeDef = self.helpers.getNodeDef(nodeID);
 
+                                                            if (nodeProtos.includes("proxy/aframe/componentNode.vwf")) {
 
-                                                $type: "span",
-                                                $text: "Edit: ",
+                                                                if (!nodeDef.properties) nodeDef.properties = {}
 
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-3",
-                                        $components: [
-                                            self.widgets.switch({
-                                                'id': 'editnode',
-                                                'init': function () {
-                                                    //vwf_view.kernel.getProperty(this._currentNode, 'edit');
-                                                    //let nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let viewNode = document.querySelector("[id='" + this._currentNode + "']");
-                                                    let gizmo = viewNode.getAttribute('gizmo')
-
-                                                    const myEl = document.querySelector('#editnode');//this;
-                                                    if (myEl) {
-                                                        var editorSwitch = new mdc.switchControl.MDCSwitch(this);
-                                                        editorSwitch.checked = gizmo ? true : false;
-                                                        myEl.addEventListener('change',
-
-                                                            function (e) {
-
-                                                                //let gizmo = viewNode.getAttribute('gizmo')
-
-                                                                //let nodeID = document.querySelector('#currentNode')._currentNode;
-                                                                if (editorSwitch) {
-                                                                    let viewNode = document.querySelector("[id='" + this._currentNode + "']");
-                                                                    let chkAttr = editorSwitch.checked;//this.getAttribute('checked');
-                                                                    if (chkAttr) {
-                                                                        //self.kernel.setProperty(this._currentNode, 'edit', true);
-                                                                        viewNode.setAttribute('gizmo', {});
-                                                                        let inter = viewNode.getAttribute('interpolation');
-                                                                        if (inter) {
-                                                                            // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
-                                                                            //viewDriver.interpolateView = false;
-                                                                            viewNode.components.interpolation.node.viewEdit = true;
-
-
-                                                                        }
-
-
-                                                                    } else {
-                                                                        //self.kernel.setProperty(this._currentNode, 'edit', false);
-
-                                                                        viewNode.removeAttribute('gizmo');
-                                                                        let inter = viewNode.getAttribute('interpolation');
-                                                                        if (inter) {
-                                                                            // let viewDriver = vwf.views["/drivers/view/aframeComponent"];
-                                                                            // viewDriver.interpolateView = true;
-                                                                            viewNode.components.interpolation.node.viewEdit = false;
-
-                                                                        }
-                                                                    }
-
-                                                                    //vwf_view.kernel.callMethod(nodeID, "createEditTool");
-                                                                    //vwf_view.kernel.callMethod(nodeID, "showCloseGizmo");
-
-                                                                }
+                                                                nodeDef.properties.displayName = node.name;
+                                                                nodeDef.type = "component";
                                                             }
 
-                                                        );
+                                                            self.copyBuffer = nodeDef
+                                                        }
+                                                    })
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
 
-                                                    }
-                                                }
+                                                    self.widgets.floatActionButton({
+                                                        label: "content_cut",
+                                                        styleClass: "mdc-fab--mini",
+                                                        id: "cutButton",
+                                                        tooltip: "Cut",
+                                                        onclickfunc: function () {
+                                                            //var nodeID = document.querySelector('#currentNode')._currentNode;
+                                                            let nodeDef = self.helpers.getNodeDef(nodeID);
+
+                                                            if (nodeProtos.includes("proxy/aframe/componentNode.vwf")) {
+
+                                                                if (!nodeDef.properties) nodeDef.properties = {}
+
+                                                                nodeDef.properties.displayName = node.name;
+                                                            }
+
+
+                                                            self.copyBuffer = nodeDef;
+                                                            vwf_view.kernel.deleteNode(nodeID);
+
+                                                        }
+                                                    })
+                                                ]
+                                            },
+
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
+                                                $components: [
+
+                                                    self.widgets.floatActionButton({
+                                                        label: "delete_forever",
+                                                        styleClass: "mdc-fab--mini",
+                                                        id: "deleteButton",
+                                                        tooltip: "Delete",
+                                                        onclickfunc: function () {
+                                                            vwf_view.kernel.deleteNode(nodeID);
+                                                        }
+                                                    }),
+
+                                                ]
+                                            },
+                                            {
+                                                $type: "div",
+                                                class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
+                                                $components: [
+                                                    //saveGUI
+                                                ]
                                             }
-                                            )
                                         ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
+                                    }
 
-                                            self.widgets.imageButton({
-                                                imgSrc: "/drivers/view/editor/images/ui/icons/translate.png",
-                                                styleClass: "editButton",
-                                                onclickfunc: function (e) {
-                                                    let viewNode = document.querySelector("[id='" + this._currentNode + "']");
-                                                    let gizmo = viewNode.getAttribute('gizmo');
-                                                    gizmo ? viewNode.setAttribute('gizmo', { mode: 'translate' }) : null;
-                                                    // vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['translate'])
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
-
-                                            self.widgets.imageButton({
-                                                imgSrc: "/drivers/view/editor/images/ui/icons/rotate.png",
-                                                styleClass: "editButton",
-                                                onclickfunc: function (e) {
-                                                    let viewNode = document.querySelector("[id='" + this._currentNode + "']");
-                                                    let gizmo = viewNode.getAttribute('gizmo');
-                                                    gizmo ? viewNode.setAttribute('gizmo', { mode: 'rotate' }) : null;
-                                                    //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['rotate'])
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2",
-                                        $components: [
-
-                                            self.widgets.imageButton({
-                                                imgSrc: "/drivers/view/editor/images/ui/icons/scale.png",
-                                                styleClass: "editButton",
-                                                onclickfunc: function (e) {
-                                                    let viewNode = document.querySelector("[id='" + this._currentNode + "']");
-                                                    let gizmo = viewNode.getAttribute('gizmo');
-                                                    gizmo ? viewNode.setAttribute('gizmo', { mode: 'scale' }) : null;
-                                                    //vwf_view.kernel.callMethod(this._currentNode, "setGizmoMode", ['scale'])
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-1",
-                                        $components: []
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
-                                        $components: [
-                                            {
-                                                class: "tooltiptext",
-                                                $type: "span",
-                                                $text: "Dublicate"
-                                            },
-                                            self.widgets.floatActionButton({
-                                                label: "content_copy",
-                                                styleClass: "mdc-fab--mini",
-                                                onclickfunc: function () {
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
-                                                    let newName = self.helpers.randId();
-                                                    let newNodeID = self.helpers.GUID();
-                                                    nodeDef.id = newNodeID;
-                                                    let node = self.nodes[nodeID];
-                                                    vwf_view.kernel.callMethod(node.parentID, "createChild", [newName, nodeDef]);
-
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
-                                        $components: [
-                                            {
-                                                class: "tooltiptext",
-                                                $type: "span",
-                                                $text: "Copy"
-                                            },
-                                            self.widgets.floatActionButton({
-                                                label: "file_copy",
-                                                styleClass: "mdc-fab--mini",
-                                                onclickfunc: function () {
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
-                                                    self.copyBuffer = nodeDef
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
-                                        $components: [
-                                            {
-                                                class: "tooltiptext",
-                                                $type: "span",
-                                                $text: "Cut"
-                                            },
-                                            self.widgets.floatActionButton({
-                                                label: "content_cut",
-                                                styleClass: "mdc-fab--mini",
-                                                onclickfunc: function () {
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let nodeDef = self.helpers.getNodeDef(nodeID);
-                                                    self.copyBuffer = nodeDef;
-                                                    vwf_view.kernel.deleteNode(nodeID);
-
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
-                                        $components: [
-                                            {
-                                                class: "tooltiptext",
-                                                $type: "span",
-                                                $text: "Paste"
-                                            },
-                                            self.widgets.floatActionButton({
-                                                label: "content_paste",
-                                                styleClass: "mdc-fab--mini",
-                                                onclickfunc: function () {
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    if (self.copyBuffer) {
-                                                        let newNodeID = self.helpers.GUID();
-                                                        let newName = self.helpers.randId();
-                                                        let nodeDef = self.copyBuffer;
-                                                        nodeDef.properties.position = [0, 0, 0];
-                                                        nodeDef.properties.rotation = [0, 0, 0];
-                                                        nodeDef.properties.scale = [1, 1, 1];
-                                                        nodeDef.id = newNodeID;
-                                                        vwf_view.kernel.callMethod(nodeID, "createChild", [newName, nodeDef]);
-                                                        self.copyBuffer = null;
-                                                    }
-
-
-
-                                                }
-                                            })
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip",
-                                        $components: [
-                                            {
-                                                class: "tooltiptext",
-                                                $type: "span",
-                                                $text: "Delete"
-                                            },
-                                            self.widgets.floatActionButton({
-                                                label: "delete_forever",
-                                                styleClass: "mdc-fab--mini",
-                                                onclickfunc: function () {
-                                                    var nodeID = document.querySelector('#currentNode')._currentNode;
-                                                    let node = self.nodes[nodeID];
-                                                    //vwf_view.kernel.deleteChild(node.parentID, node.name);
-                                                    //vwf_view.kernel.removeChild(node.parentID, nodeID);
-                                                    vwf_view.kernel.deleteNode(nodeID);
-                                                    //vwf_view.kernel.callMethod(node.parentID, "deleteNode", [node.name])
-                                                }
-                                            }),
-
-                                        ]
-                                    },
-                                    {
-                                        $type: "div",
-                                        class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-12",
-                                        $components: [
-                                            saveGUI
-                                        ]
-                                    },
                                 ]
                             }
 
-                        ]
+                        } else {
+                            return {}
+                        }
+
                     }
+
+
+                    //let gizmoEditOld = 
 
                     let nodesCell = {
 
@@ -2518,19 +2605,24 @@ class LCSEditor extends Fabric {
                             var propsActions = {};
                             var propsActionsCell = {};
 
-                            var gizmoCell = {};
-                            if (this._currentNode !== self.kernel.application()) {
-                                if (nodeProtos.includes('proxy/aframe/componentNode.vwf')) {
-                                    //gizmoCell = {};
-                                    if (nodeProtos.includes('proxy/aframe/a-sound-component.vwf')) {
-                                        //console.log("sound gui")
-                                        gizmoCell = audioGUI
-                                    }
+                            let gizmoCell = gizmoEdit();
+                            let audioCell = audioGUI();
+                            let copyCell = copyGUI();
 
-                                } else {
-                                    gizmoCell = gizmoEdit
-                                }
-                            }
+
+                            // if (this._currentNode !== self.kernel.application()) {
+                            //     if (nodeProtos.includes('proxy/aframe/componentNode.vwf') || nodeProtos.includes('proxy/ohm/node.vwf') ) {
+                            //             gizmoCell = compEdit;
+
+                            //         if (nodeProtos.includes('proxy/aframe/a-sound-component.vwf')) {
+                            //             //console.log("sound gui")
+                            //             gizmoCell = audioGUI
+                            //         }
+
+                            //     } else {
+                            //         gizmoCell = gizmoEdit
+                            //     }
+                            // }
 
                             if (node !== undefined) {
 
@@ -2710,7 +2802,7 @@ class LCSEditor extends Fabric {
                                                     class: "mdc-list-item__text mdc-typography--headline6"
                                                     //<h1 class="mdc-typography--display4">Big header</h1>
                                                 },
-                                               
+
                                                 self.widgets.icontoggle({
                                                     'styleClass': "", //mdc-top-app-bar__action-item
                                                     'id': "selectNodeSwitch",
@@ -2741,11 +2833,13 @@ class LCSEditor extends Fabric {
                                                         });
 
                                                     }
-                                                })
+                                                }),
+
+                                                pasteGUI()
 
                                             ]
                                         },
-                                        pasteToScene(),
+
                                         listDivider,
                                         {
                                             // $cell: true,
@@ -2794,6 +2888,10 @@ class LCSEditor extends Fabric {
                                             ]
                                         },
                                         gizmoCell,
+                                        audioCell,
+                                        listDivider,
+
+                                        copyCell,
                                         listDivider,
                                         {
                                             $type: "li",
@@ -4352,7 +4450,9 @@ class LCSEditor extends Fabric {
                 },
 
                 deletedNode: function (nodeID) {
-                    var node = this.nodes[nodeID];
+                    let node = this.nodes[nodeID];
+                    if (!node) return
+
                     node.parent.children.splice(node.parent.children.indexOf(node), 1);
                     delete this.nodes[nodeID];
 

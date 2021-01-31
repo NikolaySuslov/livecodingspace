@@ -1,0 +1,99 @@
+{
+    "extends": "proxy/aframe/acylinder.vwf",
+    "implements": "proxy/objects/gui/drag.vwf",
+    "properties": {
+        "lockZ": true,
+        "radius": "0.2",
+        "height": 0.6,
+        "position": "0 1 0",
+        "rotation": [
+            0,
+            0,
+            90
+        ],
+        "class": "hit clickable intersectable"
+    },
+    "methods": {
+        "hitstartEventMethod": {},
+        "hitendEventMethod": {},
+        "moveAction": {
+            "parameters": [
+                "controllerID",
+                "point"
+            ]
+        }
+    },
+    "events": {
+        "clickEvent": {
+            "body": ""
+        }
+    },
+    "children": {
+        "material": {
+            "extends": "proxy/aframe/aMaterialComponent.vwf",
+            "properties": {
+                "color": "#3c7249"
+            }
+        },
+        "aabb-collider-listener": {
+            "extends": "proxy/aframe/app-aabb-collider-listener-component.vwf",
+            "type": "component",
+            "properties": {
+                "dynamic": true
+            }
+        },
+        "cursor-listener": {
+            "extends": "proxy/aframe/app-cursor-listener-component.vwf",
+            "type": "component"
+        },
+        "raycasterListener": {
+            "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+            "type": "component"
+        },
+        "note": {
+            "extends": "proxy/tonejs/note.vwf",
+            "properties": {
+                "note": "C3",
+                "duration": "8n"
+            }
+        },
+        "text": {
+            "extends": "proxy/aframe/atext.vwf",
+            "properties": {
+                "value": "note",
+                "color": "white",
+                "position": [
+                    0,
+                    0.2,
+                    0.3
+                ],
+                "rotation": [
+                    0,
+                    0,
+                    -90
+                ]
+            }
+        },
+        "propGUI": {
+            "extends": "proxy/node.vwf",
+            "properties": {
+                "radius_max": 1.0,
+                "radius_min": 0.01,
+                "radius_step": 0.05,
+                "height_max": 10.0,
+                "height_min": 0.1,
+                "height_step": 0.1
+            }
+        },
+        "interpolation": {
+            "extends": "proxy/aframe/interpolation-component.vwf",
+            "type": "component",
+            "properties": {
+                "enabled": true
+            }
+        }
+    },
+    "scripts": {
+        "source": "/proxy/objects/music/note.js"
+    }
+}

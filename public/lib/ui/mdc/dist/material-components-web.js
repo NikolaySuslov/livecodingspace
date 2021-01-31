@@ -5662,16 +5662,16 @@ var MDCDialog = /** @class */function (_super) {
         if (!container) {
             throw new Error("Dialog component requires a " + strings.CONTAINER_SELECTOR + " container element");
         }
-        this.container_ = container;
-        this.content_ = this.root.querySelector(strings.CONTENT_SELECTOR);
-        this.buttons_ = [].slice.call(this.root.querySelectorAll(strings.BUTTON_SELECTOR));
-        this.defaultButton_ = this.root.querySelector("[" + strings.BUTTON_DEFAULT_ATTRIBUTE + "]");
-        this.focusTrapFactory_ = focusTrapFactory;
-        this.buttonRipples_ = [];
+        this.container = container;
+        this.content = this.root.querySelector(strings.CONTENT_SELECTOR);
+        this.buttons = [].slice.call(this.root.querySelectorAll(strings.BUTTON_SELECTOR));
+        this.defaultButton = this.root.querySelector("[" + strings.BUTTON_DEFAULT_ATTRIBUTE + "]");
+        this.focusTrapFactory = focusTrapFactory;
+        this.buttonRipples = [];
         try {
-            for (var _b = __values(this.buttons_), _c = _b.next(); !_c.done; _c = _b.next()) {
+            for (var _b = __values(this.buttons), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var buttonEl = _c.value;
-                this.buttonRipples_.push(new component_2.MDCRipple(buttonEl));
+                this.buttonRipples.push(new component_2.MDCRipple(buttonEl));
             }
         } catch (e_1_1) {
             e_1 = { error: e_1_1 };
@@ -5685,37 +5685,37 @@ var MDCDialog = /** @class */function (_super) {
     };
     MDCDialog.prototype.initialSyncWithDOM = function () {
         var _this = this;
-        this.focusTrap_ = util.createFocusTrapInstance(this.container_, this.focusTrapFactory_, this.getInitialFocusEl_() || undefined);
-        this.handleClick_ = this.foundation.handleClick.bind(this.foundation);
-        this.handleKeydown_ = this.foundation.handleKeydown.bind(this.foundation);
-        this.handleDocumentKeydown_ = this.foundation.handleDocumentKeydown.bind(this.foundation);
-        this.handleLayout_ = this.layout.bind(this);
+        this.focusTrap = util.createFocusTrapInstance(this.container, this.focusTrapFactory, this.getInitialFocusEl() || undefined);
+        this.handleClick = this.foundation.handleClick.bind(this.foundation);
+        this.handleKeydown = this.foundation.handleKeydown.bind(this.foundation);
+        this.handleDocumentKeydown = this.foundation.handleDocumentKeydown.bind(this.foundation);
+        this.handleLayout = this.layout.bind(this);
         var LAYOUT_EVENTS = ['resize', 'orientationchange'];
-        this.handleOpening_ = function () {
+        this.handleOpening = function () {
             LAYOUT_EVENTS.forEach(function (evtType) {
-                return window.addEventListener(evtType, _this.handleLayout_);
+                window.addEventListener(evtType, _this.handleLayout);
             });
-            document.addEventListener('keydown', _this.handleDocumentKeydown_);
+            document.addEventListener('keydown', _this.handleDocumentKeydown);
         };
-        this.handleClosing_ = function () {
+        this.handleClosing = function () {
             LAYOUT_EVENTS.forEach(function (evtType) {
-                return window.removeEventListener(evtType, _this.handleLayout_);
+                window.removeEventListener(evtType, _this.handleLayout);
             });
-            document.removeEventListener('keydown', _this.handleDocumentKeydown_);
+            document.removeEventListener('keydown', _this.handleDocumentKeydown);
         };
-        this.listen('click', this.handleClick_);
-        this.listen('keydown', this.handleKeydown_);
-        this.listen(strings.OPENING_EVENT, this.handleOpening_);
-        this.listen(strings.CLOSING_EVENT, this.handleClosing_);
+        this.listen('click', this.handleClick);
+        this.listen('keydown', this.handleKeydown);
+        this.listen(strings.OPENING_EVENT, this.handleOpening);
+        this.listen(strings.CLOSING_EVENT, this.handleClosing);
     };
     MDCDialog.prototype.destroy = function () {
-        this.unlisten('click', this.handleClick_);
-        this.unlisten('keydown', this.handleKeydown_);
-        this.unlisten(strings.OPENING_EVENT, this.handleOpening_);
-        this.unlisten(strings.CLOSING_EVENT, this.handleClosing_);
-        this.handleClosing_();
-        this.buttonRipples_.forEach(function (ripple) {
-            return ripple.destroy();
+        this.unlisten('click', this.handleClick);
+        this.unlisten('keydown', this.handleKeydown);
+        this.unlisten(strings.OPENING_EVENT, this.handleOpening);
+        this.unlisten(strings.CLOSING_EVENT, this.handleClosing);
+        this.handleClosing();
+        this.buttonRipples.forEach(function (ripple) {
+            ripple.destroy();
         });
         _super.prototype.destroy.call(this);
     };
@@ -5743,10 +5743,12 @@ var MDCDialog = /** @class */function (_super) {
                 return _this.root.classList.add(className);
             },
             areButtonsStacked: function areButtonsStacked() {
-                return util.areTopsMisaligned(_this.buttons_);
+                return util.areTopsMisaligned(_this.buttons);
             },
             clickDefaultButton: function clickDefaultButton() {
-                return _this.defaultButton_ && _this.defaultButton_.click();
+                if (_this.defaultButton) {
+                    _this.defaultButton.click();
+                }
             },
             eventTargetMatches: function eventTargetMatches(target, selector) {
                 return target ? ponyfill_1.matches(target, selector) : false;
@@ -5759,13 +5761,13 @@ var MDCDialog = /** @class */function (_super) {
                 return element && element.getAttribute(strings.ACTION_ATTRIBUTE);
             },
             getInitialFocusEl: function getInitialFocusEl() {
-                return _this.getInitialFocusEl_();
+                return _this.getInitialFocusEl();
             },
             hasClass: function hasClass(className) {
                 return _this.root.classList.contains(className);
             },
             isContentScrollable: function isContentScrollable() {
-                return util.isScrollable(_this.content_);
+                return util.isScrollable(_this.content);
             },
             notifyClosed: function notifyClosed(action) {
                 return _this.emit(strings.CLOSED_EVENT, action ? { action: action } : {});
@@ -5780,7 +5782,7 @@ var MDCDialog = /** @class */function (_super) {
                 return _this.emit(strings.OPENING_EVENT, {});
             },
             releaseFocus: function releaseFocus() {
-                return _this.focusTrap_.releaseFocus();
+                _this.focusTrap.releaseFocus();
             },
             removeBodyClass: function removeBodyClass(className) {
                 return document.body.classList.remove(className);
@@ -5789,18 +5791,34 @@ var MDCDialog = /** @class */function (_super) {
                 return _this.root.classList.remove(className);
             },
             reverseButtons: function reverseButtons() {
-                _this.buttons_.reverse();
-                _this.buttons_.forEach(function (button) {
+                _this.buttons.reverse();
+                _this.buttons.forEach(function (button) {
                     button.parentElement.appendChild(button);
                 });
             },
             trapFocus: function trapFocus() {
-                return _this.focusTrap_.trapFocus();
+                _this.focusTrap.trapFocus();
+            },
+            registerContentEventHandler: function registerContentEventHandler(evt, handler) {
+                if (_this.content instanceof HTMLElement) {
+                    _this.content.addEventListener(evt, handler);
+                }
+            },
+            deregisterContentEventHandler: function deregisterContentEventHandler(evt, handler) {
+                if (_this.content instanceof HTMLElement) {
+                    _this.content.removeEventListener(evt, handler);
+                }
+            },
+            isScrollableContentAtTop: function isScrollableContentAtTop() {
+                return util.isScrollAtTop(_this.content);
+            },
+            isScrollableContentAtBottom: function isScrollableContentAtBottom() {
+                return util.isScrollAtBottom(_this.content);
             }
         };
         return new foundation_1.MDCDialogFoundation(adapter);
     };
-    MDCDialog.prototype.getInitialFocusEl_ = function () {
+    MDCDialog.prototype.getInitialFocusEl = function () {
         return this.root.querySelector("[" + strings.INITIAL_FOCUS_ATTRIBUTE + "]");
     };
     return MDCDialog;
@@ -5848,7 +5866,16 @@ exports.cssClasses = {
     OPENING: 'mdc-dialog--opening',
     SCROLLABLE: 'mdc-dialog--scrollable',
     SCROLL_LOCK: 'mdc-dialog-scroll-lock',
-    STACKED: 'mdc-dialog--stacked'
+    STACKED: 'mdc-dialog--stacked',
+    FULLSCREEN: 'mdc-dialog--fullscreen',
+    // Class for showing a scroll divider on full-screen dialog header element.
+    // Should only be displayed on scrollable content, when the dialog content is
+    // scrolled "underneath" the header.
+    SCROLL_DIVIDER_HEADER: 'mdc-dialog-scroll-divider-header',
+    // Class for showing a scroll divider on a full-screen dialog footer element.
+    // Should only be displayed on scrolalble content, when the dialog content is
+    // obscured "underneath" the footer.
+    SCROLL_DIVIDER_FOOTER: 'mdc-dialog-scroll-divider-footer'
 };
 exports.strings = {
     ACTION_ATTRIBUTE: 'data-mdc-dialog-action',
@@ -5938,21 +5965,31 @@ var __assign = this && this.__assign || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var animationframe_1 = __webpack_require__(/*! @material/animation/animationframe */ "./packages/mdc-animation/animationframe.ts");
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-dialog/constants.ts");
+var AnimationKeys;
+(function (AnimationKeys) {
+    AnimationKeys["POLL_SCROLL_POS"] = "poll_scroll_position";
+})(AnimationKeys || (AnimationKeys = {}));
 var MDCDialogFoundation = /** @class */function (_super) {
     __extends(MDCDialogFoundation, _super);
     function MDCDialogFoundation(adapter) {
         var _this = _super.call(this, __assign(__assign({}, MDCDialogFoundation.defaultAdapter), adapter)) || this;
-        _this.isOpen_ = false;
-        _this.animationFrame_ = 0;
-        _this.animationTimer_ = 0;
-        _this.layoutFrame_ = 0;
-        _this.escapeKeyAction_ = constants_1.strings.CLOSE_ACTION;
-        _this.scrimClickAction_ = constants_1.strings.CLOSE_ACTION;
-        _this.autoStackButtons_ = true;
-        _this.areButtonsStacked_ = false;
+        _this.dialogOpen = false;
+        _this.isFullscreen = false;
+        _this.animationFrame = 0;
+        _this.animationTimer = 0;
+        _this.layoutFrame = 0;
+        _this.escapeKeyAction = constants_1.strings.CLOSE_ACTION;
+        _this.scrimClickAction = constants_1.strings.CLOSE_ACTION;
+        _this.autoStackButtons = true;
+        _this.areButtonsStacked = false;
         _this.suppressDefaultPressSelector = constants_1.strings.SUPPRESS_DEFAULT_PRESS_SELECTOR;
+        _this.animFrame = new animationframe_1.AnimationFrame();
+        _this.contentScrollHandler = function () {
+            _this.handleScrollEvent();
+        };
         return _this;
     }
     Object.defineProperty(MDCDialogFoundation, "cssClasses", {
@@ -6032,6 +6069,18 @@ var MDCDialogFoundation = /** @class */function (_super) {
                 },
                 trapFocus: function trapFocus() {
                     return undefined;
+                },
+                registerContentEventHandler: function registerContentEventHandler() {
+                    return undefined;
+                },
+                deregisterContentEventHandler: function deregisterContentEventHandler() {
+                    return undefined;
+                },
+                isScrollableContentAtTop: function isScrollableContentAtTop() {
+                    return false;
+                },
+                isScrollableContentAtBottom: function isScrollableContentAtBottom() {
+                    return false;
                 }
             };
         },
@@ -6042,32 +6091,40 @@ var MDCDialogFoundation = /** @class */function (_super) {
         if (this.adapter.hasClass(constants_1.cssClasses.STACKED)) {
             this.setAutoStackButtons(false);
         }
+        this.isFullscreen = this.adapter.hasClass(constants_1.cssClasses.FULLSCREEN);
     };
     MDCDialogFoundation.prototype.destroy = function () {
-        if (this.isOpen_) {
+        if (this.dialogOpen) {
             this.close(constants_1.strings.DESTROY_ACTION);
         }
-        if (this.animationTimer_) {
-            clearTimeout(this.animationTimer_);
-            this.handleAnimationTimerEnd_();
+        if (this.animationTimer) {
+            clearTimeout(this.animationTimer);
+            this.handleAnimationTimerEnd();
         }
-        if (this.layoutFrame_) {
-            cancelAnimationFrame(this.layoutFrame_);
-            this.layoutFrame_ = 0;
+        if (this.layoutFrame) {
+            cancelAnimationFrame(this.layoutFrame);
+            this.layoutFrame = 0;
+        }
+        if (this.isFullscreen && this.adapter.isContentScrollable()) {
+            this.adapter.deregisterContentEventHandler('scroll', this.contentScrollHandler);
         }
     };
     MDCDialogFoundation.prototype.open = function () {
         var _this = this;
-        this.isOpen_ = true;
+        this.dialogOpen = true;
         this.adapter.notifyOpening();
         this.adapter.addClass(constants_1.cssClasses.OPENING);
-        // Wait a frame once display is no longer "none", to establish basis for animation
-        this.runNextAnimationFrame_(function () {
+        if (this.isFullscreen && this.adapter.isContentScrollable()) {
+            this.adapter.registerContentEventHandler('scroll', this.contentScrollHandler);
+        }
+        // Wait a frame once display is no longer "none", to establish basis for
+        // animation
+        this.runNextAnimationFrame(function () {
             _this.adapter.addClass(constants_1.cssClasses.OPEN);
             _this.adapter.addBodyClass(constants_1.cssClasses.SCROLL_LOCK);
             _this.layout();
-            _this.animationTimer_ = setTimeout(function () {
-                _this.handleAnimationTimerEnd_();
+            _this.animationTimer = setTimeout(function () {
+                _this.handleAnimationTimerEnd();
                 _this.adapter.trapFocus(_this.adapter.getInitialFocusEl());
                 _this.adapter.notifyOpened();
             }, constants_1.numbers.DIALOG_ANIMATION_OPEN_TIME_MS);
@@ -6078,44 +6135,48 @@ var MDCDialogFoundation = /** @class */function (_super) {
         if (action === void 0) {
             action = '';
         }
-        if (!this.isOpen_) {
-            // Avoid redundant close calls (and events), e.g. from keydown on elements that inherently emit click
+        if (!this.dialogOpen) {
+            // Avoid redundant close calls (and events), e.g. from keydown on elements
+            // that inherently emit click
             return;
         }
-        this.isOpen_ = false;
+        this.dialogOpen = false;
         this.adapter.notifyClosing(action);
         this.adapter.addClass(constants_1.cssClasses.CLOSING);
         this.adapter.removeClass(constants_1.cssClasses.OPEN);
         this.adapter.removeBodyClass(constants_1.cssClasses.SCROLL_LOCK);
-        cancelAnimationFrame(this.animationFrame_);
-        this.animationFrame_ = 0;
-        clearTimeout(this.animationTimer_);
-        this.animationTimer_ = setTimeout(function () {
+        if (this.isFullscreen && this.adapter.isContentScrollable()) {
+            this.adapter.deregisterContentEventHandler('scroll', this.contentScrollHandler);
+        }
+        cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = 0;
+        clearTimeout(this.animationTimer);
+        this.animationTimer = setTimeout(function () {
             _this.adapter.releaseFocus();
-            _this.handleAnimationTimerEnd_();
+            _this.handleAnimationTimerEnd();
             _this.adapter.notifyClosed(action);
         }, constants_1.numbers.DIALOG_ANIMATION_CLOSE_TIME_MS);
     };
     MDCDialogFoundation.prototype.isOpen = function () {
-        return this.isOpen_;
+        return this.dialogOpen;
     };
     MDCDialogFoundation.prototype.getEscapeKeyAction = function () {
-        return this.escapeKeyAction_;
+        return this.escapeKeyAction;
     };
     MDCDialogFoundation.prototype.setEscapeKeyAction = function (action) {
-        this.escapeKeyAction_ = action;
+        this.escapeKeyAction = action;
     };
     MDCDialogFoundation.prototype.getScrimClickAction = function () {
-        return this.scrimClickAction_;
+        return this.scrimClickAction;
     };
     MDCDialogFoundation.prototype.setScrimClickAction = function (action) {
-        this.scrimClickAction_ = action;
+        this.scrimClickAction = action;
     };
     MDCDialogFoundation.prototype.getAutoStackButtons = function () {
-        return this.autoStackButtons_;
+        return this.autoStackButtons;
     };
     MDCDialogFoundation.prototype.setAutoStackButtons = function (autoStack) {
-        this.autoStackButtons_ = autoStack;
+        this.autoStackButtons = autoStack;
     };
     MDCDialogFoundation.prototype.getSuppressDefaultPressSelector = function () {
         return this.suppressDefaultPressSelector;
@@ -6125,20 +6186,20 @@ var MDCDialogFoundation = /** @class */function (_super) {
     };
     MDCDialogFoundation.prototype.layout = function () {
         var _this = this;
-        if (this.layoutFrame_) {
-            cancelAnimationFrame(this.layoutFrame_);
+        if (this.layoutFrame) {
+            cancelAnimationFrame(this.layoutFrame);
         }
-        this.layoutFrame_ = requestAnimationFrame(function () {
-            _this.layoutInternal_();
-            _this.layoutFrame_ = 0;
+        this.layoutFrame = requestAnimationFrame(function () {
+            _this.layoutInternal();
+            _this.layoutFrame = 0;
         });
     };
     /** Handles click on the dialog root element. */
     MDCDialogFoundation.prototype.handleClick = function (evt) {
         var isScrim = this.adapter.eventTargetMatches(evt.target, constants_1.strings.SCRIM_SELECTOR);
         // Check for scrim click first since it doesn't require querying ancestors.
-        if (isScrim && this.scrimClickAction_ !== '') {
-            this.close(this.scrimClickAction_);
+        if (isScrim && this.scrimClickAction !== '') {
+            this.close(this.scrimClickAction);
         } else {
             var action = this.adapter.getActionFromEvent(evt);
             if (action) {
@@ -6180,50 +6241,86 @@ var MDCDialogFoundation = /** @class */function (_super) {
     /** Handles keydown on the document. */
     MDCDialogFoundation.prototype.handleDocumentKeydown = function (evt) {
         var isEscape = evt.key === 'Escape' || evt.keyCode === 27;
-        if (isEscape && this.escapeKeyAction_ !== '') {
-            this.close(this.escapeKeyAction_);
+        if (isEscape && this.escapeKeyAction !== '') {
+            this.close(this.escapeKeyAction);
         }
     };
-    MDCDialogFoundation.prototype.layoutInternal_ = function () {
-        if (this.autoStackButtons_) {
-            this.detectStackedButtons_();
-        }
-        this.detectScrollableContent_();
+    /**
+     * Handles scroll event on the dialog's content element -- showing a scroll
+     * divider on the header or footer based on the scroll position. This handler
+     * should only be registered on full-screen dialogs with scrollable content.
+     */
+    MDCDialogFoundation.prototype.handleScrollEvent = function () {
+        var _this = this;
+        // Since scroll events can fire at a high rate, we throttle these events by
+        // using requestAnimationFrame.
+        this.animFrame.request(AnimationKeys.POLL_SCROLL_POS, function () {
+            _this.toggleScrollDividerHeader();
+            _this.toggleScrollDividerFooter();
+        });
     };
-    MDCDialogFoundation.prototype.handleAnimationTimerEnd_ = function () {
-        this.animationTimer_ = 0;
+    MDCDialogFoundation.prototype.layoutInternal = function () {
+        if (this.autoStackButtons) {
+            this.detectStackedButtons();
+        }
+        this.toggleScrollableClasses();
+    };
+    MDCDialogFoundation.prototype.handleAnimationTimerEnd = function () {
+        this.animationTimer = 0;
         this.adapter.removeClass(constants_1.cssClasses.OPENING);
         this.adapter.removeClass(constants_1.cssClasses.CLOSING);
     };
     /**
-     * Runs the given logic on the next animation frame, using setTimeout to factor in Firefox reflow behavior.
+     * Runs the given logic on the next animation frame, using setTimeout to
+     * factor in Firefox reflow behavior.
      */
-    MDCDialogFoundation.prototype.runNextAnimationFrame_ = function (callback) {
+    MDCDialogFoundation.prototype.runNextAnimationFrame = function (callback) {
         var _this = this;
-        cancelAnimationFrame(this.animationFrame_);
-        this.animationFrame_ = requestAnimationFrame(function () {
-            _this.animationFrame_ = 0;
-            clearTimeout(_this.animationTimer_);
-            _this.animationTimer_ = setTimeout(callback, 0);
+        cancelAnimationFrame(this.animationFrame);
+        this.animationFrame = requestAnimationFrame(function () {
+            _this.animationFrame = 0;
+            clearTimeout(_this.animationTimer);
+            _this.animationTimer = setTimeout(callback, 0);
         });
     };
-    MDCDialogFoundation.prototype.detectStackedButtons_ = function () {
+    MDCDialogFoundation.prototype.detectStackedButtons = function () {
         // Remove the class first to let us measure the buttons' natural positions.
         this.adapter.removeClass(constants_1.cssClasses.STACKED);
         var areButtonsStacked = this.adapter.areButtonsStacked();
         if (areButtonsStacked) {
             this.adapter.addClass(constants_1.cssClasses.STACKED);
         }
-        if (areButtonsStacked !== this.areButtonsStacked_) {
+        if (areButtonsStacked !== this.areButtonsStacked) {
             this.adapter.reverseButtons();
-            this.areButtonsStacked_ = areButtonsStacked;
+            this.areButtonsStacked = areButtonsStacked;
         }
     };
-    MDCDialogFoundation.prototype.detectScrollableContent_ = function () {
-        // Remove the class first to let us measure the natural height of the content.
+    MDCDialogFoundation.prototype.toggleScrollableClasses = function () {
+        // Remove the class first to let us measure the natural height of the
+        // content.
         this.adapter.removeClass(constants_1.cssClasses.SCROLLABLE);
         if (this.adapter.isContentScrollable()) {
             this.adapter.addClass(constants_1.cssClasses.SCROLLABLE);
+            if (this.isFullscreen) {
+                // If dialog is full-screen and scrollable, check if a scroll divider
+                // should be shown.
+                this.toggleScrollDividerHeader();
+                this.toggleScrollDividerFooter();
+            }
+        }
+    };
+    MDCDialogFoundation.prototype.toggleScrollDividerHeader = function () {
+        if (!this.adapter.isScrollableContentAtTop()) {
+            this.adapter.addClass(constants_1.cssClasses.SCROLL_DIVIDER_HEADER);
+        } else if (this.adapter.hasClass(constants_1.cssClasses.SCROLL_DIVIDER_HEADER)) {
+            this.adapter.removeClass(constants_1.cssClasses.SCROLL_DIVIDER_HEADER);
+        }
+    };
+    MDCDialogFoundation.prototype.toggleScrollDividerFooter = function () {
+        if (!this.adapter.isScrollableContentAtBottom()) {
+            this.adapter.addClass(constants_1.cssClasses.SCROLL_DIVIDER_FOOTER);
+        } else if (this.adapter.hasClass(constants_1.cssClasses.SCROLL_DIVIDER_FOOTER)) {
+            this.adapter.removeClass(constants_1.cssClasses.SCROLL_DIVIDER_FOOTER);
         }
     };
     return MDCDialogFoundation;
@@ -6329,6 +6426,26 @@ function isScrollable(el) {
     return el ? el.scrollHeight > el.offsetHeight : false;
 }
 exports.isScrollable = isScrollable;
+/**
+ * For scrollable content, returns true if the content has not been scrolled
+ * (that is, the scroll content is as the "top"). This is used in full-screen
+ * dialogs, where the scroll divider is expected only to appear once the
+ * content has been scrolled "underneath" the header bar.
+ */
+function isScrollAtTop(el) {
+    return el ? el.scrollTop === 0 : false;
+}
+exports.isScrollAtTop = isScrollAtTop;
+/**
+ * For scrollable content, returns true if the content has been scrolled all the
+ * way to the bottom. This is used in full-screen dialogs, where the footer
+ * scroll divider is expected only to appear when the content is "cut-off" by
+ * the footer bar.
+ */
+function isScrollAtBottom(el) {
+    return el ? Math.ceil(el.scrollHeight - el.scrollTop) === el.clientHeight : false;
+}
+exports.isScrollAtBottom = isScrollAtBottom;
 function areTopsMisaligned(els) {
     var tops = new Set();
     [].forEach.call(els, function (el) {
@@ -9159,13 +9276,6 @@ var MDCLinearProgress = /** @class */function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(MDCLinearProgress.prototype, "reverse", {
-        set: function set(value) {
-            this.foundation.setReverse(value);
-        },
-        enumerable: true,
-        configurable: true
-    });
     MDCLinearProgress.prototype.open = function () {
         this.foundation.open();
     };
@@ -9218,8 +9328,9 @@ var MDCLinearProgress = /** @class */function (_super) {
                 _this.root.style.setProperty(name, value);
             },
             attachResizeObserver: function attachResizeObserver(callback) {
-                if (window.ResizeObserver) {
-                    var ro = new ResizeObserver(callback);
+                var RO = window.ResizeObserver;
+                if (RO) {
+                    var ro = new RO(callback);
                     ro.observe(_this.root);
                     return ro;
                 }
@@ -9442,7 +9553,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
         var _this = this;
         this.isDeterminate = !this.adapter.hasClass(constants_1.cssClasses.INDETERMINATE_CLASS);
         this.adapter.addClass(constants_1.cssClasses.ANIMATION_READY_CLASS);
-        this.isReversed = this.adapter.hasClass(constants_1.cssClasses.REVERSED_CLASS);
         this.progress = 0;
         this.buffer = 1;
         this.observer = this.adapter.attachResizeObserver(function (entries) {
@@ -9482,16 +9592,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
             this.setBufferBarProgress(this.buffer);
             return;
         }
-        if (this.isReversed) {
-            // Adding/removing REVERSED_CLASS starts a translate animation, while
-            // adding INDETERMINATE_CLASS starts a scale animation. Here, we reset
-            // the translate animation in order to keep it in sync with the new
-            // scale animation that will start from adding INDETERMINATE_CLASS
-            // below.
-            this.adapter.removeClass(constants_1.cssClasses.REVERSED_CLASS);
-            this.adapter.forceLayout();
-            this.adapter.addClass(constants_1.cssClasses.REVERSED_CLASS);
-        }
         if (this.observer) {
             this.calculateAndSetDimensions(this.adapter.getWidth());
         }
@@ -9521,22 +9621,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
             this.setBufferBarProgress(value);
         }
     };
-    MDCLinearProgressFoundation.prototype.setReverse = function (isReversed) {
-        this.isReversed = isReversed;
-        if (!this.isDeterminate) {
-            // Adding ANIMATION_READY_CLASS starts a scale animation, while
-            // adding/removing REVERSED_CLASS starts a translate animation. Here, we
-            // reset the scale animation in order to keep it in sync with the new
-            // translate animation that will start from adding/removing REVERSED_CLASS
-            // below.
-            this.restartAnimation();
-        }
-        if (this.isReversed) {
-            this.adapter.addClass(constants_1.cssClasses.REVERSED_CLASS);
-            return;
-        }
-        this.adapter.removeClass(constants_1.cssClasses.REVERSED_CLASS);
-    };
     MDCLinearProgressFoundation.prototype.open = function () {
         this.adapter.removeClass(constants_1.cssClasses.CLOSED_CLASS);
         this.adapter.removeClass(constants_1.cssClasses.CLOSED_ANIMATION_OFF_CLASS);
@@ -9560,6 +9644,11 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
             this.observer.disconnect();
         }
     };
+    MDCLinearProgressFoundation.prototype.restartAnimation = function () {
+        this.adapter.removeClass(constants_1.cssClasses.ANIMATION_READY_CLASS);
+        this.adapter.forceLayout();
+        this.adapter.addClass(constants_1.cssClasses.ANIMATION_READY_CLASS);
+    };
     MDCLinearProgressFoundation.prototype.setPrimaryBarProgress = function (progressValue) {
         var value = "scaleX(" + progressValue + ")";
         // Accessing `window` without a `typeof` check will throw on Node
@@ -9570,11 +9659,6 @@ var MDCLinearProgressFoundation = /** @class */function (_super) {
     MDCLinearProgressFoundation.prototype.setBufferBarProgress = function (progressValue) {
         var value = progressValue * 100 + "%";
         this.adapter.setBufferBarStyle(constants_1.strings.FLEX_BASIS, value);
-    };
-    MDCLinearProgressFoundation.prototype.restartAnimation = function () {
-        this.adapter.removeClass(constants_1.cssClasses.ANIMATION_READY_CLASS);
-        this.adapter.forceLayout();
-        this.adapter.addClass(constants_1.cssClasses.ANIMATION_READY_CLASS);
     };
     MDCLinearProgressFoundation.prototype.calculateAndSetDimensions = function (width) {
         var primaryHalf = width * constants_1.animationDimensionPercentages.PRIMARY_HALF;
@@ -11309,19 +11393,11 @@ var __extends = this && this.__extends || function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 }();
-var __importStar = this && this.__importStar || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) {
-        if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    }result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var component_1 = __webpack_require__(/*! @material/base/component */ "./packages/mdc-base/component.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-menu-surface/constants.ts");
 var foundation_1 = __webpack_require__(/*! ./foundation */ "./packages/mdc-menu-surface/foundation.ts");
-var util = __importStar(__webpack_require__(/*! ./util */ "./packages/mdc-menu-surface/util.ts"));
+var util_1 = __webpack_require__(/*! @material/animation/util */ "./packages/mdc-animation/util.ts");
 var MDCMenuSurface = /** @class */function (_super) {
     __extends(MDCMenuSurface, _super);
     function MDCMenuSurface() {
@@ -11432,6 +11508,9 @@ var MDCMenuSurface = /** @class */function (_super) {
             notifyClose: function notifyClose() {
                 return _this.emit(foundation_1.MDCMenuSurfaceFoundation.strings.CLOSED_EVENT, {});
             },
+            notifyClosing: function notifyClosing() {
+                _this.emit(foundation_1.MDCMenuSurfaceFoundation.strings.CLOSING_EVENT, {});
+            },
             notifyOpen: function notifyOpen() {
                 return _this.emit(foundation_1.MDCMenuSurfaceFoundation.strings.OPENED_EVENT, {});
             },
@@ -11442,7 +11521,7 @@ var MDCMenuSurface = /** @class */function (_super) {
                 return getComputedStyle(_this.root).getPropertyValue('direction') === 'rtl';
             },
             setTransformOrigin: function setTransformOrigin(origin) {
-                var propertyName = util.getTransformPropertyName(window) + "-origin";
+                var propertyName = util_1.getCorrectPropertyName(window, 'transform') + "-origin";
                 _this.root.style.setProperty(propertyName, origin);
             },
             isFocused: function isFocused() {
@@ -11542,6 +11621,7 @@ exports.cssClasses = cssClasses;
 // tslint:disable:object-literal-sort-keys
 var strings = {
     CLOSED_EVENT: 'MDCMenuSurface:closed',
+    CLOSING_EVENT: 'MDCMenuSurface:closing',
     OPENED_EVENT: 'MDCMenuSurface:opened',
     FOCUSABLE_ELEMENTS: ['button:not(:disabled)', '[href]:not([aria-disabled="true"])', 'input:not(:disabled)', 'select:not(:disabled)', 'textarea:not(:disabled)', '[tabindex]:not([tabindex="-1"]):not([aria-disabled="true"])'].join(', ')
 };
@@ -11792,6 +11872,9 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
                 },
                 notifyOpen: function notifyOpen() {
                     return undefined;
+                },
+                notifyClosing: function notifyClosing() {
+                    return undefined;
                 }
             };
             // tslint:enable:object-literal-sort-keys
@@ -11897,6 +11980,7 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
         if (!this.isSurfaceOpen) {
             return;
         }
+        this.adapter.notifyClosing();
         if (this.isQuickOpen) {
             this.isSurfaceOpen = false;
             if (!skipRestoreFocus) {
@@ -11905,21 +11989,21 @@ var MDCMenuSurfaceFoundation = /** @class */function (_super) {
             this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
             this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
             this.adapter.notifyClose();
-        } else {
-            this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
-            requestAnimationFrame(function () {
-                _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
-                _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
-                _this.closeAnimationEndTimerId = setTimeout(function () {
-                    _this.closeAnimationEndTimerId = 0;
-                    _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
-                    _this.adapter.notifyClose();
-                }, constants_1.numbers.TRANSITION_CLOSE_DURATION);
-            });
-            this.isSurfaceOpen = false;
-            if (!skipRestoreFocus) {
-                this.maybeRestoreFocus();
-            }
+            return;
+        }
+        this.adapter.addClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
+        requestAnimationFrame(function () {
+            _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.OPEN);
+            _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.IS_OPEN_BELOW);
+            _this.closeAnimationEndTimerId = setTimeout(function () {
+                _this.closeAnimationEndTimerId = 0;
+                _this.adapter.removeClass(MDCMenuSurfaceFoundation.cssClasses.ANIMATING_CLOSED);
+                _this.adapter.notifyClose();
+            }, constants_1.numbers.TRANSITION_CLOSE_DURATION);
+        });
+        this.isSurfaceOpen = false;
+        if (!skipRestoreFocus) {
+            this.maybeRestoreFocus();
         }
     };
     /** Handle clicks and close if not within menu-surface element. */
@@ -12236,75 +12320,14 @@ exports.default = MDCMenuSurfaceFoundation;
  */
 
 function __export(m) {
-    for (var p in m) {
-        if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-    }
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
 }
-var __importStar = this && this.__importStar || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) {
-        if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    }result["default"] = mod;
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __importStar(__webpack_require__(/*! ./util */ "./packages/mdc-menu-surface/util.ts"));
-exports.util = util;
 __export(__webpack_require__(/*! ./component */ "./packages/mdc-menu-surface/component.ts"));
 __export(__webpack_require__(/*! ./constants */ "./packages/mdc-menu-surface/constants.ts"));
 __export(__webpack_require__(/*! ./foundation */ "./packages/mdc-menu-surface/foundation.ts"));
-
-/***/ }),
-
-/***/ "./packages/mdc-menu-surface/util.ts":
-/*!*******************************************!*\
-  !*** ./packages/mdc-menu-surface/util.ts ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * @license
- * Copyright 2018 Google Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var cachedCssTransformPropertyName_;
-/**
- * Returns the name of the correct transform property to use on the current browser.
- */
-function getTransformPropertyName(globalObj, forceRefresh) {
-  if (forceRefresh === void 0) {
-    forceRefresh = false;
-  }
-  if (cachedCssTransformPropertyName_ === undefined || forceRefresh) {
-    var el = globalObj.document.createElement('div');
-    cachedCssTransformPropertyName_ = 'transform' in el.style ? 'transform' : 'webkitTransform';
-  }
-  return cachedCssTransformPropertyName_;
-}
-exports.getTransformPropertyName = getTransformPropertyName;
 
 /***/ }),
 
@@ -15927,11 +15950,15 @@ var MDCSelect = /** @class */function (_super) {
         this.handleMenuClosed = function () {
             _this.foundation.handleMenuClosed();
         };
+        this.handleMenuClosing = function () {
+            _this.foundation.handleMenuClosing();
+        };
         this.selectAnchor.addEventListener('focus', this.handleFocus);
         this.selectAnchor.addEventListener('blur', this.handleBlur);
         this.selectAnchor.addEventListener('click', this.handleClick);
         this.selectAnchor.addEventListener('keydown', this.handleKeydown);
         this.menu.listen(menuSurfaceConstants.strings.CLOSED_EVENT, this.handleMenuClosed);
+        this.menu.listen(menuSurfaceConstants.strings.CLOSING_EVENT, this.handleMenuClosing);
         this.menu.listen(menuSurfaceConstants.strings.OPENED_EVENT, this.handleMenuOpened);
         this.menu.listen(menuConstants.strings.SELECTED_EVENT, this.handleMenuItemAction);
         if (this.hiddenInput) {
@@ -16712,10 +16739,12 @@ var MDCSelectFoundation = /** @class */function (_super) {
         var focusItemIndex = selectedIndex >= 0 ? selectedIndex : 0;
         this.adapter.focusMenuItemAtIndex(focusItemIndex);
     };
+    MDCSelectFoundation.prototype.handleMenuClosing = function () {
+        this.adapter.setSelectAnchorAttr('aria-expanded', 'false');
+    };
     MDCSelectFoundation.prototype.handleMenuClosed = function () {
         this.adapter.removeClass(constants_2.cssClasses.ACTIVATED);
         this.isMenuOpen = false;
-        this.adapter.setSelectAnchorAttr('aria-expanded', 'false');
         // Unfocus the select if menu is closed without a selection
         if (!this.adapter.isSelectAnchorFocused()) {
             this.blur();
@@ -18659,6 +18688,7 @@ var MDCSliderFoundation = /** @class */function (_super) {
         } else {
             this.setValue(value);
         }
+        this.adapter.emitChangeEvent(thumb === types_1.Thumb.START ? this.valueStart : this.value, thumb);
     };
     /** Shows value indicator on thumb(s). */
     MDCSliderFoundation.prototype.handleInputFocus = function (thumb) {
@@ -25846,8 +25876,15 @@ var MDCTooltip = /** @class */function (_super) {
             removeClass: function removeClass(className) {
                 _this.root.classList.remove(className);
             },
+            getComputedStyleProperty: function getComputedStyleProperty(propertyName) {
+                return window.getComputedStyle(_this.root).getPropertyValue(propertyName);
+            },
             setStyleProperty: function setStyleProperty(propertyName, value) {
                 _this.root.style.setProperty(propertyName, value);
+            },
+            setSurfaceStyleProperty: function setSurfaceStyleProperty(propertyName, value) {
+                var surface = _this.root.querySelector("." + constants_1.CssClasses.SURFACE);
+                surface === null || surface === void 0 ? void 0 : surface.style.setProperty(propertyName, value);
             },
             getViewportWidth: function getViewportWidth() {
                 return window.innerWidth;
@@ -25863,6 +25900,10 @@ var MDCTooltip = /** @class */function (_super) {
             },
             getAnchorBoundingRect: function getAnchorBoundingRect() {
                 return _this.anchorElem ? _this.anchorElem.getBoundingClientRect() : null;
+            },
+            getParentBoundingRect: function getParentBoundingRect() {
+                var _a, _b;
+                return (_b = (_a = _this.root.parentElement) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) !== null && _b !== void 0 ? _b : null;
             },
             getAnchorAttribute: function getAnchorAttribute(attr) {
                 return _this.anchorElem ? _this.anchorElem.getAttribute(attr) : null;
@@ -25962,6 +26003,7 @@ var CssClasses;
     CssClasses["HIDE"] = "mdc-tooltip--hide";
     CssClasses["HIDE_TRANSITION"] = "mdc-tooltip--hide-transition";
     CssClasses["MULTILINE_TOOLTIP"] = "mdc-tooltip--multiline";
+    CssClasses["SURFACE"] = "mdc-tooltip__surface";
 })(CssClasses || (CssClasses = {}));
 exports.CssClasses = CssClasses;
 var numbers = {
@@ -26014,6 +26056,14 @@ var AnchorBoundaryType;
     AnchorBoundaryType[AnchorBoundaryType["UNBOUNDED"] = 1] = "UNBOUNDED";
 })(AnchorBoundaryType || (AnchorBoundaryType = {}));
 exports.AnchorBoundaryType = AnchorBoundaryType;
+var strings = {
+    LEFT: 'left',
+    RIGHT: 'right',
+    CENTER: 'center',
+    TOP: 'top',
+    BOTTOM: 'bottom'
+};
+exports.strings = strings;
 
 /***/ }),
 
@@ -26095,6 +26145,7 @@ var __values = this && this.__values || function (o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var animationframe_1 = __webpack_require__(/*! @material/animation/animationframe */ "./packages/mdc-animation/animationframe.ts");
+var util_1 = __webpack_require__(/*! @material/animation/util */ "./packages/mdc-animation/util.ts");
 var foundation_1 = __webpack_require__(/*! @material/base/foundation */ "./packages/mdc-base/foundation.ts");
 var keyboard_1 = __webpack_require__(/*! @material/dom/keyboard */ "./packages/mdc-dom/keyboard.ts");
 var constants_1 = __webpack_require__(/*! ./constants */ "./packages/mdc-tooltip/constants.ts");
@@ -26109,6 +26160,8 @@ var AnimationKeys;
 (function (AnimationKeys) {
     AnimationKeys["POLL_ANCHOR"] = "poll_anchor";
 })(AnimationKeys || (AnimationKeys = {}));
+// Accessing `window` without a `typeof` check will throw on Node environments.
+var HAS_WINDOW = typeof window !== 'undefined';
 var MDCTooltipFoundation = /** @class */function (_super) {
     __extends(MDCTooltipFoundation, _super);
     function MDCTooltipFoundation(adapter) {
@@ -26122,6 +26175,7 @@ var MDCTooltipFoundation = /** @class */function (_super) {
         _this.hideDelayMs = constants_1.numbers.HIDE_DELAY_MS;
         _this.showDelayMs = constants_1.numbers.SHOW_DELAY_MS;
         _this.anchorRect = null;
+        _this.parentRect = null;
         _this.frameId = null;
         _this.hideTimeout = null;
         _this.showTimeout = null;
@@ -26167,7 +26221,13 @@ var MDCTooltipFoundation = /** @class */function (_super) {
                 removeClass: function removeClass() {
                     return undefined;
                 },
+                getComputedStyleProperty: function getComputedStyleProperty() {
+                    return '';
+                },
                 setStyleProperty: function setStyleProperty() {
+                    return undefined;
+                },
+                setSurfaceStyleProperty: function setSurfaceStyleProperty() {
                     return undefined;
                 },
                 getViewportWidth: function getViewportWidth() {
@@ -26180,6 +26240,9 @@ var MDCTooltipFoundation = /** @class */function (_super) {
                     return { width: 0, height: 0 };
                 },
                 getAnchorBoundingRect: function getAnchorBoundingRect() {
+                    return { top: 0, right: 0, bottom: 0, left: 0, width: 0, height: 0 };
+                },
+                getParentBoundingRect: function getParentBoundingRect() {
                     return { top: 0, right: 0, bottom: 0, left: 0, width: 0, height: 0 };
                 },
                 getAnchorAttribute: function getAnchorAttribute() {
@@ -26386,7 +26449,8 @@ var MDCTooltipFoundation = /** @class */function (_super) {
             this.adapter.addClass(MULTILINE_TOOLTIP);
         }
         this.anchorRect = this.adapter.getAnchorBoundingRect();
-        this.positionTooltip();
+        this.parentRect = this.adapter.getParentBoundingRect();
+        this.richTooltip ? this.positionRichTooltip() : this.positionPlainTooltip();
         this.adapter.registerDocumentEventHandler('click', this.documentClickHandler);
         this.adapter.registerDocumentEventHandler('keydown', this.documentKeydownHandler);
         this.adapter.registerWindowEventHandler('scroll', this.windowScrollHandler);
@@ -26470,12 +26534,48 @@ var MDCTooltipFoundation = /** @class */function (_super) {
         var tooltipSize = this.adapter.getTooltipSize();
         return tooltipSize.height > constants_1.numbers.MIN_HEIGHT && tooltipSize.width >= constants_1.numbers.MAX_WIDTH;
     };
-    MDCTooltipFoundation.prototype.positionTooltip = function () {
-        var _a = this.calculateTooltipDistance(this.anchorRect),
+    MDCTooltipFoundation.prototype.positionPlainTooltip = function () {
+        // A plain tooltip has `fixed` positioning and is placed as an immediate
+        // child of the document body. Its positioning is calculated with respect to
+        // the viewport.
+        var _a = this.calculateTooltipStyles(this.anchorRect),
             top = _a.top,
-            left = _a.left;
+            yTransformOrigin = _a.yTransformOrigin,
+            left = _a.left,
+            xTransformOrigin = _a.xTransformOrigin;
+        var transformProperty = HAS_WINDOW ? util_1.getCorrectPropertyName(window, 'transform') : 'transform';
+        this.adapter.setSurfaceStyleProperty(transformProperty + "-origin", yTransformOrigin + " " + xTransformOrigin);
         this.adapter.setStyleProperty('top', top + "px");
         this.adapter.setStyleProperty('left', left + "px");
+    };
+    MDCTooltipFoundation.prototype.positionRichTooltip = function () {
+        // TODO(b/177686782): Remove width setting when max-content is used to style
+        // the rich tooltip.
+        var _a, _b, _c, _d;
+        // getComputedStyleProperty is used instead of getTooltipSize since
+        // getTooltipSize returns the offSetWidth, which includes the border and
+        // padding. What we need is the width of the tooltip without border and
+        // padding.
+        var width = this.adapter.getComputedStyleProperty('width');
+        // When rich tooltips are positioned within their parent containers, the
+        // tooltip width might be shrunk if it collides with the edge of the parent
+        // container. We set the width of the tooltip to prevent this.
+        this.adapter.setStyleProperty('width', width);
+        var _e = this.calculateTooltipStyles(this.anchorRect),
+            top = _e.top,
+            yTransformOrigin = _e.yTransformOrigin,
+            left = _e.left,
+            xTransformOrigin = _e.xTransformOrigin;
+        var transformProperty = HAS_WINDOW ? util_1.getCorrectPropertyName(window, 'transform') : 'transform';
+        this.adapter.setSurfaceStyleProperty(transformProperty + "-origin", yTransformOrigin + " " + xTransformOrigin);
+        // A rich tooltip has `absolute` positioning and is placed as a sibling to
+        // the anchor element. Its positioning is calculated with respect to the
+        // parent element, and so the values need to be adjusted against the parent
+        // element.
+        var leftAdjustment = left - ((_b = (_a = this.parentRect) === null || _a === void 0 ? void 0 : _a.left) !== null && _b !== void 0 ? _b : 0);
+        var topAdjustment = top - ((_d = (_c = this.parentRect) === null || _c === void 0 ? void 0 : _c.top) !== null && _d !== void 0 ? _d : 0);
+        this.adapter.setStyleProperty('top', topAdjustment + "px");
+        this.adapter.setStyleProperty('left', leftAdjustment + "px");
     };
     /**
      * Calculates the position of the tooltip. A tooltip will be placed beneath
@@ -26491,46 +26591,62 @@ var MDCTooltipFoundation = /** @class */function (_super) {
      * Users can specify an alignment, however, if this alignment results in the
      * tooltip colliding with the viewport, this specification is overwritten.
      */
-    MDCTooltipFoundation.prototype.calculateTooltipDistance = function (anchorRect) {
+    MDCTooltipFoundation.prototype.calculateTooltipStyles = function (anchorRect) {
         if (!anchorRect) {
             return { top: 0, left: 0 };
         }
         var tooltipSize = this.adapter.getTooltipSize();
         var top = this.calculateYTooltipDistance(anchorRect, tooltipSize.height);
         var left = this.calculateXTooltipDistance(anchorRect, tooltipSize.width);
-        return { top: top, left: left };
+        return {
+            top: top.distance,
+            yTransformOrigin: top.yTransformOrigin,
+            left: left.distance,
+            xTransformOrigin: left.xTransformOrigin
+        };
     };
     /**
      * Calculates the `left` distance for the tooltip.
+     * Returns the distance value and a string indicating the x-axis transform-
+     * origin that should be used when animating the tooltip.
      */
     MDCTooltipFoundation.prototype.calculateXTooltipDistance = function (anchorRect, tooltipWidth) {
         var isLTR = !this.adapter.isRTL();
         var startPos, endPos, centerPos;
+        var startTransformOrigin, endTransformOrigin;
         if (this.richTooltip) {
             startPos = isLTR ? anchorRect.left - tooltipWidth : anchorRect.right;
             endPos = isLTR ? anchorRect.right : anchorRect.left - tooltipWidth;
+            startTransformOrigin = isLTR ? constants_1.strings.RIGHT : constants_1.strings.LEFT;
+            endTransformOrigin = isLTR ? constants_1.strings.LEFT : constants_1.strings.RIGHT;
         } else {
             startPos = isLTR ? anchorRect.left : anchorRect.right - tooltipWidth;
             endPos = isLTR ? anchorRect.right - tooltipWidth : anchorRect.left;
             centerPos = anchorRect.left + (anchorRect.width - tooltipWidth) / 2;
+            startTransformOrigin = isLTR ? constants_1.strings.LEFT : constants_1.strings.RIGHT;
+            endTransformOrigin = isLTR ? constants_1.strings.RIGHT : constants_1.strings.LEFT;
         }
         var positionOptions = this.richTooltip ? this.determineValidPositionOptions(startPos, endPos) :
         // For plain tooltips, centerPos is defined
         this.determineValidPositionOptions(centerPos, startPos, endPos);
         if (this.xTooltipPos === constants_1.XPosition.START && positionOptions.has(startPos)) {
-            return startPos;
+            return { distance: startPos, xTransformOrigin: startTransformOrigin };
         }
         if (this.xTooltipPos === constants_1.XPosition.END && positionOptions.has(endPos)) {
-            return endPos;
+            return { distance: endPos, xTransformOrigin: endTransformOrigin };
         }
         if (this.xTooltipPos === constants_1.XPosition.CENTER && positionOptions.has(centerPos)) {
-            return centerPos;
+            // This code path is only executed if calculating the distance for plain
+            // tooltips. In this instance, centerPos will always be defined, so we can
+            // safely assert that the returned value is non-null/undefined.
+            return { distance: centerPos, xTransformOrigin: constants_1.strings.CENTER };
         }
         // If no user position is supplied, rich tooltips default to end pos, then
         // start position. Plain tooltips default to center, start, then end.
-        var possiblePositions = this.richTooltip ? [endPos, startPos] : [centerPos, startPos, endPos];
-        var validPosition = possiblePositions.find(function (pos) {
-            return positionOptions.has(pos);
+        var possiblePositions = this.richTooltip ? [{ distance: endPos, xTransformOrigin: endTransformOrigin }, { distance: startPos, xTransformOrigin: startTransformOrigin }] : [{ distance: centerPos, xTransformOrigin: constants_1.strings.CENTER }, { distance: startPos, xTransformOrigin: startTransformOrigin }, { distance: endPos, xTransformOrigin: endTransformOrigin }];
+        var validPosition = possiblePositions.find(function (_a) {
+            var distance = _a.distance;
+            return positionOptions.has(distance);
         });
         if (validPosition) {
             return validPosition;
@@ -26541,10 +26657,14 @@ var MDCTooltipFoundation = /** @class */function (_super) {
         // narrow. In this case, we allow the tooltip to be mis-aligned from the
         // anchor element.
         if (anchorRect.left < 0) {
-            return this.minViewportTooltipThreshold;
+            return {
+                distance: this.minViewportTooltipThreshold,
+                xTransformOrigin: constants_1.strings.LEFT
+            };
         } else {
             var viewportWidth = this.adapter.getViewportWidth();
-            return viewportWidth - (tooltipWidth + this.minViewportTooltipThreshold);
+            var distance = viewportWidth - (tooltipWidth + this.minViewportTooltipThreshold);
+            return { distance: distance, xTransformOrigin: constants_1.strings.RIGHT };
         }
     };
     /**
@@ -26598,26 +26718,28 @@ var MDCTooltipFoundation = /** @class */function (_super) {
     };
     /**
      * Calculates the `top` distance for the tooltip.
+     * Returns the distance value and a string indicating the y-axis transform-
+     * origin that should be used when animating the tooltip.
      */
     MDCTooltipFoundation.prototype.calculateYTooltipDistance = function (anchorRect, tooltipHeight) {
         var belowYPos = anchorRect.bottom + this.anchorGap;
         var aboveYPos = anchorRect.top - (this.anchorGap + tooltipHeight);
         var yPositionOptions = this.determineValidYPositionOptions(aboveYPos, belowYPos);
         if (this.yTooltipPos === constants_1.YPosition.ABOVE && yPositionOptions.has(aboveYPos)) {
-            return aboveYPos;
+            return { distance: aboveYPos, yTransformOrigin: constants_1.strings.BOTTOM };
         } else if (this.yTooltipPos === constants_1.YPosition.BELOW && yPositionOptions.has(belowYPos)) {
-            return belowYPos;
+            return { distance: belowYPos, yTransformOrigin: constants_1.strings.TOP };
         }
         if (yPositionOptions.has(belowYPos)) {
-            return belowYPos;
+            return { distance: belowYPos, yTransformOrigin: constants_1.strings.TOP };
         }
         if (yPositionOptions.has(aboveYPos)) {
-            return aboveYPos;
+            return { distance: aboveYPos, yTransformOrigin: constants_1.strings.BOTTOM };
         }
         // Indicates that all potential positions would result in the tooltip
         // colliding with the viewport. This would only occur when the viewport is
         // very short.
-        return belowYPos;
+        return { distance: belowYPos, yTransformOrigin: constants_1.strings.TOP };
     };
     /**
      * Given the values for above/below alignment of the tooltip, calculates
@@ -26660,7 +26782,8 @@ var MDCTooltipFoundation = /** @class */function (_super) {
         if (!newAnchorRect || !this.anchorRect) return;
         if (newAnchorRect.top !== this.anchorRect.top || newAnchorRect.left !== this.anchorRect.left || newAnchorRect.height !== this.anchorRect.height || newAnchorRect.width !== this.anchorRect.width) {
             this.anchorRect = newAnchorRect;
-            this.positionTooltip();
+            this.parentRect = this.adapter.getParentBoundingRect();
+            this.richTooltip ? this.positionRichTooltip() : this.positionPlainTooltip();
         }
     };
     MDCTooltipFoundation.prototype.clearShowTimeout = function () {

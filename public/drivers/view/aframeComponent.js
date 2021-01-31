@@ -138,7 +138,7 @@ class AFrameComponentView extends Fabric {
     
                 if (this.nodes[childID].extends == "proxy/aframe/a-sound-component.vwf") {
                     console.log(vwf.getProperty(childID, 'isPlaying'));
-                    self.kernel.callMethod(childID, "playSound");
+                    //self.kernel.callMethod(childID, "playSound");
                 }
     
             },
@@ -161,7 +161,7 @@ class AFrameComponentView extends Fabric {
                     return;
                 }
     
-                if (node.name == "material") {
+                if (node.prototypes.includes("proxy/aframe/aMaterialComponent.vwf")) {
     
                     if (propertyName == 'repeat') {
     

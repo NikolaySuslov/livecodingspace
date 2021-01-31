@@ -46,7 +46,8 @@
           "properties": {
             "color": "#ECECEC",
             "side": "back",
-            "fog": false
+            "fog": false,
+            "shader": "flat"
           }
         }
       }

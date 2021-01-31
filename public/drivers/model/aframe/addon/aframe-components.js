@@ -46,18 +46,22 @@ AFRAME.registerComponent('desktop-controls', {
         }
 
         if(this.xrcontroller) {
-
+           
             let intersection = this.xrcontroller.components.raycaster.intersections[0];
             let point = intersection ? intersection.point : null;
             let elID = intersection ? intersection.object.el.id : null;
-            if(point) console.log('Point to: ', point);
+            if(point) {
+                //console.log('Point to: ', point);
+                
+                self.avatar.setAttribute('look-controls', 'enabled', false)  
+        }
     
             if (e.button == 1) {
-                vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID]);
+                vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID, controllerID]);
               }
     
               if (e.button == 0) {
-                vwf_view.kernel.callMethod(controllerID, "mousedown", [point, elID]);
+                vwf_view.kernel.callMethod(controllerID, "mousedown", [point, elID, controllerID]);
               }  
 
         }
@@ -76,15 +80,19 @@ AFRAME.registerComponent('desktop-controls', {
             let intersection = this.xrcontroller.components.raycaster.intersections[0];
             let point = intersection ? intersection.point : null;
             let elID = intersection ? intersection.object.el.id : null;
-            if(point) console.log('Point to: ', point);
-    
+            if(point) {
+                //console.log('Point to: ', point);
+            }
+
+            if (!self.avatar.getAttribute('look-controls').enabled)
+                self.avatar.setAttribute('look-controls', 'enabled', true)  
 
 
         if (e.button == 1) {
-            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID]);
+            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID, controllerID]);
         }
         if (e.button == 0) {
-            vwf_view.kernel.callMethod(controllerID, "mouseup", [point, elID]);
+            vwf_view.kernel.callMethod(controllerID, "mouseup", [point, elID, controllerID]);
           }   
 
         }
@@ -200,6 +208,7 @@ AFRAME.registerComponent('scene-utils', {
     setCameraControl(){
 
         let avatarEl = document.querySelector('#avatarControl');
+        //avatarEl.setAttribute('look-controls', 'enabled', true)
 
         document.addEventListener('keydown', (event) => {
             const keyName = event.key;
@@ -444,8 +453,10 @@ AFRAME.registerComponent('gizmo', {
             var transformMode = self.transformControls.getMode();
             switch (transformMode) {
                 case 'translate':
-                    vwf_view.kernel.setProperty(object.el.id, 'position',
-                        [object.position.x, object.position.y, object.position.z])
+                    vwf_view.kernel.callMethod(object.el.id, 'setPosition',
+                        [[object.position.x, object.position.y, object.position.z]]);
+                    // vwf_view.kernel.setProperty(object.el.id, 'position',
+                    //     [object.position.x, object.position.y, object.position.z]);
 
                     break;
                 case 'rotate':
@@ -809,11 +820,11 @@ AFRAME.registerComponent('gearvrcontrol', {
             let elID = intersection ? intersection.object.el.id : null;
             if(point) console.log('Point to: ', point);
 
-            vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID]);
+            vwf_view.kernel.callMethod(controllerID, "triggerdown", [point, elID, self.controllerID]);
         });
 
         this.el.addEventListener('triggerup', function (event) {
-            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID]);
+            vwf_view.kernel.callMethod(controllerID, "triggerup", [point, elID, self.controllerID]);
         });
 
          //X-buttorn Pressed 
@@ -873,7 +884,7 @@ AFRAME.registerComponent('xrcontroller', {
         let elID = intersection ? intersection.object.el.id : null;
         if(point) console.log('Point to: ', point);
 
-            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", [point, elID]);
+            vwf_view.kernel.callMethod(self.controllerID, "triggerdown", [point, elID, self.controllerID]);
             //this.emit('teleportstart');
         });
         this.el.addEventListener('triggerup', function (event) { //pointup 'triggerup'
@@ -888,7 +899,7 @@ AFRAME.registerComponent('xrcontroller', {
         let elID = intersection ? intersection.object.el.id : null;
         if(point) console.log('Point to: ', point);
 
-            vwf_view.kernel.callMethod(self.controllerID, "triggerup", [point, elID]);
+            vwf_view.kernel.callMethod(self.controllerID, "triggerup", [point, elID, self.controllerID]);
             //this.emit('teleportend');
         });
 

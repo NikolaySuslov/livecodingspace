@@ -572,11 +572,27 @@ class Widgets {
             addClass = obj.styleClass;
         }
 
+        if(obj.tooltip){
+            obj.init = function(){
+                let el = document.querySelector('#'+obj.id);
+                if(el)
+                tippy('#'+obj.id, {
+                    content: obj.tooltip,
+                    appendTo: document.body,
+                  });
+            }
+        } else {
+            obj.init = function(){}
+        }
+
         return {
             $cell: true,
+            id: obj.id,
             $type: "button",
             class: "mdc-fab material-icons " + addClass,
+            //"aria-describedby": obj.tooltip ? obj.tooltip: null,
             onclick: obj.onclickfunc,
+            $init: obj.init,
             $components: [
                 {
                     $cell: true,
@@ -651,15 +667,28 @@ class Widgets {
 
 
     gridListItemWithIco(obj) {
+
+        let objID = obj.title.toLowerCase();
+        let init = function(){
+            
+                let el = document.querySelector('#'+ objID);
+                if(el)
+                tippy('#'+obj.id, {
+                    content: obj.title,
+                    appendTo: document.body,
+                  });
+            
+        }
+
         return {
             $type: "div",
-            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip " + obj.styleClass,
+            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 " + obj.styleClass, // tooltip
             $components: [
-                {
-                    class: "tooltiptext",
-                    $type: "span",
-                    $text: obj.title
-                },
+                // {
+                //     class: "tooltiptext",
+                //     $type: "span",
+                //     $text: obj.title
+                // },
                 // {
 
                 //     $type: "button",
@@ -679,6 +708,8 @@ class Widgets {
                     style: "background-color: transparent;",
                     $components: [
                         {
+                            id: objID,
+                            $init: init,
                             $type: "i",
                             class: "material-icons mdc-list-item__graphic",
                             'aria-hidden': "true",
@@ -692,21 +723,66 @@ class Widgets {
         }
     }
 
-    gridListItem(obj) {
+    tooltip(obj){
+
         return {
+            $cell: true,
+            id: obj.id,
             $type: "div",
-            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 tooltip " + obj.styleClass,
+            class: "mdc-tooltip",
+            role: "tooltip",
+            "aria-hidden": true,
+            $init: function(){
+                this._tooltip = mdc.tooltip.MDCTooltip(this);
+            },
             $components: [
                 {
-                    class: "tooltiptext",
-                    $type: "span",
-                    $text: obj.title
-                },
+                    $type: "div",
+                    class: "mdc-tooltip__surface",
+                    $text: obj.text
+                }
+            ]
+        }
+//         <div id="tooltip-id" class="mdc-tooltip" role="tooltip" aria-hidden="true">
+//   <div class="mdc-tooltip__surface">
+//     lorem ipsum dolor
+//   </div>
+// </div>
+
+    }
+
+    gridListItem(obj) {
+
+        let objID = obj.title.toLowerCase().replace(/\s+/g, '');
+        let init = function(){
+            
+                let el = document.querySelector('#'+ objID);
+                if(el)
+                tippy('#'+objID, {
+                    content: obj.title,
+                    appendTo: document.body,
+                  });
+            
+        }
+
+
+        return {
+            $type: "div",
+            class: "mdc-layout-grid__cell mdc-layout-grid__cell--span-2 " + obj.styleClass, // tooltip
+            $components: [
+                // {
+                //     class: "tooltiptext",
+                //     $type: "span",
+                //     $text: obj.title
+                // },
                 {
                     $type: "div",
                     style: "background-color: transparent;",
                     $components: [
                         {
+                            $cell: true,
+                            id: objID,
+                            $init: init,
                             class: "",
                             $type: "div",
                             'aria-label': obj.title,
@@ -820,28 +896,33 @@ class Widgets {
                 _app.widgets.switch({
                     'id': 'forceDebug6DoF',
                     'init': function () {
-                        this._switch = new mdc.switchControl.MDCSwitch(this);
+
                         let config = localStorage.getItem('lcs_config');
+                        this._switch = new mdc.switchControl.MDCSwitch(this);
                         this._switch.checked = JSON.parse(config).d6DoF;
+
+                        this.addEventListener('change',
+                            function (e) {
+
+                                if (this._switch) {
+                                    let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                                    if (chkAttr) {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.d6DoF = true;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                        //this._switch.checked = false;
+                                    } else {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.d6DoF = false;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                    }
+                                }
+                            }
+                        )
+
 
                         // this._replaceSwitch = this._switch;
 
-                    },
-                    'onchange': function (e) {
-
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.d6DoF = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.d6DoF = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                            }
-                        }
                     }
                 }
                 ),
@@ -868,29 +949,33 @@ class Widgets {
                 _app.widgets.switch({
                     'id': 'forceDebug3DoF',
                     'init': function () {
-                        this._switch = new mdc.switchControl.MDCSwitch(this);
+
                         let config = localStorage.getItem('lcs_config');
+                        this._switch = new mdc.switchControl.MDCSwitch(this);
                         this._switch.checked = JSON.parse(config).d3DoF;
 
                         // this._replaceSwitch = this._switch;
-
-                    },
-                    'onchange': function (e) {
-
-                        if (this._switch) {
-                            let chkAttr = this._switch.checked;//this.getAttribute('checked');
-                            if (chkAttr) {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.d3DoF = true;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
-                                //this._switch.checked = false;
-                            } else {
-                                let config = JSON.parse(localStorage.getItem('lcs_config'));
-                                config.d3DoF = false;
-                                localStorage.setItem('lcs_config', JSON.stringify(config));
+                        this.addEventListener('change',
+                            function (e) {
+                                if (this._switch) {
+                                    let chkAttr = this._switch.checked;//this.getAttribute('checked');
+                                    if (chkAttr) {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.d3DoF = true;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                        //this._switch.checked = false;
+                                    } else {
+                                        let config = JSON.parse(localStorage.getItem('lcs_config'));
+                                        config.d3DoF = false;
+                                        localStorage.setItem('lcs_config', JSON.stringify(config));
+                                    }
+                                }
+                                
                             }
-                        }
+                        )
+
                     }
+                    
                 }
                 ),
                 {

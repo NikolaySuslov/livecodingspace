@@ -131,7 +131,8 @@
           "extends": "proxy/aframe/aMaterialComponent.vwf",
           "properties": {
             "color": "#ECECEC",
-            "side": "back"
+            "side": "back",
+            "shader": "flat"
           }
         }
       }

@@ -1596,7 +1596,9 @@ class App {
         '/drivers/view/editor/draggabilly/draggabilly.pkgd.js',
         '/drivers/view/editor/colorpicker/colorpicker.min.js',
         '/drivers/view/editor/colorpicker/themes.css',
-        '/drivers/view/editor/editorLive.css'
+        '/drivers/view/editor/editorLive.css',
+        '/lib/ui/tippyjs/popperjs/popper.min.js',
+        '/lib/ui/tippyjs/dist/tippy-bundle.umd.min.js'
       ],
         '/drivers/view/aframe-ar-driver':[
           '/drivers/view/arjs/aframe-ar.js'
@@ -1606,7 +1608,11 @@ class App {
       ],
       '/drivers/view/osc':[
         '/drivers/view/oscjs/osc-browser.min.js'
+      ],
+      '/drivers/view/tone':[
+        '/drivers/view/tonejs/Tone.js'
       ]
+      
     }
 
 

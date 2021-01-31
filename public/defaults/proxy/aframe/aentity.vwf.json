@@ -30,6 +30,16 @@
     "clearIntersectEvent": {},
     "hitstartEvent": {},
     "hitendEvent": {},
+    "fromhitstartEvent": {
+      "parameters": [
+        "value"
+      ]
+    },
+    "fromhitendEvent": {
+      "parameters": [
+        "value"
+      ]
+    },
     "clickEvent": {
       "parameters": [
         "value"
@@ -155,6 +165,11 @@
         "id","nodeDef"
       ]
     },
+    "createChildComponent": {
+      "parameters": [
+        "name","nodeDef"
+      ]
+    },
     "changeVisual": {},
     "resetVisual": {},
     "step": {},
@@ -169,13 +184,25 @@
     },
     "doButtonTriggerdownAction":{
       "parameters": [
-        "value"
+        "buttonID", "controllerID", "point"
+      ]
+    },
+    "doButtonTriggerupAction":{
+      "parameters": [
+        "value",
+        "controllerID"
       ]
     },
     "triggerdownAction":{},
     "triggerupAction":{},
     "mousedownAction":{},
-    "mouseupAction":{}
+    "mouseupAction":{},
+    "positionChanged":{},
+    "setPosition":{
+      "parameters": [
+        "value"
+      ]
+    }
   },
   "scripts": {
     "source": "aentity.js"

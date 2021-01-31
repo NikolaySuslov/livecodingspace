@@ -1,7 +1,9 @@
 {
     "extends": "proxy/aframe/aentity.vwf",
     "type": "xrcontroller",
-    "properties": {},
+    "properties": {
+        "dragID": false
+    },
     "methods": {
         "initialize": {},
         "updateController": {},
@@ -32,25 +34,29 @@
         "triggerdown": {
             "parameters": [
                 "point",
-                "elID"
+                "elID",
+                "controllerID"
             ]
         },
         "triggerup": {
             "parameters": [
                 "point",
-                "elID"
+                "elID",
+                "controllerID"
             ]
         },
         "mousedown": {
             "parameters": [
                 "point",
-                "elID"
+                "elID",
+                "controllerID"
             ]
         },
         "mouseup": {
             "parameters": [
                 "point",
-                "elID"
+                "elID",
+                "controllerID"
             ]
         },
         "checkDefaultXRCostume":{},

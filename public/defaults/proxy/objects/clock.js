@@ -100,20 +100,20 @@ this.init = function () {
             position: [0, 0, -0.05]
         },
         "children": {
-            "clock": {
-                "extends": "proxy/aframe/a-asset-image-item.vwf",
-                "properties": {
-                    "itemID": "clock",
-                    "itemSrc": "/defaults/assets/textures/clock.png"
-                }
-            },
+            // "clock": {
+            //     "extends": "proxy/aframe/a-asset-image-item.vwf",
+            //     "properties": {
+            //         "itemID": "clock",
+            //         "itemSrc": "/defaults/assets/textures/clock.png"
+            //     }
+            // },
             "material": {
                 "extends": "proxy/aframe/aMaterialComponent.vwf",
                 "type": "component",
                 "properties": {
-                    "src": "#clock",
-                    "side": "double"
-                    //"color": "white"
+                    "src": "url(/defaults/assets/textures/clock.png)",
+                    "side": "double",
+                    "color": "white"
                 }
             }
         }

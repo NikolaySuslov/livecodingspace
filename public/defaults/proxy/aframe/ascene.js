@@ -80,7 +80,7 @@ this.sphereProto = function () {
         "properties": {
             "displayName": "sphere",
             "radius": 1,
-            "class": "clickable"
+            "class": "clickable intersectable"
         },
         children: {
             "material": {
@@ -101,7 +101,11 @@ this.sphereProto = function () {
             "cursor-listener": {
                 "extends": "proxy/aframe/app-cursor-listener-component.vwf",
                 "type": "component"
-            }
+            },
+            "raycasterListener":  {
+                "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                "type": "component"
+              }
         },
         events: {
             "clickEvent": {
@@ -121,7 +125,7 @@ this.cylinderProto = function () {
             "displayName": "cylinder",
             "radius": 1,
             "height": 1,
-            "class": "clickable"
+            "class": "clickable intersectable"
         },
         children: {
             "material": {
@@ -142,7 +146,11 @@ this.cylinderProto = function () {
             "cursor-listener": {
                 "extends": "proxy/aframe/app-cursor-listener-component.vwf",
                 "type": "component"
-            }
+            },
+            "raycasterListener":  {
+                "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                "type": "component"
+              }
         },
         events: {
             "clickEvent": {
@@ -163,7 +171,7 @@ this.coneProto = function () {
             "radius-bottom": 1,
             "radius-top": 0.01,
             "height": 1,
-            "class": "clickable"
+            "class": "clickable intersectable"
         },
         children: {
             "material": {
@@ -184,7 +192,11 @@ this.coneProto = function () {
             "cursor-listener": {
                 "extends": "proxy/aframe/app-cursor-listener-component.vwf",
                 "type": "component"
-            }
+            },
+            "raycasterListener":  {
+                "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                "type": "component"
+              }
         },
         events: {
             "clickEvent": {
@@ -244,7 +256,7 @@ this.cubeProto = function () {
             "height": 1,
             "width": 1,
             "depth": 1,
-            "class": "clickable"
+            "class": "clickable intersectable"
         },
         children: {
             "interpolation":
@@ -259,6 +271,10 @@ this.cubeProto = function () {
                 "extends": "proxy/aframe/app-cursor-listener-component.vwf",
                 "type": "component"
             },
+            "raycasterListener":  {
+                "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                "type": "component"
+              },
             "material": {
                 "extends": "proxy/aframe/aMaterialComponent.vwf",
                 "type": "component",
@@ -393,7 +409,7 @@ this.planeProto = function () {
             "displayName": "plane",
             "height": 1,
             "width": 1,
-            "class": "clickable"
+            "class": "clickable intersectable"
         },
         children: {
             "material": {
@@ -415,7 +431,11 @@ this.planeProto = function () {
             "cursor-listener": {
                 "extends": "proxy/aframe/app-cursor-listener-component.vwf",
                 "type": "component"
-            }
+            },
+            "raycasterListener":  {
+                "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                "type": "component"
+              }
         },
         events: {
             "clickEvent": {
@@ -541,7 +561,8 @@ this.createModel = function (modelType, modelSrc, avatar) {
         let modelNode = {
             "extends": extendsName[1],
             "properties": {
-                "src": '#' + child.itemID
+                "src": '#' + child.itemID,
+                "class": "intersectable clickable"
             },
             children:{
                 "interpolation":
@@ -551,7 +572,11 @@ this.createModel = function (modelType, modelSrc, avatar) {
                     "properties": {
                         "enabled": true
                     }
-                }
+                },
+                "raycasterListener":  {
+                    "extends": "proxy/aframe/app-raycaster-listener-component.vwf",
+                    "type": "component"
+                  }
             }
         }
 
@@ -660,6 +685,10 @@ this.createPrimitive = function (type, params, name, node, avatar) {
     var self = this;
 
     if (newNode) {
+
+        newNode.implements =  [
+            "proxy/objects/gui/drag.vwf"
+          ]
 
         if (displayName) {
             newNode.properties.displayName = displayName;
@@ -953,7 +982,7 @@ this.createAudio = function (itemSrc, name, node, avatar) {
 
         self.children.create(nodeName, newNode, function( child ) {
             //if (avatar) child.lookAt(self.children[avatar].worldPosition())
-            if (avatar) child.placeInFrontOf(avatar, -2)
+            if (avatar) child.placeInFrontOf(avatar, -2);
            });
 
        // }
@@ -1116,82 +1145,11 @@ this.getDefaultXRCostume = function(){
     let myColor = "white";
     
     let defaultXRCostume = {
-        "extends": "proxy/aframe/aentity.vwf",
+        "includes": "proxy/objects/xrcostume.vwf",
         "properties": {
             displayName: "defaultXRCostume",
             "position": "0 0 0",
-            "avatarColor": myColor,
-            "mousedown_state": false,
-            "triggerdown_state": false
-            // "height": 0.01,
-            // "width": 0.01,
-            // "depth": 1
-        },
-        "methods":{
-            mousedownAction:{
-                body:`
-                this.mousedown_state = true;
-                    if(elID){
-                        //let node = this.findNodeByID(elID);
-                        vwf.callMethod(elID, "mousedownAction",[])
-                    }
-                `,
-                parameters:["point", "elID"],
-                type: "application/javascript"
-            },
-            mouseupAction:{
-                body:`
-                    if(elID){
-                        //let node = this.findNodeByID(elID);
-                        vwf.callMethod(elID, "mouseupAction",[])
-                    }
-                this.mousedown_state = false;
-                `,
-                parameters:["point", "elID"],
-                type: "application/javascript"
-            },
-            triggerdownAction:{
-                body:`
-                //do on trigger down
-                this.triggerdown_state = true;
-                this.cursorVisual.color = "red";
-
-                if(elID){
-                    //let node = this.findNodeByID(elID);
-                    let pointData = AFRAME.utils.coordinates.parse(point);
-                    vwf.callMethod(elID, "triggerdownAction",[pointData])
-                }
-                `,
-                parameters:["point", "elID"],
-                type: "application/javascript"
-            },
-            triggerupAction:{
-                body:`
-                //do on trigger up
-                this.cursorVisual.color = this.cursorVisual.avatarColor;
-                if(elID){
-                    //let node = this.findNodeByID(elID);
-                    let pointData = AFRAME.utils.coordinates.parse(point);
-                    vwf.callMethod(elID, "triggerupAction",[pointData])
-                }
-                this.triggerdown_state = false;
-                `,
-                parameters:["point", "elID"],
-                type: "application/javascript"
-            },
-            onMove:{
-                body:`
-                 if(this.mousedown_state || this.triggerdown_state){
-                    if(idata){
-                        //console.log('Move POINT: ', idata.point, + ' on ' + idata.elID);
-                        let point = AFRAME.utils.coordinates.parse(idata.point);
-                        vwf.callMethod(idata.elID, "moveAction",[point])
-                    }
-                }
-                `,
-                parameters:["idata"],
-                type: "application/javascript"
-            }
+            "avatarColor": myColor
         },
         children: {
             "cursorVisual": {
@@ -1201,19 +1159,8 @@ this.getDefaultXRCostume = function(){
                     "color": myColor,
                     "position": "0 0 0"
                 }
-            },
-            "aabb-collider": {
-                "extends": "proxy/aframe/aabb-collider-component.vwf",
-                "type": "component",
-                "properties": {
-                    debug: false,
-                    interval: 10,
-                    objects: ".hit"
-                }
             }
-         
         }
-    
     }
 
     return defaultXRCostume
