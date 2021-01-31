@@ -375,8 +375,10 @@ this.moveHead = function (rotation) {
 
 this.updateAvatarBodyRotation = function (rotation) { 
     
-    let myRot = this.rotation.clone();
-    this.rotation = [myRot.x, rotation.y, myRot.z];
+    if(this.rotation)
+        {let myRot = this.rotation.clone();
+            this.rotation = [myRot.x, rotation.y, myRot.z];
+        }
 }
 
 

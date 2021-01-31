@@ -364,10 +364,11 @@ class AFrameView extends Fabric {
                 if (!(node)) {
                     return;
                 }
+
+                var clientThatSatProperty = self.kernel.client();
+                var me = self.kernel.moniker();
     
                 if (eventName == "changingTransformFromView") {
-                    var clientThatSatProperty = self.kernel.client();
-                    var me = self.kernel.moniker();
     
                     // If the transform property was initially updated by this view....
                     if (clientThatSatProperty == me) {
@@ -394,6 +395,8 @@ class AFrameView extends Fabric {
                     eventName == 'mousedownEvent' ||
                     eventName == 'mouseupEvent'){
 
+                        if (clientThatSatProperty == me) {
+
                         let methodName = eventName +'Method';
                         self.kernel.callMethod(nodeID, methodName, eventParameters);
 
@@ -419,18 +422,16 @@ class AFrameView extends Fabric {
 
                         }
 
-
+                    }
                     }
 
 
 
-                let intersectEvents = ['hitstart', 'hitend', 'intersect', 'clearIntersect']; //'intersect', 
+                let intersectEvents = ['fromhitstart', 'fromhitend', 'hitstart', 'hitend', 'intersect', 'clearIntersect']; //'intersect', 
     
                 let hitEvent = intersectEvents.filter(el=> el == eventName.slice(0,-5))[0]; //slice Event word
                 if (hitEvent)
                 {
-                    var clientThatSatProperty = self.kernel.client();
-                    var me = self.kernel.moniker();
     
                     // If the transform property was initially updated by this view....
                     if (clientThatSatProperty == me) {
@@ -849,9 +850,19 @@ class AFrameView extends Fabric {
 
                 if (distance > delta)
                 {
+                    //let idata = el.components["xrcontroller"].intersectionData;
+
+                let intersection = el.components.raycaster.intersections[0];
+                let point = intersection ? intersection.point : null;
+                let elID = intersection ? intersection.object.el.id : null;
+                let idata = point ? {
+                    point: point,
+                    elID: elID
+                } : null;
+               
                    // console.log("position not equal");
                     self.kernel.setProperty(avatarName, "position", position);
-                    self.kernel.callMethod(avatarName, "moveVRController",[]);
+                    self.kernel.callMethod(avatarName, "moveVRController",[idata]);
                 }
             }
 
@@ -860,9 +871,16 @@ class AFrameView extends Fabric {
 
                 if (distance)
                 {
+                    let intersection = el.components.raycaster.intersections[0];
+                    let point = intersection ? intersection.point : null;
+                    let elID = intersection ? intersection.object.el.id : null;
+                    let idata = point ? {
+                        point: point,
+                        elID: elID
+                    } : null;
                     //console.log("rotation not equal");
                     self.kernel.setProperty(avatarName, "rotation", rotation);
-                    self.kernel.callMethod(avatarName, "moveVRController",[]);
+                    self.kernel.callMethod(avatarName, "moveVRController",[idata]);
                 }
             }
 
@@ -988,7 +1006,12 @@ class AFrameView extends Fabric {
        
 
         else if (self.isDesktop){
-            cursorEl.setAttribute('cursor', {rayOrigin: 'mouse'});
+            cursorEl.setAttribute('cursor',
+             {
+                rayOrigin: 'mouse'
+            });
+            cursorEl.setAttribute('visible', false);
+             
         }
 
         // cursorEl.setAttribute('raycaster', {objects: '.intersectable', showLine: true, far: 100});

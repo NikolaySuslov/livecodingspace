@@ -1,0 +1,11 @@
+{
+    "extends": "proxy/aframe/aentity.vwf",
+    "properties": {},
+    "methods": {
+        "init": {},
+        "run":{}
+    },
+    "scripts": {
+        "source": "clock.js"
+    }
+}

@@ -42,8 +42,8 @@ class VWF {
         this.isLuminary = connectionConf.luminary;
         this.isLuminaryGlobalHB = connectionConf.luminaryHB;
         this.luminaryGlobalHBPath = connectionConf.luminaryGlobalHBPath;
-        
-        
+
+
         this.luminary = new Luminary;
         this.reflectorClient = new ReflectorClient;
         this.virtualTime = new VirtualTime;
@@ -62,7 +62,7 @@ class VWF {
 
         /// Default configuration for all environments.
 
-        this.configuration =  {
+        this.configuration = {
             "log-level": "info",                  // logger threshold
             "random-seed": +new Date,             // pseudorandom number generator seed
             "randomize-ids": true,               // randomize IDs to discourage assumptions about ID allocation
@@ -71,7 +71,7 @@ class VWF {
             "load-timeout": 30                   // resource load timeout in seconds
         }
 
-        
+
         //undefined; // require( "vwf/configuration" ).active; // "active" updates in place and changes don't invalidate the reference  // TODO: assign here after converting vwf.js to a RequireJS module and listing "vwf/configuration" as a dependency
 
         /// Kernel utility functions and objects.
@@ -88,11 +88,11 @@ class VWF {
         this.utility = new Utility;
 
         this.viewModule = new Fabric({
-            id:"vwf/view"
+            id: "vwf/view"
         }, 'View');
 
         this.modelModule = new Fabric({
-            id:"vwf/model"
+            id: "vwf/model"
         }, 'Model');
 
 
@@ -102,7 +102,7 @@ class VWF {
         /// 
         /// @private
 
-        this.logger = (new Logger).for("vwf", this, this.configuration["log-level"] );
+        this.logger = (new Logger).for("vwf", this, this.configuration["log-level"]);
 
         //undefined; // require( "logger" ).for( undefined, this );  // TODO: for( "vwf", ... ), and update existing calls  // TODO: assign here after converting vwf.js to a RequireJS module and listing "vwf/logger" as a dependency
 
@@ -823,6 +823,10 @@ class VWF {
                     this.globals[nodeID] = undefined;
                 }
 
+                //FIX!!!
+                // if (parentNode && Object.keys(parentNode.childsDeleted).includes(nodeName))
+                //     delete parentNode.childsDeleted[nodeName]
+
                 // Add the node to the registry.
 
                 return this.existing[nodeID] = {
@@ -1047,7 +1051,7 @@ class VWF {
 
         var initializers = {
             model: [
-                 {
+                {
                     library: "/core/vwf/model/ohm",
                     active: true
                 },
@@ -1107,71 +1111,71 @@ class VWF {
         //     resolve(this.driverConfiguration);
         // });
 
-            let configLibraries = this.driverConfiguration;
+        let configLibraries = this.driverConfiguration;
 
-            if (configLibraries && typeof configLibraries == "object") {
-                if (typeof configLibraries.configuration == "object") {
-                    applicationConfig = configLibraries.configuration;
+        if (configLibraries && typeof configLibraries == "object") {
+            if (typeof configLibraries.configuration == "object") {
+                applicationConfig = configLibraries.configuration;
+            }
+            Object.keys(configLibraries).forEach(function (libraryType) {
+                if (libraryType == 'info' && configLibraries[libraryType]["title"]) {
+                    //jQuery('title').html(configLibraries[libraryType]["title"]);
+                    document.querySelector('title').innerHTML = configLibraries[libraryType]["title"]
                 }
-                Object.keys(configLibraries).forEach(function (libraryType) {
-                    if (libraryType == 'info' && configLibraries[libraryType]["title"]) {
-                        //jQuery('title').html(configLibraries[libraryType]["title"]);
-                        document.querySelector('title').innerHTML = configLibraries[libraryType]["title"]
-                    }
-                    if (!userLibraries[libraryType]) {
-                        userLibraries[libraryType] = {};
-                    }
-                    // Merge libraries from config file and URL together. Check for incompatible
-                    // libraries, and disable them.
-                    Object.keys(configLibraries[libraryType]).forEach(function (libraryName) {
-                        var disabled = false;
-                        if (!disabled) {
-                            if (userLibraries[libraryType][libraryName] == undefined) {
-                                userLibraries[libraryType][libraryName] = configLibraries[libraryType][libraryName];
-                            } else if (typeof userLibraries[libraryType][libraryName] == "object" && typeof configLibraries[libraryType][libraryName] == "object") {
-                                userLibraries[libraryType][libraryName] = Object.assign({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
-                            }
+                if (!userLibraries[libraryType]) {
+                    userLibraries[libraryType] = {};
+                }
+                // Merge libraries from config file and URL together. Check for incompatible
+                // libraries, and disable them.
+                Object.keys(configLibraries[libraryType]).forEach(function (libraryName) {
+                    var disabled = false;
+                    if (!disabled) {
+                        if (userLibraries[libraryType][libraryName] == undefined) {
+                            userLibraries[libraryType][libraryName] = configLibraries[libraryType][libraryName];
+                        } else if (typeof userLibraries[libraryType][libraryName] == "object" && typeof configLibraries[libraryType][libraryName] == "object") {
+                            userLibraries[libraryType][libraryName] = Object.assign({}, configLibraries[libraryType][libraryName], userLibraries[libraryType][libraryName]);
                         }
-                    });
+                    }
+                });
+            });
+        }
+
+
+        Object.keys(userLibraries).forEach(function (libraryType) {
+            if (initializers[libraryType]) {
+                Object.keys(userLibraries[libraryType]).forEach(function (libraryName) {
+                    //if (requireArray[libraryName]) {
+                    // requireArray[libraryName].active = true;
+
+                    if (!initializers[libraryType][libraryName]) {
+
+                        initializers[libraryType].unshift({ 'library': libraryName });
+                        initializers[libraryType][libraryName] = initializers[libraryType][0];
+
+                    }
+                    initializers[libraryType][libraryName].active = true;
+                    if (userLibraries[libraryType][libraryName] && userLibraries[libraryType][libraryName] != "") {
+                        if (typeof initializers[libraryType][libraryName].parameters == "object") {
+
+                            initializers[libraryType][libraryName].parameters = Object.assign({}, initializers[libraryType][libraryName].parameters, userLibraries[libraryType][libraryName]);
+
+                        } else {
+                            initializers[libraryType][libraryName].parameters = userLibraries[libraryType][libraryName];
+                        }
+                    }
                 });
             }
+        })
 
 
-            Object.keys(userLibraries).forEach(function (libraryType) {
-                if (initializers[libraryType]) {
-                    Object.keys(userLibraries[libraryType]).forEach(function (libraryName) {
-                        //if (requireArray[libraryName]) {
-                           // requireArray[libraryName].active = true;
+        // Load default renderer if no other librarys specified
+        // if (Object.keys(userLibraries["model"]).length == 0 && Object.keys(userLibraries["view"]).length == 0) {
+        //     // requireArray["vwf/model/threejs"].active = true;
+        // }
 
-                            if(!initializers[libraryType][libraryName]){
-
-                                initializers[libraryType].unshift({'library': libraryName});
-                                initializers[libraryType][libraryName] = initializers[libraryType][0];
-
-                            }
-                            initializers[libraryType][libraryName].active = true;
-                            if (userLibraries[libraryType][libraryName] && userLibraries[libraryType][libraryName] != "") {
-                                if (typeof initializers[libraryType][libraryName].parameters == "object") {
-
-                                    initializers[libraryType][libraryName].parameters = Object.assign({}, initializers[libraryType][libraryName].parameters, userLibraries[libraryType][libraryName]);
-
-                                } else {
-                                    initializers[libraryType][libraryName].parameters = userLibraries[libraryType][libraryName];
-                                }
-                            }
-                    });
-                }
-            })
-
-
-            // Load default renderer if no other librarys specified
-            // if (Object.keys(userLibraries["model"]).length == 0 && Object.keys(userLibraries["view"]).length == 0) {
-            //     // requireArray["vwf/model/threejs"].active = true;
-            // }
-
-                    // With the scripts loaded, we must initialize the framework. vwf.initialize()
-                    // accepts three parameters: a world specification, model configuration parameters,
-                    // and view configuration parameters.
+        // With the scripts loaded, we must initialize the framework. vwf.initialize()
+        // accepts three parameters: a world specification, model configuration parameters,
+        // and view configuration parameters.
 
         self.initialize(self.applicationLoad, getActiveLibraries(initializers["model"], true), getActiveLibraries(initializers["view"], true), callback);
 
@@ -1267,7 +1271,7 @@ class VWF {
         // immediately or future calls that are placed on the queue and executed when removed.
 
         let modelKernel = new ModelKernel({
-            id:"vwf/kernel/model"
+            id: "vwf/kernel/model"
         }).factory();
         this.models.kernel = modelKernel.create(vwf);
 
@@ -1276,7 +1280,7 @@ class VWF {
         // Create and attach each configured model.
 
         for (let modelInitializer of modelInitializers) {
-        //modelInitializers.forEach(function (modelInitializer) {
+            //modelInitializers.forEach(function (modelInitializer) {
 
             // Skip falsy values to allow initializers to be conditionally included by the
             // loader.
@@ -1294,25 +1298,25 @@ class VWF {
                 }
 
                 let log = new Log({
-                    id:"vwf/model/stage/log"
+                    id: "vwf/model/stage/log"
                 }).factory();
 
                 //
-                    var modelMod = undefined;
-                    await import(modelName+'.js').then(m=>{
-                        modelMod = (new m.default({
-                            id: modelName
-                        }).factory())
-                    });
-                    
+                var modelMod = undefined;
+                await import(modelName + '.js').then(m => {
+                    modelMod = (new m.default({
+                        id: modelName
+                    }).factory())
+                });
 
-                    var model = modelMod.create(
-                        this.models.kernel, // model's kernel access
-                        [log],
-                        //[require("vwf/model/stage/log")], // stages between the kernel and model
-                        {}, // state shared with a paired view
-                        [].concat(modelArguments || []) // arguments for initialize()
-                    );
+
+                var model = modelMod.create(
+                    this.models.kernel, // model's kernel access
+                    [log],
+                    //[require("vwf/model/stage/log")], // stages between the kernel and model
+                    {}, // state shared with a paired view
+                    [].concat(modelArguments || []) // arguments for initialize()
+                );
 
 
                 if (model) {
@@ -1348,7 +1352,7 @@ class VWF {
         // when removed.
 
         let viewKernel = new ViewKernel({
-            id:"vwf/kernel/view"
+            id: "vwf/kernel/view"
         }).factory();
 
         this.views.kernel = viewKernel.create(vwf);
@@ -1357,8 +1361,8 @@ class VWF {
 
         // Create and attach each configured view.
 
-        for( let viewInitializer of viewInitializers) {
-        //viewInitializers.forEach(function (viewInitializer) {
+        for (let viewInitializer of viewInitializers) {
+            //viewInitializers.forEach(function (viewInitializer) {
 
             // Skip falsy values to allow initializers to be conditionally included by the
             // loader.
@@ -1396,39 +1400,39 @@ class VWF {
                 //     }
 
                 // } else { 
-                    // new way
+                // new way
 
-                    var modelPeer = this.models.actual[viewName.replace("view/", "model/")]; // TODO: this.model.actual() is kind of heavy, but it's probably OK to use just a few times here at start-up
-
-                   
-                    var viewMod = undefined;
-                    await import(viewName +'.js').then(m=>{
-                        viewMod = (new m.default({
-                            id: viewName
-                        }).factory())
-                    })
-
-                    var view = viewMod.create(
-                        this.views.kernel, // view's kernel access
-                        [], // stages between the kernel and view
-                        modelPeer && modelPeer.state || {}, // state shared with a paired model
-                        [].concat(viewArguments || []) // arguments for initialize()
-                    );
+                var modelPeer = this.models.actual[viewName.replace("view/", "model/")]; // TODO: this.model.actual() is kind of heavy, but it's probably OK to use just a few times here at start-up
 
 
+                var viewMod = undefined;
+                await import(viewName + '.js').then(m => {
+                    viewMod = (new m.default({
+                        id: viewName
+                    }).factory())
+                })
 
-                    if (view) {
-                        this.views.push(view);
-                        this.views[viewName] = view; // also index by id  // TODO: this won't work if multiple view instances are allowed
+                var view = viewMod.create(
+                    this.views.kernel, // view's kernel access
+                    [], // stages between the kernel and view
+                    modelPeer && modelPeer.state || {}, // state shared with a paired model
+                    [].concat(viewArguments || []) // arguments for initialize()
+                );
 
-                        if (view.compatibilityStatus) {
-                            if (!view.compatibilityStatus.compatible) {
-                                compatibilityStatus.compatible = false;
-                                Object.assign(compatibilityStatus.errors, view.compatibilityStatus.errors);
-                                // jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
-                            }
+
+
+                if (view) {
+                    this.views.push(view);
+                    this.views[viewName] = view; // also index by id  // TODO: this won't work if multiple view instances are allowed
+
+                    if (view.compatibilityStatus) {
+                        if (!view.compatibilityStatus.compatible) {
+                            compatibilityStatus.compatible = false;
+                            Object.assign(compatibilityStatus.errors, view.compatibilityStatus.errors);
+                            // jQuery.extend(compatibilityStatus.errors, view.compatibilityStatus.errors);
                         }
                     }
+                }
 
                 //}
 
@@ -1480,8 +1484,8 @@ class VWF {
                 })
             }
 
-           this.luminary.subscribeOnHeartbeat(heartbeat);
-           this.luminary.subscribeOnMessages();
+            this.luminary.subscribeOnHeartbeat(heartbeat);
+            this.luminary.subscribeOnMessages();
 
 
         } else {
@@ -1517,7 +1521,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.setState}
 
-    setState(appState, callback_async /* () */ ) {
+    setState(appState, callback_async /* () */) {
         let self = this;
 
         this.logger.debuggx("setState"); // TODO: loggableState
@@ -1548,7 +1552,7 @@ class VWF {
 
         var nodeIndex = 0;
 
-        async.forEachSeries(nodes, function (nodeComponent, each_callback_async /* ( err ) */ ) {
+        async.forEachSeries(nodes, function (nodeComponent, each_callback_async /* ( err ) */) {
 
             // Look up a possible annotation for this node. For backward compatibility, if the
             // state has exactly one node and doesn't contain an annotations object, assume the
@@ -1710,7 +1714,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.createNode}
 
-    createNode (nodeComponent, nodeAnnotation, baseURI, callback_async /* ( nodeID ) */ ) {
+    createNode(nodeComponent, nodeAnnotation, baseURI, callback_async /* ( nodeID ) */) {
 
         let self = this;
 
@@ -1751,7 +1755,7 @@ class VWF {
             // If `nodeComponent` is a URI, load the descriptor. `nodeComponent` may be a URI, a
             // descriptor or an ID here.
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 if (self.componentIsURI(nodeComponent)) { // URI  // TODO: allow non-vwf URIs (models, images, etc.) to pass through to stage 2 and pass directly to createChild()
 
@@ -1818,7 +1822,7 @@ class VWF {
             // 
             // Also see the `mergeDescriptors` limitations.
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 if (self.componentIsDescriptor(nodeComponent) && nodeComponent.includes && self.componentIsURI(nodeComponent.includes)) { // TODO: for "includes:", accept an already-loaded component (which componentIsURI exludes) since the descriptor will be loaded again
 
@@ -1842,7 +1846,7 @@ class VWF {
             // If `nodeComponent` is a descriptor, construct and get the ID. `nodeComponent` may
             // be a descriptor or an ID here.
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 if (self.componentIsDescriptor(nodeComponent)) { // descriptor  // TODO: allow non-vwf URIs (models, images, etc.) to pass through to stage 2 and pass directly to createChild()
 
@@ -1863,7 +1867,7 @@ class VWF {
 
             // nodeComponent is an ID here.
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 if (self.componentIsID(nodeComponent) || self.components[nodeComponent] instanceof Array) { // ID
 
@@ -1916,7 +1920,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.deleteNode}
 
-    deleteNode (nodeID) {
+    deleteNode(nodeID, replaceFlag) {
         let self = this;
 
         this.logger.debuggx("deleteNode", nodeID);
@@ -1952,8 +1956,7 @@ class VWF {
         });
 
         //Delete childs nodes
-        self.children(nodeID).forEach(function(child)
-        {
+        self.children(nodeID).forEach(function (child) {
             self.deleteNode(child);
         });
 
@@ -1962,7 +1965,7 @@ class VWF {
         // have run.
 
         this.models.forEach(function (model) {
-            model.deletingNode && model.deletingNode(nodeID);
+            model.deletingNode && model.deletingNode(nodeID, replaceFlag);
         });
 
         // Unregister the node.
@@ -1990,7 +1993,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.setNode}
 
-    setNode (nodeID, nodeComponent, callback_async /* ( nodeID ) */ ) { // TODO: merge with createChild?
+    setNode(nodeID, nodeComponent, callback_async /* ( nodeID ) */) { // TODO: merge with createChild?
 
         let self = this;
         self.logger.debuggx("setNode", function () {
@@ -2022,6 +2025,11 @@ class VWF {
 
             // Create a new property if the property is not defined on a prototype.
             // Otherwise, initialize the property.
+
+            // if(!node){
+            //     console.log(nodeComponent);
+            //     return
+            // }
 
             var creating = !node.properties.has(propertyName); // not defined on node or prototype
 
@@ -2084,13 +2092,13 @@ class VWF {
 
         async.series([
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Create and attach the children. For each child, call createChild() with the
                 // child's component specification. createChild() delegates to the models and
                 // views as before.
 
-                async.forEach(Object.keys(nodeComponent.children || {}), function (childName, each_callback_async /* ( err ) */ ) {
+                async.forEach(Object.keys(nodeComponent.children || {}), function (childName, each_callback_async /* ( err ) */) {
 
                     var creating = !self.nodeHasOwnChild.call(self, nodeID, childName);
                     if (creating) {
@@ -2105,23 +2113,47 @@ class VWF {
                             });
                     } // TODO: delete when nodeComponent.children[childName] === null in patch
                 }, function (err) /* async */ {
-                        let deletedProtoNodes = nodeComponent.childrenDeleted;
+                    let deletedProtoNodes = nodeComponent.childrenDeleted;
 
-                        if (deletedProtoNodes) {
-                            let childNames = Object.keys(nodeComponent.childrenDeleted)
-                            if (childNames) {
-                                childNames.forEach(el => {
-                                    console.log("DELETE CHILD HERE!: ", el);
-                                    self.deleteChild(nodeID, el);
-                                });
-                            }
+                    if (deletedProtoNodes) {
+                        let childNames = Object.keys(nodeComponent.childrenDeleted)
+                        if (childNames) {
+                            childNames.forEach(el => {
+                                console.log("DELETE CHILD HERE!: ", el);
+
+                                //self.deleteChild(nodeID, el);
+                                var indm = false;
+                                for (const prop in nodeComponent.children) {
+                                    if (nodeComponent.children[prop].properties && nodeComponent.children[prop].properties.displayName) {
+
+                                        if (nodeComponent.children[prop].properties.displayName == el ||
+                                            nodeComponent.children[prop].properties.displayName.value == el) {
+                                            indm = true;
+                                            //console.log('REPLACE: ');
+                                            //self.deleteChild(nodeID, el, true);
+                                        }
+
+                                    } else {
+                                        indm = false;
+                                        //self.deleteChild(nodeID, el);
+                                    }
+
+                                }
+                                if (nodeComponent.children && !nodeComponent.children[el] && indm) {
+                                    self.deleteChild(nodeID, el, true)
+                                } else {
+                                    self.deleteChild(nodeID, el)
+                                }
+
+                            });
                         }
+                    }
                     series_callback_async(err, undefined);
                 });
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Attach the scripts. For each script, load the network resource if the script
                 // is specified as a URI, then once loaded, call execute() to direct any model
@@ -2133,7 +2165,7 @@ class VWF {
 
                 var baseURI = self.uri(nodeID, true);
 
-                async.map(scripts, function (script, map_callback_async /* ( err, result ) */ ) {
+                async.map(scripts, function (script, map_callback_async /* ( err, result ) */) {
 
                     if (self.valueHasType(script)) {
                         if (script.source) {
@@ -2298,6 +2330,14 @@ class VWF {
                         prop.set = ""
                     }
 
+
+                    if(prop.get == "" && prop.set == ""){
+                        //let val = prop.value;
+                        // delete prop.get;
+                        // delete prop.set;
+                        prop = prop.value;
+                    }
+
                     nodeComponent.properties[el] = prop
                 }
             })
@@ -2402,13 +2442,13 @@ class VWF {
                 delete nodeComponent.children[childName];
             }
         }
-        
+
         ////CHECK FOR DELETED PROTO NODES
 
         nodeComponent.childrenDeleted = {};
 
         Object.keys(node.childsDeleted).forEach((childName) => {
-            nodeComponent.childrenDeleted[childName] = null;
+            nodeComponent.childrenDeleted[childName] = null//node.childsDeleted[childName];
             patched = true;
         });
 
@@ -2521,7 +2561,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.createChild}
 
-    createChild(nodeID, childName, childComponent, childURI, callback_async /* ( childID ) */ ) {
+    createChild(nodeID, childName, childComponent, childURI, callback_async /* ( childID ) */) {
 
         let self = this;
 
@@ -2582,7 +2622,7 @@ class VWF {
 
         async.series([
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Rudimentary support for `{ includes: prototype }`, which absorbs a prototype
                 // descriptor into the child descriptor before creating the child. See the notes
@@ -2642,14 +2682,14 @@ class VWF {
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Create the prototype and behavior nodes (or locate previously created
                 // instances).
 
                 async.parallel([
 
-                    function (parallel_callback_async /* ( err, results ) */ ) {
+                    function (parallel_callback_async /* ( err, results ) */) {
 
                         // Create or find the prototype and save the ID in childPrototypeID.
 
@@ -2685,13 +2725,13 @@ class VWF {
 
                     },
 
-                    function (parallel_callback_async /* ( err, results ) */ ) {
+                    function (parallel_callback_async /* ( err, results ) */) {
 
                         // Create or find the behaviors and save the IDs in childBehaviorIDs.
 
                         var behaviorComponents = childComponent.implements ? [].concat(childComponent.implements) : []; // accept either an array or a single item
 
-                        async.map(behaviorComponents, function (behaviorComponent, map_callback_async /* ( err, result ) */ ) {
+                        async.map(behaviorComponents, function (behaviorComponent, map_callback_async /* ( err, result ) */) {
                             self.createNode(behaviorComponent, undefined, baseURI, function (behaviorID) /* async */ {
                                 map_callback_async(undefined, behaviorID);
                             });
@@ -2708,7 +2748,7 @@ class VWF {
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Re-register the node now that we have the prototypes and behaviors.
 
@@ -2743,7 +2783,7 @@ class VWF {
                 // Call creatingNode() on each model. The node is considered to be constructed
                 // after all models have run.
 
-                async.forEachSeries(self.models, function (model, each_callback_async /* ( err ) */ ) {
+                async.forEachSeries(self.models, function (model, each_callback_async /* ( err ) */) {
 
                     var driver_ready = true;
                     var timeoutID;
@@ -2788,12 +2828,12 @@ class VWF {
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Call createdNode() on each view. The view is being notified of a node that has
                 // been constructed.
 
-                async.forEach(self.views, function (view, each_callback_async /* ( err ) */ ) {
+                async.forEach(self.views, function (view, each_callback_async /* ( err ) */) {
 
                     var driver_ready = true;
                     var timeoutID;
@@ -2834,7 +2874,7 @@ class VWF {
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Set the internal state.
 
@@ -2927,7 +2967,7 @@ class VWF {
                 // child's component specification. createChild() delegates to the models and
                 // views as before.
 
-                async.forEach(Object.keys(childComponent.children || {}), function (childName, each_callback_async /* ( err ) */ ) {
+                async.forEach(Object.keys(childComponent.children || {}), function (childName, each_callback_async /* ( err ) */) {
                     var childValue = childComponent.children[childName];
 
                     self.createChild(childID, childName, childValue, undefined, function (childID) /* async */ { // TODO: add in original order from childComponent.children  // TODO: propagate childURI + fragment identifier to children of a URI component?
@@ -2940,7 +2980,7 @@ class VWF {
 
             },
 
-            function (series_callback_async /* ( err, results ) */ ) {
+            function (series_callback_async /* ( err, results ) */) {
 
                 // Attach the scripts. For each script, load the network resource if the script is
                 // specified as a URI, then once loaded, call execute() to direct any model that
@@ -2950,7 +2990,7 @@ class VWF {
 
                 var scripts = childComponent.scripts ? [].concat(childComponent.scripts) : []; // accept either an array or a single item
 
-                async.map(scripts, function (script, map_callback_async /* ( err, result ) */ ) {
+                async.map(scripts, function (script, map_callback_async /* ( err, result ) */) {
 
                     if (self.valueHasType(script)) {
                         if (script.source) {
@@ -3022,7 +3062,7 @@ class VWF {
                         // model drivers to apply the prototypes' initializers to the node.
 
                         async.forEachSeries(self.prototypes(childID, true).reverse().concat(childID),
-                            function (childInitializingNodeID, each_callback_async /* err */ ) {
+                            function (childInitializingNodeID, each_callback_async /* err */) {
 
                                 // Call initializingNode() on each model.
 
@@ -3127,14 +3167,14 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.deleteChild}
 
-    deleteChild(nodeID, childName) {
+    deleteChild(nodeID, childName, replaceFlag) {
 
         var childID = this.children(nodeID).filter(function (childID) {
             return this.name(childID) === childName;
         }, this)[0];
 
         if (childID !== undefined) {
-            return this.deleteNode(childID);
+            return this.deleteNode(childID, replaceFlag);
         }
 
     }
@@ -3730,23 +3770,23 @@ class VWF {
 
             if (propertyValue === undefined && !ignorePrototype) {
 
-                if(this.behaviors(nodeID)){
-                    
-                this.behaviors(nodeID).reverse().concat(this.prototype(nodeID)).
-                some(function (prototypeID, prototypeIndex, prototypeArray) {
+                if (this.behaviors(nodeID)) {
 
-                    if (prototypeIndex < prototypeArray.length - 1) {
-                        propertyValue = this.getProperty(prototypeID, propertyName, true); // behavior node only, not its prototypes
-                    } else if (prototypeID !== this.kutility.protoNodeURI) {
-                        propertyValue = this.getProperty(prototypeID, propertyName); // prototype node, recursively
-                    }
+                    this.behaviors(nodeID).reverse().concat(this.prototype(nodeID)).
+                        some(function (prototypeID, prototypeIndex, prototypeArray) {
 
-                    return propertyValue !== undefined;
+                            if (prototypeIndex < prototypeArray.length - 1) {
+                                propertyValue = this.getProperty(prototypeID, propertyName, true); // behavior node only, not its prototypes
+                            } else if (prototypeID !== this.kutility.protoNodeURI) {
+                                propertyValue = this.getProperty(prototypeID, propertyName); // prototype node, recursively
+                            }
 
-                }, this);
+                            return propertyValue !== undefined;
 
+                        }, this);
+
+                }
             }
-        }
 
             // Call gotProperty() on each view.
 
@@ -4524,7 +4564,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.execute}
 
-    execute(nodeID, scriptText, scriptType, callback_async /* result */ ) {
+    execute(nodeID, scriptText, scriptType, callback_async /* result */) {
 
         let self = this;
 
@@ -4942,7 +4982,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.find}
 
-    find(nodeID, matchPattern, initializedOnly, callback /* ( matchID ) */ ) {
+    find(nodeID, matchPattern, initializedOnly, callback /* ( matchID ) */) {
 
         // Interpret `find( nodeID, matchPattern, callback )` as
         // `find( nodeID, matchPattern, undefined, callback )`. (`initializedOnly` was added in
@@ -4996,7 +5036,7 @@ class VWF {
     /// 
     /// @see {@link module:vwf/api/kernel.findClients}
 
-    findClients(nodeID, matchPattern, callback /* ( matchID ) */ ) {
+    findClients(nodeID, matchPattern, callback /* ( matchID ) */) {
 
         this.logger.warn("`kernel.findClients` is deprecated. Use " +
             "`kernel.find( nodeID, \"doc('proxy/clients.vwf')/pattern\" )`" +
@@ -5050,7 +5090,7 @@ class VWF {
 
     /// @name module:vwf~loadComponent
 
-    loadComponent(nodeURI, baseURI, callback_async /* nodeDescriptor */ , errback_async /* errorMessage */ ) { // TODO: turn this into a generic xhr loader exposed as a kernel function?
+    loadComponent(nodeURI, baseURI, callback_async /* nodeDescriptor */, errback_async /* errorMessage */) { // TODO: turn this into a generic xhr loader exposed as a kernel function?
 
         let self = this;
 
@@ -5116,14 +5156,14 @@ class VWF {
             } else {
                 var worldName = dbName.split('/')[1];
                 var fileName = dbName.split('/')[2];
-                 //+ '_json';
+                //+ '_json';
 
-                if(!fileName) {
+                if (!fileName) {
                     worldName = self.helpers.appPath
                     fileName = dbName + '_json';
-                    } else {
+                } else {
                     fileName = fileName + '_json';
-                    }
+                }
 
                 let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
 
@@ -5155,7 +5195,7 @@ class VWF {
 
     /// @name module:vwf~loadScript
 
-    loadScript(scriptURI, baseURI, callback_async /* scriptText */ , errback_async /* errorMessage */ ) {
+    loadScript(scriptURI, baseURI, callback_async /* scriptText */, errback_async /* errorMessage */) {
 
         let self = this;
         if (scriptURI.match(RegExp("^data:application/javascript;base64,"))) {
@@ -5198,8 +5238,13 @@ class VWF {
             if (dbName.includes("proxy")) {
                 let proxyDB = self.proxy ? _LCSDB.user(self.proxy) : _LCSDB.user(_LCS_WORLD_USER.pub);
 
+             
+                
+                let url = scriptURI.startsWith('/') ? scriptURI.substring(1) : fetchUrl;
+                let scrName = scriptURI.startsWith('/') ? url.split(".").join("_") : dbName;
+
                 //userDB = window._LCS_SYS_USER.get('proxy');
-                let fileName = dbName;
+                let fileName = scrName;
                 let dbNode = proxyDB.get('proxy').get(fileName);
                 let nodeProm = new Promise(res => dbNode.once(res))
 
@@ -5214,12 +5259,12 @@ class VWF {
             } else {
                 var fileName = dbName.split('/')[2]; //dbName.replace(worldName + '/', "");
 
-                if(!fileName) {
+                if (!fileName) {
                     worldName = self.helpers.appPath
                     fileName = dbName;
-                    } else {
+                } else {
                     fileName = fileName;
-                    }
+                }
 
 
                 let dbNode = _LCSDB.user(_LCS_WORLD_USER.pub).get('worlds').path(worldName).get(fileName);
@@ -5822,10 +5867,11 @@ class VWF {
 
     resolvedDescriptor(component, baseURI) {
 
+        let selfKernel = this; 
         return this.utility.transform(component, resolvedDescriptorTransformationWithBaseURI);
 
         function resolvedDescriptorTransformationWithBaseURI(object, names, depth) {
-            return resolvedDescriptorTransformation.call(this, object, names, depth, baseURI);
+            return selfKernel.resolvedDescriptorTransformation.call(selfKernel, object, names, depth, baseURI);
         }
 
     }
@@ -6183,8 +6229,8 @@ class VWF {
                 );
                 break;
 
-                // case "following-sibling":  // TODO
-                // case "following":  // TODO
+            // case "following-sibling":  // TODO
+            // case "following":  // TODO
 
             case "attribute":
                 if (resolveAttributes) {
@@ -6192,8 +6238,8 @@ class VWF {
                 }
                 break;
 
-                // n/a: case "namespace":
-                // n/a:   break;
+            // n/a: case "namespace":
+            // n/a:   break;
 
         }
 
@@ -6213,7 +6259,7 @@ class VWF {
 
                 break;
 
-                // Element test.
+            // Element test.
 
             case "element":
 
@@ -6230,7 +6276,7 @@ class VWF {
 
                 break;
 
-                // Attribute test.
+            // Attribute test.
 
             case "attribute":
 
@@ -6240,8 +6286,8 @@ class VWF {
 
                 break;
 
-                // The `doc()` function for referencing globals outside the current tree.
-                // http://www.w3.org/TR/xpath-functions/#func-doc.
+            // The `doc()` function for referencing globals outside the current tree.
+            // http://www.w3.org/TR/xpath-functions/#func-doc.
 
             case "doc":
 
@@ -6254,13 +6300,13 @@ class VWF {
 
                 break;
 
-                // Any-kind test.
+            // Any-kind test.
 
             case "node":
 
                 break;
 
-                // Unimplemented test.
+            // Unimplemented test.
 
             default:
 
@@ -6355,7 +6401,7 @@ class VWF {
 
         if (nodeDescriptor.implements) {
             prototypeDescriptor.implements = (prototypeDescriptor.implements || []).
-            concat(nodeDescriptor.implements);
+                concat(nodeDescriptor.implements);
         }
 
         if (nodeDescriptor.source) {
@@ -6405,7 +6451,7 @@ class VWF {
 
         if (nodeDescriptor.scripts) {
             prototypeDescriptor.scripts = (prototypeDescriptor.scripts || []).
-            concat(nodeDescriptor.scripts);
+                concat(nodeDescriptor.scripts);
         }
 
         return prototypeDescriptor;
@@ -6468,11 +6514,11 @@ class VWF {
 
     async chooseConnection(data) {
         if (this.isLuminary) {
-          return await this.luminary.connect(data) //use Luminary
+            return await this.luminary.connect(data) //use Luminary
         } else {
-          return data //use Reflector
+            return data //use Reflector
         }
-      }
+    }
 
 
 }

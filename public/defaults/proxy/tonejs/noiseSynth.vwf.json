@@ -1,0 +1,19 @@
+{
+    "extends": "proxy/tonejs/polySynth.vwf",
+    "properties": {
+        "noise": null,
+        "volume": null,
+
+        "attack":null,
+        "attackCurve":null,
+        "decay":null,
+        "decayCurve":null,
+        "release":null,
+        "releaseCurve":null,
+        "sustain":null
+    },
+    "methods":{},
+    "scripts": {
+      "source": "noiseSynth.js"
+    }
+  }

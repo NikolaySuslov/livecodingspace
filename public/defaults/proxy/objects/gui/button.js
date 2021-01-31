@@ -30,9 +30,20 @@ this.init = function(){
         "type": "component"
       }
 
+      let textNode = {
+        "extends": "proxy/aframe/atext.vwf",
+        "properties": {
+          "value": this.text,
+          "color": "white",
+          "position": [-this.width/2, 0, 0],
+          "width": this.width*10
+        }
+      }
+
       this.children.create('material', material);
       this.children.create('cursor-listener', cursorListener);
       this.children.create('raycaster-listener', raycasterListener);
+      this.children.create('textNode', textNode);
 
 
 }
@@ -47,23 +58,27 @@ this.clearIntersectEventMethod = function(){
     this.material.color = this.baseColor
 }
 
-this.mousedownAction = function(){
-    this.triggerdownAction();
+this.mousedownAction = function(point, controllerID){
+    this.triggerdownAction(point, controllerID);
 }
 
-this.mouseupAction = function(){
-    this.triggerupAction();
+this.mouseupAction = function(point, controllerID){
+    this.triggerupAction(point, controllerID);
 
 }
 
-this.triggerdownAction = function(){
+this.triggerdownAction = function(point, controllerID){
     this.material.color = this.clickColor;
 
-    let target = this.getScene().findNode(this.target);
-    target.doButtonTriggerdownAction(this.id);
+    let target = this.target ? this.getScene().findNode(this.target) :
+    this.parent;
+    target.doButtonTriggerdownAction(this.id, controllerID, point);
 }
 
-this.triggerupAction = function(){
+this.triggerupAction = function(point, controllerID){
     this.material.color = this.baseColor;
+    let target = this.target ? this.getScene().findNode(this.target) :
+    this.parent;
+    target.doButtonTriggerupAction(this.id, controllerID);
     
 }

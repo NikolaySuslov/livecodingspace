@@ -6,21 +6,16 @@ this.animationUpdate = function(time, duration){
 
 this.translateBy = function(translation, duration){
 
-this.startTranslationSIM = this.position || goog.vec.Vec3.create();
+this.startTranslationSIM = this.position || new THREE.Vector3();
   var deltaTranslation = this.translationFromValue( translation );
-  this.stopTranslationSIM = goog.vec.Vec3.add(
-    this.startTranslationSIM,
-    deltaTranslation,
-    goog.vec.Vec3.create()
-  );
+
+  this.stopTranslationSIM = new THREE.Vector3().addVectors ( this.startTranslationSIM, deltaTranslation);
+
   if(duration > 0) {
     this.animationDuration = duration;
     this.animationUpdate = function(time, duration) {
-      this.position = goog.vec.Vec3.lerp(
-        this.startTranslationSIM, this.stopTranslationSIM,
-        time >= duration ? 1 : time / duration,
-        goog.vec.Vec3.create()
-      );
+      this.position = new THREE.Vector3().lerpVectors(this.startTranslationSIM, this.stopTranslationSIM,
+        time >= duration ? 1 : time / duration)
     }
     this.animationPlay(0, duration);
   }
@@ -31,16 +26,13 @@ this.startTranslationSIM = this.position || goog.vec.Vec3.create();
 }
 
 this.translateTo = function(translation, duration){
-    this.startTranslationSIM = this.position || goog.vec.Vec3.create();
+    this.startTranslationSIM = this.position || new THREE.Vector3();
     this.stopTranslationSIM = this.translationFromValue( translation );
     if(duration > 0) {
       this.animationDuration = duration;
       this.animationUpdate = function(time, duration) {
-        this.position = goog.vec.Vec3.lerp(
-          this.startTranslationSIM, this.stopTranslationSIM,
-          duration == 0 ? duration : time / duration,
-          goog.vec.Vec3.create()
-        );
+        this.position = new THREE.Vector3().lerpVectors(this.startTranslationSIM, this.stopTranslationSIM,
+          duration == 0 ? duration : time / duration)
       }
       this.animationPlay(0, duration);
     }

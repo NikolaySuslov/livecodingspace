@@ -116,20 +116,24 @@ this.initialize = function() {
    // this.future(0).update();
 }
 
-this.mousedown = function(point, elID) {
+this.mousedown = function(point, elID, controllerID) {
     let controller = this.xrnode.controller;
     if(controller){
         this.showHandSelection(point);
-        controller.mousedownAction(point, elID);
+        controller.mousedownAction(point, elID, controllerID);
     }
     //this.xrnode.controller.pointer.material.color = 'red'
  }
 
- this.mouseup = function(point, elID) {
+ this.mouseup = function(point, elID, controllerID) {
+
+    if(this.dragID)
+        this.dragID = false;
+
     let controller = this.xrnode.controller;
     if(controller){
         this.resetHandSelection();
-        controller.mouseupAction(point, elID);
+        controller.mouseupAction(point, elID, controllerID);
     }
     //this.xrnode.controller.pointer.material.color = 'green'
  }
@@ -142,21 +146,25 @@ this.mousedown = function(point, elID) {
 //     //this.xrnode.controller.pointer.material.color = 'green'
 //  }
 
-this.triggerdown = function(point, elID) {
+this.triggerdown = function(point, elID, controllerID) {
     let controller = this.xrnode.controller;
 
     if(controller){
         this.showHandSelection(point);
-        controller.triggerdownAction(point, elID);
+        controller.triggerdownAction(point, elID, controllerID);
     }
     //this.xrnode.controller.pointer.material.color = 'red'
  }
 
- this.triggerup = function(point, elID) {
+ this.triggerup = function(point, elID, controllerID) {
+
+    if(this.dragID)
+        this.dragID = false;
+
     let controller = this.xrnode.controller;
     if(controller){
         this.resetHandSelection();
-        controller.triggerupAction(point, elID);
+        controller.triggerupAction(point, elID, controllerID);
     }
     
     //this.xrnode.controller.pointer.material.color = 'green'
@@ -234,6 +242,7 @@ this.setControllerNode = function(modelSrc){
 this.showHandSelection = function (point) { 
 
     //let data = this.raycaster.getIntersectionPoint();
+
     if(point){  
     let end = this.xrnode.controller.cursorVisual.worldToLocal(point);
     //this.xrnode.controller.line.end = end;

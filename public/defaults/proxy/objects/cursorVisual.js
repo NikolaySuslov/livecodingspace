@@ -26,6 +26,15 @@ this.createVisual = function () {
                             "transparent": true,
                             "opacity": 0.6
                         }
+                    },
+                    "aabb-collider": {
+                        "extends": "proxy/aframe/aabb-collider-component.vwf",
+                        "type": "component",
+                        "properties": {
+                            debug: false,
+                            interval: 10,
+                            objects: ".hit"
+                        }
                     }
 
             }

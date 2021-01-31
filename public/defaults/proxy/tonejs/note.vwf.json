@@ -1,0 +1,14 @@
+{
+    "extends": "proxy/node.vwf",
+    "properties": {
+        "note": null,
+        "duration": null,
+        "time": null,
+        "velocity": null
+    },
+    "children":{},
+    "methods": {},
+    "scripts":{
+        "source":"/proxy/tonejs/note.js"
+      }
+  }
