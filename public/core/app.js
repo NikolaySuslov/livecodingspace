@@ -121,8 +121,8 @@ class App {
       'streamMsg': false,
       'multisocket': false,
       'edit': false,
-      'standalone': true,
-      "standaloneWorldName": "concert0",
+      'standalone': false,
+      "standaloneWorldName": "concert",
       "standaloneUserName": "aaa"
     }
 
