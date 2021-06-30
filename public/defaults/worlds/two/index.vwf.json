@@ -1,0 +1,210 @@
+{
+  "extends": "proxy/two/scene.vwf",
+  "properties": {
+  },
+  "methods":{
+    "initialize": {},
+    "setStartTime":{}
+  },
+  "children":{
+    "play":{
+      "extends": "proxy/two/rectangle.vwf",
+      "properties": {
+        "width": 50,
+        "height": 50,
+        "fill": "#aaa",
+        "x": 1000,
+        "y": 200
+      }
+    },
+    "audio":{
+      "extends": "proxy/two/ellipse.vwf",
+      "properties": {
+        "width": 50,
+        "height": 50,
+        "fill": "#aaa",
+        "x": 1100,
+        "y": 200
+      }
+    },
+    
+    "logo":{
+      "extends": "proxy/two/text.vwf",
+      "properties": {
+        "text": "PROTOTYPE",
+        "translation": [150,110],
+        "fill": "#ddd",
+        "size": 28
+      }
+    },
+    "back":{
+      "extends": "proxy/two/group.vwf",
+      "properties":{
+        "x": 500,
+        "y": 400
+      },
+      "children":{
+        "back1":{
+          "extends": "proxy/two/group.vwf",
+          "properties":{
+            "displayName": "back1"
+          },
+          "children":{
+            "rectangle":{
+              "extends": "proxy/two/rectangle.vwf",
+              "properties": {
+                "width": 800,
+                "height": 500,
+                "fill": "/defaults/assets/test/test.mp4"
+              }
+            }
+          }
+        },
+        "back2":{
+          "extends": "proxy/two/group.vwf",
+          "properties":{
+            "displayName": "back2"
+          },
+          "children":{
+            "rectangle2":{
+              "extends": "proxy/two/rectangle.vwf",
+              "properties": {
+                "width": 600,
+                "height": 40,
+                "fill": "#ddd",
+                "linewidth": 3
+              }
+            }
+          }
+        }
+ 
+      
+      }
+    },
+    "filter1":{
+      "extends":"proxy/two/group.vwf",
+      "properties":{
+        "x":350,
+        "y":800,
+        "drag": false
+      },
+      "children":
+      { 
+        "el1":{
+        "extends": "proxy/two/ellipse.vwf",
+        "properties": {
+          "width": 200,
+          "height": 200,
+          "fill": "#ccc",
+          "opacity":0.2,
+          "drag": true
+        }
+      },
+      "el2":{
+        "extends": "proxy/two/rectangle.vwf",
+        "properties": {
+          "width": 200,
+          "height": 200,
+          "x": 250,
+          "fill": "#ddd",
+          "opacity":0.5,
+          "drag": true
+        }
+      }
+    }
+    },
+    "filter2":{
+      "extends":"proxy/two/group.vwf",
+      "properties":{
+        "x":350,
+        "y":800,
+        "drag": false
+      },
+      "children":
+      { 
+      "el2":{
+        "extends": "proxy/two/rectangle.vwf",
+        "properties": {
+          "width": 200,
+          "height": 200,
+          "x": 250,
+          "fill": "white",
+          "opacity":0.3,
+          "drag": true
+        }
+      }
+    }
+    },
+    "ellipse":{
+      "extends": "proxy/two/ellipse.vwf",
+      "properties": {
+        "width": 100,
+        "height": 100,
+        "fill": "#ccc",
+        "x": 140,
+        "y": 800,
+        "drag": true
+      }
+    },
+    "globalTransport":{
+      "extends": "proxy/two/objects/transport.vwf",
+      "properties": {
+        "x": 50,
+        "y": 170,
+        "drag": false
+      }
+    },
+    "toneGUI":{
+      "extends":"proxy/two/group.vwf",
+      "properties": {
+        "x": 1100,
+        "y": 400
+      },
+      "children":{
+        "tonePlay":{
+          "extends": "proxy/two/ellipse.vwf",
+          "properties": {
+            "width": 50,
+            "height": 50,
+            "fill": "#eee"
+          }
+        },
+        "toneText":{
+          "extends": "proxy/two/text.vwf",
+          "properties": {
+            "size": 28,
+            "fill": "#aaa",
+            "text": "transport",
+            "stepping": true,
+            "stepTime": 0.5,
+            "translation": [0,-100]
+          }
+        }
+      }
+    },
+    "synth":{
+      "extends": "proxy/tonejs/synth.vwf",
+      "properties": {}
+    },
+    "toneTransport":{
+      "extends": "proxy/tonejs/transport.vwf",
+      "properties": {
+        "bpm": 120,
+        "loopStart": "0",
+        "loopEnd":  "60",
+        "duration": "60",
+        "loop": true
+      }
+    },
+    "tuning":{
+      "extends": "proxy/tonejs/player.vwf",
+      "properties": {
+        "url": "/defaults/assets/test/test.mp3",
+        "autostart": false
+      }
+    }
+  },
+  "scripts":{
+    "source": "2d.js"
+  }
+}

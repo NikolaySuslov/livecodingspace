@@ -1,0 +1,12 @@
+{
+  "info":{
+    "title": "2D App"
+  },
+  "model": {
+    "/drivers/model/pts": null
+  },
+  "view": {
+    "/drivers/view/pts": null,
+    "/drivers/view/editor": null
+  }
+}

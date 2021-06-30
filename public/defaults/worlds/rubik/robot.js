@@ -57,26 +57,26 @@ this.rotateFace = function(faceID){
         'd': {
             'robot': 'left',
             'motor': 'C',
-            'dutyCycle': 100,
+            'dutyCycle': 80,
             'direction': -1*direction
         },
         'b': {
             'robot': 'back',
             'motor': 'A',
-            'dutyCycle': 70,
+            'dutyCycle': 60,
             'direction': direction
         },
         'r': {
             'robot': 'right',
             'motor': 'A',
-            'dutyCycle': 70,
+            'dutyCycle': 60,
             'direction': direction
         },
         'u': {
             'robot': 'back',
             'motor': 'C',
-            'dutyCycle': 100,
-            'direction': direction
+            'dutyCycle': 60,
+            'direction': -1*direction
         },
         'f': {
             'robot': 'front',

@@ -1,0 +1,12 @@
+{
+  "extends": "proxy/pts/node.vwf",
+  "type": "pt",
+  "properties": {
+    "x": null,
+    "y": null
+  },
+  "methods": {},
+  "scripts": {
+    "source": "pt.js"
+  }
+}

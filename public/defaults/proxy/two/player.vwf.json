@@ -1,0 +1,21 @@
+{
+  "extends": "proxy/two/group.vwf",
+  "properties": {
+    "dragID":null,
+    "delta": null
+  },
+  "methods": {
+    "initialize": {},
+    "createPlayerBody": {},
+    "updateAvatar": {},
+    "move":{
+      "parameters":["x","y"]
+    },
+    "checkOver":{
+      "parameters":["x","y"]
+    }
+  },
+  "scripts": {
+    "source": "player.js"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/two/node.vwf",
+  "type": "scene",
+  "properties": {},
+  "methods": {
+    "clientWatch": {}
+  },
+  "scripts": {
+    "source": "scene.js"
+  }
+}

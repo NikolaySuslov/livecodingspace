@@ -1,0 +1,4 @@
+{
+    "extends": "proxy/node.vwf",
+    "properties": {}
+}

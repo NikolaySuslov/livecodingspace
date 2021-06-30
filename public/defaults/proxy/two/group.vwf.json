@@ -1,0 +1,29 @@
+{
+  "extends": "proxy/two/node.vwf",
+  "type": "group",
+  "properties": {
+    "x": null,
+    "y": null,
+    "translation": [0,0],
+    "rotation": null,
+    "scale": null,
+    "mask": null,
+    "visible": null,
+    "opacity":null
+  },
+  "methods": {
+    "setMask":{
+      "parameters":[
+        "nodeID"
+      ]
+    },
+    "setScale":{
+      "parameters":[
+        "x","y"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "group.js"
+  }
+}

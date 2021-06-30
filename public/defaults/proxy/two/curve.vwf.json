@@ -1,0 +1,13 @@
+{
+  "extends": "proxy/two/path.vwf",
+  "type": "curve",
+  "implements": [
+    "proxy/two/path.vwf"
+  ],
+  "properties": {
+  },
+  "methods": {},
+  "scripts": {
+    "source": "curve.js"
+  }
+}
