@@ -1,0 +1,39 @@
+{
+  "extends": "proxy/two/node.vwf",
+  "type": "path",
+  "properties": {
+    "x": null,
+    "y": null,
+    "translation": [0,0],
+    "rotation": null,
+    "scale": null,
+    "fill": null,
+    "stroke": null,
+    "linewidth": null,
+    "opacity": null,
+    "clip": null,
+    "startOffset":null,
+    "pausedTime": null,
+    "isPlaying": null,
+    "vertices": [],
+    "curved":null,
+    "closed":null,
+    "join":null,
+    "automatic":null
+  },
+  "methods": {
+    "playVideo":{},
+    "syncVideoState":{},
+    "unmute":{},
+    "setVideoState":{
+      "parameters":[
+        "isPlaying",
+        "startOffset",
+        "pausedTime"
+      ]
+    }
+  },
+  "scripts": {
+    "source": "path.js"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "proxy/two/node.vwf",
+  "type": "anchor",
+  "properties": {
+    "x": null,
+    "y": null,
+    "lx": null,
+    "ly": null,
+    "rx": null,
+    "ry": null,
+    "command":null,
+    "controls":null
+  },
+  "methods": {},
+  "scripts": {
+    "source": "anchor.js"
+  }
+}

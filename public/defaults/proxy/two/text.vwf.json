@@ -1,0 +1,23 @@
+{
+  "extends": "proxy/two/node.vwf",
+  "type": "text",
+  "properties": {
+    "text": null,
+    "family": null,
+    "size": null,
+    "fill": null,
+    "stroke": null,
+    "linewidth": null,
+    "style": null,
+    "weight": null,
+    "opacity": null,
+    "visible": null,
+    "rotation": null,
+    "scale": null,
+    "translation": null
+  },
+  "methods": {},
+  "scripts": {
+    "source": "ellipse.js"
+  }
+}

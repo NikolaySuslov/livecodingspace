@@ -1,0 +1,40 @@
+{
+    "extends": "proxy/tonejs/node.vwf",
+    "properties": {
+        "bpm":null,
+        "loop": null,
+        "loopStart": null,
+        "loopEnd": null,
+        "position": null,
+        "progress": null,
+        "sampleTime": null,
+        "seconds": null,
+        "ticks": null,
+        "timeSignature": null,
+        "state":null,
+        "startOffset":null,
+        "pausedTime": null,
+        "isPlaying": null,
+        "duration": null
+        },
+    "methods":{
+        "start": {},
+        "stop": {},
+        "pause": {},
+        "setLoopPoints":{
+            "parameters":["start", "end"]
+        },
+        "toggleTransport":{},
+        "syncTransportState":{},
+        "setTransportState":{
+          "parameters":[
+            "isPlaying",
+            "startOffset",
+            "pausedTime"
+          ]
+        }
+    },
+    "scripts": {
+      "source": "transport.js"
+    }
+}

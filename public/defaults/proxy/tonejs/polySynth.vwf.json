@@ -2,6 +2,8 @@
   "extends": "proxy/tonejs/node.vwf",
   "properties": {},
   "methods":{
+    "scheduleRepeat":{},
+    "sync":{},
     "triggerAttackRelease":{
       "parameters": [
         "note", "duration", "time", "velocity"
