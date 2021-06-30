@@ -1,5 +1,5 @@
 this.clickEventMethod = function() {
-   this.synth.triggerAttackRelease(['C4'], ['8n'], 0.3);
+   this.synth.triggerAttackRelease(['C4'], ['8n'], null, 0.3);
 }
 
 this.doButtonTriggerdownAction = function(buttonID){
@@ -43,7 +43,7 @@ this.onGlobalBeat = function (obj) {
     //     { beat: 15, msg: "C0" }];
     drumSeq.forEach(el => {
         if (el.beat / rate == obj.beat) {
-            this.synth.triggerAttackRelease([el.msg], ['16n']);
+            this.synth.triggerAttackRelease([el.msg], ['16n'], null);
         }
     })
 

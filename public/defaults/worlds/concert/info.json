@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "THIS IS NOT A CONCERT",
+            "imgUrl": "/defaults/worlds/concert/webimg.jpg",
+            "text": "BROWSER 2021 | A Festival of Web-based Music | June 11th-13th"
+        },
+        "ru": {
+            "title": "ЭТО НЕ КОНЦЕРТ",
+            "imgUrl": "/defaults/worlds/concert/webimg.jpg",
+            "text": "BROWSER 2021 | A Festival of Web-based Music | June 11th-13th"
+        }
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "2D Canvas app",
+            "imgUrl": "/defaults/worlds/two/webimg.jpg",
+            "text": "Example application showing Virtual World Framework & TWO.JS framework integration"
+        },
+        "ru": {
+            "title": "2D Холст",
+            "imgUrl": "/defaults/worlds/two/webimg.jpg",
+            "text": "Пример приложения Virtual World Framework & TWO.JS"
+        }
+    }
+}

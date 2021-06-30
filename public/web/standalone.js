@@ -107,7 +107,7 @@ class Standalone {
         }, [
             h("img", {
                 slot: "image",
-                src: "/defaults/assets/concert/webimg.jpg",
+                src: "/defaults/worlds/concert/webimg.jpg",
                 alt: ""
             }),
             h("strong", "THIS IS NOT A CONCERT"),

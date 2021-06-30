@@ -1,0 +1,11 @@
+{
+  "extends": "proxy/pts/scene.vwf",
+  "properties": {
+  },
+  "methods":{
+    "initialize": {}
+  },
+  "scripts":{
+    "source": "canvas.js"
+  }
+}

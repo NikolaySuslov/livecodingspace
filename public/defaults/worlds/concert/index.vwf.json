@@ -1,0 +1,230 @@
+{
+  "extends": "proxy/two/scene.vwf",
+  "properties": {
+    "part1": "notstarted",
+    "part2": "notstarted",
+    "part3": "notstarted",
+    "part4": "notstarted"
+  },
+  "methods":{
+    "initialize": {},
+    "watchPerformance": {},
+    "createBody":{},
+    "startPart3":{},
+    "startPart4":{},
+    "playBodyMotion":{},
+    "setStartTime":{}
+  },
+  "children":{
+    "timeText":{
+      "extends": "proxy/two/text.vwf",
+      "properties": {
+        "text": "",
+        "translation": [50,25],
+        "fill": "grey",
+        "opacity": 0.4,
+        "size": 22
+      }
+    },
+    "back":{
+      "extends": "proxy/two/group.vwf",
+      "properties":{
+        "x": 700,
+        "y": 400
+      },
+      "children":{
+        "back1":{
+          "extends": "proxy/two/group.vwf",
+          "properties":{
+            "displayName": "back1"
+          },
+          "children":{
+            "rectangle":{
+              "extends": "proxy/two/rectangle.vwf",
+              "properties": {
+                "width": 1280,
+                "height": 720,
+                "fill": "/defaults/assets/concert/bowing.mp4"
+              }
+            }
+          }
+        },
+        "back2":{
+          "extends": "proxy/two/group.vwf",
+          "properties":{
+            "displayName": "back2"
+          },
+          "children":{
+            "logo_text":{
+              "extends": "proxy/two/text.vwf",
+              "properties": {
+                "size": 70,
+                "fill": "white",
+                "text": "THIS IS NOT A CONCERT",
+                "translation": [-150, -100]
+              }
+            }
+
+          }
+        },
+        "back3":{
+          "extends": "proxy/two/group.vwf",
+          "properties":{
+            "displayName": "back3",
+            "opacity": 0
+          },
+          "children":{
+            "rectangle":{
+              "extends": "proxy/two/rectangle.vwf",
+              "properties": {
+                "stroke": "white",
+                "linewidth": 0,
+                "width": 1280,
+                "height": 720,
+                "fill": "/defaults/assets/concert/playing.mp4",
+                "bodyTrack": false,
+                "bodyNode": null
+              }
+            }
+          }
+        }
+      }
+    },
+    "filter1":{
+      "extends":"proxy/two/group.vwf",
+      "properties":{
+        "x":700,
+        "y":300,
+        "drag": false
+      },
+      "children":
+      { 
+        "el1":{
+        "extends": "proxy/two/ellipse.vwf",
+        "properties": {
+          "width": 400,
+          "height": 400,
+          "fill": "#ccc",
+          "opacity":0.2,
+          "drag": true,
+          "x": 64,
+          "y": -20
+        }
+      },
+      "el2":{
+        "extends": "proxy/two/rectangle.vwf",
+        "properties": {
+          "width": 350,
+          "height": 350,
+          "x": -400,
+          "y": -20,
+          "fill": "#ccc",
+          "opacity":0.2,
+          "drag": true,
+          "stepping": true,
+          "stepTime": 0.01
+        }
+      }
+    }
+    },
+    "filter2":{
+      "extends":"proxy/two/group.vwf",
+      "properties":{
+        "x":700,
+        "y":300,
+        "drag": false
+      },
+      "children":
+      { 
+      "el2":{
+        "extends": "proxy/two/rectangle.vwf",
+        "properties": {
+          "width": 880,
+          "height": 150,
+          "x": -145,
+          "y": 0,
+          "fill": "white",
+          "opacity":0.2,
+          "drag": true
+        }
+      }
+    }
+    },
+    "filter3":{
+      "extends":"proxy/two/group.vwf",
+      "properties":{
+        "x":700,
+        "y":300,
+        "drag": false
+      },
+      "children":
+      { 
+        "el1":{
+        "extends": "proxy/two/ellipse.vwf",
+        "properties": {
+          "width": 350,
+          "height": 350,
+          "fill": "white",
+          "opacity":0,
+          "drag": false,
+          "x": -205,
+          "y": -15,
+          "stroke": "white",
+          "linewidth": 1
+        }
+      },
+      "el2":{
+        "extends": "proxy/two/rectangle.vwf",
+        "properties": {
+          "width": 350,
+          "height": 600,
+          "x": 136,
+          "y": 370,
+          "fill": "white",
+          "opacity":0,
+          "drag": false,
+          "stroke": "white",
+          "linewidth": 1
+        }
+      }
+    }
+    },
+    "toneTransport":{
+      "extends": "proxy/tonejs/transport.vwf",
+      "properties": {
+        "bpm": 100,
+        "loopStart": 0,
+        "loopEnd":  90,
+        "duration": 90,
+        "loop": true
+      }
+    },
+    "tuning":{
+      "extends": "proxy/tonejs/player.vwf",
+      "properties": {
+        "url": "/defaults/assets/concert/tuning.mp3",
+        "volume": -15,
+        "autostart": false
+      }
+    },
+    "body": {
+      "extends": "proxy/two/group.vwf",
+      "properties": {
+      "drag": false,
+        "x": 239,
+        "y": -57,
+        "motionData": null
+      },
+      "methods":{
+          "applyBodyMotion":{
+              "parameters":["data"]
+          },
+          "getJointAtTime":{},
+          "getJointsAtTime":{}
+      }
+    }
+  },
+  "scripts":{
+    "source": "concert.js"
+  }
+}

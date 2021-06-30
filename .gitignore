@@ -22,3 +22,6 @@ config.json
 npm-debug.log
 error.log
 combined.log
+
+public/defaults/assets/test
+public/defaults/assets/concert
