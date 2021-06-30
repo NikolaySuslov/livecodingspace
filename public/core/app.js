@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2014-2020 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
+Copyright (c) 2014-2021 Nikolai Suslov and the Krestianstvo.org project contributors. (https://github.com/NikolaySuslov/livecodingspace/blob/master/LICENSE.md)
 
 Virtual World Framework Apache 2.0 license  (https://github.com/NikolaySuslov/livecodingspace/blob/master/licenses/LICENSE_VWF.md)
 */
@@ -12,12 +12,19 @@ import { WorldApp } from '/web/world-app.js';
 import { Widgets } from '/lib/ui/widgets.js';
 import {Spinner} from '/lib/ui/spinjs/spin.js';
 
+import { Standalone } from '/web/standalone.js';
+import '/lib/ui/shoelace/dist/shoelace.js';
+import { setBasePath } from '/lib/ui/shoelace/dist/utilities/base-path.js';
+import { h, text, patch } from '/lib/ui/superfine.js';
+
 import { createAdapter } from '/lib/fun/@most/adapter/dist/index.mjs';
 import *  as mostSubject from '/lib/fun/@most/subject/dist/index.all.js';
 
 class App {
   constructor() {
     console.log("app constructor");
+    setBasePath('/lib/ui/shoelace');
+
     this.widgets = new Widgets;
     //globals
     window._app = this;
@@ -75,6 +82,7 @@ class App {
     page('/debug', this.HandleDebugIndex);
     page('/settings', this.HandleSettingsIndex);
     page('/profile', this.HandleUserIndex);
+    page('/login', this.HandleUserLogin);
     page('/worlds', this.HandleIndex);
     page('/:user', this.HandleUserWorlds);
     page('/:user/worlds', this.HandleUserWorlds);
@@ -111,7 +119,11 @@ class App {
       'd3DoF': false,
       'd6DoF': false,
       'streamMsg': false,
-      'multisocket': false 
+      'multisocket': false,
+      'edit': false,
+      'standalone': true,
+      "standaloneWorldName": "concert0",
+      "standaloneUserName": "aaa"
     }
 
     let conf = JSON.parse(localStorage.getItem('lcs_config'));
@@ -186,6 +198,8 @@ class App {
     let manualConfig = localStorage.getItem('lcs_app_manual_settings');
     let lcsappConfig = localStorage.getItem('lcs_app');
 
+    let edit = localStorage.getItem('edit');
+
     localStorage.clear();
 
     if (config)
@@ -199,6 +213,9 @@ class App {
 
     if (lcsappConfig)
       localStorage.setItem('lcs_app', lcsappConfig);
+
+    if (edit)
+      localStorage.setItem('edit', edit);
 
   }
 
@@ -527,6 +544,32 @@ class App {
 
     _cellWidgets.reflectorGUI();
     })
+
+  }
+
+  HandleUserLogin(ctx) {
+
+    console.log("user login");
+
+    let userAlias = ctx.params.user;
+    let worldName = ctx.params.space;
+    let saveName = ctx.params.savename;
+
+    window._app.hideProgressBar();
+    //window._app.hideUIControl();
+
+
+    _app.generalIndex().then(res=>{
+
+    if (!_app.indexApp) {
+      _app.indexApp = new IndexApp('login');
+    }
+
+    // let worldApp = new WorldApp(userAlias, worldName, saveName);
+    // _app.helpers.getUserPub(userAlias).then(res => {
+    //   worldApp.makeGUI(res)
+    // })
+  })
 
   }
 
@@ -1095,7 +1138,7 @@ class App {
     _app.generalIndex().then(r=>{
 
     if (!_app.indexApp) {
-      _app.indexApp = new IndexApp;
+      _app.indexApp = new IndexApp();
     }
     _app.indexApp.allWorldsForUser(user)
 
@@ -1265,6 +1308,8 @@ class App {
       '/lib/ui/ace/ace.js',
       '/lib/ui/drag-drop.js',
       '/lib/buffer5.6.0.min.js',
+      '/lib/ui/shoelace/dist/themes/base.css'
+
     ], {
       async: false,
       returnPromise: true
@@ -1297,14 +1342,31 @@ class App {
     console.log("INDEX");
 
     //window._app.hideUIControl();
+    if(_app.config.standalone){
+      loadjs([
+        '/lib/ui/shoelace/dist/themes/base.css'
+      ], {
+        async: false,
+        returnPromise: true
+      }).then(r=>{
+        _app.indexApp = new Standalone(_app.config.standaloneUserName, _app.config.standaloneWorldName);
+        _app.hideProgressBar();
+      })
+    } else {
+
     _app.generateFrontPage();
 
     _app.generalIndex().then(res=>{
       if (!_app.indexApp) {
-        _app.indexApp = new IndexApp('index');
-        _app.hideProgressBar();
+          _app.indexApp = new IndexApp('index');
+          _app.hideProgressBar();
       }
     })
+    }
+
+    
+
+
 
   }
 
@@ -1494,6 +1556,9 @@ class App {
       }
     } 
 
+    if(JSON.parse(localStorage.getItem('edit')) == true) 
+      vwfApp.conf.view['/drivers/view/editor'] = null;
+
       //check & set default proxy for world
       vwfApp.proxy = val.proxy ? val.proxy : _LCS_WORLD_USER.pub
 
@@ -1611,6 +1676,12 @@ class App {
       ],
       '/drivers/view/tone':[
         '/drivers/view/tonejs/Tone.js'
+      ],
+      '/drivers/view/pts':[
+        '/drivers/view/ptsjs/pts.js'
+      ],
+      '/drivers/view/two':[
+        '/drivers/view/twojs/two.js'
       ]
       
     }
