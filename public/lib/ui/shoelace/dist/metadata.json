@@ -1,0 +1,4667 @@
+{
+  "name": "@shoelace-style/shoelace",
+  "description": "A forward-thinking library of web components.",
+  "version": "2.0.0-beta.43",
+  "author": "Cory LaViska",
+  "homepage": "https://github.com/shoelace-style/shoelace",
+  "license": "MIT",
+  "components": [
+    {
+      "className": "SlAlert",
+      "tag": "sl-alert",
+      "file": "src/components/alert/alert.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "closable",
+          "description": "Makes the alert closable.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "duration",
+          "description": "The length of time, in milliseconds, the alert will show before closing itself. If the user interacts with\nthe alert before it closes (e.g. moves the mouse over it), the timer will restart. Defaults to `Infinity`.",
+          "type": "number",
+          "defaultValue": "..."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the alert is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "type",
+          "description": "The type of alert.",
+          "type": "'primary' | 'success' | 'info' | 'warning' | 'danger'",
+          "values": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ],
+          "defaultValue": "'primary'"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the alert",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the alert.",
+          "params": []
+        },
+        {
+          "name": "toast",
+          "description": "Displays the alert as a toast notification. This will move the alert out of its position in the DOM and, when\ndismissed, it will be removed from the DOM completely. By storing a reference to the alert, you can reuse it by\ncalling this method again. The returned promise will resolve after the alert is hidden.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the alert closes and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the alert opens and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the alert closes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the alert opens.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The alert's content."
+        },
+        {
+          "name": "icon",
+          "description": "An icon to show in the alert.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--box-shadow",
+          "description": "The alert's box shadow.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "icon",
+          "description": "The container that wraps the alert icon."
+        },
+        {
+          "name": "message",
+          "description": "The alert message."
+        },
+        {
+          "name": "close-button",
+          "description": "The close button.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": [
+        {
+          "name": "alert.show",
+          "description": "The animation to use when showing the alert."
+        },
+        {
+          "name": "alert.hide",
+          "description": "The animation to use when hiding the alert.\n"
+        }
+      ]
+    },
+    {
+      "className": "SlAnimation",
+      "tag": "sl-animation",
+      "file": "src/components/animation/animation.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "delay",
+          "description": "The number of milliseconds to delay the start of the animation.",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "direction",
+          "description": "Determines the direction of playback as well as the behavior when reaching the end of an iteration.",
+          "type": "PlaybackDirection",
+          "defaultValue": "'normal'"
+        },
+        {
+          "name": "duration",
+          "description": "The number of milliseconds each iteration of the animation takes to complete.",
+          "type": "number",
+          "defaultValue": "1000"
+        },
+        {
+          "name": "easing",
+          "description": "The easing function to use for the animation. This can be a Shoelace easing function or a custom easing function\nsuch as `cubic-bezier(0, 1, .76, 1.14)`.",
+          "type": "string",
+          "defaultValue": "'linear'"
+        },
+        {
+          "name": "endDelay",
+          "attribute": "end-delay",
+          "description": "The number of milliseconds to delay after the active period of an animation sequence.",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "fill",
+          "description": "Sets how the animation applies styles to its target before and after its execution.",
+          "type": "FillMode",
+          "defaultValue": "'auto'"
+        },
+        {
+          "name": "iterationStart",
+          "attribute": "iteration-start",
+          "description": "The offset at which to start the animation, usually between 0 (start) and 1 (end).",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "iterations",
+          "description": "The number of iterations to run before the animation completes. Defaults to `Infinity`, which loops.",
+          "type": "number",
+          "defaultValue": "..."
+        },
+        {
+          "name": "keyframes",
+          "description": "The keyframes to use for the animation. If this is set, `name` will be ignored.",
+          "type": ""
+        },
+        {
+          "name": "name",
+          "description": "The name of the built-in animation to use. For custom animations, use the `keyframes` prop.",
+          "type": "string",
+          "defaultValue": "'none'"
+        },
+        {
+          "name": "pause",
+          "description": "Pauses the animation. The animation will resume when this prop is removed.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "playbackRate",
+          "attribute": "playback-rate",
+          "description": "Sets the animation's playback rate. The default is `1`, which plays the animation at a normal speed. Setting this\nto `2`, for example, will double the animation's speed. A negative value can be used to reverse the animation. This\nvalue can be changed without causing the animation to restart.",
+          "type": "number",
+          "defaultValue": "1"
+        }
+      ],
+      "methods": [
+        {
+          "name": "cancel",
+          "description": "Clears all KeyframeEffects caused by this animation and aborts its playback.",
+          "params": []
+        },
+        {
+          "name": "finish",
+          "description": "Sets the playback time to the end of the animation corresponding to the current playback direction.",
+          "params": []
+        },
+        {
+          "name": "getCurrentTime",
+          "description": "Gets the current time of the animation in milliseconds.",
+          "params": []
+        },
+        {
+          "name": "setCurrentTime",
+          "description": "Sets the current time of the animation in milliseconds.",
+          "params": [
+            {
+              "name": "time",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-cancel",
+          "description": "Emitted when the animation is canceled.",
+          "details": "void"
+        },
+        {
+          "name": "sl-finish",
+          "description": "Emitted when the animation finishes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-start",
+          "description": "Emitted when the animation starts or restarts.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The element to animate. If multiple elements are to be animated, wrap them in a single container."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlAvatar",
+      "tag": "sl-avatar",
+      "file": "src/components/avatar/avatar.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "alt",
+          "description": "Alternative text for the image.",
+          "type": "string"
+        },
+        {
+          "name": "image",
+          "description": "The image source to use for the avatar.",
+          "type": "string"
+        },
+        {
+          "name": "initials",
+          "description": "Initials to use as a fallback when no image is available (1-2 characters max recommended).",
+          "type": "string"
+        },
+        {
+          "name": "shape",
+          "description": "The shape of the avatar.",
+          "type": "'circle' | 'square' | 'rounded'",
+          "values": [
+            "circle",
+            "square",
+            "rounded"
+          ],
+          "defaultValue": "'circle'"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "icon",
+          "description": "The default icon to use when no image or initials are present.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--size",
+          "description": "The size of the avatar.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "icon",
+          "description": "The container that wraps the avatar icon."
+        },
+        {
+          "name": "initials",
+          "description": "The container that wraps the avatar initials."
+        },
+        {
+          "name": "image",
+          "description": "The avatar image.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlBadge",
+      "tag": "sl-badge",
+      "file": "src/components/badge/badge.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "pill",
+          "description": "Draws a pill-style badge with rounded edges.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "pulse",
+          "description": "Makes the badge pulsate to draw attention.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "type",
+          "description": "The badge's type.",
+          "type": "'primary' | 'success' | 'info' | 'warning' | 'danger'",
+          "values": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger"
+          ],
+          "defaultValue": "'primary'"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The badge's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The base wrapper\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlButton",
+      "tag": "sl-button",
+      "file": "src/components/button/button.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "caret",
+          "description": "Draws the button with a caret for use with dropdowns, popovers, etc.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "circle",
+          "description": "Draws a circle button.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the button.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "download",
+          "description": "Tells the browser to download the linked file as this filename. Only used when `href` is set.",
+          "type": "string"
+        },
+        {
+          "name": "href",
+          "description": "When set, the underlying button will be rendered as an `<a>` with this `href` instead of a `<button>`.",
+          "type": "string"
+        },
+        {
+          "name": "loading",
+          "description": "Draws the button in a loading state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "An optional name for the button. Ignored when `href` is set.",
+          "type": "string"
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style button with rounded edges.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "size",
+          "description": "The button's size.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "submit",
+          "description": "Indicates if activating the button should submit the form. Ignored when `href` is set.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "target",
+          "description": "Tells the browser where to open the link. Only used when `href` is set.",
+          "type": "'_blank' | '_parent' | '_self' | '_top'",
+          "values": [
+            "_blank",
+            "_parent",
+            "_self",
+            "_top"
+          ]
+        },
+        {
+          "name": "type",
+          "description": "The button's type.",
+          "type": "'primary' | 'success' | 'info' | 'warning' | 'danger' | 'default' | 'text'",
+          "values": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger",
+            "default",
+            "text"
+          ],
+          "defaultValue": "'default'"
+        },
+        {
+          "name": "value",
+          "description": "An optional value for the button. Ignored when `href` is set.",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the button.",
+          "params": []
+        },
+        {
+          "name": "click",
+          "description": "Simulates a click on the button.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the button.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the button loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the button gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The button's label."
+        },
+        {
+          "name": "prefix",
+          "description": "Used to prepend an icon or similar element to the button."
+        },
+        {
+          "name": "suffix",
+          "description": "Used to append an icon or similar element to the button.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "prefix",
+          "description": "The prefix container."
+        },
+        {
+          "name": "label",
+          "description": "The button's label."
+        },
+        {
+          "name": "suffix",
+          "description": "The suffix container."
+        },
+        {
+          "name": "caret",
+          "description": "The button's caret.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-spinner"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlButtonGroup",
+      "tag": "sl-button-group",
+      "file": "src/components/button-group/button-group.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "label",
+          "description": "A label to use for the button group's `aria-label` attribute.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "One or more `<sl-button>` elements to display in the button group."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlCard",
+      "tag": "sl-card",
+      "file": "src/components/card/card.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The card's body."
+        },
+        {
+          "name": "header",
+          "description": "The card's header."
+        },
+        {
+          "name": "footer",
+          "description": "The card's footer."
+        },
+        {
+          "name": "image",
+          "description": "The card's image.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--border-color",
+          "description": "The card's border color, including borders that occur inside the card."
+        },
+        {
+          "name": "--border-radius",
+          "description": "The border radius for card edges."
+        },
+        {
+          "name": "--border-width",
+          "description": "The width of card borders."
+        },
+        {
+          "name": "--padding",
+          "description": "The padding to use for card sections.*\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "image",
+          "description": "The card's image, if present."
+        },
+        {
+          "name": "header",
+          "description": "The card's header, if present."
+        },
+        {
+          "name": "body",
+          "description": "The card's body."
+        },
+        {
+          "name": "footer",
+          "description": "The card's footer, if present.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlCheckbox",
+      "tag": "sl-checkbox",
+      "file": "src/components/checkbox/checkbox.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "checked",
+          "description": "Draws the checkbox in a checked state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the checkbox.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "indeterminate",
+          "description": "Draws the checkbox in an indeterminate state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The checkbox's name attribute.",
+          "type": "string"
+        },
+        {
+          "name": "required",
+          "description": "Makes the checkbox a required field.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "value",
+          "description": "The checkbox's value attribute.",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the checkbox.",
+          "params": []
+        },
+        {
+          "name": "click",
+          "description": "Simulates a click on the checkbox.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the checkbox.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's checked state changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The checkbox's label."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "control",
+          "description": "The checkbox control."
+        },
+        {
+          "name": "checked-icon",
+          "description": "The container the wraps the checked icon."
+        },
+        {
+          "name": "indeterminate-icon",
+          "description": "The container that wraps the indeterminate icon."
+        },
+        {
+          "name": "label",
+          "description": "The checkbox label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlColorPicker",
+      "tag": "sl-color-picker",
+      "file": "src/components/color-picker/color-picker.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "disabled",
+          "description": "Disables the color picker.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "format",
+          "description": "The format to use for the display value. If opacity is enabled, these will translate to HEXA, RGBA, and HSLA\nrespectively. The color picker will always accept user input in any format (including CSS color names) and convert\nit to the desired format.",
+          "type": "'hex' | 'rgb' | 'hsl'",
+          "values": [
+            "hex",
+            "rgb",
+            "hsl"
+          ],
+          "defaultValue": "'hex'"
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "inline",
+          "description": "Renders the color picker inline rather than inside a dropdown.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `setCustomValidity()`\nmethod using the browser's constraint validation API.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "noFormatToggle",
+          "attribute": "no-format-toggle",
+          "description": "Removes the format toggle.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "opacity",
+          "description": "Whether to show the opacity slider.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "size",
+          "description": "Determines the size of the color picker's trigger. This has no effect on inline color pickers.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "swatches",
+          "description": "An array of predefined color swatches to display. Can include any format the color picker can parse, including\nHEX(A), RGB(A), HSL(A), and CSS color names.",
+          "type": "",
+          "defaultValue": "..."
+        },
+        {
+          "name": "uppercase",
+          "description": "By default, the value will be set in lowercase. Set this to true to set it in uppercase instead.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "value",
+          "description": "The current color.",
+          "type": "string",
+          "defaultValue": "'#ffffff'"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getFormattedValue",
+          "description": "Returns the current value as a string in the specified format.",
+          "params": [
+            {
+              "name": "format",
+              "type": "'hex' | 'rgb' | 'hsl' | 'hexa' | 'rgba' | 'hsla'",
+              "values": [
+                "hex",
+                "rgb",
+                "hsl",
+                "hexa",
+                "rgba",
+                "hsla"
+              ],
+              "defaultValue": "'hex'"
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-change",
+          "description": "Emitted when the color picker's value changes.",
+          "details": "void"
+        }
+      ],
+      "slots": [],
+      "cssCustomProperties": [
+        {
+          "name": "--grid-width",
+          "description": "The width of the color grid."
+        },
+        {
+          "name": "--grid-height",
+          "description": "The height of the color grid."
+        },
+        {
+          "name": "--grid-handle-size",
+          "description": "The size of the color grid's handle."
+        },
+        {
+          "name": "--slider-height",
+          "description": "The height of the hue and alpha sliders."
+        },
+        {
+          "name": "--slider-handle-size",
+          "description": "The diameter of the slider's handle.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "trigger",
+          "description": "The color picker's dropdown trigger."
+        },
+        {
+          "name": "swatches",
+          "description": "The container that holds swatches."
+        },
+        {
+          "name": "swatch",
+          "description": "Each individual swatch."
+        },
+        {
+          "name": "grid",
+          "description": "The color grid."
+        },
+        {
+          "name": "grid-handle",
+          "description": "The color grid's handle."
+        },
+        {
+          "name": "hue-slider",
+          "description": "The hue slider."
+        },
+        {
+          "name": "opacity-slider",
+          "description": "The opacity slider."
+        },
+        {
+          "name": "slider",
+          "description": "Hue and opacity sliders."
+        },
+        {
+          "name": "slider-handle",
+          "description": "Hue and opacity slider handles."
+        },
+        {
+          "name": "preview",
+          "description": "The preview color."
+        },
+        {
+          "name": "input",
+          "description": "The text input."
+        },
+        {
+          "name": "format-button",
+          "description": "The toggle format button's base.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-button",
+        "sl-dropdown",
+        "sl-icon",
+        "sl-input"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlDetails",
+      "tag": "sl-details",
+      "file": "src/components/details/details.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "disabled",
+          "description": "Disables the details so it can't be toggled.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the details is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "summary",
+          "description": "The summary to show in the details header. If you need to display HTML, use the `summary` slot instead.",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the details",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the details.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the details closes and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the details opens and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the details closes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the details opens.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The details' content."
+        },
+        {
+          "name": "summary",
+          "description": "The details' summary. Alternatively, you can use the summary prop.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "header",
+          "description": "The summary header."
+        },
+        {
+          "name": "summary",
+          "description": "The details summary."
+        },
+        {
+          "name": "summary-icon",
+          "description": "The expand/collapse summary icon."
+        },
+        {
+          "name": "content",
+          "description": "The details content.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": [
+        {
+          "name": "details.show",
+          "description": "The animation to use when showing details. You can use `height: auto` with this animation."
+        },
+        {
+          "name": "details.hide",
+          "description": "The animation to use when hiding details. You can use `height: auto` with this animation.\n"
+        }
+      ]
+    },
+    {
+      "className": "SlDialog",
+      "tag": "sl-dialog",
+      "file": "src/components/dialog/dialog.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "label",
+          "description": "The dialog's label as displayed in the header. You should always include a relevant label even when using\n`no-header`, as it is required for proper accessibility.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "noHeader",
+          "attribute": "no-header",
+          "description": "Disables the header. This will also remove the default close button, so please ensure you provide an easy,\naccessible way for users to dismiss the dialog.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the dialog is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the dialog",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the dialog.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the dialog closes and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the dialog opens and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the dialog closes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-initial-focus",
+          "description": "Emitted when the dialog opens and the panel gains focus. Calling `event.preventDefault()` will prevent focus and\nallow you to set it on a different element in the dialog, such as an input or button.",
+          "details": "void"
+        },
+        {
+          "name": "sl-overlay-dismiss",
+          "description": "Emitted when the overlay is clicked. Calling `event.preventDefault()` will prevent the dialog from closing.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the dialog opens.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The dialog's content."
+        },
+        {
+          "name": "label",
+          "description": "The dialog's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "footer",
+          "description": "The dialog's footer, usually one or more buttons representing various options.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--width",
+          "description": "The preferred width of the dialog. Note that the dialog will shrink to accommodate smaller screens."
+        },
+        {
+          "name": "--header-spacing",
+          "description": "The amount of padding to use for the header."
+        },
+        {
+          "name": "--body-spacing",
+          "description": "The amount of padding to use for the body."
+        },
+        {
+          "name": "--footer-spacing",
+          "description": "The amount of padding to use for the footer.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "overlay",
+          "description": "The overlay."
+        },
+        {
+          "name": "panel",
+          "description": "The dialog panel (where the dialog and its content is rendered)."
+        },
+        {
+          "name": "header",
+          "description": "The dialog header."
+        },
+        {
+          "name": "title",
+          "description": "The dialog title."
+        },
+        {
+          "name": "close-button",
+          "description": "The close button."
+        },
+        {
+          "name": "body",
+          "description": "The dialog body."
+        },
+        {
+          "name": "footer",
+          "description": "The dialog footer.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": [
+        {
+          "name": "dialog.show",
+          "description": "The animation to use when showing the dialog."
+        },
+        {
+          "name": "dialog.hide",
+          "description": "The animation to use when hiding the dialog."
+        },
+        {
+          "name": "dialog.overlay.show",
+          "description": "The animation to use when showing the dialog's overlay."
+        },
+        {
+          "name": "dialog.overlay.hide",
+          "description": "The animation to use when hiding the dialog's overlay.\n"
+        }
+      ]
+    },
+    {
+      "className": "SlDrawer",
+      "tag": "sl-drawer",
+      "file": "src/components/drawer/drawer.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "contained",
+          "description": "By default, the drawer slides out of its containing block (usually the viewport). To make the drawer slide out of\nits parent element, set this prop and add `position: relative` to the parent.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "The drawer's label as displayed in the header. You should always include a relevant label even when using\n`no-header`, as it is required for proper accessibility.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "noHeader",
+          "attribute": "no-header",
+          "description": "Removes the header. This will also remove the default close button, so please ensure you provide an easy,\naccessible way for users to dismiss the drawer.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the drawer is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placement",
+          "description": "The direction from which the drawer will open.",
+          "type": "'top' | 'end' | 'bottom' | 'start'",
+          "values": [
+            "top",
+            "end",
+            "bottom",
+            "start"
+          ],
+          "defaultValue": "'end'"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the drawer",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the drawer.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the drawer closes and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the drawer opens and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the drawer closes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-initial-focus",
+          "description": "Emitted when the drawer opens and the panel gains focus. Calling `event.preventDefault()` will prevent focus and allow you to set it on a different element in the drawer, such as an input or button.",
+          "details": "void"
+        },
+        {
+          "name": "sl-overlay-dismiss",
+          "description": "Emitted when the overlay is clicked. Calling `event.preventDefault()` will prevent the drawer from closing.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the drawer opens.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The drawer's content."
+        },
+        {
+          "name": "label",
+          "description": "The drawer's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "footer",
+          "description": "The drawer's footer, usually one or more buttons representing various options.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--size",
+          "description": "The preferred size of the drawer. This will be applied to the drawer's width or height\n  depending on its `placement`. Note that the drawer will shrink to accommodate smaller screens."
+        },
+        {
+          "name": "--header-spacing",
+          "description": "The amount of padding to use for the header."
+        },
+        {
+          "name": "--body-spacing",
+          "description": "The amount of padding to use for the body."
+        },
+        {
+          "name": "--footer-spacing",
+          "description": "The amount of padding to use for the footer.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "overlay",
+          "description": "The overlay."
+        },
+        {
+          "name": "panel",
+          "description": "The drawer panel (where the drawer and its content is rendered)."
+        },
+        {
+          "name": "header",
+          "description": "The drawer header."
+        },
+        {
+          "name": "title",
+          "description": "The drawer title."
+        },
+        {
+          "name": "close-button",
+          "description": "The close button."
+        },
+        {
+          "name": "body",
+          "description": "The drawer body."
+        },
+        {
+          "name": "footer",
+          "description": "The drawer footer.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": [
+        {
+          "name": "drawer.showTop",
+          "description": "The animation to use when showing a drawer with `top` placement."
+        },
+        {
+          "name": "drawer.showEnd",
+          "description": "The animation to use when showing a drawer with `end` placement."
+        },
+        {
+          "name": "drawer.showBottom",
+          "description": "The animation to use when showing a drawer with `bottom` placement."
+        },
+        {
+          "name": "drawer.showStart",
+          "description": "The animation to use when showing a drawer with `start` placement."
+        },
+        {
+          "name": "drawer.hideTop",
+          "description": "The animation to use when hiding a drawer with `top` placement."
+        },
+        {
+          "name": "drawer.hideEnd",
+          "description": "The animation to use when hiding a drawer with `end` placement."
+        },
+        {
+          "name": "drawer.hideBottom",
+          "description": "The animation to use when hiding a drawer with `bottom` placement."
+        },
+        {
+          "name": "drawer.hideStart",
+          "description": "The animation to use when hiding a drawer with `start` placement."
+        },
+        {
+          "name": "drawer.overlay.show",
+          "description": "The animation to use when showing the drawer's overlay."
+        },
+        {
+          "name": "drawer.overlay.hide",
+          "description": "The animation to use when hiding the drawer's overlay.\n"
+        }
+      ]
+    },
+    {
+      "className": "SlDropdown",
+      "tag": "sl-dropdown",
+      "file": "src/components/dropdown/dropdown.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "closeOnSelect",
+          "attribute": "close-on-select",
+          "description": "Determines whether the dropdown should hide when a menu item is selected.",
+          "type": "boolean",
+          "defaultValue": "true"
+        },
+        {
+          "name": "containingElement",
+          "description": "The dropdown will close when the user interacts outside of this element (e.g. clicking).",
+          "type": "HTMLElement"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the dropdown so the panel will not open.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "distance",
+          "description": "The distance in pixels from which to offset the panel away from its trigger.",
+          "type": "number",
+          "defaultValue": "2"
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the dropdown is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placement",
+          "description": "The preferred placement of the dropdown panel. Note that the actual placement may vary as needed to keep the panel\ninside of the viewport.",
+          "type": "'top' | 'bottom' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'right' | 'right-start' | 'right-end' | 'left' | 'left-start' | 'left-end'",
+          "values": [
+            "top",
+            "bottom",
+            "top-start",
+            "top-end",
+            "bottom-start",
+            "bottom-end",
+            "right",
+            "right-start",
+            "right-end",
+            "left",
+            "left-start",
+            "left-end"
+          ],
+          "defaultValue": "'bottom-start'"
+        },
+        {
+          "name": "skidding",
+          "description": "The distance in pixels from which to offset the panel along its trigger.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the dropdown panel",
+          "params": []
+        },
+        {
+          "name": "reposition",
+          "description": "Instructs the dropdown menu to reposition. Useful when the position or size of the trigger changes when the menu\nis activated.",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the dropdown panel.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the dropdown closes and all animations are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the dropdown opens and all animations are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the dropdown closes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the dropdown opens.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "trigger",
+          "description": "The dropdown's trigger, usually a `<sl-button>` element."
+        },
+        {
+          "name": "",
+          "description": "The dropdown's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "trigger",
+          "description": "The container that wraps the trigger."
+        },
+        {
+          "name": "panel",
+          "description": "The panel that gets shown when the dropdown is open.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": [
+        {
+          "name": "dropdown.show",
+          "description": "The animation to use when showing the dropdown."
+        },
+        {
+          "name": "dropdown.hide",
+          "description": "The animation to use when hiding the dropdown.\n"
+        }
+      ]
+    },
+    {
+      "className": "SlForm",
+      "tag": "sl-form",
+      "file": "src/components/form/form.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "novalidate",
+          "description": "Prevent the form from validating inputs before submitting.",
+          "type": "boolean",
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getFormControls",
+          "description": "Gets all form control elements (native and custom).",
+          "params": []
+        },
+        {
+          "name": "getFormData",
+          "description": "Serializes all form controls elements and returns a `FormData` object.",
+          "params": []
+        },
+        {
+          "name": "submit",
+          "description": "Submits the form. If all controls are valid, the `sl-submit` event will be emitted and the promise will resolve\nwith `true`. If any form control is invalid, the promise will resolve with `false` and no event will be emitted.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-submit",
+          "description": "Emitted when the form is submitted. This event will not be emitted if any form control inside of\nit is in an invalid state, unless the form has the `novalidate` attribute. Note that there is never a need to prevent\nthis event, since it doen't send a GET or POST request like native forms. To \"prevent\" submission, use a conditional\naround the XHR request you use to submit the form's data with.",
+          "details": "{ formControls: HTMLElement[], formData: FormData }"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The form's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlFormatBytes",
+      "tag": "sl-format-bytes",
+      "file": "src/components/format-bytes/format-bytes.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number.",
+          "type": "string"
+        },
+        {
+          "name": "unit",
+          "description": "The unit to display.",
+          "type": "'bytes' | 'bits'",
+          "values": [
+            "bytes",
+            "bits"
+          ],
+          "defaultValue": "'bytes'"
+        },
+        {
+          "name": "value",
+          "description": "The number to format in bytes.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlFormatDate",
+      "tag": "sl-format-date",
+      "file": "src/components/format-date/format-date.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "date",
+          "description": "The date/time to format. If not set, the current date and time will be used.",
+          "type": "'' | ''",
+          "values": [
+            "string",
+            null
+          ],
+          "defaultValue": "..."
+        },
+        {
+          "name": "day",
+          "description": "The format for displaying the day.",
+          "type": "'numeric' | '2-digit'",
+          "values": [
+            "numeric",
+            "2-digit"
+          ]
+        },
+        {
+          "name": "era",
+          "description": "The format for displaying the era.",
+          "type": "'narrow' | 'short' | 'long'",
+          "values": [
+            "narrow",
+            "short",
+            "long"
+          ]
+        },
+        {
+          "name": "hour",
+          "description": "The format for displaying the hour.",
+          "type": "'numeric' | '2-digit'",
+          "values": [
+            "numeric",
+            "2-digit"
+          ]
+        },
+        {
+          "name": "hourFormat",
+          "attribute": "hour-format",
+          "description": "When set, 24 hour time will always be used.",
+          "type": "'auto' | '12' | '24'",
+          "values": [
+            "auto",
+            "12",
+            "24"
+          ],
+          "defaultValue": "'auto'"
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the date/time.",
+          "type": "string"
+        },
+        {
+          "name": "minute",
+          "description": "The format for displaying the minute.",
+          "type": "'numeric' | '2-digit'",
+          "values": [
+            "numeric",
+            "2-digit"
+          ]
+        },
+        {
+          "name": "month",
+          "description": "The format for displaying the month.",
+          "type": "'narrow' | 'short' | 'long' | 'numeric' | '2-digit'",
+          "values": [
+            "narrow",
+            "short",
+            "long",
+            "numeric",
+            "2-digit"
+          ]
+        },
+        {
+          "name": "second",
+          "description": "The format for displaying the second.",
+          "type": "'numeric' | '2-digit'",
+          "values": [
+            "numeric",
+            "2-digit"
+          ]
+        },
+        {
+          "name": "timeZone",
+          "attribute": "time-zone",
+          "description": "The time zone to express the time in.",
+          "type": "string"
+        },
+        {
+          "name": "timeZoneName",
+          "attribute": "time-zone-name",
+          "description": "The format for displaying the time.",
+          "type": "'short' | 'long'",
+          "values": [
+            "short",
+            "long"
+          ]
+        },
+        {
+          "name": "weekday",
+          "description": "The format for displaying the weekday.",
+          "type": "'narrow' | 'short' | 'long'",
+          "values": [
+            "narrow",
+            "short",
+            "long"
+          ]
+        },
+        {
+          "name": "year",
+          "description": "The format for displaying the year.",
+          "type": "'numeric' | '2-digit'",
+          "values": [
+            "numeric",
+            "2-digit"
+          ]
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlFormatNumber",
+      "tag": "sl-format-number",
+      "file": "src/components/format-number/format-number.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "currency",
+          "description": "The currency to use when formatting. Must be an ISO 4217 currency code such as `USD` or `EUR`.",
+          "type": "string",
+          "defaultValue": "'USD'"
+        },
+        {
+          "name": "currencyDisplay",
+          "attribute": "currency-display",
+          "description": "How to display the currency.",
+          "type": "'symbol' | 'name' | 'code' | 'narrowSymbol'",
+          "values": [
+            "symbol",
+            "name",
+            "code",
+            "narrowSymbol"
+          ],
+          "defaultValue": "'symbol'"
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number.",
+          "type": "string"
+        },
+        {
+          "name": "maximumFractionDigits",
+          "attribute": "maximum-fraction-digits",
+          "description": "The maximum number of fraction digits to use. Possible values are 0 - 20.",
+          "type": "number"
+        },
+        {
+          "name": "maximumSignificantDigits",
+          "attribute": "maximum-significant-digits",
+          "description": "The maximum number of significant digits to use,. Possible values are 1 - 21.",
+          "type": "number"
+        },
+        {
+          "name": "minimumFractionDigits",
+          "attribute": "minimum-fraction-digits",
+          "description": "The minimum number of fraction digits to use. Possible values are 0 - 20.",
+          "type": "number"
+        },
+        {
+          "name": "minimumIntegerDigits",
+          "attribute": "minimum-integer-digits",
+          "description": "The minimum number of integer digits to use. Possible values are 1 - 21.",
+          "type": "number"
+        },
+        {
+          "name": "minimumSignificantDigits",
+          "attribute": "minimum-significant-digits",
+          "description": "The minimum number of significant digits to use. Possible values are 1 - 21.",
+          "type": "number"
+        },
+        {
+          "name": "noGrouping",
+          "attribute": "no-grouping",
+          "description": "Turns off grouping separators.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "type",
+          "description": "The formatting style to use.",
+          "type": "'currency' | 'decimal' | 'percent'",
+          "values": [
+            "currency",
+            "decimal",
+            "percent"
+          ],
+          "defaultValue": "'decimal'"
+        },
+        {
+          "name": "value",
+          "description": "The number to format.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlIcon",
+      "tag": "sl-icon",
+      "file": "src/components/icon/icon.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "label",
+          "description": "An alternative description to use for accessibility. If omitted, the name or src will be used to generate it.",
+          "type": "string"
+        },
+        {
+          "name": "library",
+          "description": "The name of a registered custom icon library.",
+          "type": "string",
+          "defaultValue": "'default'"
+        },
+        {
+          "name": "name",
+          "description": "The name of the icon to draw.",
+          "type": "string"
+        },
+        {
+          "name": "src",
+          "description": "An external URL of an SVG file.",
+          "type": "string"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "sl-error",
+          "description": "Emitted when the icon failed to load.",
+          "details": "{ status: number }"
+        },
+        {
+          "name": "sl-load",
+          "description": "Emitted when the icon has loaded.",
+          "details": "void"
+        }
+      ],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlIconButton",
+      "tag": "sl-icon-button",
+      "file": "src/components/icon-button/icon-button.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "disabled",
+          "description": "Disables the button.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "A description that gets read by screen readers and other assistive devices. For optimal accessibility, you should\nalways include a label that describes what the icon button does.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "library",
+          "description": "The name of a registered custom icon library.",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "The name of the icon to draw.",
+          "type": "string"
+        },
+        {
+          "name": "src",
+          "description": "An external URL of an SVG file.",
+          "type": "string"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlImageComparer",
+      "tag": "sl-image-comparer",
+      "file": "src/components/image-comparer/image-comparer.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "position",
+          "description": "The position of the divider as a percentage.",
+          "type": "number",
+          "defaultValue": "50"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "before",
+          "description": "The before image, an `<img>` or `<svg>` element."
+        },
+        {
+          "name": "after",
+          "description": "The after image, an `<img>` or `<svg>` element."
+        },
+        {
+          "name": "handle-icon",
+          "description": "The icon used inside the handle.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--divider-width",
+          "description": "The width of the dividing line."
+        },
+        {
+          "name": "--handle-size",
+          "description": "The size of the compare handle.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "before",
+          "description": "The container that holds the \"before\" image."
+        },
+        {
+          "name": "after",
+          "description": "The container that holds the \"after\" image."
+        },
+        {
+          "name": "divider",
+          "description": "The divider that separates the images."
+        },
+        {
+          "name": "handle",
+          "description": "The handle that the user drags to expose the after image.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlInclude",
+      "tag": "sl-include",
+      "file": "src/components/include/include.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "allowScripts",
+          "attribute": "allow-scripts",
+          "description": "Allows included scripts to be executed. You must ensure the content you're including is trusted, otherwise this\noption can lead to XSS vulnerabilities in your app!",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "mode",
+          "description": "The fetch mode to use.",
+          "type": "'cors' | 'no-cors' | 'same-origin'",
+          "values": [
+            "cors",
+            "no-cors",
+            "same-origin"
+          ],
+          "defaultValue": "'cors'"
+        },
+        {
+          "name": "src",
+          "description": "The location of the HTML file to include.",
+          "type": "string"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "sl-error",
+          "description": "Emitted when the included file fails to load due to an error.",
+          "details": "{ status: number }"
+        },
+        {
+          "name": "sl-load",
+          "description": "Emitted when the included file is loaded.",
+          "details": "void"
+        }
+      ],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlInput",
+      "tag": "sl-input",
+      "file": "src/components/input/input.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "autocapitalize",
+          "description": "The input's autocaptialize attribute.",
+          "type": "'none' | 'off' | 'on' | 'sentences' | 'words' | 'characters'",
+          "values": [
+            "none",
+            "off",
+            "on",
+            "sentences",
+            "words",
+            "characters"
+          ]
+        },
+        {
+          "name": "autocomplete",
+          "description": "The input's autocomplete attribute.",
+          "type": "string"
+        },
+        {
+          "name": "autocorrect",
+          "description": "The input's autocorrect attribute.",
+          "type": "string"
+        },
+        {
+          "name": "autofocus",
+          "description": "The input's autofocus attribute.",
+          "type": "boolean"
+        },
+        {
+          "name": "clearable",
+          "description": "Adds a clear button when the input is populated.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the input.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "helpText",
+          "attribute": "help-text",
+          "description": "The input's help text. Alternatively, you can use the help-text slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "inputmode",
+          "description": "The input's inputmode attribute.",
+          "type": "'none' | 'text' | 'numeric' | 'decimal' | 'email' | 'search' | 'tel' | 'url'",
+          "values": [
+            "none",
+            "text",
+            "numeric",
+            "decimal",
+            "email",
+            "search",
+            "tel",
+            "url"
+          ]
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by props such as `type`,\n`required`, `minlength`, `maxlength`, and `pattern` using the browser's constraint validation API.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "The input's label. Alternatively, you can use the label slot.",
+          "type": "string"
+        },
+        {
+          "name": "max",
+          "description": "The input's maximum value.",
+          "type": "string | number",
+          "values": [
+            "string",
+            "number"
+          ]
+        },
+        {
+          "name": "maxlength",
+          "description": "The maximum length of input that will be considered valid.",
+          "type": "number"
+        },
+        {
+          "name": "min",
+          "description": "The input's minimum value.",
+          "type": "string | number",
+          "values": [
+            "string",
+            "number"
+          ]
+        },
+        {
+          "name": "minlength",
+          "description": "The minimum length of input that will be considered valid.",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute.",
+          "type": "string"
+        },
+        {
+          "name": "pattern",
+          "description": "A pattern to validate input against.",
+          "type": "string"
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style input with rounded edges.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placeholder",
+          "description": "The input's placeholder text.",
+          "type": "string"
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the input readonly.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "required",
+          "description": "Makes the input a required field.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "size",
+          "description": "The input's size.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "spellcheck",
+          "description": "Enables spell checking on the input.",
+          "type": "boolean"
+        },
+        {
+          "name": "step",
+          "description": "The input's step attribute.",
+          "type": "number"
+        },
+        {
+          "name": "togglePassword",
+          "attribute": "toggle-password",
+          "description": "Adds a password toggle button to password inputs.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "type",
+          "description": "The input's type.",
+          "type": "'number' | 'text' | 'email' | 'password' | 'search' | 'tel' | 'url'",
+          "values": [
+            "number",
+            "text",
+            "email",
+            "password",
+            "search",
+            "tel",
+            "url"
+          ],
+          "defaultValue": "'text'"
+        },
+        {
+          "name": "value",
+          "description": "The input's value attribute.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the input.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the input.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "select",
+          "description": "Selects all the text in the input.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "setRangeText",
+          "description": "Replaces a range of text with a new string.",
+          "params": [
+            {
+              "name": "replacement",
+              "type": "string"
+            },
+            {
+              "name": "start",
+              "type": "number"
+            },
+            {
+              "name": "end",
+              "type": "number"
+            },
+            {
+              "name": "selectMode",
+              "type": "'end' | 'start' | 'select' | 'preserve'",
+              "values": [
+                "end",
+                "start",
+                "select",
+                "preserve"
+              ],
+              "defaultValue": "'preserve'"
+            }
+          ]
+        },
+        {
+          "name": "setSelectionRange",
+          "description": "Sets the start and end positions of the text selection (0-based).",
+          "params": [
+            {
+              "name": "selectionStart",
+              "type": "number"
+            },
+            {
+              "name": "selectionEnd",
+              "type": "number"
+            },
+            {
+              "name": "selectionDirection",
+              "type": "'none' | 'forward' | 'backward'",
+              "values": [
+                "none",
+                "forward",
+                "backward"
+              ],
+              "defaultValue": "'none'"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's value changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-clear",
+          "description": "Emitted when the clear button is activated.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-input",
+          "description": "Emitted when the control receives input.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "label",
+          "description": "The input's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "prefix",
+          "description": "Used to prepend an icon or similar element to the input."
+        },
+        {
+          "name": "suffix",
+          "description": "Used to append an icon or similar element to the input."
+        },
+        {
+          "name": "clear-icon",
+          "description": "An icon to use in lieu of the default clear icon."
+        },
+        {
+          "name": "show-password-icon",
+          "description": "An icon to use in lieu of the default show password icon."
+        },
+        {
+          "name": "hide-password-icon",
+          "description": "An icon to use in lieu of the default hide password icon."
+        },
+        {
+          "name": "help-text",
+          "description": "Help text that describes how to use the input. Alternatively, you can use the help-text prop.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--focus-ring",
+          "description": "The focus ring style to use when the control receives focus, a `box-shadow` property.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "form-control",
+          "description": "The form control that wraps the label, input, and help-text."
+        },
+        {
+          "name": "label",
+          "description": "The input label."
+        },
+        {
+          "name": "input",
+          "description": "The input control."
+        },
+        {
+          "name": "prefix",
+          "description": "The input prefix container."
+        },
+        {
+          "name": "clear-button",
+          "description": "The clear button."
+        },
+        {
+          "name": "password-toggle-button",
+          "description": "The password toggle button."
+        },
+        {
+          "name": "suffix",
+          "description": "The input suffix container."
+        },
+        {
+          "name": "help-text",
+          "description": "The input help text.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlMenu",
+      "tag": "sl-menu",
+      "file": "src/components/menu/menu.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [
+        {
+          "name": "typeToSelect",
+          "description": "Initiates type-to-select logic, which automatically selects an option based on what the user is currently typing.\nThe key passed will be appended to the internal query and the selection will be updated. After a brief period, the\ninternal query is cleared automatically. This method is intended to be used with the keydown event. Useful for\nenabling type-to-select when the menu doesn't have focus.",
+          "params": [
+            {
+              "name": "key",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-select",
+          "description": "Emitted when a menu item is selected.",
+          "details": "{ item: SlMenuItem }"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The menu's content, including menu items, menu dividers, and menu labels."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlMenuDivider",
+      "tag": "sl-menu-divider",
+      "file": "src/components/menu-divider/menu-divider.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-menu"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlMenuItem",
+      "tag": "sl-menu-item",
+      "file": "src/components/menu-item/menu-item.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "checked",
+          "description": "Draws the item in a checked state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Draws the menu item in a disabled state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "value",
+          "description": "A unique value to store in the menu item. This can be used as a way to identify menu items when selected.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the button.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the button.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        }
+      ],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The menu item's label."
+        },
+        {
+          "name": "prefix",
+          "description": "Used to prepend an icon or similar element to the menu item."
+        },
+        {
+          "name": "suffix",
+          "description": "Used to append an icon or similar element to the menu item.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "checked-icon",
+          "description": "The container that wraps the checked icon."
+        },
+        {
+          "name": "prefix",
+          "description": "The prefix container."
+        },
+        {
+          "name": "label",
+          "description": "The menu item label."
+        },
+        {
+          "name": "suffix",
+          "description": "The suffix container.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlMenuLabel",
+      "tag": "sl-menu-label",
+      "file": "src/components/menu-label/menu-label.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The menu label's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-menu"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlProgressBar",
+      "tag": "sl-progress-bar",
+      "file": "src/components/progress-bar/progress-bar.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "indeterminate",
+          "description": "When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "percentage",
+          "description": "The progress bar's percentage, 0 to 100.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "A label to show inside the indicator."
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--height",
+          "description": "The progress bar's height."
+        },
+        {
+          "name": "--track-color",
+          "description": "The track color."
+        },
+        {
+          "name": "--indicator-color",
+          "description": "The indicator color."
+        },
+        {
+          "name": "--label-color",
+          "description": "The label color.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "indicator",
+          "description": "The progress bar indicator."
+        },
+        {
+          "name": "label",
+          "description": "The progress bar label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlProgressRing",
+      "tag": "sl-progress-ring",
+      "file": "src/components/progress-ring/progress-ring.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "percentage",
+          "description": "The current progress percentage, 0 - 100.",
+          "type": "number"
+        },
+        {
+          "name": "size",
+          "description": "The size of the progress ring in pixels.",
+          "type": "number",
+          "defaultValue": "128"
+        },
+        {
+          "name": "strokeWidth",
+          "attribute": "stroke-width",
+          "description": "The stroke width of the progress ring in pixels.",
+          "type": "number",
+          "defaultValue": "4"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "A label to show inside the ring."
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--track-color",
+          "description": "The track color."
+        },
+        {
+          "name": "--indicator-color",
+          "description": "The indicator color.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "label",
+          "description": "The progress ring label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlQrCode",
+      "tag": "sl-qr-code",
+      "file": "src/components/qr-code/qr-code.ts",
+      "since": "2.0",
+      "status": "experimental",
+      "props": [
+        {
+          "name": "background",
+          "description": "The background color. This can be any valid CSS color or `transparent`, but not a CSS custom property.",
+          "type": "string",
+          "defaultValue": "'#fff'"
+        },
+        {
+          "name": "errorCorrection",
+          "attribute": "error-correction",
+          "description": "The level of error correction to use.",
+          "type": "'L' | 'M' | 'Q' | 'H'",
+          "values": [
+            "L",
+            "M",
+            "Q",
+            "H"
+          ],
+          "defaultValue": "'H'"
+        },
+        {
+          "name": "fill",
+          "description": "The fill color. This can be any valid CSS color, but not a CSS custom property.",
+          "type": "string",
+          "defaultValue": "'#000'"
+        },
+        {
+          "name": "label",
+          "description": "The label used when screen readers announce the code. If unspecified, the value will be used.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "radius",
+          "description": "The edge radius of each module. Must be between 0 and 0.5.",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "size",
+          "description": "The size of the code's overall square in pixels.",
+          "type": "number",
+          "defaultValue": "128"
+        },
+        {
+          "name": "value",
+          "description": "The QR code's value.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlRadio",
+      "tag": "sl-radio",
+      "file": "src/components/radio/radio.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "checked",
+          "description": "Draws the radio in a checked state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the radio.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity in range inputs is determined by the message\nprovided by the `setCustomValidity` method.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The radio's name attribute.",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "description": "The radio's value attribute.",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the radio.",
+          "params": []
+        },
+        {
+          "name": "click",
+          "description": "Simulates a click on the radio.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the radio.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's checked state changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The radio's label."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "control",
+          "description": "The radio control."
+        },
+        {
+          "name": "checked-icon",
+          "description": "The container the wraps the checked icon."
+        },
+        {
+          "name": "label",
+          "description": "The radio label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlRadioGroup",
+      "tag": "sl-radio-group",
+      "file": "src/components/radio-group/radio-group.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "label",
+          "description": "The radio group label. Required for proper accessibility. Alternatively, you can use the label slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "noFieldset",
+          "attribute": "no-fieldset",
+          "description": "Hides the fieldset and legend that surrounds the radio group. The label will still be read by screen readers.",
+          "type": "boolean",
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The default slot where radio controls are placed."
+        },
+        {
+          "name": "label",
+          "description": "The radio group label. Required for proper accessibility. Alternatively, you can use the label prop.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "label",
+          "description": "The radio group label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlRange",
+      "tag": "sl-range",
+      "file": "src/components/range/range.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "disabled",
+          "description": "Disables the input.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "helpText",
+          "attribute": "help-text",
+          "description": "The range's help text. Alternatively, you can use the help-text slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity in range inputs is determined by the message\nprovided by the `setCustomValidity` method.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "The range's label. Alternatively, you can use the label slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "max",
+          "description": "The input's max attribute.",
+          "type": "number",
+          "defaultValue": "100"
+        },
+        {
+          "name": "min",
+          "description": "The input's min attribute.",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "step",
+          "description": "The input's step attribute.",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "name": "tooltip",
+          "description": "The preferred placedment of the tooltip.",
+          "type": "'none' | 'top' | 'bottom'",
+          "values": [
+            "none",
+            "top",
+            "bottom"
+          ],
+          "defaultValue": "'top'"
+        },
+        {
+          "name": "value",
+          "description": "The input's value attribute.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the input.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the input.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "tooltipFormatter",
+          "description": "A function used to format the tooltip's value.",
+          "params": [
+            {
+              "name": "value",
+              "type": "number"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's value changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "label",
+          "description": "The input's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "help-text",
+          "description": "Help text that describes how to use the input. Alternatively, you can use the help-text prop.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "input",
+          "description": "The native range input."
+        },
+        {
+          "name": "tooltip",
+          "description": "The range tooltip.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlRating",
+      "tag": "sl-rating",
+      "file": "src/components/rating/rating.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "disabled",
+          "description": "Disables the rating.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "max",
+          "description": "The highest rating to show.",
+          "type": "number",
+          "defaultValue": "5"
+        },
+        {
+          "name": "precision",
+          "description": "The minimum increment value allowed by the control.",
+          "type": "number",
+          "defaultValue": "1"
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the rating readonly.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "value",
+          "description": "The current rating.",
+          "type": "number",
+          "defaultValue": "0"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the rating.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the rating.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "getSymbol",
+          "description": "The name of the icon to display as the symbol.",
+          "params": [
+            {
+              "name": "value",
+              "type": "number",
+              "isOptional": true
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-change",
+          "description": "Emitted when the rating's value changes.",
+          "details": "void"
+        }
+      ],
+      "slots": [],
+      "cssCustomProperties": [
+        {
+          "name": "--symbol-color",
+          "description": "The inactive color for symbols."
+        },
+        {
+          "name": "--symbol-color-active",
+          "description": "The active color for symbols."
+        },
+        {
+          "name": "--symbol-size",
+          "description": "The size of symbols."
+        },
+        {
+          "name": "--symbol-spacing",
+          "description": "The spacing to use around symbols.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlRelativeTime",
+      "tag": "sl-relative-time",
+      "file": "src/components/relative-time/relative-time.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "date",
+          "description": "The date from which to calculate time from.",
+          "type": "'' | ''",
+          "values": [
+            "string",
+            null
+          ]
+        },
+        {
+          "name": "format",
+          "description": "The formatting style to use.",
+          "type": "'narrow' | 'short' | 'long'",
+          "values": [
+            "narrow",
+            "short",
+            "long"
+          ],
+          "defaultValue": "'long'"
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number.",
+          "type": "string"
+        },
+        {
+          "name": "numeric",
+          "description": "When `auto`, values such as \"yesterday\" and \"tomorrow\" will be shown when possible. When `always`, values such as\n\"1 day ago\" and \"in 1 day\" will be shown.",
+          "type": "'auto' | 'always'",
+          "values": [
+            "auto",
+            "always"
+          ],
+          "defaultValue": "'auto'"
+        },
+        {
+          "name": "sync",
+          "description": "Keep the displayed value up to date as time passes.",
+          "type": "boolean",
+          "defaultValue": "false"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlResizeObserver",
+      "tag": "sl-resize-observer",
+      "file": "src/components/resize-observer/resize-observer.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [],
+      "events": [
+        {
+          "name": "sl-resize",
+          "description": "Emitted when the element is resized.",
+          "details": "{ entries: ResizeObserverEntry[] }"
+        }
+      ],
+      "slots": [],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlResponsiveMedia",
+      "tag": "sl-responsive-media",
+      "file": "src/components/responsive-media/responsive-media.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "aspectRatio",
+          "attribute": "aspect-ratio",
+          "description": "The aspect ratio of the embedded media in the format of `width:height`, e.g. `16:9`, `4:3`, or `1:1`. Ratios not in\nthis format will be ignored.",
+          "type": "string",
+          "defaultValue": "'16:9'"
+        },
+        {
+          "name": "fit",
+          "description": "Determines how content will be resized to fit its container.",
+          "type": "'cover' | 'contain'",
+          "values": [
+            "cover",
+            "contain"
+          ],
+          "defaultValue": "'cover'"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The element to receive the aspect ratio. Should be a replaced element, such as `<img>`, `<iframe>`, or `<video>`."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlSelect",
+      "tag": "sl-select",
+      "file": "src/components/select/select.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "clearable",
+          "description": "Adds a clear button when the select is populated.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the select control.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "helpText",
+          "attribute": "help-text",
+          "description": "The select's help text. Alternatively, you can use the help-text slot.",
+          "type": "string"
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "The select's label. Alternatively, you can use the label slot.",
+          "type": "string"
+        },
+        {
+          "name": "maxTagsVisible",
+          "attribute": "max-tags-visible",
+          "description": "The maximum number of tags to show when `multiple` is true. After the maximum, \"+n\" will be shown to indicate the\nnumber of additional items that are selected. Set to -1 to remove the limit.",
+          "type": "number",
+          "defaultValue": "3"
+        },
+        {
+          "name": "multiple",
+          "description": "Enables multiselect. With this enabled, value will be an array.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The select's name.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style select with rounded edges.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placeholder",
+          "description": "The select's placeholder text.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "required",
+          "description": "The select's required attribute.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "size",
+          "description": "The select's size.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "value",
+          "description": "The value of the control. This will be a string or an array depending on `multiple`.",
+          "type": "string | ",
+          "values": [
+            "string"
+          ],
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's value changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-clear",
+          "description": "Emitted when the clear button is activated.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The select's options in the form of menu items."
+        },
+        {
+          "name": "label",
+          "description": "The select's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "help-text",
+          "description": "Help text that describes how to use the select.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--focus-ring",
+          "description": "The focus ring style to use when the control receives focus, a `box-shadow` property.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "clear-button",
+          "description": "The input's clear button, exported from <sl-input>."
+        },
+        {
+          "name": "form-control",
+          "description": "The form control that wraps the label, input, and help text."
+        },
+        {
+          "name": "help-text",
+          "description": "The select's help text."
+        },
+        {
+          "name": "icon",
+          "description": "The select's icon."
+        },
+        {
+          "name": "label",
+          "description": "The select's label."
+        },
+        {
+          "name": "menu",
+          "description": "The select menu, a <sl-menu> element."
+        },
+        {
+          "name": "tag",
+          "description": "The multiselect option, a <sl-tag> element."
+        },
+        {
+          "name": "tags",
+          "description": "The container in which multiselect options are rendered.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-dropdown",
+        "sl-icon",
+        "sl-icon-button",
+        "sl-menu",
+        "sl-tag"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlSkeleton",
+      "tag": "sl-skeleton",
+      "file": "src/components/skeleton/skeleton.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "effect",
+          "description": "Determines which effect the skeleton will use.",
+          "type": "'none' | 'pulse' | 'sheen'",
+          "values": [
+            "none",
+            "pulse",
+            "sheen"
+          ],
+          "defaultValue": "'sheen'"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [
+        {
+          "name": "--border-radius",
+          "description": "The skeleton's border radius."
+        },
+        {
+          "name": "--color",
+          "description": "The color of the skeleton."
+        },
+        {
+          "name": "--sheen-color",
+          "description": "The sheen color when the skeleton is in its loading state.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "indicator",
+          "description": "The skeleton's indicator which is responsible for its color and animation.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlSpinner",
+      "tag": "sl-spinner",
+      "file": "src/components/spinner/spinner.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [],
+      "methods": [],
+      "events": [],
+      "slots": [],
+      "cssCustomProperties": [
+        {
+          "name": "--track-color",
+          "description": "The color of the spinner's track."
+        },
+        {
+          "name": "--indicator-color",
+          "description": "The color of the spinner's indicator."
+        },
+        {
+          "name": "--stroke-width",
+          "description": "The width of the indicator.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlSwitch",
+      "tag": "sl-switch",
+      "file": "src/components/switch/switch.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "checked",
+          "description": "Draws the switch in a checked state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the switch.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The switch's name attribute.",
+          "type": "string"
+        },
+        {
+          "name": "required",
+          "description": "Makes the switch a required field.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "value",
+          "description": "The switch's value attribute.",
+          "type": "string"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the switch.",
+          "params": []
+        },
+        {
+          "name": "click",
+          "description": "Simulates a click on the switch.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the switch.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's checked state changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The switch's label."
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--width",
+          "description": "The width of the switch."
+        },
+        {
+          "name": "--height",
+          "description": "The height of the switch."
+        },
+        {
+          "name": "--thumb-size",
+          "description": "The size of the thumb.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "control",
+          "description": "The switch control."
+        },
+        {
+          "name": "thumb",
+          "description": "The switch position indicator."
+        },
+        {
+          "name": "label",
+          "description": "The switch label.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlTab",
+      "tag": "sl-tab",
+      "file": "src/components/tab/tab.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "active",
+          "description": "Draws the tab in an active state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "closable",
+          "description": "Makes the tab closable and shows a close icon.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "disabled",
+          "description": "Draws the tab in a disabled state.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "panel",
+          "description": "The name of the tab panel the tab will control. The panel must be located in the same tab group.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the tab.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus to the tab.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-close",
+          "description": "Emitted when the tab is closable and the close button is activated.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The tab's label."
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--focus-ring",
+          "description": "The focus ring's box shadow.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "close-button",
+          "description": "The close button, which is the icon button's base wrapper.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlTabGroup",
+      "tag": "sl-tab-group",
+      "file": "src/components/tab-group/tab-group.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "activation",
+          "description": "When set to auto, navigating tabs with the arrow keys will instantly show the corresponding tab panel. When set to\nmanual, the tab will receive focus but will not show until the user presses spacebar or enter.",
+          "type": "'auto' | 'manual'",
+          "values": [
+            "auto",
+            "manual"
+          ],
+          "defaultValue": "'auto'"
+        },
+        {
+          "name": "noScrollControls",
+          "attribute": "no-scroll-controls",
+          "description": "Disables the scroll arrows that appear when tabs overflow.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placement",
+          "description": "The placement of the tabs.",
+          "type": "'top' | 'end' | 'bottom' | 'start'",
+          "values": [
+            "top",
+            "end",
+            "bottom",
+            "start"
+          ],
+          "defaultValue": "'top'"
+        }
+      ],
+      "methods": [
+        {
+          "name": "show",
+          "description": "Shows the specified tab panel.",
+          "params": [
+            {
+              "name": "panel",
+              "type": "string"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-tab-hide",
+          "description": "Emitted when a tab is hidden.",
+          "details": "{ tab: string }"
+        },
+        {
+          "name": "sl-tab-show",
+          "description": "Emitted when a tab is shown.",
+          "details": "{ tab: string }"
+        }
+      ],
+      "slots": [
+        {
+          "name": "nav",
+          "description": "Used for grouping tabs in the tab group."
+        },
+        {
+          "name": "",
+          "description": "Used for grouping tab panels in the tab group."
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--tabs-border-color",
+          "description": "The color of the border that separates tabs.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "nav",
+          "description": "The tab group navigation container."
+        },
+        {
+          "name": "tabs",
+          "description": "The container that wraps the slotted tabs."
+        },
+        {
+          "name": "active-tab-indicator",
+          "description": "An element that displays the currently selected tab. This is a child of the tabs container."
+        },
+        {
+          "name": "body",
+          "description": "The tab group body where tab panels are slotted in."
+        },
+        {
+          "name": "scroll-button",
+          "description": "The previous and next scroll buttons that appear when tabs are scrollable.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlTabPanel",
+      "tag": "sl-tab-panel",
+      "file": "src/components/tab-panel/tab-panel.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "active",
+          "description": "When true, the tab panel will be shown.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "name",
+          "description": "The tab panel's name.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [],
+      "events": [],
+      "slots": [
+        {
+          "name": "",
+          "description": "The tab panel's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlTag",
+      "tag": "sl-tag",
+      "file": "src/components/tag/tag.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "clearable",
+          "description": "Makes the tag clearable.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style tag with rounded edges.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "size",
+          "description": "The tag's size.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "type",
+          "description": "The tag's type.",
+          "type": "'primary' | 'success' | 'info' | 'warning' | 'danger' | 'text'",
+          "values": [
+            "primary",
+            "success",
+            "info",
+            "warning",
+            "danger",
+            "text"
+          ],
+          "defaultValue": "'primary'"
+        }
+      ],
+      "methods": [],
+      "events": [
+        {
+          "name": "sl-clear",
+          "description": "Emitted when the clear button is activated.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The tag's content."
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "content",
+          "description": "The tag content."
+        },
+        {
+          "name": "clear-button",
+          "description": "The clear button.\n"
+        }
+      ],
+      "dependencies": [
+        "sl-icon-button"
+      ],
+      "animations": []
+    },
+    {
+      "className": "SlTextarea",
+      "tag": "sl-textarea",
+      "file": "src/components/textarea/textarea.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "autocapitalize",
+          "description": "The textarea's autocaptialize attribute.",
+          "type": "'none' | 'off' | 'on' | 'sentences' | 'words' | 'characters'",
+          "values": [
+            "none",
+            "off",
+            "on",
+            "sentences",
+            "words",
+            "characters"
+          ]
+        },
+        {
+          "name": "autocomplete",
+          "description": "The textarea's autocomplete attribute.",
+          "type": "string"
+        },
+        {
+          "name": "autocorrect",
+          "description": "The textarea's autocorrect attribute.",
+          "type": "string"
+        },
+        {
+          "name": "autofocus",
+          "description": "The textarea's autofocus attribute.",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the textarea.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "helpText",
+          "attribute": "help-text",
+          "description": "The textarea's help text. Alternatively, you can use the help-text slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "inputmode",
+          "description": "The textarea's inputmode attribute.",
+          "type": "'none' | 'text' | 'numeric' | 'decimal' | 'email' | 'search' | 'tel' | 'url'",
+          "values": [
+            "none",
+            "text",
+            "numeric",
+            "decimal",
+            "email",
+            "search",
+            "tel",
+            "url"
+          ]
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by props such as `type`,\n`required`, `minlength`, and `maxlength` using the browser's constraint validation API.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "label",
+          "description": "The textarea's label. Alternatively, you can use the label slot.",
+          "type": "string"
+        },
+        {
+          "name": "maxlength",
+          "description": "The maximum length of input that will be considered valid.",
+          "type": "number"
+        },
+        {
+          "name": "minlength",
+          "description": "The minimum length of input that will be considered valid.",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "description": "The textarea's name attribute.",
+          "type": "string"
+        },
+        {
+          "name": "pattern",
+          "description": "A pattern to validate input against.",
+          "type": "string"
+        },
+        {
+          "name": "placeholder",
+          "description": "The textarea's placeholder text.",
+          "type": "string"
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the textarea readonly.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "required",
+          "description": "Makes the textarea a required field.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "resize",
+          "description": "Controls how the textarea can be resized.",
+          "type": "'none' | 'auto' | 'vertical'",
+          "values": [
+            "none",
+            "auto",
+            "vertical"
+          ],
+          "defaultValue": "'vertical'"
+        },
+        {
+          "name": "rows",
+          "description": "The number of rows to display by default.",
+          "type": "number",
+          "defaultValue": "4"
+        },
+        {
+          "name": "size",
+          "description": "The textarea's size.",
+          "type": "'small' | 'medium' | 'large'",
+          "values": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "defaultValue": "'medium'"
+        },
+        {
+          "name": "spellcheck",
+          "description": "Enables spell checking on the textarea.",
+          "type": "boolean"
+        },
+        {
+          "name": "value",
+          "description": "The textarea's value attribute.",
+          "type": "string",
+          "defaultValue": "''"
+        }
+      ],
+      "methods": [
+        {
+          "name": "blur",
+          "description": "Removes focus from the textarea.",
+          "params": []
+        },
+        {
+          "name": "focus",
+          "description": "Sets focus on the textarea.",
+          "params": [
+            {
+              "name": "options",
+              "type": "FocusOptions",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "reportValidity",
+          "description": "Checks for validity and shows the browser's validation message if the control is invalid.",
+          "params": []
+        },
+        {
+          "name": "scrollPosition",
+          "description": "Gets or sets the textarea's scroll position.",
+          "params": [
+            {
+              "name": "position",
+              "type": "{ left?: number, top?: number }",
+              "isOptional": true
+            }
+          ]
+        },
+        {
+          "name": "select",
+          "description": "Selects all the text in the textarea.",
+          "params": []
+        },
+        {
+          "name": "setCustomValidity",
+          "description": "Sets a custom validation message. If `message` is not empty, the field will be considered invalid.",
+          "params": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "setRangeText",
+          "description": "Replaces a range of text with a new string.",
+          "params": [
+            {
+              "name": "replacement",
+              "type": "string"
+            },
+            {
+              "name": "start",
+              "type": "number"
+            },
+            {
+              "name": "end",
+              "type": "number"
+            },
+            {
+              "name": "selectMode",
+              "type": "'end' | 'start' | 'select' | 'preserve'",
+              "values": [
+                "end",
+                "start",
+                "select",
+                "preserve"
+              ],
+              "defaultValue": "'preserve'"
+            }
+          ]
+        },
+        {
+          "name": "setSelectionRange",
+          "description": "Sets the start and end positions of the text selection (0-based).",
+          "params": [
+            {
+              "name": "selectionStart",
+              "type": "number"
+            },
+            {
+              "name": "selectionEnd",
+              "type": "number"
+            },
+            {
+              "name": "selectionDirection",
+              "type": "'none' | 'forward' | 'backward'",
+              "values": [
+                "none",
+                "forward",
+                "backward"
+              ],
+              "defaultValue": "'none'"
+            }
+          ]
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-blur",
+          "description": "Emitted when the control loses focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-change",
+          "description": "Emitted when the control's value changes.",
+          "details": "void"
+        },
+        {
+          "name": "sl-focus",
+          "description": "Emitted when the control gains focus.",
+          "details": "void"
+        },
+        {
+          "name": "sl-input",
+          "description": "Emitted when the control receives input.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "label",
+          "description": "The textarea's label. Alternatively, you can use the label prop."
+        },
+        {
+          "name": "help-text",
+          "description": "Help text that describes how to use the input.\n"
+        }
+      ],
+      "cssCustomProperties": [],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper."
+        },
+        {
+          "name": "form-control",
+          "description": "The form control that wraps the label, textarea, and help text."
+        },
+        {
+          "name": "label",
+          "description": "The textarea label."
+        },
+        {
+          "name": "textarea",
+          "description": "The textarea control."
+        },
+        {
+          "name": "help-text",
+          "description": "The textarea help text.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": []
+    },
+    {
+      "className": "SlTooltip",
+      "tag": "sl-tooltip",
+      "file": "src/components/tooltip/tooltip.ts",
+      "since": "2.0",
+      "status": "stable",
+      "props": [
+        {
+          "name": "content",
+          "description": "The tooltip's content. Alternatively, you can use the content slot.",
+          "type": "string",
+          "defaultValue": "''"
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the tooltip so it won't show when triggered.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "distance",
+          "description": "The distance in pixels from which to offset the tooltip away from its target.",
+          "type": "number",
+          "defaultValue": "10"
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the tooltip is open. You can use this in lieu of the show/hide methods.",
+          "type": "boolean",
+          "defaultValue": "false"
+        },
+        {
+          "name": "placement",
+          "description": "The preferred placement of the tooltip. Note that the actual placement may vary as needed to keep the tooltip\ninside of the viewport.",
+          "type": "'top' | 'bottom' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'right' | 'right-start' | 'right-end' | 'left' | 'left-start' | 'left-end'",
+          "values": [
+            "top",
+            "bottom",
+            "top-start",
+            "top-end",
+            "bottom-start",
+            "bottom-end",
+            "right",
+            "right-start",
+            "right-end",
+            "left",
+            "left-start",
+            "left-end"
+          ],
+          "defaultValue": "'top'"
+        },
+        {
+          "name": "skidding",
+          "description": "The distance in pixels from which to offset the tooltip along its target.",
+          "type": "number",
+          "defaultValue": "0"
+        },
+        {
+          "name": "trigger",
+          "description": "Controls how the tooltip is activated. Possible options include `click`, `hover`, `focus`, and `manual`. Multiple\noptions can be passed by separating them with a space. When manual is used, the tooltip must be activated\nprogrammatically.",
+          "type": "string",
+          "defaultValue": "'hover focus'"
+        }
+      ],
+      "methods": [
+        {
+          "name": "hide",
+          "description": "Hides the tooltip",
+          "params": []
+        },
+        {
+          "name": "show",
+          "description": "Shows the tooltip.",
+          "params": []
+        }
+      ],
+      "events": [
+        {
+          "name": "sl-after-hide",
+          "description": "Emitted after the tooltip has hidden and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-after-show",
+          "description": "Emitted after the tooltip has shown and all transitions are complete.",
+          "details": "void"
+        },
+        {
+          "name": "sl-hide",
+          "description": "Emitted when the tooltip begins to hide.",
+          "details": "void"
+        },
+        {
+          "name": "sl-show",
+          "description": "Emitted when the tooltip begins to show.",
+          "details": "void"
+        }
+      ],
+      "slots": [
+        {
+          "name": "",
+          "description": "The tooltip's target element. Only the first element will be used as the target."
+        },
+        {
+          "name": "content",
+          "description": "The tooltip's content. Alternatively, you can use the content prop.\n"
+        }
+      ],
+      "cssCustomProperties": [
+        {
+          "name": "--max-width",
+          "description": "The maximum width of the tooltip."
+        },
+        {
+          "name": "--hide-delay",
+          "description": "The amount of time to wait before hiding the tooltip when hovering."
+        },
+        {
+          "name": "--show-delay",
+          "description": "The amount of time to wait before showing the tooltip when hovering.\n"
+        }
+      ],
+      "parts": [
+        {
+          "name": "base",
+          "description": "The component's base wrapper.\n"
+        }
+      ],
+      "dependencies": [],
+      "animations": [
+        {
+          "name": "tooltip.show",
+          "description": "The animation to use when showing the tooltip."
+        },
+        {
+          "name": "tooltip.hide",
+          "description": "The animation to use when hiding the tooltip.\n"
+        }
+      ]
+    }
+  ]
+}
