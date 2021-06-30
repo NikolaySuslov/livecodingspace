@@ -1,0 +1,33 @@
+{
+    "extends": "proxy/two/group.vwf",
+    "type": "transport",
+    "properties": {
+        "beat": null,
+        "playing": null
+    },
+    "methods": {
+        "init": {},
+        "simpleVis": {},
+        "changeVisual": {},
+        "resetVisual": {},
+        "animationUpdate": {
+            "parameters": [
+                "time",
+                "duration"
+            ]
+        },
+        "play": {},
+        "stop": {},
+        "setupTransport": {},
+        "doGlobalBeat": {
+            "parameters": [
+                "time",
+                "duration",
+                "beat"
+            ]
+        }
+    },
+    "scripts": {
+        "source": "transport.js"
+    }
+}

@@ -1,0 +1,9 @@
+{
+  "extends": "proxy/pts/node.vwf",
+  "type": "player",
+  "properties": {},
+  "methods": {},
+  "scripts": {
+    "source": "player.js"
+  }
+}

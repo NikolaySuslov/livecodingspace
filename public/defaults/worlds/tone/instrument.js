@@ -1,5 +1,5 @@
 this.clickEventMethod = function() {
-   this.synth.triggerAttackRelease(['C4'], ['8n'], 0.3);
+   this.synth.triggerAttackRelease(['C4'], ['8n'], null, 0.3);
 }
 
 this.doButtonTriggerdownAction = function(buttonID){

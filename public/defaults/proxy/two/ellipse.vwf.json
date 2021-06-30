@@ -1,0 +1,15 @@
+{
+  "extends": "proxy/two/path.vwf",
+  "type": "ellipse",
+  "implements": [
+    "proxy/two/path.vwf"
+  ],
+  "properties": {
+    "width": null,
+    "height": null
+  },
+  "methods": {},
+  "scripts": {
+    "source": "ellipse.js"
+  }
+}

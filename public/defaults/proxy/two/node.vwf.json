@@ -1,0 +1,56 @@
+{
+    "extends": "proxy/node.vwf",
+    "implements": [
+        "proxy/animation/animation.vwf"
+      ],
+    "properties": {
+        "displayName": null,
+        "stepping": null,
+        "stepTime": null,
+        "globalBeat": null,
+        "mouseevent": null,
+        "drag": null,
+        "twoWidth": null,
+        "twoHeight": null,
+        "matrixManual": null
+    },
+    "methods":{
+        "step": {},
+        "do": {},
+        "clickEvent":{},
+        "mouseupEvent":{},
+        "mousedownEvent":{},
+        "getRandomColor":{},
+        "checkForDragStart":{
+            "parameters":["avatarID"]
+        },
+        "checkForDragEnd":{
+            "parameters":["avatarID"]
+        },
+        "overstartEvent":{
+            "parameters":["avatarID"]
+        },
+        "overendEvent":{
+            "parameters":["avatarID"]
+        },
+        "getScene": {},
+        "onGlobalBeat": {
+            "parameters": [
+              "obj"
+            ]
+          },
+          "viewTroughFilter":{
+            "parameters": [
+                "nodeID", "param"
+              ]
+          },
+          "checkOver":{
+            "parameters": [
+                "x", "y"
+              ]
+          }
+    },
+    "scripts": {
+        "source": "node.js"
+      }
+}

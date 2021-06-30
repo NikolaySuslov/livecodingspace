@@ -1,0 +1,14 @@
+{
+    "info": {
+        "en": {
+            "title": "2D Canvas PTS.js app",
+            "imgUrl": "/defaults/worlds/pts/webimg.jpg",
+            "text": "Example application of VWF & PTS.js"
+        },
+        "ru": {
+            "title": "2D Canvas PTS.js app",
+            "imgUrl": "/defaults/worlds/pts/webimg.jpg",
+            "text": "Example application of VWF & PTS.js"
+        }
+    }
+}

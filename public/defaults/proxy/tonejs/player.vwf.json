@@ -1,0 +1,46 @@
+{
+    "extends": "proxy/tonejs/node.vwf",
+    "properties": {
+        "url": null,
+        "autostart":null,
+        "fadeIn": null,
+        "fadeOut": null,
+        "mute": null,
+        "loop": null,
+        "loopStart": null,
+        "loopEnd": null,
+        "volume": null,
+        "playbackRate": null,
+        "duration": null,
+        "sampleTime": null,
+        "state":null,
+        "startOffset":null,
+        "pausedTime": null,
+        "isPlaying": null,
+        "startTime": null,
+        "inSync": null
+        },
+    "methods":{
+        "start": {},
+        "syncStart": {
+            "parameters":["time"]
+        },
+        "stop": {},
+        "pause": {},
+        "setLoopPoints":{
+            "parameters":["start", "end"]
+        },
+        "playBuffer":{},
+        "syncBufferState":{},
+        "setBufferState":{
+          "parameters":[
+            "isPlaying",
+            "startOffset",
+            "pausedTime"
+          ]
+        }
+    },
+    "scripts": {
+      "source": "player.js"
+    }
+}

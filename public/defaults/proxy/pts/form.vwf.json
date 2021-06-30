@@ -1,0 +1,9 @@
+{
+  "extends": "proxy/pts/node.vwf",
+  "type": "form",
+  "properties": {},
+  "methods": {},
+  "scripts": {
+    "source": "form.js"
+  }
+}

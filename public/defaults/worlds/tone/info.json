@@ -6,9 +6,9 @@
             "text": "Example app with Tone JS"
         },
         "ru":{
-            "title": "Music App",
+            "title": "Музыкальная программа",
             "imgUrl": "/defaults/worlds/tone/webimg.jpg",
-            "text": "Example app with Tone JS"
+            "text": "Пример программы с Tone JS"
         }
        
     }

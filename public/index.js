@@ -29,7 +29,8 @@ loadjs([
     '/lib/fun/@most/dom-event/dist/index.js',
     '/lib/fun/ramda.min.js',
     '/lib/fun/infestines.js',
-    '/lib/fun/partial.lenses.min.js'
+    '/lib/fun/partial.lenses.min.js',
+    '/lib/ui/solid-js/s-js/dist/S.js'
 ],'fun', {
     async: false
 });

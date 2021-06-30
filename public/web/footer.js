@@ -60,7 +60,7 @@ class Footer {
 
                                             $type: "span",
                                             class: "mdc-typography  mdc-theme--text-hint-on-background",
-                                            $text: "| 2020 "
+                                            $text: "| 2021 "
                                         }
 
 

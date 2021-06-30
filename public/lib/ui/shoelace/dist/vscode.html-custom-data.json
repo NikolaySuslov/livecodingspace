@@ -1,0 +1,1875 @@
+{
+  "tags": [
+    {
+      "name": "sl-alert",
+      "attributes": [
+        {
+          "name": "closable",
+          "description": "Makes the alert closable."
+        },
+        {
+          "name": "duration",
+          "description": "The length of time, in milliseconds, the alert will show before closing itself. If the user interacts with\nthe alert before it closes (e.g. moves the mouse over it), the timer will restart. Defaults to `Infinity`."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the alert is open. You can use this in lieu of the show/hide methods."
+        },
+        {
+          "name": "type",
+          "description": "The type of alert.",
+          "values": [
+            {
+              "name": "primary"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-animation",
+      "attributes": [
+        {
+          "name": "delay",
+          "description": "The number of milliseconds to delay the start of the animation."
+        },
+        {
+          "name": "direction",
+          "description": "Determines the direction of playback as well as the behavior when reaching the end of an iteration."
+        },
+        {
+          "name": "duration",
+          "description": "The number of milliseconds each iteration of the animation takes to complete."
+        },
+        {
+          "name": "easing",
+          "description": "The easing function to use for the animation. This can be a Shoelace easing function or a custom easing function\nsuch as `cubic-bezier(0, 1, .76, 1.14)`."
+        },
+        {
+          "name": "endDelay",
+          "description": "The number of milliseconds to delay after the active period of an animation sequence."
+        },
+        {
+          "name": "fill",
+          "description": "Sets how the animation applies styles to its target before and after its execution."
+        },
+        {
+          "name": "iterationStart",
+          "description": "The offset at which to start the animation, usually between 0 (start) and 1 (end)."
+        },
+        {
+          "name": "iterations",
+          "description": "The number of iterations to run before the animation completes. Defaults to `Infinity`, which loops."
+        },
+        {
+          "name": "keyframes",
+          "description": "The keyframes to use for the animation. If this is set, `name` will be ignored."
+        },
+        {
+          "name": "name",
+          "description": "The name of the built-in animation to use. For custom animations, use the `keyframes` prop."
+        },
+        {
+          "name": "pause",
+          "description": "Pauses the animation. The animation will resume when this prop is removed."
+        },
+        {
+          "name": "playbackRate",
+          "description": "Sets the animation's playback rate. The default is `1`, which plays the animation at a normal speed. Setting this\nto `2`, for example, will double the animation's speed. A negative value can be used to reverse the animation. This\nvalue can be changed without causing the animation to restart."
+        }
+      ]
+    },
+    {
+      "name": "sl-avatar",
+      "attributes": [
+        {
+          "name": "alt",
+          "description": "Alternative text for the image."
+        },
+        {
+          "name": "image",
+          "description": "The image source to use for the avatar."
+        },
+        {
+          "name": "initials",
+          "description": "Initials to use as a fallback when no image is available (1-2 characters max recommended)."
+        },
+        {
+          "name": "shape",
+          "description": "The shape of the avatar.",
+          "values": [
+            {
+              "name": "circle"
+            },
+            {
+              "name": "square"
+            },
+            {
+              "name": "rounded"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-badge",
+      "attributes": [
+        {
+          "name": "pill",
+          "description": "Draws a pill-style badge with rounded edges."
+        },
+        {
+          "name": "pulse",
+          "description": "Makes the badge pulsate to draw attention."
+        },
+        {
+          "name": "type",
+          "description": "The badge's type.",
+          "values": [
+            {
+              "name": "primary"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-button",
+      "attributes": [
+        {
+          "name": "caret",
+          "description": "Draws the button with a caret for use with dropdowns, popovers, etc."
+        },
+        {
+          "name": "circle",
+          "description": "Draws a circle button."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the button."
+        },
+        {
+          "name": "download",
+          "description": "Tells the browser to download the linked file as this filename. Only used when `href` is set."
+        },
+        {
+          "name": "href",
+          "description": "When set, the underlying button will be rendered as an `<a>` with this `href` instead of a `<button>`."
+        },
+        {
+          "name": "loading",
+          "description": "Draws the button in a loading state."
+        },
+        {
+          "name": "name",
+          "description": "An optional name for the button. Ignored when `href` is set."
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style button with rounded edges."
+        },
+        {
+          "name": "size",
+          "description": "The button's size.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "submit",
+          "description": "Indicates if activating the button should submit the form. Ignored when `href` is set."
+        },
+        {
+          "name": "target",
+          "description": "Tells the browser where to open the link. Only used when `href` is set.",
+          "values": [
+            {
+              "name": "_blank"
+            },
+            {
+              "name": "_parent"
+            },
+            {
+              "name": "_self"
+            },
+            {
+              "name": "_top"
+            }
+          ]
+        },
+        {
+          "name": "type",
+          "description": "The button's type.",
+          "values": [
+            {
+              "name": "primary"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            },
+            {
+              "name": "default"
+            },
+            {
+              "name": "text"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "An optional value for the button. Ignored when `href` is set."
+        }
+      ]
+    },
+    {
+      "name": "sl-button-group",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "A label to use for the button group's `aria-label` attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-card",
+      "attributes": []
+    },
+    {
+      "name": "sl-checkbox",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Draws the checkbox in a checked state."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the checkbox."
+        },
+        {
+          "name": "indeterminate",
+          "description": "Draws the checkbox in an indeterminate state."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop."
+        },
+        {
+          "name": "name",
+          "description": "The checkbox's name attribute."
+        },
+        {
+          "name": "required",
+          "description": "Makes the checkbox a required field."
+        },
+        {
+          "name": "value",
+          "description": "The checkbox's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-color-picker",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Disables the color picker."
+        },
+        {
+          "name": "format",
+          "description": "The format to use for the display value. If opacity is enabled, these will translate to HEXA, RGBA, and HSLA\nrespectively. The color picker will always accept user input in any format (including CSS color names) and convert\nit to the desired format.",
+          "values": [
+            {
+              "name": "hex"
+            },
+            {
+              "name": "rgb"
+            },
+            {
+              "name": "hsl"
+            }
+          ]
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`."
+        },
+        {
+          "name": "inline",
+          "description": "Renders the color picker inline rather than inside a dropdown."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `setCustomValidity()`\nmethod using the browser's constraint validation API."
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute."
+        },
+        {
+          "name": "noFormatToggle",
+          "description": "Removes the format toggle."
+        },
+        {
+          "name": "opacity",
+          "description": "Whether to show the opacity slider."
+        },
+        {
+          "name": "size",
+          "description": "Determines the size of the color picker's trigger. This has no effect on inline color pickers.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "swatches",
+          "description": "An array of predefined color swatches to display. Can include any format the color picker can parse, including\nHEX(A), RGB(A), HSL(A), and CSS color names."
+        },
+        {
+          "name": "uppercase",
+          "description": "By default, the value will be set in lowercase. Set this to true to set it in uppercase instead."
+        },
+        {
+          "name": "value",
+          "description": "The current color."
+        }
+      ]
+    },
+    {
+      "name": "sl-details",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Disables the details so it can't be toggled."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the details is open. You can use this in lieu of the show/hide methods."
+        },
+        {
+          "name": "summary",
+          "description": "The summary to show in the details header. If you need to display HTML, use the `summary` slot instead."
+        }
+      ]
+    },
+    {
+      "name": "sl-dialog",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "The dialog's label as displayed in the header. You should always include a relevant label even when using\n`no-header`, as it is required for proper accessibility."
+        },
+        {
+          "name": "noHeader",
+          "description": "Disables the header. This will also remove the default close button, so please ensure you provide an easy,\naccessible way for users to dismiss the dialog."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the dialog is open. You can use this in lieu of the show/hide methods."
+        }
+      ]
+    },
+    {
+      "name": "sl-drawer",
+      "attributes": [
+        {
+          "name": "contained",
+          "description": "By default, the drawer slides out of its containing block (usually the viewport). To make the drawer slide out of\nits parent element, set this prop and add `position: relative` to the parent."
+        },
+        {
+          "name": "label",
+          "description": "The drawer's label as displayed in the header. You should always include a relevant label even when using\n`no-header`, as it is required for proper accessibility."
+        },
+        {
+          "name": "noHeader",
+          "description": "Removes the header. This will also remove the default close button, so please ensure you provide an easy,\naccessible way for users to dismiss the drawer."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the drawer is open. You can use this in lieu of the show/hide methods."
+        },
+        {
+          "name": "placement",
+          "description": "The direction from which the drawer will open.",
+          "values": [
+            {
+              "name": "top"
+            },
+            {
+              "name": "end"
+            },
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "start"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-dropdown",
+      "attributes": [
+        {
+          "name": "closeOnSelect",
+          "description": "Determines whether the dropdown should hide when a menu item is selected."
+        },
+        {
+          "name": "containingElement",
+          "description": "The dropdown will close when the user interacts outside of this element (e.g. clicking)."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the dropdown so the panel will not open."
+        },
+        {
+          "name": "distance",
+          "description": "The distance in pixels from which to offset the panel away from its trigger."
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the dropdown is open. You can use this in lieu of the show/hide methods."
+        },
+        {
+          "name": "placement",
+          "description": "The preferred placement of the dropdown panel. Note that the actual placement may vary as needed to keep the panel\ninside of the viewport.",
+          "values": [
+            {
+              "name": "top"
+            },
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "top-start"
+            },
+            {
+              "name": "top-end"
+            },
+            {
+              "name": "bottom-start"
+            },
+            {
+              "name": "bottom-end"
+            },
+            {
+              "name": "right"
+            },
+            {
+              "name": "right-start"
+            },
+            {
+              "name": "right-end"
+            },
+            {
+              "name": "left"
+            },
+            {
+              "name": "left-start"
+            },
+            {
+              "name": "left-end"
+            }
+          ]
+        },
+        {
+          "name": "skidding",
+          "description": "The distance in pixels from which to offset the panel along its trigger."
+        }
+      ]
+    },
+    {
+      "name": "sl-form",
+      "attributes": [
+        {
+          "name": "novalidate",
+          "description": "Prevent the form from validating inputs before submitting."
+        }
+      ]
+    },
+    {
+      "name": "sl-format-bytes",
+      "attributes": [
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number."
+        },
+        {
+          "name": "unit",
+          "description": "The unit to display.",
+          "values": [
+            {
+              "name": "bytes"
+            },
+            {
+              "name": "bits"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "The number to format in bytes."
+        }
+      ]
+    },
+    {
+      "name": "sl-format-date",
+      "attributes": [
+        {
+          "name": "date",
+          "description": "The date/time to format. If not set, the current date and time will be used.",
+          "values": [
+            {
+              "name": "string"
+            },
+            {}
+          ]
+        },
+        {
+          "name": "day",
+          "description": "The format for displaying the day.",
+          "values": [
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        },
+        {
+          "name": "era",
+          "description": "The format for displaying the era.",
+          "values": [
+            {
+              "name": "narrow"
+            },
+            {
+              "name": "short"
+            },
+            {
+              "name": "long"
+            }
+          ]
+        },
+        {
+          "name": "hour",
+          "description": "The format for displaying the hour.",
+          "values": [
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        },
+        {
+          "name": "hourFormat",
+          "description": "When set, 24 hour time will always be used.",
+          "values": [
+            {
+              "name": "auto"
+            },
+            {
+              "name": "12"
+            },
+            {
+              "name": "24"
+            }
+          ]
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the date/time."
+        },
+        {
+          "name": "minute",
+          "description": "The format for displaying the minute.",
+          "values": [
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        },
+        {
+          "name": "month",
+          "description": "The format for displaying the month.",
+          "values": [
+            {
+              "name": "narrow"
+            },
+            {
+              "name": "short"
+            },
+            {
+              "name": "long"
+            },
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        },
+        {
+          "name": "second",
+          "description": "The format for displaying the second.",
+          "values": [
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        },
+        {
+          "name": "timeZone",
+          "description": "The time zone to express the time in."
+        },
+        {
+          "name": "timeZoneName",
+          "description": "The format for displaying the time.",
+          "values": [
+            {
+              "name": "short"
+            },
+            {
+              "name": "long"
+            }
+          ]
+        },
+        {
+          "name": "weekday",
+          "description": "The format for displaying the weekday.",
+          "values": [
+            {
+              "name": "narrow"
+            },
+            {
+              "name": "short"
+            },
+            {
+              "name": "long"
+            }
+          ]
+        },
+        {
+          "name": "year",
+          "description": "The format for displaying the year.",
+          "values": [
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "2-digit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-format-number",
+      "attributes": [
+        {
+          "name": "currency",
+          "description": "The currency to use when formatting. Must be an ISO 4217 currency code such as `USD` or `EUR`."
+        },
+        {
+          "name": "currencyDisplay",
+          "description": "How to display the currency.",
+          "values": [
+            {
+              "name": "symbol"
+            },
+            {
+              "name": "name"
+            },
+            {
+              "name": "code"
+            },
+            {
+              "name": "narrowSymbol"
+            }
+          ]
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number."
+        },
+        {
+          "name": "maximumFractionDigits",
+          "description": "The maximum number of fraction digits to use. Possible values are 0 - 20."
+        },
+        {
+          "name": "maximumSignificantDigits",
+          "description": "The maximum number of significant digits to use,. Possible values are 1 - 21."
+        },
+        {
+          "name": "minimumFractionDigits",
+          "description": "The minimum number of fraction digits to use. Possible values are 0 - 20."
+        },
+        {
+          "name": "minimumIntegerDigits",
+          "description": "The minimum number of integer digits to use. Possible values are 1 - 21."
+        },
+        {
+          "name": "minimumSignificantDigits",
+          "description": "The minimum number of significant digits to use. Possible values are 1 - 21."
+        },
+        {
+          "name": "noGrouping",
+          "description": "Turns off grouping separators."
+        },
+        {
+          "name": "type",
+          "description": "The formatting style to use.",
+          "values": [
+            {
+              "name": "currency"
+            },
+            {
+              "name": "decimal"
+            },
+            {
+              "name": "percent"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "The number to format."
+        }
+      ]
+    },
+    {
+      "name": "sl-icon",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "An alternative description to use for accessibility. If omitted, the name or src will be used to generate it."
+        },
+        {
+          "name": "library",
+          "description": "The name of a registered custom icon library."
+        },
+        {
+          "name": "name",
+          "description": "The name of the icon to draw."
+        },
+        {
+          "name": "src",
+          "description": "An external URL of an SVG file."
+        }
+      ]
+    },
+    {
+      "name": "sl-icon-button",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Disables the button."
+        },
+        {
+          "name": "label",
+          "description": "A description that gets read by screen readers and other assistive devices. For optimal accessibility, you should\nalways include a label that describes what the icon button does."
+        },
+        {
+          "name": "library",
+          "description": "The name of a registered custom icon library."
+        },
+        {
+          "name": "name",
+          "description": "The name of the icon to draw."
+        },
+        {
+          "name": "src",
+          "description": "An external URL of an SVG file."
+        }
+      ]
+    },
+    {
+      "name": "sl-image-comparer",
+      "attributes": [
+        {
+          "name": "position",
+          "description": "The position of the divider as a percentage."
+        }
+      ]
+    },
+    {
+      "name": "sl-include",
+      "attributes": [
+        {
+          "name": "allowScripts",
+          "description": "Allows included scripts to be executed. You must ensure the content you're including is trusted, otherwise this\noption can lead to XSS vulnerabilities in your app!"
+        },
+        {
+          "name": "mode",
+          "description": "The fetch mode to use.",
+          "values": [
+            {
+              "name": "cors"
+            },
+            {
+              "name": "no-cors"
+            },
+            {
+              "name": "same-origin"
+            }
+          ]
+        },
+        {
+          "name": "src",
+          "description": "The location of the HTML file to include."
+        }
+      ]
+    },
+    {
+      "name": "sl-input",
+      "attributes": [
+        {
+          "name": "autocapitalize",
+          "description": "The input's autocaptialize attribute.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "off"
+            },
+            {
+              "name": "on"
+            },
+            {
+              "name": "sentences"
+            },
+            {
+              "name": "words"
+            },
+            {
+              "name": "characters"
+            }
+          ]
+        },
+        {
+          "name": "autocomplete",
+          "description": "The input's autocomplete attribute."
+        },
+        {
+          "name": "autocorrect",
+          "description": "The input's autocorrect attribute."
+        },
+        {
+          "name": "autofocus",
+          "description": "The input's autofocus attribute."
+        },
+        {
+          "name": "clearable",
+          "description": "Adds a clear button when the input is populated."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the input."
+        },
+        {
+          "name": "helpText",
+          "description": "The input's help text. Alternatively, you can use the help-text slot."
+        },
+        {
+          "name": "inputmode",
+          "description": "The input's inputmode attribute.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "text"
+            },
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "decimal"
+            },
+            {
+              "name": "email"
+            },
+            {
+              "name": "search"
+            },
+            {
+              "name": "tel"
+            },
+            {
+              "name": "url"
+            }
+          ]
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by props such as `type`,\n`required`, `minlength`, `maxlength`, and `pattern` using the browser's constraint validation API."
+        },
+        {
+          "name": "label",
+          "description": "The input's label. Alternatively, you can use the label slot."
+        },
+        {
+          "name": "max",
+          "description": "The input's maximum value.",
+          "values": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        {
+          "name": "maxlength",
+          "description": "The maximum length of input that will be considered valid."
+        },
+        {
+          "name": "min",
+          "description": "The input's minimum value.",
+          "values": [
+            {
+              "name": "string"
+            },
+            {
+              "name": "number"
+            }
+          ]
+        },
+        {
+          "name": "minlength",
+          "description": "The minimum length of input that will be considered valid."
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute."
+        },
+        {
+          "name": "pattern",
+          "description": "A pattern to validate input against."
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style input with rounded edges."
+        },
+        {
+          "name": "placeholder",
+          "description": "The input's placeholder text."
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the input readonly."
+        },
+        {
+          "name": "required",
+          "description": "Makes the input a required field."
+        },
+        {
+          "name": "size",
+          "description": "The input's size.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "spellcheck",
+          "description": "Enables spell checking on the input."
+        },
+        {
+          "name": "step",
+          "description": "The input's step attribute."
+        },
+        {
+          "name": "togglePassword",
+          "description": "Adds a password toggle button to password inputs."
+        },
+        {
+          "name": "type",
+          "description": "The input's type.",
+          "values": [
+            {
+              "name": "number"
+            },
+            {
+              "name": "text"
+            },
+            {
+              "name": "email"
+            },
+            {
+              "name": "password"
+            },
+            {
+              "name": "search"
+            },
+            {
+              "name": "tel"
+            },
+            {
+              "name": "url"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "The input's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-menu",
+      "attributes": []
+    },
+    {
+      "name": "sl-menu-divider",
+      "attributes": []
+    },
+    {
+      "name": "sl-menu-item",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Draws the item in a checked state."
+        },
+        {
+          "name": "disabled",
+          "description": "Draws the menu item in a disabled state."
+        },
+        {
+          "name": "value",
+          "description": "A unique value to store in the menu item. This can be used as a way to identify menu items when selected."
+        }
+      ]
+    },
+    {
+      "name": "sl-menu-label",
+      "attributes": []
+    },
+    {
+      "name": "sl-progress-bar",
+      "attributes": [
+        {
+          "name": "indeterminate",
+          "description": "When true, percentage is ignored, the label is hidden, and the progress bar is drawn in an indeterminate state."
+        },
+        {
+          "name": "percentage",
+          "description": "The progress bar's percentage, 0 to 100."
+        }
+      ]
+    },
+    {
+      "name": "sl-progress-ring",
+      "attributes": [
+        {
+          "name": "percentage",
+          "description": "The current progress percentage, 0 - 100."
+        },
+        {
+          "name": "size",
+          "description": "The size of the progress ring in pixels."
+        },
+        {
+          "name": "strokeWidth",
+          "description": "The stroke width of the progress ring in pixels."
+        }
+      ]
+    },
+    {
+      "name": "sl-qr-code",
+      "attributes": [
+        {
+          "name": "background",
+          "description": "The background color. This can be any valid CSS color or `transparent`, but not a CSS custom property."
+        },
+        {
+          "name": "errorCorrection",
+          "description": "The level of error correction to use.",
+          "values": [
+            {
+              "name": "L"
+            },
+            {
+              "name": "M"
+            },
+            {
+              "name": "Q"
+            },
+            {
+              "name": "H"
+            }
+          ]
+        },
+        {
+          "name": "fill",
+          "description": "The fill color. This can be any valid CSS color, but not a CSS custom property."
+        },
+        {
+          "name": "label",
+          "description": "The label used when screen readers announce the code. If unspecified, the value will be used."
+        },
+        {
+          "name": "radius",
+          "description": "The edge radius of each module. Must be between 0 and 0.5."
+        },
+        {
+          "name": "size",
+          "description": "The size of the code's overall square in pixels."
+        },
+        {
+          "name": "value",
+          "description": "The QR code's value."
+        }
+      ]
+    },
+    {
+      "name": "sl-radio",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Draws the radio in a checked state."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the radio."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity in range inputs is determined by the message\nprovided by the `setCustomValidity` method."
+        },
+        {
+          "name": "name",
+          "description": "The radio's name attribute."
+        },
+        {
+          "name": "value",
+          "description": "The radio's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-radio-group",
+      "attributes": [
+        {
+          "name": "label",
+          "description": "The radio group label. Required for proper accessibility. Alternatively, you can use the label slot."
+        },
+        {
+          "name": "noFieldset",
+          "description": "Hides the fieldset and legend that surrounds the radio group. The label will still be read by screen readers."
+        }
+      ]
+    },
+    {
+      "name": "sl-range",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Disables the input."
+        },
+        {
+          "name": "helpText",
+          "description": "The range's help text. Alternatively, you can use the help-text slot."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity in range inputs is determined by the message\nprovided by the `setCustomValidity` method."
+        },
+        {
+          "name": "label",
+          "description": "The range's label. Alternatively, you can use the label slot."
+        },
+        {
+          "name": "max",
+          "description": "The input's max attribute."
+        },
+        {
+          "name": "min",
+          "description": "The input's min attribute."
+        },
+        {
+          "name": "name",
+          "description": "The input's name attribute."
+        },
+        {
+          "name": "step",
+          "description": "The input's step attribute."
+        },
+        {
+          "name": "tooltip",
+          "description": "The preferred placedment of the tooltip.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "top"
+            },
+            {
+              "name": "bottom"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "The input's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-rating",
+      "attributes": [
+        {
+          "name": "disabled",
+          "description": "Disables the rating."
+        },
+        {
+          "name": "max",
+          "description": "The highest rating to show."
+        },
+        {
+          "name": "precision",
+          "description": "The minimum increment value allowed by the control."
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the rating readonly."
+        },
+        {
+          "name": "value",
+          "description": "The current rating."
+        }
+      ]
+    },
+    {
+      "name": "sl-relative-time",
+      "attributes": [
+        {
+          "name": "date",
+          "description": "The date from which to calculate time from.",
+          "values": [
+            {
+              "name": "string"
+            },
+            {}
+          ]
+        },
+        {
+          "name": "format",
+          "description": "The formatting style to use.",
+          "values": [
+            {
+              "name": "narrow"
+            },
+            {
+              "name": "short"
+            },
+            {
+              "name": "long"
+            }
+          ]
+        },
+        {
+          "name": "locale",
+          "description": "The locale to use when formatting the number."
+        },
+        {
+          "name": "numeric",
+          "description": "When `auto`, values such as \"yesterday\" and \"tomorrow\" will be shown when possible. When `always`, values such as\n\"1 day ago\" and \"in 1 day\" will be shown.",
+          "values": [
+            {
+              "name": "auto"
+            },
+            {
+              "name": "always"
+            }
+          ]
+        },
+        {
+          "name": "sync",
+          "description": "Keep the displayed value up to date as time passes."
+        }
+      ]
+    },
+    {
+      "name": "sl-resize-observer",
+      "attributes": []
+    },
+    {
+      "name": "sl-responsive-media",
+      "attributes": [
+        {
+          "name": "aspectRatio",
+          "description": "The aspect ratio of the embedded media in the format of `width:height`, e.g. `16:9`, `4:3`, or `1:1`. Ratios not in\nthis format will be ignored."
+        },
+        {
+          "name": "fit",
+          "description": "Determines how content will be resized to fit its container.",
+          "values": [
+            {
+              "name": "cover"
+            },
+            {
+              "name": "contain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-select",
+      "attributes": [
+        {
+          "name": "clearable",
+          "description": "Adds a clear button when the select is populated."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the select control."
+        },
+        {
+          "name": "helpText",
+          "description": "The select's help text. Alternatively, you can use the help-text slot."
+        },
+        {
+          "name": "hoist",
+          "description": "Enable this option to prevent the panel from being clipped when the component is placed inside a container with\n`overflow: auto|scroll`."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop."
+        },
+        {
+          "name": "label",
+          "description": "The select's label. Alternatively, you can use the label slot."
+        },
+        {
+          "name": "maxTagsVisible",
+          "description": "The maximum number of tags to show when `multiple` is true. After the maximum, \"+n\" will be shown to indicate the\nnumber of additional items that are selected. Set to -1 to remove the limit."
+        },
+        {
+          "name": "multiple",
+          "description": "Enables multiselect. With this enabled, value will be an array."
+        },
+        {
+          "name": "name",
+          "description": "The select's name."
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style select with rounded edges."
+        },
+        {
+          "name": "placeholder",
+          "description": "The select's placeholder text."
+        },
+        {
+          "name": "required",
+          "description": "The select's required attribute."
+        },
+        {
+          "name": "size",
+          "description": "The select's size.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "value",
+          "description": "The value of the control. This will be a string or an array depending on `multiple`.",
+          "values": [
+            {
+              "name": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-skeleton",
+      "attributes": [
+        {
+          "name": "effect",
+          "description": "Determines which effect the skeleton will use.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "pulse"
+            },
+            {
+              "name": "sheen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-spinner",
+      "attributes": []
+    },
+    {
+      "name": "sl-switch",
+      "attributes": [
+        {
+          "name": "checked",
+          "description": "Draws the switch in a checked state."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the switch."
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by the `required` prop."
+        },
+        {
+          "name": "name",
+          "description": "The switch's name attribute."
+        },
+        {
+          "name": "required",
+          "description": "Makes the switch a required field."
+        },
+        {
+          "name": "value",
+          "description": "The switch's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-tab",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "Draws the tab in an active state."
+        },
+        {
+          "name": "closable",
+          "description": "Makes the tab closable and shows a close icon."
+        },
+        {
+          "name": "disabled",
+          "description": "Draws the tab in a disabled state."
+        },
+        {
+          "name": "panel",
+          "description": "The name of the tab panel the tab will control. The panel must be located in the same tab group."
+        }
+      ]
+    },
+    {
+      "name": "sl-tab-group",
+      "attributes": [
+        {
+          "name": "activation",
+          "description": "When set to auto, navigating tabs with the arrow keys will instantly show the corresponding tab panel. When set to\nmanual, the tab will receive focus but will not show until the user presses spacebar or enter.",
+          "values": [
+            {
+              "name": "auto"
+            },
+            {
+              "name": "manual"
+            }
+          ]
+        },
+        {
+          "name": "noScrollControls",
+          "description": "Disables the scroll arrows that appear when tabs overflow."
+        },
+        {
+          "name": "placement",
+          "description": "The placement of the tabs.",
+          "values": [
+            {
+              "name": "top"
+            },
+            {
+              "name": "end"
+            },
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "start"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-tab-panel",
+      "attributes": [
+        {
+          "name": "active",
+          "description": "When true, the tab panel will be shown."
+        },
+        {
+          "name": "name",
+          "description": "The tab panel's name."
+        }
+      ]
+    },
+    {
+      "name": "sl-tag",
+      "attributes": [
+        {
+          "name": "clearable",
+          "description": "Makes the tag clearable."
+        },
+        {
+          "name": "pill",
+          "description": "Draws a pill-style tag with rounded edges."
+        },
+        {
+          "name": "size",
+          "description": "The tag's size.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "type",
+          "description": "The tag's type.",
+          "values": [
+            {
+              "name": "primary"
+            },
+            {
+              "name": "success"
+            },
+            {
+              "name": "info"
+            },
+            {
+              "name": "warning"
+            },
+            {
+              "name": "danger"
+            },
+            {
+              "name": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sl-textarea",
+      "attributes": [
+        {
+          "name": "autocapitalize",
+          "description": "The textarea's autocaptialize attribute.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "off"
+            },
+            {
+              "name": "on"
+            },
+            {
+              "name": "sentences"
+            },
+            {
+              "name": "words"
+            },
+            {
+              "name": "characters"
+            }
+          ]
+        },
+        {
+          "name": "autocomplete",
+          "description": "The textarea's autocomplete attribute."
+        },
+        {
+          "name": "autocorrect",
+          "description": "The textarea's autocorrect attribute."
+        },
+        {
+          "name": "autofocus",
+          "description": "The textarea's autofocus attribute."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the textarea."
+        },
+        {
+          "name": "helpText",
+          "description": "The textarea's help text. Alternatively, you can use the help-text slot."
+        },
+        {
+          "name": "inputmode",
+          "description": "The textarea's inputmode attribute.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "text"
+            },
+            {
+              "name": "numeric"
+            },
+            {
+              "name": "decimal"
+            },
+            {
+              "name": "email"
+            },
+            {
+              "name": "search"
+            },
+            {
+              "name": "tel"
+            },
+            {
+              "name": "url"
+            }
+          ]
+        },
+        {
+          "name": "invalid",
+          "description": "This will be true when the control is in an invalid state. Validity is determined by props such as `type`,\n`required`, `minlength`, and `maxlength` using the browser's constraint validation API."
+        },
+        {
+          "name": "label",
+          "description": "The textarea's label. Alternatively, you can use the label slot."
+        },
+        {
+          "name": "maxlength",
+          "description": "The maximum length of input that will be considered valid."
+        },
+        {
+          "name": "minlength",
+          "description": "The minimum length of input that will be considered valid."
+        },
+        {
+          "name": "name",
+          "description": "The textarea's name attribute."
+        },
+        {
+          "name": "pattern",
+          "description": "A pattern to validate input against."
+        },
+        {
+          "name": "placeholder",
+          "description": "The textarea's placeholder text."
+        },
+        {
+          "name": "readonly",
+          "description": "Makes the textarea readonly."
+        },
+        {
+          "name": "required",
+          "description": "Makes the textarea a required field."
+        },
+        {
+          "name": "resize",
+          "description": "Controls how the textarea can be resized.",
+          "values": [
+            {
+              "name": "none"
+            },
+            {
+              "name": "auto"
+            },
+            {
+              "name": "vertical"
+            }
+          ]
+        },
+        {
+          "name": "rows",
+          "description": "The number of rows to display by default."
+        },
+        {
+          "name": "size",
+          "description": "The textarea's size.",
+          "values": [
+            {
+              "name": "small"
+            },
+            {
+              "name": "medium"
+            },
+            {
+              "name": "large"
+            }
+          ]
+        },
+        {
+          "name": "spellcheck",
+          "description": "Enables spell checking on the textarea."
+        },
+        {
+          "name": "value",
+          "description": "The textarea's value attribute."
+        }
+      ]
+    },
+    {
+      "name": "sl-tooltip",
+      "attributes": [
+        {
+          "name": "content",
+          "description": "The tooltip's content. Alternatively, you can use the content slot."
+        },
+        {
+          "name": "disabled",
+          "description": "Disables the tooltip so it won't show when triggered."
+        },
+        {
+          "name": "distance",
+          "description": "The distance in pixels from which to offset the tooltip away from its target."
+        },
+        {
+          "name": "open",
+          "description": "Indicates whether or not the tooltip is open. You can use this in lieu of the show/hide methods."
+        },
+        {
+          "name": "placement",
+          "description": "The preferred placement of the tooltip. Note that the actual placement may vary as needed to keep the tooltip\ninside of the viewport.",
+          "values": [
+            {
+              "name": "top"
+            },
+            {
+              "name": "bottom"
+            },
+            {
+              "name": "top-start"
+            },
+            {
+              "name": "top-end"
+            },
+            {
+              "name": "bottom-start"
+            },
+            {
+              "name": "bottom-end"
+            },
+            {
+              "name": "right"
+            },
+            {
+              "name": "right-start"
+            },
+            {
+              "name": "right-end"
+            },
+            {
+              "name": "left"
+            },
+            {
+              "name": "left-start"
+            },
+            {
+              "name": "left-end"
+            }
+          ]
+        },
+        {
+          "name": "skidding",
+          "description": "The distance in pixels from which to offset the tooltip along its target."
+        },
+        {
+          "name": "trigger",
+          "description": "Controls how the tooltip is activated. Possible options include `click`, `hover`, `focus`, and `manual`. Multiple\noptions can be passed by separating them with a space. When manual is used, the tooltip must be activated\nprogrammatically."
+        }
+      ]
+    }
+  ]
+}

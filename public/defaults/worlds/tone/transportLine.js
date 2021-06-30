@@ -24,7 +24,7 @@ this.fromhitstartEventMethod = function(value){
     if(notes.length == 1){
         let note = notes[0];
         //synth.triggerAttack(note.freq, note.velocity);
-        synth.triggerAttackRelease([note.freq], [note.duration], note.velocity);
+        synth.triggerAttackRelease([note.freq], [note.duration], null, note.velocity);
     } else if (notes.length > 0){
         let chord = notes.map(el=>{
             return el.freq
@@ -34,7 +34,7 @@ this.fromhitstartEventMethod = function(value){
         })
 
          let velocity = notes[0].velocity;
-         synth.triggerAttackRelease(chord, durations, velocity);
+         synth.triggerAttackRelease(chord, durations, null, velocity);
         // synth.triggerAttack(chord, velocity); //, durations
     }
 
