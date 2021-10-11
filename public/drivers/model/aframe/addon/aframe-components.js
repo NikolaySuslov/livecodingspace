@@ -371,7 +371,7 @@ AFRAME.registerComponent('linepath', {
 
        //TODO: parse array too
 
-        var material = new MeshLineMaterial({
+        var material = new MeshLine.MeshLineMaterial({
             color: new THREE.Color(this.data.color), //this.data.color
             lineWidth: this.data.width,
             transparent: this.data.transparent,
@@ -393,7 +393,7 @@ AFRAME.registerComponent('linepath', {
         //     );
         // });
 
-        let line = new MeshLine();
+        let line = new MeshLine.MeshLine();
         if(this.data.taper){
             line.setPoints(points, p => 1 - p); //p => 2 + Math.sin(50 * p) 
         } else {
