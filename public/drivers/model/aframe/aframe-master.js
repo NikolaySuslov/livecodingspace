@@ -24770,7 +24770,7 @@ module.exports = anime;
 				var layersCopy = layers.map(function (x) {
 					return x;
 				});
-				layersCopy.push(layersCopy);
+				layersCopy.unshift(session.renderState.layers[0]);
 				session.updateRenderState({
 					layers: layersCopy
 				});
@@ -24889,9 +24889,9 @@ module.exports = anime;
 					_currentDepthFar = cameraVR.far;
 				}
 
-				const parent = camera.parent;
 				const cameras = cameraVR.cameras;
 				var object = poseTarget || camera;
+				const parent = object.parent;
 				updateCamera(cameraVR, parent);
 
 				for (let i = 0; i < cameras.length; i++) {
@@ -54562,7 +54562,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "super-animejs": "^3.1.0",
-    "super-three": "^0.133.1",
+    "super-three": "^0.133.5",
     "three-bmfont-text": "dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733",
     "webvr-polyfill": "^0.10.12"
   },
@@ -59099,38 +59099,25 @@ module.exports.Component = registerComponent('look-controls', {
    * Update orientation for mobile, mouse drag, and headset.
    * Mouse-drag only enabled if HMD is not active.
    */
-  updateOrientation: (function () {
-    var poseMatrix = new THREE.Matrix4();
+  updateOrientation: function () {
+    var object3D = this.el.object3D;
+    var pitchObject = this.pitchObject;
+    var yawObject = this.yawObject;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var object3D = this.el.object3D;
-      var pitchObject = this.pitchObject;
-      var yawObject = this.yawObject;
-      var pose;
-      var sceneEl = this.el.sceneEl;
+    // In VR or AR mode, THREE is in charge of updating the camera pose.
+    if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
+      // With WebXR THREE applies headset pose to the object3D internally.
+      return;
+    }
 
-      // In VR or AR mode, THREE is in charge of updating the camera pose.
-      if ((sceneEl.is('vr-mode') || sceneEl.is('ar-mode')) && sceneEl.checkHeadsetConnected()) {
-        // With WebXR THREE applies headset pose to the object3D matrixWorld internally.
-        // Reflect values back on position, rotation, scale for getAttribute to return the expected values.
-        if (sceneEl.hasWebXR) {
-          pose = sceneEl.renderer.xr.getCameraPose();
-          if (pose) {
-            poseMatrix.elements = pose.transform.matrix;
-            poseMatrix.decompose(object3D.position, object3D.rotation, object3D.scale);
-          }
-        }
-        return;
-      }
+    this.updateMagicWindowOrientation();
 
-      this.updateMagicWindowOrientation();
-
-      // On mobile, do camera rotation with touch events and sensors.
-      object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
-      object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
-      object3D.rotation.z = this.magicWindowDeltaEuler.z;
-    };
-  })(),
+    // On mobile, do camera rotation with touch events and sensors.
+    object3D.rotation.x = this.magicWindowDeltaEuler.x + pitchObject.rotation.x;
+    object3D.rotation.y = this.magicWindowDeltaEuler.y + yawObject.rotation.y;
+    object3D.rotation.z = this.magicWindowDeltaEuler.z;
+  },
 
   updateMagicWindowOrientation: function () {
     var magicWindowAbsoluteEuler = this.magicWindowAbsoluteEuler;
@@ -61511,15 +61498,16 @@ module.exports.Component = register('background', {
     color: { type: 'color', default: 'black' },
     transparent: { default: false },
     generateEnvironment: { default: true },
-    environmentUpdateFrequency: { default: 0 },
     directionalLight: { type: 'selector' }
   },
   init: function () {
     var self = this;
 
-    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(128, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
+    this.pmremGenerator = new THREE.PMREMGenerator(this.el.renderer);
+    this.pmremGenerator.compileCubemapShader();
+    this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter });
     this.lightProbeTarget = new THREE.WebGLCubeRenderTarget(16, { format: THREE.RGBFormat, generateMipmaps: false });
-    this.cubeCamera = new THREE.CubeCamera(1, 100000, this.cubeRenderTarget);
+    this.cubeCamera = new THREE.CubeCamera(0.1, 1000, this.cubeRenderTarget);
     this.needsEnvironmentUpdate = true;
     this.timeSinceUpdate = 0;
 
@@ -61556,7 +61544,6 @@ module.exports.Component = register('background', {
     }
 
     if (data.generateEnvironment) {
-      scene.environment = this.cubeRenderTarget.texture;
       this.needsEnvironmentUpdate = true;
     } else {
       scene.environment = null;
@@ -61632,15 +61619,7 @@ module.exports.Component = register('background', {
       object3D.background = new THREE.Color(data.color);
     }
 
-    if (scene.environment &&
-      (scene.environment !== this.cubeRenderTarget.texture || scene.environment !== this.lightProbeTarget.texture)
-    ) {
-      console.warn('Background will not override user defined environment maps');
-      return;
-    }
-
     if (data.generateEnvironment) {
-      scene.environment = this.cubeRenderTarget.texture;
       this.needsEnvironmentUpdate = true;
     } else {
       scene.environment = null;
@@ -61657,19 +61636,10 @@ module.exports.Component = register('background', {
     }
   },
 
-  tick: function (time, delta) {
+  tick: function () {
     var scene = this.el.object3D;
     var renderer = this.el.renderer;
     var frame = this.el.sceneEl.frame;
-
-    this.timeSinceUpdate += delta;
-    if (
-      this.data.environmentUpdateFrequency > 0 && // should update in general?
-      this.timeSinceUpdate > (this.data.environmentUpdateFrequency * 1000) // should update this tick?
-    ) {
-      this.timeSinceUpdate = 0;
-      this.needsEnvironmentUpdate = true;
-    }
 
     if (frame && this.xrLightProbe) {
       // light estimate may not yet be available, it takes a few frames to start working
@@ -61702,9 +61672,12 @@ module.exports.Component = register('background', {
     if (this.xrLightProbe) {
       this.updateXRCubeMap();
     } else {
-      this.el.object3D.add(this.cubeCamera);
       this.cubeCamera.position.set(0, 1.6, 0);
+      scene.environment = null;
       this.cubeCamera.update(renderer, scene);
+      scene.environment = this.pmremGenerator.fromCubemap(
+        this.cubeRenderTarget.texture
+      ).texture;
     }
 
     this.needsEnvironmentUpdate = false;
@@ -61717,9 +61690,7 @@ module.exports.Component = register('background', {
       object3D.background = null;
       return;
     }
-    if (object3D.environment === this.cubeRenderTarget.texture) {
-      object3D.environment = null;
-    }
+    this.pmremGenerator.dispose();
     object3D.background = COMPONENTS[this.name].schema.color.default;
   }
 });
@@ -69086,7 +69057,6 @@ module.exports.AScene = registerElement('a-scene', {
             requestFullscreen(self.canvas);
           }
 
-          self.renderer.setAnimationLoop(self.render);
           self.resize();
           if (resolve) { resolve(); }
         }
@@ -71470,7 +71440,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 1.2.0 (Date 2021-10-08, Commit #a080c221)');
+console.log('A-Frame Version: 1.2.0 (Date 2021-11-22, Commit #cf65f451)');
 console.log('THREE Version (https://github.com/supermedium/three.js):',
             pkg.dependencies['super-three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);

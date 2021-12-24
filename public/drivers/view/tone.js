@@ -53,17 +53,31 @@ class ToneViewDriver extends Fabric {
 
                     function toneStart() {
                         if (!self.toneStarted) {
-                            Tone.start().then(r => {
+                            let ctx = Tone.getContext();
+                            if (ctx.state == 'suspended') {
+                                Tone.getContext().resume().then(r => {
 
-                                let toneTransport = Object.values(self.state.nodes).filter(el => el.extendsID == "proxy/tonejs/transport.vwf")[0];
-                                if (toneTransport) {
-                                    _self_.applyPlayState(toneTransport.ID);
-                                }
-                                console.log("context started");
-                                self.toneStarted = true;
-                            });
+                                    console.log("context started");
+                                    self.toneStarted = true;
 
-                            //document.body.removeEventListener("click", toneStart, false);
+                                    let toneTransport = Object.values(self.state.nodes).filter(el => el.extendsID == "proxy/tonejs/transport.vwf")[0];
+                                    if (toneTransport) {
+                                        _self_.applyPlayState(toneTransport.ID);
+                                    }
+
+                                    
+                                });
+                            }
+                            // Tone.start().then(r => {
+                            //     let toneTransport = Object.values(self.state.nodes).filter(el => el.extendsID == "proxy/tonejs/transport.vwf")[0];
+                            //     if (toneTransport) {
+                            //         _self_.applyPlayState(toneTransport.ID);
+                            //     }
+                            //     console.log("context started");
+                            //     self.toneStarted = true;
+                            // });
+
+                            document.body.removeEventListener("click", toneStart, false);
                         }
                     }
 
@@ -307,7 +321,7 @@ class ToneViewDriver extends Fabric {
 
                         if (node.toneObj) {
                             const now = methodParameters[2] ? methodParameters[2] :
-                                (node.toneObj._synced ? Tone.Transport.seconds : Tone.now());
+                                (node.toneObj._synced ? Tone.Transport.seconds : undefined);//Tone.now());
 
                             let notes = methodParameters[0];
                             // let notes = methodParameters[0].map(el=>{
