@@ -1628,7 +1628,7 @@ class App {
           '/drivers/model/aframe/aframe-master.min.js',
           '/drivers/model/aframe/addon/SkyShader.js',
           '/drivers/model/aframe/addon/BVHLoader.js',
-          '/drivers/model/aframe/addon/TransformControls.js',
+          '/drivers/model/aframe/addon/TransformControls-es6.js',
           '/drivers/model/aframe/addon/THREE.MeshLine.js',
           '/drivers/model/aframe/addon/three/BufferGeometryUtils.js',
           '/drivers/model/aframe/addon/virtualgc/virtual-gamepad-controls.css',

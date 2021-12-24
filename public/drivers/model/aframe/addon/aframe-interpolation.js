@@ -213,7 +213,8 @@ AFRAME.registerComponent('interpolation', {
         let q = new THREE.Quaternion();
         let e = new THREE.Euler();
 
-        THREE.Quaternion.slerp(lastV, nowV, q, step || 0);
+        q.slerpQuaternions( lastV, nowV, step || 0);
+        //THREE.Quaternion.slerp(lastV, nowV, q, step || 0);
         let interp = e.setFromQuaternion(q, last.order); //'YXZ');
 
         //this.el.object3D.rotation.set(interp.x, interp.y, interp.z);

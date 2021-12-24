@@ -123,7 +123,7 @@ class ToneModel extends Fabric {
 
                             if (this.isToneClass(protos, "proxy/tonejs/transport.vwf")) {
                                 // global transport for now
-                                toneObj = Tone.Transport;
+                                toneObj = Tone.getTransport();
                             }
 
                             if (this.isToneClass(protos, "proxy/tonejs/player.vwf")) {
@@ -220,12 +220,14 @@ class ToneModel extends Fabric {
                                     // sceneEl.addEventListener('camera-set-active', function (evt) {
                                     //     evt.detail.cameraEl.getObject3D('camera').add(sceneEl.audioListener);
                                     // });
+                                    //this.gainNode = new Tone.Gain(0).toDestination();
+                                    Tone.setContext(sceneEl.audioListener.context);
                                 }
                                 node.sound = new THREE.PositionalAudio(sceneEl.audioListener);
-                                Tone.setContext(node.sound.context);
+                                //Tone.setContext(node.sound.context);
                                 //node.sound.context.resume();
                                 node.toneObj = this.state.createToneObject(node);
-
+                                //node.toneObj.connect(this.gainNode);
                                 if (!this.state.isTransportDefinition(node.prototypes)) {
                                     node.sound.setNodeSource(node.toneObj);
                                     parentNode.aframeObj.object3D.add(node.sound);
