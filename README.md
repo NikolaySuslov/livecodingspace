@@ -1,5 +1,7 @@
 # LiveCoding.space
 
+### Attention! Next actively developed version of the LiveCoding.space is [Krestianstvo SDK 4](https://github.com/NikolaySuslov/krestianstvo) and its [Playground](https://github.com/NikolaySuslov/krestianstvo-playground). 
+
 > Collaborative Live Coding Space with support of user-defined languages and **WebVR** ready 3D graphics
 Based on: **Virtual World Framework (Croquet)** | **A-Frame** | **Ohm language** | **OSC.js** | **Cell.js** | **GunDB** and more...
 
